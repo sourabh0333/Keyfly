@@ -48,3 +48,16 @@ The reference site (cardboard.ai) is studied for clarity only. Keyfly must not r
 - No bordered card, tile or pill layouts (a standing preference of the team). Use open hairline rules, editorial spacing and line-drawn connections.
 - Signature motion: one flight-path line that draws through the page and lands on the amber point at key actions, drawn once with no looping decoration.
 - Animate only transform, opacity and SVG stroke drawing. Respect `prefers-reduced-motion`.
+
+## Design foundations (step 2)
+
+`/styleguide` shows every token and component in development and returns 404 in production. Check it after changing a foundation.
+
+- **Tokens** (`src/app/globals.css`): the brand colours, a fluid type scale (`--text-display` … `--text-label`), 4px spacing (`--space-1`…`--space-10`, `--section-pad`), small radii (no pills) and motion timings that match the brand kit.
+- **Tone:** components read only role tokens (`--color-text`, `--color-muted`, `--color-line`, `--color-point`, `--accent-fill`, `--accent-ink`). Any element with `data-tone="night"` switches its contents to Paper and tungsten amber, so never hard-code brand hexes in a component.
+- **`Logo`** (`src/components/logo.jsx`): the unaltered lockup. Its `on` prop ("paper" or "night") names the background it sits on.
+- **`Button`:** `variant="solid"` (amber, Ink text) for the one primary action per view, and `variant="link"` (drawn underline) for everything else. It renders Link, `<a>` or `<button>` from `href`.
+- **`Section` / `SectionHeading`:** a full-width band with the content column, a `tone` and an optional hairline `rule`, plus an eyebrow, h2 and lead. Pair `SectionHeading id` with `Section labelledBy`.
+- **`FlightPath`:** the brand line that draws in 0.9s and lands its point in 0.35s.
+  - `play="load"` uses CSS only. `play="view"` draws once on scroll, and its server HTML is already drawn, so nothing is hidden without JS. `play={false}` is static.
+  - Pass a `shape` for longer page-level paths. Reduced motion gets a fade.

@@ -1,0 +1,73 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 44px;
+  border: 0;
+  font-family: var(--font-text-stack);
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.arrow {
+  flex: none;
+  transition: transform var(--dur-ui) var(--ease-land);
+}
+
+/* Sizes */
+.m {
+  font-size: var(--text-body);
+}
+
+.l {
+  min-height: 52px;
+  font-size: 1.0625rem;
+}
+
+/* Solid: the single primary action. Squared corners, never a pill. */
+.solid {
+  padding-inline: 20px;
+  border-radius: var(--radius-s);
+  background-color: var(--accent-fill);
+  color: var(--accent-ink);
+  transition: background-color var(--dur-ui) ease;
+}
+
+.solid.l {
+  padding-inline: 26px;
+}
+
+/* Link: text with a hairline that draws to full ink on hover. */
+.link {
+  padding: 0;
+  background:
+    linear-gradient(currentColor, currentColor) 0 calc(100% - 10px) / 0 1px no-repeat,
+    linear-gradient(var(--color-line), var(--color-line)) 0 calc(100% - 10px) / 100% 1px no-repeat;
+  color: var(--color-text);
+  transition: background-size 0.35s var(--ease-land);
+}
+
+@media (hover: hover) {
+  .solid:hover {
+    background-color: var(--accent-fill-hover);
+  }
+
+  .link:hover {
+    background-size:
+      100% 1px,
+      100% 1px;
+  }
+
+  .button:hover .arrow {
+    transform: translateX(3px);
+  }
+}
+
+.solid:active {
+  background-color: var(--accent-fill-hover);
+}

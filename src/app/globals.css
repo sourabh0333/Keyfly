@@ -15,23 +15,84 @@
   --paper: #f4f1ea;
   --ink: #141416;
 
-  /* Roles */
-  --color-bg: var(--paper);
-  --color-text: var(--ink);
-  --color-muted: #5c5a55;
-  --color-line: rgb(20 20 22 / 0.14);
-
-  /* Type */
+  /* Type families */
   --font-display-stack: var(--font-display), "Arial Black", sans-serif;
   --font-text-stack: var(--font-text), system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* Type scale (fluid between ~375px and ~1440px). Syne is for h1–h3 only;
+     it is too wide to read well below ~20px. */
+  --text-display: clamp(2.75rem, 1.5rem + 5.2vw, 6rem);
+  --text-h2: clamp(2rem, 1.35rem + 2.8vw, 3.75rem);
+  --text-h3: clamp(1.375rem, 1.2rem + 0.75vw, 1.75rem);
+  --text-lead: clamp(1.125rem, 1.05rem + 0.35vw, 1.3125rem);
+  --text-body: 1rem;
+  --text-small: 0.875rem;
+  --text-label: 0.75rem;
+
+  /* Spacing (4px base) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+  --space-10: 128px;
+  --section-pad: clamp(72px, 4rem + 6vw, 160px);
 
   /* Layout */
   --gutter: clamp(16px, 4vw, 48px);
   --content-max: 1200px;
+  --text-max: 62ch;
+
+  /* Radii: small and square-ish on purpose (no pills) */
+  --radius-s: 4px;
+  --radius-m: 8px;
+  --radius-window: 14px;
 
   /* Motion (brand kit: draw 0.9s ease-in-out, land 0.35s ease-out) */
   --ease-draw: cubic-bezier(0.65, 0, 0.35, 1);
   --ease-land: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-draw: 0.9s;
+  --dur-land: 0.35s;
+  --dur-ui: 0.2s;
+}
+
+/*
+ * Theme roles. Components read only these, so anything placed inside a
+ * `data-tone="night"` surface re-colours itself (line → Paper, point →
+ * Tungsten amber), exactly as the brand kit's dark/light pairs do.
+ */
+:root,
+[data-tone="paper"] {
+  --color-bg: var(--paper);
+  --color-text: var(--ink);
+  --color-muted: #5c5a55; /* 6.2:1 on Paper */
+  --color-line: rgb(20 20 22 / 0.14);
+  --color-point: var(--deep-amber);
+  --color-accent-text: var(--amber-text);
+  --accent-fill: var(--amber-ui);
+  --accent-fill-hover: var(--deep-amber);
+  --accent-ink: var(--ink); /* text on amber is always Ink */
+}
+
+[data-tone="night"] {
+  --color-bg: var(--night);
+  --color-text: var(--paper);
+  --color-muted: #a7a399; /* 7.7:1 on Night */
+  --color-line: rgb(244 241 234 / 0.14);
+  --color-point: var(--tungsten-amber);
+  --color-accent-text: var(--tungsten-amber);
+  --accent-fill: var(--tungsten-amber);
+  --accent-fill-hover: #ffc061;
+  --accent-ink: var(--ink);
+}
+
+[data-tone] {
+  background-color: var(--color-bg);
+  color: var(--color-text);
 }
 
 *,
@@ -71,8 +132,13 @@ h2,
 h3 {
   font-family: var(--font-display-stack);
   font-weight: 700;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.01em; /* the wordmark's tracking */
   line-height: 1.05;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
 }
 
 img,
@@ -96,13 +162,24 @@ a {
   outline-offset: 3px;
 }
 
+/* Reduced motion: transitions become instant everywhere. Keyframe animations
+   are handled per component, because the brand asks for a simple fade
+   rather than no motion at all. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
   *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
