@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { cx } from "@/lib/cx";
+import { usePlayState } from "@/lib/use-play-state";
 import styles from "./flight-path.module.css";
 
 // The "Flight path" symbol geometry, exactly as in brand-kit/symbol/*.svg.
@@ -18,47 +19,24 @@ export const FLIGHT_SYMBOL = {
  * draw 0.9s, then a 0.35s settle). Defaults to the brand symbol; pass a
  * different `shape` for longer page-level flight paths.
  *
- * play:
- * - "load": animates on first paint, from CSS alone (works without JS).
- * - "view": animates once when scrolled into view. Server HTML is the drawn
- *   state, so it is never hidden without JS or when already on screen.
- * - false:  static, fully drawn.
+ * play: "load" | "view" | false (see usePlayState).
  *
  * Colours come from the surrounding tone: Ink + deep amber on Paper,
  * Paper + tungsten amber on Night.
  */
 export function FlightPath({ shape = FLIGHT_SYMBOL, play = "view", size, label, className }) {
   const ref = useRef(null);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (play !== "view" || !el) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    // Already on screen at hydration: leave it drawn rather than flash it.
-    if (el.getBoundingClientRect().top < window.innerHeight) return;
-
-    el.dataset.state = "armed";
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) return;
-        el.dataset.state = "play";
-        observer.disconnect();
-      },
-      { threshold: 0.4 },
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [play]);
-
+  const state = usePlayState(ref, play);
   const a11y = label ? { role: "img", "aria-label": label } : { "aria-hidden": true };
 
   return (
     <svg
       ref={ref}
       viewBox={shape.viewBox}
+      preserveAspectRatio={shape.preserveAspectRatio}
       width={size}
       height={size}
-      data-state={play === "load" ? "play" : "static"}
+      data-state={state}
       className={cx(styles.root, className)}
       focusable="false"
       {...a11y}

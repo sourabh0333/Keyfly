@@ -1,3 +1,5 @@
+import { SiteFooter } from "@/components/footer/site-footer";
+import { SiteHeader } from "@/components/header/site-header";
 import { siteConfig } from "@/config/site";
 import { inter, syne } from "./fonts";
 import "./globals.css";
@@ -25,7 +27,14 @@ export const viewport = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${syne.variable} ${inter.variable}`}>
-      <body>{children}</body>
+      <body>
+        <a href="#main" className="skip-link">
+          Skip to content
+        </a>
+        <SiteHeader />
+        <main id="main">{children}</main>
+        <SiteFooter />
+      </body>
     </html>
   );
 }

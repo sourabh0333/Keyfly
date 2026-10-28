@@ -43,6 +43,7 @@
   --section-pad: clamp(72px, 4rem + 6vw, 160px);
 
   /* Layout */
+  --header-h: 72px;
   --gutter: clamp(16px, 4vw, 48px);
   --content-max: 1200px;
   --text-max: 62ch;
@@ -104,6 +105,14 @@
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--header-h) + var(--space-4));
+  /* Keeps the layout still when the mobile menu locks scrolling. */
+  scrollbar-gutter: stable;
+}
+
+html[data-scroll-locked] {
+  overflow: hidden;
 }
 
 body {
@@ -172,6 +181,24 @@ a {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+.skip-link {
+  position: fixed;
+  top: var(--space-3);
+  left: var(--space-3);
+  z-index: 100;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-s);
+  background: var(--ink);
+  color: var(--paper);
+  font-weight: 600;
+  text-decoration: none;
+  transform: translateY(-200%);
+}
+
+.skip-link:focus-visible {
+  transform: none;
 }
 
 .visually-hidden {

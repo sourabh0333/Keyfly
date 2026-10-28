@@ -1,0 +1,187 @@
+.footer {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+/* Night with the app icon's warm corner light. */
+.footer[data-tone] {
+  background:
+    radial-gradient(60% 80% at 88% 0%, rgb(255 178 62 / 0.14), transparent 70%),
+    linear-gradient(var(--night-top), var(--night) 45%);
+}
+
+/* Pointer light (moved by GlowSurface with transform only). */
+.light {
+  position: absolute;
+  top: -320px;
+  left: -320px;
+  z-index: -1;
+  width: 640px;
+  height: 640px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(255 178 62 / 0.13), transparent);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.5s ease;
+}
+
+.footer[data-glow] .light {
+  opacity: 1;
+}
+
+.inner {
+  width: min(100% - 2 * var(--gutter), var(--content-max));
+  margin-inline: auto;
+  padding-top: clamp(var(--space-8), 8vw, var(--space-10));
+}
+
+/* Closing call: the path lands its point right above the button. */
+.flight {
+  width: 100%;
+  height: auto;
+  min-height: 110px;
+  aspect-ratio: 1200 / 220;
+}
+
+.closingRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-6);
+  margin-top: var(--space-5);
+}
+
+.closing {
+  font-size: var(--text-display);
+  line-height: 0.98;
+}
+
+/* Brand and link columns, separated from the closing call by a hairline. */
+.columns {
+  display: grid;
+  gap: var(--space-8);
+  margin-top: clamp(var(--space-8), 8vw, var(--space-10));
+  padding-top: var(--space-7);
+  border-top: 1px solid var(--color-line);
+}
+
+.brandCol {
+  display: grid;
+  justify-items: start;
+  align-content: start;
+  gap: var(--space-4);
+}
+
+.note,
+.bottom {
+  color: var(--color-muted);
+  font-size: var(--text-small);
+}
+
+.groups {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-7) var(--space-6);
+}
+
+.groupTitle {
+  margin-bottom: var(--space-3);
+  color: var(--color-muted);
+  font-size: var(--text-label);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.links {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* A small point slides in before the link under the pointer. */
+.link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  border-radius: var(--radius-s);
+  color: var(--color-text);
+  text-decoration: none;
+  transition: transform 0.35s var(--ease-land);
+}
+
+.link::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  margin-right: 0;
+  margin-left: -5px;
+  border-radius: 50%;
+  background: var(--color-point);
+  opacity: 0;
+  transform: scale(0.3);
+  transition:
+    opacity 0.2s ease,
+    transform 0.35s var(--ease-land);
+}
+
+@media (hover: hover) {
+  .link:hover {
+    transform: translateX(12px);
+  }
+
+  .link:hover::before {
+    opacity: 1;
+    transform: translateX(-7px);
+  }
+}
+
+.bottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-top: var(--space-9);
+  padding-block: var(--space-5);
+  border-top: 1px solid var(--color-line);
+}
+
+.top {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-s);
+  background: none;
+  color: var(--color-text);
+  font: inherit;
+  cursor: pointer;
+}
+
+.top svg {
+  transition: transform 0.35s var(--ease-land);
+}
+
+@media (hover: hover) {
+  .top:hover svg {
+    transform: translateY(-3px);
+  }
+}
+
+@media (min-width: 768px) {
+  .groups {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 960px) {
+  .columns {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
+  }
+}

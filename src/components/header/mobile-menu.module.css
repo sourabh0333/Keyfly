@@ -1,0 +1,268 @@
+/* Toggle (small screens only) */
+.toggle,
+.close {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin-right: -10px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-s);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (min-width: 960px) {
+  .toggle {
+    display: none;
+  }
+}
+
+.icon {
+  position: relative;
+  width: 24px;
+  height: 14px;
+}
+
+.lineTop,
+.lineBottom,
+.iconPoint {
+  position: absolute;
+  left: 0;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  transform-origin: center;
+  transition:
+    transform 0.45s var(--ease-land),
+    width 0.45s var(--ease-land),
+    opacity 0.3s ease;
+}
+
+.lineTop {
+  top: 0;
+  width: 24px;
+}
+
+.lineBottom {
+  bottom: 0;
+  width: 14px;
+}
+
+/* The point sits just past the short line, where a flight would land. */
+.iconPoint {
+  bottom: -1px;
+  left: 18px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--color-point);
+}
+
+@media (hover: hover) {
+  .toggle:hover .lineBottom {
+    width: 18px;
+  }
+
+  .toggle:hover .iconPoint {
+    transform: translate(4px, -2px);
+  }
+}
+
+/*
+ * Open/close states. The open state is the plain [open] style and
+ * @starting-style supplies where it animates from, so the browser runs the
+ * reveal itself. [data-closing] plays everything back out.
+ */
+
+/* Inside the open menu the same icon becomes a cross. */
+.close .lineTop {
+  width: 24px;
+  transform: translateY(6px) rotate(45deg);
+}
+
+.close .lineBottom {
+  width: 24px;
+  transform: translateY(-6px) rotate(-45deg);
+}
+
+.close .iconPoint {
+  opacity: 0;
+  transform: scale(0);
+}
+
+.menu[data-closing] .close .lineTop,
+.menu[data-closing] .close .lineBottom,
+.menu[data-closing] .close .iconPoint {
+  transform: none;
+}
+
+.menu[data-closing] .close .lineBottom {
+  width: 14px;
+}
+
+.menu[data-closing] .close .iconPoint {
+  opacity: 1;
+}
+
+@starting-style {
+  .menu[open] .close .lineTop,
+  .menu[open] .close .lineBottom,
+  .menu[open] .close .iconPoint {
+    opacity: 1;
+    transform: none;
+  }
+
+  .menu[open] .close .lineBottom {
+    width: 14px;
+  }
+}
+
+/* The dialog: full screen, revealed as a circle from the toggle. */
+.menu {
+  --origin-x: calc(100% - 32px);
+  --origin-y: 36px;
+
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  max-width: none;
+  height: 100dvh;
+  max-height: none;
+  margin: 0;
+  padding: 0 var(--gutter) max(var(--space-6), env(safe-area-inset-bottom));
+  overflow: hidden auto;
+  border: 0;
+  clip-path: circle(150vmax at var(--origin-x) var(--origin-y));
+  transition: clip-path 0.6s var(--ease-draw);
+}
+
+.menu[open] {
+  display: flex;
+  flex-direction: column;
+}
+
+@starting-style {
+  .menu[open] {
+    clip-path: circle(0 at var(--origin-x) var(--origin-y));
+  }
+}
+
+.menu[data-closing] {
+  clip-path: circle(0 at var(--origin-x) var(--origin-y));
+  transition-duration: 0.45s;
+}
+
+.menu::backdrop {
+  background: transparent;
+}
+
+.top {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--header-h);
+}
+
+.brand {
+  display: inline-flex;
+  border-radius: var(--radius-s);
+}
+
+.nav {
+  margin-top: clamp(var(--space-6), 8vh, var(--space-9));
+}
+
+.list {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Links and the footer row arrive in sequence after the reveal. */
+.list > li,
+.foot {
+  transition:
+    opacity 0.45s ease,
+    transform 0.6s var(--ease-land);
+  transition-delay: calc(0.22s + var(--i) * 0.06s);
+}
+
+@starting-style {
+  .menu[open] .list > li,
+  .menu[open] .foot {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}
+
+.menu[data-closing] .list > li,
+.menu[data-closing] .foot {
+  opacity: 0;
+  transform: translateY(12px);
+  transition-delay: 0s;
+  transition-duration: 0.2s;
+}
+
+/* Full-width tap target; the text and its point stay left-aligned. */
+.link {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  min-height: 56px;
+  font-family: var(--font-display-stack);
+  font-size: clamp(2.25rem, 1.4rem + 5vw, 3.5rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.05;
+  text-decoration: none;
+}
+
+/* The landing point appears beside the link being touched or focused. */
+.link::after {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-point);
+  opacity: 0;
+  transform: translate(-8px, 8px) scale(0.4);
+  transition:
+    opacity 0.2s ease,
+    transform 0.35s var(--ease-land);
+}
+
+.link:hover::after,
+.link:focus-visible::after,
+.link:active::after {
+  opacity: 1;
+  transform: none;
+}
+
+.foot {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-5);
+  margin-top: auto;
+  padding-top: var(--space-8);
+}
+
+.note {
+  color: var(--color-muted);
+  font-size: var(--text-small);
+}
+
+/* Drawn again on every open; decorative. */
+.mark {
+  position: absolute;
+  right: calc(var(--gutter) - 12px);
+  bottom: max(var(--space-6), env(safe-area-inset-bottom));
+  width: clamp(88px, 26vw, 140px);
+  pointer-events: none;
+}

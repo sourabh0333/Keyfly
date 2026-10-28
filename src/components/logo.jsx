@@ -1,36 +1,26 @@
-import Image from "next/image";
 import Link from "next/link";
 import { cx } from "@/lib/cx";
+import { AnimatedLogo } from "./logo/animated-logo";
 import styles from "./logo.module.css";
 
-// The brand-kit lockups, unaltered. `on` names the background the logo sits
-// on: "paper" uses the ink lockup, "night" the paper-and-tungsten one.
-const LOCKUPS = {
-  paper: "/brand/lockup-light.svg",
-  night: "/brand/lockup-dark.svg",
-};
-
-// Lockup artboard is 212×64 (symbol 64×64 + wordmark).
-const RATIO = 212 / 64;
-
-export function Logo({ on = "paper", height = 36, href = "/", eager = false, className }) {
-  const image = (
-    <Image
-      src={LOCKUPS[on]}
-      alt="Keyfly"
-      width={Math.round(height * RATIO)}
-      height={height}
-      loading={eager ? "eager" : "lazy"}
-    />
-  );
-
+/**
+ * The Keyfly lockup, animated (see AnimatedLogo), optionally as a home link.
+ * Colours follow the surrounding tone, so the same component serves Paper
+ * and Night surfaces. The static brand-kit files in /public/brand remain for
+ * places that cannot run CSS (share images, emails).
+ */
+export function Logo({ height = 36, href = "/", play = "load", className, onClick }) {
   if (!href) {
-    return <span className={cx(styles.logo, className)}>{image}</span>;
+    return (
+      <span className={cx(styles.logo, className)}>
+        <AnimatedLogo height={height} play={play} />
+      </span>
+    );
   }
 
   return (
-    <Link href={href} className={cx(styles.logo, className)}>
-      {image}
+    <Link href={href} className={cx(styles.logo, className)} aria-label="Keyfly home" onClick={onClick}>
+      <AnimatedLogo height={height} play={play} label={null} />
     </Link>
   );
 }

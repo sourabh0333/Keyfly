@@ -61,3 +61,42 @@ The reference site (cardboard.ai) is studied for clarity only. Keyfly must not r
 - **`FlightPath`:** the brand line that draws in 0.9s and lands its point in 0.35s.
   - `play="load"` uses CSS only. `play="view"` draws once on scroll, and its server HTML is already drawn, so nothing is hidden without JS. `play={false}` is static.
   - Pass a `shape` for longer page-level paths. Reduced motion gets a fade.
+
+## Animated logo: the flight-path K (added 2026-10-28)
+
+The team asked for the icon to become the K of the name, and approved the final look and motion on 2026-10-28. Its rest state is **K•eyfly**: a K with a **leaning stem** and a flight curve in the symbol's own gesture (the leg rises, loops once at the junction, and lifts as the upper arm to land the amber point), followed by the wordmark's "eyfly". This version is on the website only; the brand kit files, app icons and favicons still use the original symbol.
+
+Motion, chosen by the team: **light painting**. `src/components/logo/animated-logo.jsx` is used by `Logo` everywhere (header, mobile menu, footer, styleguide) and directly on the homepage. The intro takes about 2s:
+
+1. A glowing tungsten comet climbs and draws the leaning stem, then hops to the K's leg.
+2. It paints the flight curve. The amber trail burns, then cools into the ink line that follows 110ms behind.
+3. The comet becomes the amber point with a flash and a shockwave ring.
+4. "eyfly" exposes left to right and a tungsten glint sweeps across it.
+
+How it is built:
+- Web Animations API, driven from JS. The comet's path is sampled from the real stem and curve geometry (`getPointAtLength`), so the comet, the hot trail and the ink stay on one clock.
+- `data-state`: "pending" in the server HTML keeps the parts hidden until the intro starts, so there is no flash of the finished logo. A 3s CSS fallback reveals it if JS never runs. "armed" waits for scroll (`play="view"`), "running" plays, and "done" is static.
+- Reduced motion and `play={false}` show the finished logo.
+
+Geometry:
+- `lockup-geometry.js` is generated from the brand kit; the wordmark is only split into letters.
+- `k-geometry.js` holds the hand-authored K in lockup units (viewBox 0 0 136 64). Its stroke of 4.95 matches the wordmark's stem weight. "eyfly" is the brand-kit letters shifted 74 units left.
+
+## Header and footer (step 3)
+
+The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `SiteFooter`, so pages render a fragment or `<div>`, never their own `<main>`. Navigation labels and targets live only in `src/content/navigation.js`; the current menu is a placeholder until the pages are agreed.
+
+- **Header** (`src/components/header/`):
+  - It is server-rendered. `HeaderShell` writes `data-scrolled` (shows the frosted band and hairline) and `data-tone` straight to the element, with no re-renders.
+  - Tone comes from whatever sits under the header's centre line, so it switches to Paper-on-Night over any `data-tone="night"` section, the footer included.
+- **Header effects:**
+  - Desktop nav: one amber point hops between items in a 9px arc (Web Animations API) on hover or focus, and fades when the pointer leaves.
+  - Reading progress: the bottom hairline fills as you scroll, with the point at its tip. It is CSS scroll-driven and hidden where unsupported.
+- **Mobile menu:** a native modal `<dialog>` that traps focus, closes on Escape and makes the page behind inert.
+  - It opens as a circle growing from the toggle using CSS `@starting-style`. Do not reintroduce rAF-timed opening; it stalls when frames are throttled.
+  - It closes through `data-closing`, then `dialog.close()`. The links stagger in, the symbol redraws on every open, and scrolling is locked through `html[data-scroll-locked]`.
+- **Footer** (`src/components/footer/`):
+  - A Night surface with the app icon's warm corner light.
+  - A long flight path draws on scroll and lands its point above the closing CTA. On narrow screens it crops the run-in (`xMaxYMid slice`) rather than squashing the loop.
+  - A tungsten light follows the pointer (`GlowSurface`, transform only, mouse and trackpad only). Links slide over to make room for a landing point, and there's a back-to-top button.
+- **`Magnetic`:** wraps a primary CTA so it leans toward the pointer. Not used on touch devices or with reduced motion.

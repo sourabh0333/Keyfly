@@ -39,10 +39,10 @@ export default function StyleguidePage() {
   if (process.env.NODE_ENV === "production") notFound();
 
   return (
-    <main>
+    <>
       <Section>
         <div className={styles.top}>
-          <Logo eager height={40} />
+          <Logo height={40} />
           <p className={styles.tag}>Design foundations · internal</p>
         </div>
         <h1 className={styles.h1}>Paper and tungsten</h1>
@@ -146,7 +146,7 @@ export default function StyleguidePage() {
       <Section tone="night" labelledBy="sg-night">
         <div className={styles.night}>
           <div className={styles.nightCopy}>
-            <Logo on="night" height={40} />
+            <Logo height={40} play="view" />
             <SectionHeading
               id="sg-night"
               eyebrow="Tone: night"
@@ -168,6 +168,6 @@ export default function StyleguidePage() {
           </figure>
         </div>
       </Section>
-    </main>
+    </>
   );
 }

@@ -1,0 +1,183 @@
+.header {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 50;
+  color: var(--color-text);
+  transition: color 0.3s ease;
+}
+
+/* Overrides the global [data-tone] fill: the header paints its own band. */
+.header[data-tone] {
+  background: transparent;
+}
+
+/* Frosted band, shown once the page leaves the top. Full-bleed with a
+   hairline under it, so it reads as a rule across the page, not a box. */
+.header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-bottom: 1px solid var(--color-line);
+  background: color-mix(in srgb, var(--color-bg) 80%, transparent);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  backdrop-filter: blur(16px) saturate(1.4);
+  opacity: 0;
+  transition:
+    opacity 0.35s ease,
+    background-color 0.3s ease,
+    border-color 0.3s ease;
+}
+
+.header[data-scrolled="true"]::before {
+  opacity: 1;
+}
+
+.bar {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: var(--space-5);
+  width: min(100% - 2 * var(--gutter), var(--content-max));
+  height: var(--header-h);
+  margin-inline: auto;
+}
+
+.brand {
+  justify-self: start;
+  transform-origin: left center;
+  transition: transform 0.4s var(--ease-land);
+}
+
+.header[data-scrolled="true"] .brand {
+  transform: scale(0.92);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-self: end;
+  gap: var(--space-3);
+}
+
+/* Desktop navigation */
+.desktopNav {
+  display: none;
+}
+
+.navList {
+  display: flex;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.navLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding-inline: var(--space-3);
+  border-radius: var(--radius-s);
+  color: var(--color-muted);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color var(--dur-ui) ease;
+}
+
+.navLink:hover,
+.navLink:focus-visible {
+  color: var(--color-text);
+}
+
+.navPoint {
+  position: absolute;
+  bottom: 4px;
+  left: -3px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-point);
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (min-width: 960px) {
+  .bar {
+    grid-template-columns: 1fr auto 1fr;
+  }
+
+  .desktopNav {
+    position: relative;
+    display: block;
+  }
+}
+
+/* The header CTA is the desktop primary action; on small phones the menu
+   carries it instead, so the bar stays uncluttered. */
+@media (max-width: 479px) {
+  .cta {
+    display: none;
+  }
+}
+
+/* Reading progress along the bottom edge (scroll-driven, where supported). */
+.progress {
+  display: none;
+}
+
+@supports (animation-timeline: scroll()) {
+  .progress {
+    position: absolute;
+    right: 0;
+    bottom: -3px;
+    left: 0;
+    display: block;
+    height: 7px;
+    overflow: hidden;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+  }
+
+  .header[data-scrolled="true"] .progress {
+    opacity: 1;
+  }
+
+  .flight {
+    position: absolute;
+    inset: 0;
+    animation: fly linear both;
+    animation-timeline: scroll(root block);
+  }
+
+  .trail {
+    position: absolute;
+    right: 3px;
+    bottom: 3px;
+    left: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--color-point));
+  }
+
+  .tip {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--color-point);
+  }
+
+  @keyframes fly {
+    from {
+      transform: translateX(-100%);
+    }
+
+    to {
+      transform: translateX(0);
+    }
+  }
+}

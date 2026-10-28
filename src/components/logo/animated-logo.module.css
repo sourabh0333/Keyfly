@@ -1,0 +1,98 @@
+/*
+ * Light-painting intro (driven by animated-logo.jsx, about 2s):
+ *    0 –  360ms  comet climbs and draws the leaning stem
+ *  360 –  580ms  comet hops to the leg
+ *  580 – 1400ms  comet paints the flight curve; the amber trail cools into
+ *                the ink line that follows 110ms behind
+ * ~1500ms        comet becomes the point: flash and shockwave ring
+ *  980 – 1700ms  "eyfly" exposes left to right; a glint crosses it
+ *
+ * data-state: "pending" (server HTML, before the intro starts), "armed"
+ * (waiting to scroll into view), "running", "done" (static, finished).
+ */
+
+.logo {
+  display: block;
+  flex: none;
+  overflow: visible;
+  color: var(--color-text);
+}
+
+.stroke {
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1 1.2;
+  stroke-dashoffset: 0;
+}
+
+.letter {
+  fill: currentColor;
+}
+
+.point {
+  fill: var(--color-point);
+}
+
+.letter,
+.point,
+.ring {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* Light, only visible while the intro runs. */
+.hot {
+  fill: none;
+  stroke: var(--tungsten-amber);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1 1.2;
+  opacity: 0;
+}
+
+.ring {
+  fill: none;
+  stroke: var(--tungsten-amber);
+  stroke-width: 0.7;
+  opacity: 0;
+}
+
+.glint {
+  transform: translateX(-40px);
+}
+
+.comet {
+  pointer-events: none;
+}
+
+.comet > g {
+  opacity: 0;
+}
+
+.halo {
+  fill: var(--tungsten-amber);
+  opacity: 0.55;
+}
+
+.core {
+  fill: #fff4d6;
+}
+
+/* Before the intro starts (and while waiting to scroll into view) the logo
+   is hidden, so it never flashes finished first. If the script never runs,
+   the logo still appears after 3s. */
+.logo:is([data-state="pending"], [data-state="armed"]) .part {
+  opacity: 0;
+}
+
+.logo[data-state="pending"] .part {
+  animation: reveal 0s 3s forwards;
+}
+
+@keyframes reveal {
+  to {
+    opacity: 1;
+  }
+}
