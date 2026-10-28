@@ -1,0 +1,17 @@
+.main {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 24px;
+  min-height: 100dvh;
+  padding: var(--gutter);
+  text-align: center;
+}
+
+.title {
+  font-size: clamp(2rem, 6vw, 4rem);
+}
+
+.note {
+  color: var(--color-muted);
+}

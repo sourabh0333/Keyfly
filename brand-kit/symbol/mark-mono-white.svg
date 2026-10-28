@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <!-- Keyfly symbol, one colour (white). -->
+  <g transform="translate(128 126) scale(0.9) translate(-128 -116)"><path d="M44 196 C 90 192, 130 166, 142 128 C 154 90, 132 62, 107 74 C 82 86, 90 128, 132 131 C 166 133, 190 102, 201 70" fill="none" stroke="#ffffff" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/><circle cx="214" cy="40" r="17" fill="#ffffff"/></g>
+</svg>

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <!-- Favicon / Windows / Linux icon: the tile with the small-size cut (heavier line, bigger point) so it holds at 16 px. -->
+  <defs>
+    <linearGradient id="tile" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#202026"/><stop offset="1" stop-color="#0b0b0d"/></linearGradient>
+    <radialGradient id="warm" cx="0.82" cy="0.18" r="0.55"><stop offset="0" stop-color="#ffb23e" stop-opacity="0.32"/><stop offset="1" stop-color="#ffb23e" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="256" height="256" rx="58" fill="url(#tile)"/>
+  <rect width="256" height="256" rx="58" fill="url(#warm)"/>
+  <g transform="translate(128 128) scale(0.8) translate(-128 -116)"><path d="M44 196 C 90 192, 130 166, 142 128 C 154 90, 132 62, 107 74 C 82 86, 90 128, 132 131 C 166 133, 190 102, 201 70" fill="none" stroke="#f4f1ea" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/><circle cx="214" cy="40" r="22" fill="#ffb23e"/></g>
+</svg>

@@ -1,0 +1,108 @@
+/*
+ * Global layer: brand tokens, reset and element defaults only.
+ * Component styles live in CSS Modules next to each component, so a page
+ * loads only the CSS it uses. Keep this file small.
+ */
+
+:root {
+  /* Brand colours (brand-kit/README.md) */
+  --tungsten-amber: #ffb23e; /* accent on dark */
+  --deep-amber: #d97e00; /* the point on light backgrounds */
+  --amber-ui: #c27400; /* buttons and selection on light */
+  --amber-text: #935400; /* accent as text on light (4.5:1) */
+  --night: #0b0b0d;
+  --night-top: #202026;
+  --paper: #f4f1ea;
+  --ink: #141416;
+
+  /* Roles */
+  --color-bg: var(--paper);
+  --color-text: var(--ink);
+  --color-muted: #5c5a55;
+  --color-line: rgb(20 20 22 / 0.14);
+
+  /* Type */
+  --font-display-stack: var(--font-display), "Arial Black", sans-serif;
+  --font-text-stack: var(--font-text), system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* Layout */
+  --gutter: clamp(16px, 4vw, 48px);
+  --content-max: 1200px;
+
+  /* Motion (brand kit: draw 0.9s ease-in-out, land 0.35s ease-out) */
+  --ease-draw: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-land: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-text-stack);
+  font-size: 1rem;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+figure {
+  margin: 0;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display-stack);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.05;
+}
+
+img,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+}
+
+::selection {
+  background: var(--tungsten-amber);
+  color: var(--ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--amber-ui);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
