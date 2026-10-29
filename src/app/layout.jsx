@@ -1,7 +1,7 @@
 import { SiteFooter } from "@/components/footer/site-footer";
 import { SiteHeader } from "@/components/header/site-header";
 import { siteConfig } from "@/config/site";
-import { inter, syne } from "./fonts";
+import { instrumentSerif, inter, syne } from "./fonts";
 import "./globals.css";
 
 export const metadata = {
@@ -20,14 +20,16 @@ export const metadata = {
 };
 
 export const viewport = {
-  themeColor: "#f4f1ea",
-  colorScheme: "light",
+  themeColor: "#0b0b0d",
+  colorScheme: "dark",
 };
 
+// The site is Night-first: the body carries the tone, so every component
+// reads Paper text and soft mint from the role tokens.
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${syne.variable} ${inter.variable}`}>
-      <body>
+    <html lang="en" className={`${syne.variable} ${inter.variable} ${instrumentSerif.variable}`}>
+      <body data-tone="night">
         <a href="#main" className="skip-link">
           Skip to content
         </a>

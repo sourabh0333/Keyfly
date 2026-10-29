@@ -1,17 +1,25 @@
-import { AnimatedLogo } from "@/components/logo/animated-logo";
-import styles from "./page.module.css";
+import { Download } from "@/components/home/download";
+import { Glance } from "@/components/home/glance";
+import { Hero } from "@/components/home/hero";
+import { ToolsShowcase } from "@/components/home/tools-showcase";
+import { siteConfig } from "@/config/site";
 
-// Temporary page while the site is built: the logo on its own. Replaced by
-// the real homepage in build step 4 (PLAN.md).
+// Kept out of search until the product details and download links are
+// confirmed (see the PLACEHOLDER notes in src/content/home.js).
+// Built step by step: each section is added once the one before is agreed.
 export const metadata = {
+  title: { absolute: "Keyfly · Video editor for macOS, Windows and Linux" },
+  description: siteConfig.description,
   robots: { index: false, follow: false },
 };
 
 export default function Home() {
   return (
-    <section data-tone="night" className={styles.stage}>
-      <h1 className="visually-hidden">Keyfly</h1>
-      <AnimatedLogo height={260} label={null} className={styles.logo} />
-    </section>
+    <>
+      <Hero />
+      <ToolsShowcase />
+      <Glance />
+      <Download />
+    </>
   );
 }

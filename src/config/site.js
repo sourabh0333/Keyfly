@@ -6,6 +6,7 @@ export const siteConfig = {
   url: process.env.NEXT_PUBLIC_SITE_URL || "https://keyfly.si",
   company: "Cevrynt Inc.",
   // Placeholder until the product positioning is agreed.
-  description: "Keyfly is a desktop app for macOS, Windows and Linux.",
+  description:
+    "Keyfly is a desktop video editor for macOS, Windows and Linux, with an AI director, keyframes and beat sync built in.",
   locale: "en_US",
 };

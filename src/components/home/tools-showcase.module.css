@@ -1,0 +1,292 @@
+/* Rises over the pinned hero: it starts one screen early (the hero keeps
+   that last screen pinned) and sits above it. */
+.section {
+  position: relative;
+  z-index: 1;
+  min-height: 100svh;
+  margin-top: -100svh;
+  overflow: hidden;
+  background: var(--night);
+  color: var(--paper);
+  box-shadow: 0 -40px 80px rgb(0 0 0 / 0.45);
+}
+
+.backdrop,
+.shade,
+.grid {
+  position: absolute;
+  inset: 0;
+}
+
+.photo {
+  object-fit: cover;
+  object-position: 72% 50%;
+}
+
+.shade {
+  background:
+    linear-gradient(0deg, rgb(8 8 10 / 0.55), transparent 35%),
+    rgb(8 8 10 / 0.15);
+}
+
+/* The hero's faint quarter lines. */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.grid span {
+  border-right: 1px solid rgb(244 241 234 / 0.08);
+}
+
+.layout {
+  position: relative;
+  display: grid;
+  min-height: 100svh;
+}
+
+/* ---- The frosted panel ---- */
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-7);
+  padding: calc(var(--header-h) + var(--space-5)) var(--gutter) var(--space-7);
+  border-right: 1px solid rgb(244 241 234 / 0.08);
+  background: linear-gradient(170deg, rgb(70 64 56 / 0.42), rgb(18 18 17 / 0.58));
+  -webkit-backdrop-filter: blur(28px) saturate(1.15);
+  backdrop-filter: blur(28px) saturate(1.15);
+}
+
+.head {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.label,
+.count,
+.kicker {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  line-height: 1.5;
+  text-transform: uppercase;
+}
+
+.label {
+  font-family: var(--font-text-stack);
+}
+
+.count {
+  color: var(--soft-mint);
+}
+
+/* The slides stack in one place; only the active one is shown. */
+.slides {
+  display: grid;
+  flex: 1;
+  align-items: center;
+}
+
+.slide {
+  grid-area: 1 / 1;
+  display: grid;
+  align-content: center;
+  gap: var(--space-5);
+}
+
+.kicker {
+  color: rgb(244 241 234 / 0.6);
+}
+
+.name {
+  margin: 0;
+  font-size: clamp(3.25rem, 1.6rem + 5.6vw, 8.5rem);
+  font-weight: 420;
+  letter-spacing: -0.055em;
+  line-height: 0.92;
+  white-space: nowrap;
+}
+
+/* Letters arrive out of a blur, as in the hero; leaving, they blur away. */
+.letter {
+  display: inline-block;
+  opacity: 0;
+  filter: blur(14px);
+  transform: translateX(-0.06em);
+  transition:
+    opacity 0.3s ease,
+    filter 0.3s ease,
+    transform 0.3s ease;
+}
+
+.slide[data-active="true"] .letter {
+  opacity: 1;
+  filter: blur(0);
+  transform: none;
+  transition-duration: 0.7s, 0.8s, 0.9s;
+  transition-timing-function: ease, ease, var(--ease-land);
+  transition-delay: calc(var(--l) * 40ms + 150ms);
+}
+
+.point {
+  color: var(--soft-mint);
+}
+
+.text,
+.kicker {
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity 0.3s ease,
+    transform 0.3s ease;
+}
+
+.text {
+  max-width: 38ch;
+  color: rgb(244 241 234 / 0.82);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+
+.slide[data-active="true"] .text,
+.slide[data-active="true"] .kicker {
+  opacity: 1;
+  transform: none;
+  transition-duration: 0.8s;
+  transition-delay: 0.45s;
+}
+
+.slide[data-active="true"] .kicker {
+  transition-delay: 0.1s;
+}
+
+/* ---- Controls: previous, pause/play, next, and the slide's timer ---- */
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.control {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid rgb(244 241 234 / 0.35);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--paper);
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+@media (hover: hover) {
+  .control:hover {
+    border-color: var(--soft-mint);
+    color: var(--soft-mint);
+  }
+}
+
+.timer {
+  position: relative;
+  width: clamp(80px, 10vw, 140px);
+  height: 1px;
+  margin-left: var(--space-3);
+  overflow: hidden;
+  background: rgb(244 241 234 / 0.2);
+}
+
+.timerFill {
+  position: absolute;
+  inset: 0;
+  background: var(--soft-mint);
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: timer var(--slide-ms) linear forwards;
+}
+
+.timerFill[data-running="false"] {
+  animation-play-state: paused;
+}
+
+@keyframes timer {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* ---- The tool's illustrative panel, over the photo ---- */
+
+.visual {
+  display: grid;
+  align-content: end;
+  justify-items: end;
+  gap: var(--space-3);
+  padding: var(--space-7) var(--gutter) calc(max(18px, env(safe-area-inset-bottom)) + 76px);
+}
+
+.visualInner {
+  width: min(100%, 520px);
+  animation: arrive 0.9s var(--ease-land) 0.2s both;
+}
+
+.caption {
+  color: rgb(244 241 234 / 0.6);
+  font-size: 0.6875rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+@keyframes arrive {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+}
+
+@media (min-width: 900px) {
+  .layout {
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  }
+
+  .panel {
+    padding-bottom: calc(max(18px, env(safe-area-inset-bottom)) + 76px);
+  }
+}
+
+@media (max-width: 899px) {
+  .slides {
+    flex: none;
+  }
+
+  .visual {
+    justify-items: stretch;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .letter {
+    filter: none;
+    transform: none;
+  }
+
+  .letter,
+  .text,
+  .kicker,
+  .slide[data-active="true"] .letter,
+  .slide[data-active="true"] .text,
+  .slide[data-active="true"] .kicker {
+    transition-delay: 0s;
+  }
+
+  .visualInner,
+  .timerFill {
+    animation: none;
+  }
+}

@@ -9,7 +9,7 @@ export function BackToTop() {
   }
 
   return (
-    <button type="button" className={styles.top} onClick={goTop}>
+    <button type="button" className={styles.toTop} onClick={goTop}>
       <span>Back to top</span>
       <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
         <path

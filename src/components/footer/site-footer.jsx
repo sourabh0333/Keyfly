@@ -1,54 +1,55 @@
+import Image from "next/image";
 import Link from "next/link";
-import { Button } from "@/components/button";
-import { FlightPath } from "@/components/flight-path";
+import shotWide from "@/assets/hero/shot-1-wide.webp";
 import { Logo } from "@/components/logo";
-import { Magnetic } from "@/components/magnetic";
 import { footerContent, footerNav, primaryCta } from "@/content/navigation";
 import { BackToTop } from "./back-to-top";
-import { GlowSurface } from "./glow-surface";
 import styles from "./footer.module.css";
-
-/**
- * The footer's flight: a long run-in from the left, one loop, then a lift to
- * land the amber point above the closing call to action. Same gesture as the
- * symbol, stretched across the page. "xMaxYMid slice" keeps the loop and the
- * landing in view on narrow screens, where the run-in is cropped instead of
- * the drawing being squashed.
- */
-const FOOTER_FLIGHT = {
-  viewBox: "0 0 1200 220",
-  preserveAspectRatio: "xMaxYMid slice",
-  d: "M0 200 C 260 198, 560 182, 780 130 C 880 106, 930 64, 896 40 C 862 18, 822 58, 862 92 C 900 124, 1010 112, 1150 44",
-  point: { cx: 1177, cy: 31, r: 12 },
-  strokeWidth: 4,
-};
 
 function isExternal(href) {
   return /^https?:/.test(href);
 }
 
+/**
+ * The footer as the page's last shot, in the hero's pattern: the opening
+ * photo returns full-bleed (the camera pushes in as it scrolls into view)
+ * under the same faint grid. A small call to action and a note sit top
+ * left, the links top right in spaced capitals, and the Keyfly logo spans
+ * the bottom of the frame, playing its light-painting intro when it comes
+ * into view.
+ */
 export function SiteFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <GlowSurface as="footer" data-tone="night" className={styles.footer}>
-      <div className={styles.inner}>
-        <div className={styles.landing}>
-          <FlightPath shape={FOOTER_FLIGHT} play="view" className={styles.flight} />
-          <div className={styles.closingRow}>
-            <h2 className={styles.closing}>{footerContent.closing}</h2>
-            <Magnetic>
-              <Button href={primaryCta.href} size="l" arrow>
-                {primaryCta.label}
-              </Button>
-            </Magnetic>
-          </div>
-        </div>
+    <footer data-tone="night" data-section="Get Keyfly" className={styles.footer}>
+      <div className={styles.frame} aria-hidden="true">
+        <Image src={shotWide} alt="" fill sizes="100vw" placeholder="blur" className={styles.photo} />
+      </div>
+      <div className={styles.shade} aria-hidden="true" />
+      <div className={styles.grid} aria-hidden="true">
+        <span />
+        <span />
+        <span />
+      </div>
 
-        <div className={styles.columns}>
-          <div className={styles.brandCol}>
-            <Logo height={32} play="view" />
-            <p className={styles.note}>{footerContent.note}</p>
+      <div className={styles.content}>
+        <div className={styles.top}>
+          <div className={styles.lead}>
+            <Link href={primaryCta.href} className={styles.cta}>
+              <svg viewBox="0 0 12 12" width="10" height="10" aria-hidden="true">
+                <path
+                  d="M2 2l8 8M10 4v6H4"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.4"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              {primaryCta.label}
+            </Link>
+            <p className={styles.note}>{footerContent.lead}</p>
           </div>
 
           <nav aria-label="Footer" className={styles.groups}>
@@ -78,10 +79,16 @@ export function SiteFooter() {
         </div>
 
         <div className={styles.bottom}>
-          <p>© {year} Cevrynt Inc. All rights reserved.</p>
-          <BackToTop />
+          <div className={styles.meta}>
+            <p>
+              © {year} Cevrynt Inc. · {footerContent.note}
+            </p>
+            <BackToTop />
+          </div>
+          {/* The brand lockup, unaltered, at the full width of the frame. */}
+          <Logo href={null} height={240} play="view" className={styles.bigLogo} />
         </div>
       </div>
-    </GlowSurface>
+    </footer>
   );
 }

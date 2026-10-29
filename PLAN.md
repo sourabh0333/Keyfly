@@ -7,7 +7,7 @@ Last updated: 2026-10-28
 - **Product:** Keyfly is a desktop app for macOS, Windows and Linux (the kit has icons and installer art for all three). The symbol, "Flight path", stands for "the camera's flight, and the moment a shot lands", so the product is about video.
 - **Owner:** "Keyfly.si is a Cevrynt Inc. product" (from the DMG installer art). The domain looks like `keyfly.si`.
 - **Brand assets:** the symbol, wordmark and lockups (light and dark versions), favicons, app icons and Syne 700 (OFL licence).
-- **Colours:** Tungsten amber `#FFB23E`, Deep amber `#D97E00`, Amber UI `#C27400`, Amber text `#935400`, Night `#0B0B0D`, Night top `#202026`, Paper `#F4F1EA`, Ink `#141416`. Text on amber is always Ink, never white.
+- **Colours (updated kit, 2026-10-29):** Soft mint `#5FE0B0`, Deep mint `#12805B`, Mint text `#0E6B4C`, Mint text on dark `#82E8C2`, Mint ink `#06231A`, Night `#0B0B0D`, Night top `#202026`, Paper `#F4F1EA`, Ink `#141416`. White text on deep mint, Mint ink on soft mint.
 - **Brand motion:** the line draws itself in 0.9s, then the point lands with a 0.35s settle. Reduced motion falls back to a simple fade.
 - **Rules:** never recolour, rotate, stretch or redraw the mark, and never add effects to it. Leave clear space around it equal to the point's diameter.
 
@@ -24,14 +24,14 @@ Last updated: 2026-10-28
 
 Performance targets: LCP ≤ 1.5s, CLS ≤ 0.1, INP ≤ 200ms. Each page has one H1, real metadata, a sitemap and Open Graph images.
 
-## Design direction: "Paper and tungsten"
+## Design direction: "Paper and mint"
 
 The reference site (cardboard.ai) is all black and cinematic, with a prompt-box hero, pill buttons and numbered 01/02/03 feature cards. Keyfly avoids all of that:
 
 - **Light first:** a Paper (`#F4F1EA`) page with Ink type. Night is used only where the product itself appears, as a dark app window set into the light page.
-- **Amber is rare:** it marks the one primary action and the moments where something "lands", like the point in the logo.
+- **Mint is rare:** it marks the one primary action and the moments where something "lands", like the point in the logo.
 - **Lines, not boxes:** sections are separated by hairlines and connected by a drawn flight-path line rather than bordered cards and tiles.
-- **Signature motion:** a single flight-path line moves through the page and lands on the amber point at each key action. It's drawn once per section, with no looping decoration.
+- **Signature motion:** a single flight-path line moves through the page and lands on the mint point at each key action. It's drawn once per section, with no looping decoration.
 - **Typography:** Syne 700 headings set large, editorial spacing and short copy.
 
 ## Build steps (one at a time, each checked in the browser at desktop and mobile)

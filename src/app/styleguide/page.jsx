@@ -13,14 +13,15 @@ export const metadata = {
 };
 
 const COLOURS = [
-  ["Tungsten amber", "--tungsten-amber", "#FFB23E", "Accent on Night: point, primary button"],
-  ["Deep amber", "--deep-amber", "#D97E00", "The point on Paper"],
-  ["Amber UI", "--amber-ui", "#C27400", "Primary button on Paper"],
-  ["Amber text", "--amber-text", "#935400", "Accent used as text on Paper"],
+  ["Soft mint", "--soft-mint", "#5FE0B0", "Accent on Night: point, primary button"],
+  ["Deep mint", "--deep-mint", "#12805B", "The point and primary button on Paper (white text)"],
+  ["Mint text", "--mint-text", "#0E6B4C", "Accent used as text on Paper"],
+  ["Mint text (dark)", "--mint-text-dark", "#82E8C2", "Accent used as text on Night"],
+  ["Mint ink", "--mint-ink", "#06231A", "Text on soft mint"],
   ["Night", "--night", "#0B0B0D", "Dark surfaces: the app itself"],
   ["Night top", "--night-top", "#202026", "Top of dark gradients"],
   ["Paper", "--paper", "#F4F1EA", "Page background, text on Night"],
-  ["Ink", "--ink", "#141416", "Text on Paper, text on amber"],
+  ["Ink", "--ink", "#141416", "Text on Paper"],
 ];
 
 const TYPE = [
@@ -42,10 +43,10 @@ export default function StyleguidePage() {
     <>
       <Section>
         <div className={styles.top}>
-          <Logo height={40} />
+          <Logo height={36} />
           <p className={styles.tag}>Design foundations · internal</p>
         </div>
-        <h1 className={styles.h1}>Paper and tungsten</h1>
+        <h1 className={styles.h1}>Paper and mint</h1>
         <p className={styles.intro}>
           Every token and building block the Keyfly website is made from. Reload the page to replay
           the flight paths.
@@ -104,7 +105,7 @@ export default function StyleguidePage() {
           id="sg-actions"
           eyebrow="Calls to action"
           title="Buttons"
-          lead="One solid amber action per view. Everything else is a link with a drawn underline."
+          lead="One solid mint action per view. Everything else is a link with a drawn underline."
         />
         <div className={styles.actions}>
           <Button href="/" arrow>
@@ -146,12 +147,12 @@ export default function StyleguidePage() {
       <Section tone="night" labelledBy="sg-night">
         <div className={styles.night}>
           <div className={styles.nightCopy}>
-            <Logo height={40} play="view" />
+            <Logo height={36} play="view" />
             <SectionHeading
               id="sg-night"
               eyebrow="Tone: night"
               title="Where the product lives"
-              lead="Night is reserved for showing the app. Inside it, every component switches to Paper and tungsten amber automatically."
+              lead="Night is reserved for showing the app. Inside it, every component switches to Paper and soft mint automatically."
             />
             <div className={styles.actions}>
               <Button href="/" arrow>

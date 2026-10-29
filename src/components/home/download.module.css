@@ -1,0 +1,228 @@
+/* The same mint and dot grid as the glance section's fill (dots fixed to
+   the screen, so the two line up where they meet). Text is Mint ink. */
+.download[data-tone] {
+  position: relative;
+  z-index: 1;
+  min-height: 100svh;
+  overflow: hidden;
+  background:
+    radial-gradient(rgb(6 35 26 / 0.12) 1px, transparent 1.4px) 0 0 / 22px 22px fixed,
+    var(--soft-mint);
+  color: var(--mint-ink);
+}
+
+/* Faint quarter lines, in ink. */
+.grid {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  pointer-events: none;
+}
+
+.grid span {
+  border-right: 1px solid rgb(6 35 26 / 0.1);
+}
+
+.label {
+  position: absolute;
+  top: calc(var(--header-h) + 2vh);
+  left: var(--gutter);
+  display: grid;
+  margin: 0;
+  font-size: clamp(0.875rem, 0.8rem + 0.3vw, 1.0625rem);
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  line-height: 1.35;
+  text-transform: uppercase;
+}
+
+.label span:last-child {
+  color: rgb(6 35 26 / 0.62);
+}
+
+/* ---- The words, set on the frame like the hero's ---- */
+
+.word {
+  position: absolute;
+  margin: 0;
+  font-size: clamp(3.75rem, 1.6rem + 10vw, 12.5rem);
+  font-weight: 420;
+  letter-spacing: -0.055em;
+  line-height: 0.86;
+  white-space: nowrap;
+}
+
+.topRight {
+  top: calc(var(--header-h) + 2vh);
+  right: var(--gutter);
+}
+
+.middleLeft {
+  top: 50%;
+  left: calc(var(--gutter) - 0.05em);
+  translate: 0 -50%;
+}
+
+.bottomLeft {
+  bottom: calc(max(18px, env(safe-area-inset-bottom)) + 56px);
+  left: calc(var(--gutter) - 0.05em);
+}
+
+/* The full stop is the brand's point: deep mint on a light ground. */
+.point {
+  color: var(--deep-mint);
+}
+
+/* Letters arrive out of a blur when the frame comes into view. Server
+   HTML (and no JS, and reduced motion) shows them in place. */
+.letter {
+  display: inline-block;
+}
+
+[data-inview="false"] .letter {
+  opacity: 0;
+  filter: blur(14px);
+  transform: translateX(-0.06em);
+}
+
+[data-inview="true"] .letter {
+  animation: arrive 0.9s var(--ease-land) calc(var(--w) * 160ms + var(--l) * 45ms + 100ms) both;
+}
+
+@keyframes arrive {
+  from {
+    opacity: 0;
+    filter: blur(14px);
+    transform: translateX(-0.06em);
+  }
+
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: none;
+  }
+}
+
+/* ---- The platforms, in the free corner ---- */
+
+.get {
+  position: absolute;
+  right: var(--gutter);
+  bottom: calc(max(18px, env(safe-area-inset-bottom)) + 76px);
+  display: grid;
+  justify-items: end;
+  gap: var(--space-4);
+}
+
+[data-inview="false"] .get {
+  opacity: 0;
+  transform: translateY(16px);
+}
+
+[data-inview="true"] .get {
+  animation: rise 0.9s var(--ease-land) 0.7s both;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+
+.platforms {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Dark slates, like the footer's call to action. */
+.platform {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-7);
+  min-width: 240px;
+  min-height: 52px;
+  padding-inline: 18px;
+  border-radius: 6px;
+  background: var(--mint-ink);
+  color: var(--paper);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition: transform 0.35s var(--ease-land);
+}
+
+.platform svg {
+  color: var(--soft-mint);
+}
+
+@media (hover: hover) {
+  a.platform:hover {
+    transform: translateX(-6px);
+  }
+}
+
+.soon {
+  background: rgb(6 35 26 / 0.86);
+  cursor: default;
+}
+
+.soonTag {
+  padding: 3px 8px;
+  border: 1px solid rgb(244 241 234 / 0.25);
+  border-radius: 4px;
+  color: rgb(244 241 234 / 0.75);
+  font-size: 0.625rem;
+  letter-spacing: 0.16em;
+}
+
+.note {
+  color: rgb(6 35 26 / 0.7);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+}
+
+/* Small screens: the three words stay together in the upper frame (below
+   the label), and the platforms take the bottom. */
+@media (max-width: 699px) {
+  .topRight {
+    top: calc(var(--header-h) + 2vh + 3.75rem);
+  }
+
+  .middleLeft {
+    top: calc(var(--header-h) + 2vh + 3.75rem + 0.95em);
+    translate: none;
+  }
+
+  .bottomLeft {
+    top: calc(var(--header-h) + 2vh + 3.75rem + 1.9em);
+    bottom: auto;
+  }
+
+  .get {
+    left: var(--gutter);
+    justify-items: start;
+  }
+
+  .platform {
+    min-width: 200px;
+    min-height: 46px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .letter,
+  .get {
+    animation: none !important;
+    opacity: 1 !important;
+    filter: none !important;
+    transform: none !important;
+  }
+}

@@ -24,11 +24,16 @@ export function HeaderShell({ className, children }) {
       const under = document
         .elementsFromPoint(window.innerWidth / 2, probeY)
         .find((el) => !header.contains(el));
-      header.dataset.tone = under?.closest("[data-tone]")?.dataset.tone ?? "paper";
+      header.dataset.tone = under?.closest("[data-tone]")?.dataset.tone ?? "night";
     };
 
+    // A frame late on purpose: sections that change their own tone on
+    // scroll (the glance section's mint) have done so by then.
     const schedule = () => {
-      if (!frame) frame = requestAnimationFrame(update);
+      if (frame) return;
+      frame = requestAnimationFrame(() => {
+        frame = requestAnimationFrame(update);
+      });
     };
 
     update();
@@ -42,7 +47,7 @@ export function HeaderShell({ className, children }) {
   }, []);
 
   return (
-    <header ref={ref} className={className} data-tone="paper" data-scrolled="false">
+    <header ref={ref} className={className} data-tone="night" data-scrolled="false">
       {children}
     </header>
   );

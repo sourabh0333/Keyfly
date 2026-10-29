@@ -1,97 +1,148 @@
+/* A full frame: the last shot, with the content laid over it. */
 .footer {
   position: relative;
+  min-height: max(100svh, 640px);
   overflow: hidden;
   isolation: isolate;
+  color: var(--paper);
 }
 
-/* Night with the app icon's warm corner light. */
-.footer[data-tone] {
-  background:
-    radial-gradient(60% 80% at 88% 0%, rgb(255 178 62 / 0.14), transparent 70%),
-    linear-gradient(var(--night-top), var(--night) 45%);
-}
-
-/* Pointer light (moved by GlowSurface with transform only). */
-.light {
+.frame,
+.shade,
+.grid {
   position: absolute;
-  top: -320px;
-  left: -320px;
+  inset: 0;
   z-index: -1;
-  width: 640px;
-  height: 640px;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, rgb(255 178 62 / 0.13), transparent);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.5s ease;
 }
 
-.footer[data-glow] .light {
-  opacity: 1;
+.photo {
+  object-fit: cover;
+  object-position: 70% 55%;
 }
 
-.inner {
-  width: min(100% - 2 * var(--gutter), var(--content-max));
-  margin-inline: auto;
-  padding-top: clamp(var(--space-8), 8vw, var(--space-10));
+@media (max-width: 699px) {
+  .photo {
+    object-position: 38% 55%;
+  }
 }
 
-/* Closing call: the path lands its point right above the button. */
-.flight {
-  width: 100%;
-  height: auto;
-  min-height: 110px;
-  aspect-ratio: 1200 / 220;
+/* The camera pushes in on the shot as the footer scrolls into view. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .frame {
+      animation: push linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 60%;
+    }
+  }
 }
 
-.closingRow {
+@keyframes push {
+  from {
+    transform: scale(1.18);
+  }
+
+  to {
+    transform: scale(1.02);
+  }
+}
+
+.shade {
+  background:
+    linear-gradient(180deg, rgb(8 8 10 / 0.7), transparent 30%),
+    linear-gradient(0deg, rgb(8 8 10 / 0.75), transparent 45%),
+    rgb(8 8 10 / 0.18);
+}
+
+/* The hero's faint quarter lines. */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.grid span {
+  border-right: 1px solid rgb(244 241 234 / 0.09);
+}
+
+.content {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  min-height: inherit;
+  /* Clear of the fixed header above and the menu bar below. */
+  padding: calc(var(--header-h) + clamp(var(--space-4), 3vw, var(--space-7))) var(--gutter)
+    calc(max(18px, env(safe-area-inset-bottom)) + 64px);
+}
+
+.top {
   display: flex;
   flex-wrap: wrap;
-  align-items: flex-end;
   justify-content: space-between;
-  gap: var(--space-6);
-  margin-top: var(--space-5);
+  gap: var(--space-7);
 }
 
-.closing {
-  font-size: var(--text-display);
-  line-height: 0.98;
-}
-
-/* Brand and link columns, separated from the closing call by a hairline. */
-.columns {
-  display: grid;
-  gap: var(--space-8);
-  margin-top: clamp(var(--space-8), 8vw, var(--space-10));
-  padding-top: var(--space-7);
-  border-top: 1px solid var(--color-line);
-}
-
-.brandCol {
+.lead {
   display: grid;
   justify-items: start;
   align-content: start;
-  gap: var(--space-4);
+  gap: var(--space-5);
+  max-width: 32ch;
 }
 
-.note,
-.bottom {
-  color: var(--color-muted);
-  font-size: var(--text-small);
+/* "↘ Get Keyfly": a small dark tab, like a slate on set. */
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 40px;
+  padding-inline: 14px;
+  border: 1px solid rgb(244 241 234 / 0.12);
+  border-radius: 4px;
+  background: rgb(10 10 12 / 0.78);
+  color: var(--paper);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-decoration: none;
+  text-transform: uppercase;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
 }
 
+.cta svg {
+  color: var(--soft-mint);
+  transition: transform 0.35s var(--ease-land);
+}
+
+@media (hover: hover) {
+  .cta:hover {
+    border-color: rgb(var(--glow-rgb) / 0.45);
+    background: rgb(10 10 12 / 0.92);
+  }
+
+  .cta:hover svg {
+    transform: translate(2px, 2px);
+  }
+}
+
+.note {
+  color: rgb(244 241 234 / 0.82);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+/* Links top right, in spaced capitals. */
 .groups {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: var(--space-7) var(--space-6);
+  display: flex;
+  gap: clamp(var(--space-6), 5vw, var(--space-9));
 }
 
 .groupTitle {
   margin-bottom: var(--space-3);
-  color: var(--color-muted);
-  font-size: var(--text-label);
-  font-weight: 600;
-  letter-spacing: 0.08em;
+  color: var(--soft-mint);
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
 }
 
@@ -102,86 +153,82 @@
   list-style: none;
 }
 
-/* A small point slides in before the link under the pointer. */
 .link {
   display: inline-flex;
   align-items: center;
-  min-height: 40px;
-  border-radius: var(--radius-s);
-  color: var(--color-text);
+  min-height: 32px;
+  color: var(--paper);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.14em;
   text-decoration: none;
-  transition: transform 0.35s var(--ease-land);
-}
-
-.link::before {
-  content: "";
-  width: 5px;
-  height: 5px;
-  margin-right: 0;
-  margin-left: -5px;
-  border-radius: 50%;
-  background: var(--color-point);
-  opacity: 0;
-  transform: scale(0.3);
+  text-transform: uppercase;
   transition:
-    opacity 0.2s ease,
+    color 0.2s ease,
     transform 0.35s var(--ease-land);
 }
 
 @media (hover: hover) {
   .link:hover {
-    transform: translateX(12px);
-  }
-
-  .link:hover::before {
-    opacity: 1;
-    transform: translateX(-7px);
+    color: var(--soft-mint);
+    transform: translateX(6px);
   }
 }
 
+/* The bottom: a small line of facts, then the logo across the frame. */
 .bottom {
+  display: grid;
+  align-content: end;
+  gap: var(--space-5);
+}
+
+.meta {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-4);
-  margin-top: var(--space-9);
-  padding-block: var(--space-5);
-  border-top: 1px solid var(--color-line);
+  gap: var(--space-3) var(--space-5);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid rgb(244 241 234 / 0.14);
+  color: rgb(244 241 234 / 0.7);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
 }
 
-.top {
+.toTop {
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  min-height: 44px;
+  min-height: 32px;
   padding: 0;
   border: 0;
-  border-radius: var(--radius-s);
   background: none;
-  color: var(--color-text);
+  color: var(--paper);
   font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
   cursor: pointer;
 }
 
-.top svg {
+.toTop svg {
+  color: var(--soft-mint);
   transition: transform 0.35s var(--ease-land);
 }
 
 @media (hover: hover) {
-  .top:hover svg {
+  .toTop:hover svg {
     transform: translateY(-3px);
   }
 }
 
-@media (min-width: 768px) {
-  .groups {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
+.bigLogo {
+  display: block;
+  width: 100%;
 }
 
-@media (min-width: 960px) {
-  .columns {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
-  }
+/* The lockup scales to the frame's width (its proportions unchanged). */
+.bigLogo svg {
+  width: 100%;
+  height: auto;
 }

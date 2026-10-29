@@ -5,25 +5,31 @@
  */
 
 :root {
-  /* Brand colours (brand-kit/README.md) */
-  --tungsten-amber: #ffb23e; /* accent on dark */
-  --deep-amber: #d97e00; /* the point on light backgrounds */
-  --amber-ui: #c27400; /* buttons and selection on light */
-  --amber-text: #935400; /* accent as text on light (4.5:1) */
+  /* Brand colours (brand-kit/README.md). Mint is the one vivid colour on
+     screen; warnings stay amber and success a status green, so "go" and
+     "careful" never look alike. */
+  --soft-mint: #5fe0b0; /* accent on dark: the point, primary buttons */
+  --deep-mint: #12805b; /* the point and buttons on light (white text 4.9:1) */
+  --mint-text: #0e6b4c; /* accent as text on light (6.5:1) */
+  --mint-text-dark: #82e8c2; /* accent as text on dark */
+  --mint-ink: #06231a; /* text on soft mint */
   --night: #0b0b0d;
   --night-top: #202026;
   --paper: #f4f1ea;
   --ink: #141416;
 
-  /* Type families */
+  /* Type families. Headings are Inter, tight; one word per heading may take
+     the serif italic accent. Syne stays the wordmark's face. Mono is for
+     small interface labels only. */
   --font-display-stack: var(--font-display), "Arial Black", sans-serif;
   --font-text-stack: var(--font-text), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-accent-stack: var(--font-accent), Georgia, "Times New Roman", serif;
+  --font-mono-stack: ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
 
-  /* Type scale (fluid between ~375px and ~1440px). Syne is for h1–h3 only;
-     it is too wide to read well below ~20px. */
-  --text-display: clamp(2.75rem, 1.5rem + 5.2vw, 6rem);
-  --text-h2: clamp(2rem, 1.35rem + 2.8vw, 3.75rem);
-  --text-h3: clamp(1.375rem, 1.2rem + 0.75vw, 1.75rem);
+  /* Type scale (fluid between ~375px and ~1440px). */
+  --text-display: clamp(2.75rem, 1.4rem + 5vw, 5.5rem);
+  --text-h2: clamp(2rem, 1.4rem + 2.4vw, 3.5rem);
+  --text-h3: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
   --text-lead: clamp(1.125rem, 1.05rem + 0.35vw, 1.3125rem);
   --text-body: 1rem;
   --text-small: 0.875rem;
@@ -48,10 +54,12 @@
   --content-max: 1200px;
   --text-max: 62ch;
 
-  /* Radii: small and square-ish on purpose (no pills) */
-  --radius-s: 4px;
-  --radius-m: 8px;
-  --radius-window: 14px;
+  /* Radii: soft glass panels, round buttons and chips */
+  --radius-s: 6px;
+  --radius-m: 10px;
+  --radius-l: 18px;
+  --radius-window: 16px;
+  --radius-round: 999px;
 
   /* Motion (brand kit: draw 0.9s ease-in-out, land 0.35s ease-out) */
   --ease-draw: cubic-bezier(0.65, 0, 0.35, 1);
@@ -64,7 +72,7 @@
 /*
  * Theme roles. Components read only these, so anything placed inside a
  * `data-tone="night"` surface re-colours itself (line → Paper, point →
- * Tungsten amber), exactly as the brand kit's dark/light pairs do.
+ * soft mint), exactly as the brand kit's dark/light pairs do.
  */
 :root,
 [data-tone="paper"] {
@@ -72,11 +80,15 @@
   --color-text: var(--ink);
   --color-muted: #5c5a55; /* 6.2:1 on Paper */
   --color-line: rgb(20 20 22 / 0.14);
-  --color-point: var(--deep-amber);
-  --color-accent-text: var(--amber-text);
-  --accent-fill: var(--amber-ui);
-  --accent-fill-hover: var(--deep-amber);
-  --accent-ink: var(--ink); /* text on amber is always Ink */
+  --color-point: var(--deep-mint);
+  --color-accent-text: var(--mint-text);
+  --accent-fill: var(--deep-mint);
+  --accent-fill-hover: var(--mint-text);
+  --accent-ink: #fff; /* text on deep mint is white */
+  /* Light for the logo's light painting: deep mint glow, soft mint core. */
+  --color-glow: var(--deep-mint);
+  --color-glow-core: var(--soft-mint);
+  --glow-rgb: 18 128 91;
 }
 
 [data-tone="night"] {
@@ -84,11 +96,18 @@
   --color-text: var(--paper);
   --color-muted: #a7a399; /* 7.7:1 on Night */
   --color-line: rgb(244 241 234 / 0.14);
-  --color-point: var(--tungsten-amber);
-  --color-accent-text: var(--tungsten-amber);
-  --accent-fill: var(--tungsten-amber);
-  --accent-fill-hover: #ffc061;
-  --accent-ink: var(--ink);
+  --color-point: var(--soft-mint);
+  --color-accent-text: var(--mint-text-dark);
+  --accent-fill: var(--soft-mint);
+  --accent-fill-hover: var(--mint-text-dark);
+  --accent-ink: var(--mint-ink); /* text on soft mint is Mint ink */
+  --color-glow: var(--soft-mint);
+  --color-glow-core: #eafff6;
+  --glow-rgb: 95 224 176;
+  /* Glass panels set over the light field */
+  --glass-fill: rgb(18 20 19 / 0.62);
+  --glass-line: rgb(244 241 234 / 0.09);
+  --glass-hi: rgb(244 241 234 / 0.05);
 }
 
 [data-tone] {
@@ -139,11 +158,22 @@ figure {
 h1,
 h2,
 h3 {
-  font-family: var(--font-display-stack);
-  font-weight: 700;
-  letter-spacing: -0.01em; /* the wordmark's tracking */
-  line-height: 1.05;
+  font-family: var(--font-text-stack);
+  font-weight: 560;
+  letter-spacing: -0.035em;
+  line-height: 1.04;
   text-wrap: balance;
+}
+
+/* The accent word: serif italic, a touch larger to match Inter's x-height. */
+h1 em,
+h2 em,
+h3 em {
+  font-family: var(--font-accent-stack);
+  font-size: 1.08em;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
 }
 
 p {
@@ -162,12 +192,12 @@ a {
 }
 
 ::selection {
-  background: var(--tungsten-amber);
-  color: var(--ink);
+  background: var(--soft-mint);
+  color: var(--mint-ink);
 }
 
 :focus-visible {
-  outline: 2px solid var(--amber-ui);
+  outline: 2px solid var(--color-point);
   outline-offset: 3px;
 }
 

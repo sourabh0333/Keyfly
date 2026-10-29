@@ -19,8 +19,11 @@ function Arrow() {
 
 /**
  * One button for every call to action.
- * - variant "solid": amber fill with Ink text, for the single primary action.
- * - variant "link": text with a drawn underline, for secondary actions.
+ * - variant "solid": round mint fill (white text on Paper, Mint ink on
+ *   Night), for the single primary action.
+ * - variant "ghost": round glass with a hairline, for the secondary action
+ *   beside it.
+ * - variant "link": text with a drawn underline, for quieter actions.
  * Renders a Next.js Link for internal hrefs, <a> for external ones and
  * <button> when there is no href. Colours come from the surrounding tone.
  */

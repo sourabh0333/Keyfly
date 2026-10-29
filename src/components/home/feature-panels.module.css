@@ -1,0 +1,402 @@
+/* Glass panel shared by the feature rows */
+.panel {
+  display: grid;
+  gap: var(--space-5);
+  padding: 20px 22px 24px;
+  border: 1px solid var(--glass-line);
+  border-radius: var(--radius-l);
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.035), transparent 50%),
+    var(--glass-fill);
+  box-shadow: 0 30px 80px -40px rgb(0 0 0 / 0.9);
+  font-family: var(--font-mono-stack);
+  font-size: 0.75rem;
+}
+
+.head {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-4);
+  color: var(--color-text);
+}
+
+.headNote {
+  color: var(--color-accent-text);
+}
+
+/* ---- First cut: the run's steps fill in turn ---- */
+
+.steps {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.step {
+  display: grid;
+  grid-template-columns: auto minmax(7.5rem, 0.9fr) minmax(0, 1.4fr) 4.5rem;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--color-muted);
+}
+
+.check {
+  width: 7px;
+  height: 7px;
+  border: 1px solid rgb(var(--glow-rgb) / 0.6);
+  border-radius: 50%;
+}
+
+.step[data-state="done"] .check {
+  background: var(--color-point);
+}
+
+.step[data-state="queued"] {
+  color: rgb(167 163 153 / 0.5);
+}
+
+.stepName {
+  white-space: nowrap;
+}
+
+.track {
+  height: 6px;
+  border-radius: 3px;
+  background: rgb(255 255 255 / 0.05);
+}
+
+.fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--deep-mint), var(--soft-mint));
+  box-shadow: 0 0 14px -2px rgb(var(--glow-rgb) / 0.6);
+  transform: scaleX(var(--fill));
+  transform-origin: left;
+}
+
+.stepState {
+  text-align: right;
+}
+
+.step[data-state="running"] .stepState {
+  color: var(--color-accent-text);
+}
+
+.axis {
+  display: flex;
+  justify-content: space-between;
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--glass-line);
+  color: rgb(167 163 153 / 0.5);
+  font-size: 0.625rem;
+}
+
+[data-inview="false"] .fill {
+  transform: scaleX(0);
+}
+
+[data-inview="true"] .fill {
+  animation: grow 1s var(--ease-draw) calc(0.2s + var(--i) * 0.45s) both;
+}
+
+[data-inview="true"] .step[data-state="running"] .fill {
+  animation:
+    grow 1s var(--ease-draw) calc(0.2s + var(--i) * 0.45s) both,
+    breathe 1.6s ease-in-out 2.4s infinite;
+}
+
+@keyframes grow {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(var(--fill));
+  }
+}
+
+@keyframes breathe {
+  50% {
+    opacity: 0.55;
+  }
+}
+
+/* ---- AI director: the prompt types, the reply lands, clips close up ---- */
+
+.chat {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.prompt {
+  position: relative;
+  padding: 12px 14px;
+  border: 1px solid var(--glass-line);
+  border-radius: 12px;
+  background: rgb(255 255 255 / 0.03);
+  color: var(--color-text);
+  font-family: var(--font-text-stack);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+/* A block, so the typing clip covers every line it wraps to. */
+.typed {
+  display: block;
+}
+
+.caret {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  margin-left: 2px;
+  vertical-align: -0.15em;
+  background: var(--color-point);
+  animation: caret 1s steps(1) infinite;
+}
+
+.reply {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-3);
+}
+
+.replyMark {
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  background:
+    radial-gradient(circle at 70% 30%, var(--soft-mint) 0 3px, transparent 4px),
+    rgb(var(--glow-rgb) / 0.14);
+  box-shadow: inset 0 0 0 1px rgb(var(--glow-rgb) / 0.4);
+}
+
+.replyBody {
+  display: grid;
+  gap: var(--space-3);
+  color: var(--color-muted);
+  font-family: var(--font-text-stack);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.changes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+}
+
+.changes li {
+  padding: 3px 8px;
+  border: 1px solid rgb(var(--glow-rgb) / 0.3);
+  border-radius: 6px;
+  color: var(--color-accent-text);
+}
+
+.timeline {
+  position: relative;
+  height: 34px;
+  border-top: 1px solid var(--glass-line);
+  margin-top: var(--space-2);
+}
+
+.clip {
+  position: absolute;
+  top: 12px;
+  height: 18px;
+  border-radius: 5px;
+  background: rgb(255 255 255 / 0.08);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.06);
+  transform: translateX(var(--moved));
+}
+
+.clipLogo {
+  background: rgb(var(--glow-rgb) / 0.22);
+  box-shadow: inset 0 0 0 1px rgb(var(--glow-rgb) / 0.55);
+}
+
+.drop {
+  position: absolute;
+  top: 6px;
+  bottom: 0;
+  left: 66%;
+  width: 1px;
+  background: var(--color-point);
+  box-shadow: 0 0 10px rgb(var(--glow-rgb) / 0.9);
+}
+
+[data-inview="false"] .typed {
+  clip-path: inset(0 100% 0 0);
+}
+
+[data-inview="false"] .reply,
+[data-inview="false"] .changes li {
+  opacity: 0;
+}
+
+[data-inview="false"] .clip {
+  transform: none;
+}
+
+[data-inview="true"] .typed {
+  animation: type 1.6s steps(40, end) 0.3s both;
+}
+
+[data-inview="true"] .reply {
+  animation: land 0.7s var(--ease-land) 2.1s both;
+}
+
+[data-inview="true"] .changes li {
+  animation: land 0.5s var(--ease-land) calc(2.5s + var(--n, 0) * 0.12s) both;
+}
+
+.changes li:nth-child(2) {
+  --n: 1;
+}
+
+.changes li:nth-child(3) {
+  --n: 2;
+}
+
+[data-inview="true"] .clip {
+  animation: close-up 0.9s var(--ease-land) calc(2.9s + var(--i) * 0.08s) both;
+}
+
+@keyframes type {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes caret {
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes land {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes close-up {
+  from {
+    transform: none;
+  }
+
+  to {
+    transform: translateX(var(--moved));
+  }
+}
+
+/* ---- Beat sync: isometric bars pulse on the beat ---- */
+
+@property --h {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
+
+.bars {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.bar {
+  --h: var(--hi);
+}
+
+.left,
+.right {
+  transform: skewY(var(--skew)) scaleY(var(--h));
+}
+
+.left {
+  fill: #2a2e2c;
+}
+
+.right {
+  fill: #1b1e1d;
+}
+
+.top {
+  fill: #4a504d;
+  transform: translateY(calc(var(--h) * -100px));
+}
+
+.barLit .left {
+  fill: var(--deep-mint);
+}
+
+.barLit .right {
+  fill: #0b5a40;
+}
+
+.barLit .top {
+  fill: var(--soft-mint);
+}
+
+.barLit {
+  filter: drop-shadow(0 0 14px rgb(var(--glow-rgb) / 0.45));
+}
+
+.beatLabel {
+  fill: rgb(167 163 153 / 0.6);
+  font-family: var(--font-mono-stack);
+  font-size: 11px;
+}
+
+[data-inview="false"] .bar {
+  --h: 0.04;
+}
+
+[data-inview="true"] .bar {
+  animation: beat 0.5s ease-in-out calc(var(--i) * 0.07s) infinite alternate;
+}
+
+@keyframes beat {
+  from {
+    --h: calc(var(--hi) * 0.5);
+  }
+
+  to {
+    --h: var(--hi);
+  }
+}
+
+@media (max-width: 560px) {
+  .step {
+    grid-template-columns: auto minmax(0, 1fr) 4rem;
+  }
+
+  .track {
+    grid-column: 2 / -1;
+    grid-row: 2;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel * {
+    animation: none !important;
+  }
+}

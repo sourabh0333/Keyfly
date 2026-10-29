@@ -1,41 +1,31 @@
-import { Button } from "@/components/button";
+import Link from "next/link";
 import { Logo } from "@/components/logo";
-import { Magnetic } from "@/components/magnetic";
 import { primaryCta, primaryNav } from "@/content/navigation";
-import { DesktopNav } from "./desktop-nav";
 import { HeaderShell } from "./header-shell";
-import { MobileMenu } from "./mobile-menu";
+import { MenuBar } from "./menu-bar";
 import styles from "./header.module.css";
 
-// Server-rendered header: every link is in the HTML. Client pieces add the
-// scroll state, the tone switch and the flying nav point on top.
+/**
+ * Server-rendered header, kept almost empty so the page's images lead:
+ * the logo top left, one small call to action top right, and the menu bar
+ * floating at the bottom of the screen.
+ */
 export function SiteHeader() {
   return (
     <HeaderShell className={styles.header}>
       <div className={styles.bar}>
-        {/* Animated lockup; its colours follow the header's tone. */}
-        <Logo className={styles.brand} height={36} />
+        {/* Animated logo; its colours follow the header's tone. */}
+        <Logo className={styles.brand} height={28} />
 
-        <DesktopNav items={primaryNav} className={styles.nav} />
-
-        <div className={styles.actions}>
-          <Magnetic className={styles.cta}>
-            <Button href={primaryCta.href} arrow>
-              {primaryCta.label}
-            </Button>
-          </Magnetic>
-          <MobileMenu items={primaryNav} cta={primaryCta} />
-        </div>
+        <Link href={primaryCta.href} className={styles.cta}>
+          <svg className={styles.ctaArrow} viewBox="0 0 12 12" width="10" height="10" aria-hidden="true">
+            <path d="M2 2l8 8M10 4v6H4" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          {primaryCta.label}
+        </Link>
       </div>
 
-      {/* Reading progress: the flight path along the header's edge, with the
-          point travelling at its tip. Scroll-driven CSS, no JS. */}
-      <span className={styles.progress} aria-hidden="true">
-        <span className={styles.flight}>
-          <span className={styles.trail} />
-          <span className={styles.tip} />
-        </span>
-      </span>
+      <MenuBar items={primaryNav} cta={primaryCta} />
     </HeaderShell>
   );
 }

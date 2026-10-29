@@ -1,0 +1,59 @@
+.features {
+  padding-block: var(--section-pad);
+}
+
+.inner {
+  width: min(100% - 2 * var(--gutter), var(--content-max));
+  margin-inline: auto;
+}
+
+.rows {
+  display: grid;
+  gap: clamp(var(--space-9), 12vw, 200px);
+  margin-top: clamp(var(--space-8), 9vw, 160px);
+  padding-top: var(--space-8);
+  border-top: 1px solid var(--glass-line);
+}
+
+.row {
+  display: grid;
+  gap: var(--space-7);
+  align-items: center;
+}
+
+.text {
+  display: grid;
+  gap: var(--space-4);
+  max-width: 34ch;
+}
+
+.kicker {
+  color: var(--color-accent-text);
+  font-family: var(--font-mono-stack);
+  font-size: var(--text-label);
+}
+
+.title {
+  font-size: var(--text-h3);
+  letter-spacing: -0.02em;
+}
+
+.body {
+  color: var(--color-muted);
+}
+
+.visual {
+  min-width: 0;
+}
+
+@media (min-width: 900px) {
+  .row {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    gap: var(--space-9);
+  }
+
+  /* Alternate sides, so the eye zig-zags down the page. */
+  .row:nth-child(even) .text {
+    order: 2;
+  }
+}

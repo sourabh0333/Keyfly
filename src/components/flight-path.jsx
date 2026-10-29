@@ -15,14 +15,14 @@ export const FLIGHT_SYMBOL = {
 };
 
 /**
- * A line that draws itself and lands on the amber point (brand motion:
+ * A line that draws itself and lands on the mint point (brand motion:
  * draw 0.9s, then a 0.35s settle). Defaults to the brand symbol; pass a
  * different `shape` for longer page-level flight paths.
  *
  * play: "load" | "view" | false (see usePlayState).
  *
- * Colours come from the surrounding tone: Ink + deep amber on Paper,
- * Paper + tungsten amber on Night.
+ * Colours come from the surrounding tone: Ink + deep mint on Paper,
+ * Paper + soft mint on Night.
  */
 export function FlightPath({ shape = FLIGHT_SYMBOL, play = "view", size, label, className }) {
   const ref = useRef(null);

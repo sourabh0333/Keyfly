@@ -29,17 +29,34 @@
   font-size: 1.0625rem;
 }
 
-/* Solid: the single primary action. Squared corners, never a pill. */
+/* Solid: the single primary action, with a soft mint glow on Night. */
 .solid {
   padding-inline: 20px;
-  border-radius: var(--radius-s);
+  border-radius: var(--radius-round);
   background-color: var(--accent-fill);
   color: var(--accent-ink);
-  transition: background-color var(--dur-ui) ease;
+  box-shadow: 0 0 0 0 rgb(var(--glow-rgb) / 0);
+  transition:
+    background-color var(--dur-ui) ease,
+    box-shadow 0.4s ease;
 }
 
-.solid.l {
+.solid.l,
+.ghost.l {
   padding-inline: 26px;
+}
+
+/* Ghost: glass with a hairline, for the secondary action. */
+.ghost {
+  padding-inline: 20px;
+  border: 1px solid var(--glass-line, var(--color-line));
+  border-radius: var(--radius-round);
+  background: var(--glass-hi, transparent);
+  color: var(--color-text);
+  font-weight: 500;
+  transition:
+    background-color var(--dur-ui) ease,
+    border-color var(--dur-ui) ease;
 }
 
 /* Link: text with a hairline that draws to full ink on hover. */
@@ -55,6 +72,12 @@
 @media (hover: hover) {
   .solid:hover {
     background-color: var(--accent-fill-hover);
+    box-shadow: 0 0 32px 2px rgb(var(--glow-rgb) / 0.35);
+  }
+
+  .ghost:hover {
+    border-color: rgb(var(--glow-rgb) / 0.4);
+    background-color: rgb(var(--glow-rgb) / 0.08);
   }
 
   .link:hover {

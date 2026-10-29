@@ -1,14 +1,16 @@
 /*
- * Light-painting intro (driven by animated-logo.jsx, about 2s):
- *    0 –  360ms  comet climbs and draws the leaning stem
- *  360 –  580ms  comet hops to the leg
- *  580 – 1400ms  comet paints the flight curve; the amber trail cools into
- *                the ink line that follows 110ms behind
- * ~1500ms        comet becomes the point: flash and shockwave ring
- *  980 – 1700ms  "eyfly" exposes left to right; a glint crosses it
+ * Light-painting intro (driven by animated-logo.jsx, about 2s). Shapes and
+ * resting colours are the brand kit's; the light is added on top:
+ *    0 – 1120ms  a mint comet sweeps in and paints the symbol's line.
+ *                Behind it the light cools: white-hot core → burning mint
+ *                tail → mint trail → the line (110ms behind). Sparks fly.
+ * ~1220ms        the comet becomes the point: flash, shockwave ring and a
+ *                bloom of light; a glint crosses "Keyfly"
+ *  700 – 1460ms  "Keyfly" develops letter by letter with a mint afterglow
+ * Hover (after the intro): the comet relights the symbol.
  *
  * data-state: "pending" (server HTML, before the intro starts), "armed"
- * (waiting to scroll into view), "running", "done" (static, finished).
+ * (waiting to scroll into view), "running", "done" (finished, static).
  */
 
 .logo {
@@ -37,34 +39,75 @@
 
 .letter,
 .point,
-.ring {
+.ring,
+.bloom {
   transform-box: fill-box;
   transform-origin: center;
 }
 
-/* Light, only visible while the intro runs. */
-.hot {
+/* ---- Light (only visible while the intro or a relight runs) ---- */
+
+.hot,
+.tail,
+.core {
   fill: none;
-  stroke: var(--tungsten-amber);
   stroke-linecap: round;
   stroke-linejoin: round;
-  stroke-dasharray: 1 1.2;
   opacity: 0;
+}
+
+.hot {
+  stroke: var(--color-glow);
+  stroke-dasharray: 1 1.2;
+}
+
+/* Short dashes riding on the comet; their offsets come from JS. */
+.tail {
+  stroke: var(--color-glow);
+  stroke-dasharray: 0.17 2;
+}
+
+.core {
+  stroke: var(--color-glow-core);
+  stroke-dasharray: 0.07 2;
 }
 
 .ring {
   fill: none;
-  stroke: var(--tungsten-amber);
+  stroke: var(--color-glow);
   stroke-width: 0.7;
   opacity: 0;
 }
 
-.glint {
-  transform: translateX(-40px);
+.bloom {
+  opacity: 0;
+  pointer-events: none;
 }
 
+.glint {
+  pointer-events: none;
+}
+
+.afterglow {
+  fill: var(--color-glow);
+  pointer-events: none;
+}
+
+.afterglow > path {
+  opacity: 0;
+}
+
+.sparks,
 .comet {
   pointer-events: none;
+}
+
+.spark {
+  fill: var(--color-glow);
+}
+
+.sparkHot {
+  fill: var(--color-glow-core);
 }
 
 .comet > g {
@@ -72,12 +115,12 @@
 }
 
 .halo {
-  fill: var(--tungsten-amber);
+  fill: var(--color-glow);
   opacity: 0.55;
 }
 
-.core {
-  fill: #fff4d6;
+.cometCore {
+  fill: var(--color-glow-core);
 }
 
 /* Before the intro starts (and while waiting to scroll into view) the logo

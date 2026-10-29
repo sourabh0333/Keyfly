@@ -1,0 +1,26 @@
+/* Fixed behind everything on the page (z-index -1 sits under all in-flow
+   content but above the body's Night). Fades in once the first frame is
+   drawn. */
+.field {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 1.4s ease;
+}
+
+.field[data-ready="true"] {
+  opacity: 1;
+}
+
+/* A faint vignette keeps text legible at the edges of the field. */
+.vignette {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(120% 90% at 50% 40%, transparent 55%, rgb(5 6 6 / 0.7));
+}
