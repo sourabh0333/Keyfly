@@ -1,32 +1,14 @@
-// Site navigation. The anchors point at homepage sections: #product is
-// "Every desktop, every screen", #how-it-works the feature rows, #download
-// the closing card. Change labels and targets here only.
+import { siteConfig } from "@/config/site";
+
+// Site navigation. Labels and targets live only here. The anchors point at
+// homepage sections that are still to be built (PLACEHOLDER).
 
 export const primaryNav = [
-  { label: "Home", href: "/" },
   { label: "Product", href: "/#product" },
-  { label: "How it works", href: "/#how-it-works" },
+  { label: "Use cases", href: "/#use-cases" },
   { label: "Download", href: "/#download" },
 ];
 
-export const primaryCta = { label: "Get Keyfly", href: "/#download" };
+export const signIn = { label: "Sign in", href: siteConfig.appUrl };
 
-export const footerNav = [
-  {
-    title: "Explore",
-    links: [
-      { label: "Product", href: "/#product" },
-      { label: "How it works", href: "/#how-it-works" },
-      { label: "Download", href: "/#download" },
-    ],
-  },
-  {
-    title: "Company",
-    links: [{ label: "Cevrynt Inc.", href: "https://www.cevrynt.com" }],
-  },
-];
-
-export const footerContent = {
-  lead: "A desktop video editor for macOS, Windows and Linux, from the first cut to the final frame.", // PLACEHOLDER
-  note: "Keyfly is a Cevrynt Inc. product.",
-};
+export const primaryCta = { label: "Open Keyfly", href: siteConfig.appUrl };

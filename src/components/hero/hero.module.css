@@ -1,0 +1,221 @@
+.hero {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  min-height: 100svh;
+  padding: calc(14px + 56px + clamp(36px, 8vh, 96px)) var(--gutter) clamp(220px, 36vh, 360px);
+  overflow: hidden;
+  background: var(--night);
+  text-align: center;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Light: a cool wash from above and a mint horizon where the timeline
+   meets the dark. */
+.aurora {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(60% 40% at 50% -6%, rgb(244 241 234 / 0.08), transparent 70%),
+    radial-gradient(50% 18% at 50% 72%, rgb(95 224 176 / 0.14), transparent 72%),
+    radial-gradient(90% 40% at 50% 100%, rgb(95 224 176 / 0.1), transparent 70%),
+    linear-gradient(180deg, #0b0b0d 0%, #0d0f0f 60%, #0a0c0b 100%);
+  animation: breathe 9s ease-in-out infinite alternate;
+}
+
+/* Film grain over everything. */
+.grain {
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+  opacity: 0.07;
+  mix-blend-mode: overlay;
+}
+
+/* A soft light that follows the pointer. */
+.spot {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(520px circle at var(--mx, 50%) var(--my, 40%), rgb(95 224 176 / 0.07), transparent 65%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+}
+
+.hero[data-pointer] .spot {
+  opacity: 1;
+}
+
+.inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  width: min(1040px, 100%);
+}
+
+.inner > :last-child {
+  max-width: 680px;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 26px;
+  padding: 6px 14px 6px 10px;
+  border-radius: var(--radius-round);
+  background: rgb(244 241 234 / 0.04);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.09) inset;
+  color: rgb(244 241 234 / 0.72);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  animation: rise 0.9s var(--ease-land) 0.1s backwards;
+}
+
+/* A recording light. */
+.rec {
+  position: relative;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--soft-mint);
+  box-shadow: 0 0 10px var(--soft-mint);
+}
+
+.rec::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1px solid var(--soft-mint);
+  animation: ping 2s var(--ease-land) infinite;
+}
+
+.title {
+  display: grid;
+  font-size: clamp(2.6rem, 0.9rem + 5.2vw, 5.5rem);
+  font-weight: 560;
+  letter-spacing: -0.05em;
+  line-height: 0.98;
+}
+
+.line {
+  display: block;
+}
+
+/* Words arrive one by one, out of a blur. */
+.word,
+.accent {
+  display: inline-block;
+  animation: focus 1.1s var(--ease-land) backwards;
+  animation-delay: calc(0.25s + var(--w) * 75ms);
+}
+
+.accent {
+  padding: 0 0.04em 0.08em 0;
+  background: linear-gradient(100deg, var(--mint-text-dark) 0%, #eafff6 45%, var(--soft-mint) 60%, var(--mint-text-dark) 100%) 0 0 / 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-family: var(--font-accent-stack);
+  font-size: 1.1em;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  animation:
+    focus 1.1s var(--ease-land) backwards,
+    shimmer 6s ease-in-out 1.6s infinite;
+  animation-delay: calc(0.25s + var(--w) * 75ms), 1.6s;
+}
+
+.lead {
+  max-width: 44ch;
+  margin-top: 22px;
+  color: rgb(244 241 234 / 0.62);
+  font-size: var(--text-lead);
+  line-height: 1.5;
+  animation: rise 1s var(--ease-land) 0.8s backwards;
+}
+
+@keyframes focus {
+  from {
+    opacity: 0;
+    translate: 0 0.3em;
+    filter: blur(12px);
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    translate: 0 14px;
+  }
+}
+
+@keyframes shimmer {
+  0%,
+  100% {
+    background-position: 100% 0;
+  }
+  50% {
+    background-position: 0 0;
+  }
+}
+
+@keyframes ping {
+  from {
+    opacity: 0.8;
+    scale: 0.6;
+  }
+  to {
+    opacity: 0;
+    scale: 1.8;
+  }
+}
+
+@keyframes breathe {
+  to {
+    opacity: 0.8;
+  }
+}
+
+@media (max-width: 560px) {
+  .hero {
+    padding-top: calc(14px + 54px + 44px);
+  }
+
+  .eyebrow {
+    margin-bottom: 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .eyebrow,
+  .lead,
+  .aurora,
+  .rec::after {
+    animation: none;
+  }
+
+  .word,
+  .accent {
+    animation: fade 0.6s ease backwards;
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
