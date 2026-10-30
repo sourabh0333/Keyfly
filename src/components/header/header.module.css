@@ -1,91 +1,338 @@
+/* Fixed header: an open bar at the top that gathers into a glass pill. */
 .header {
   position: fixed;
   inset: 0 0 auto;
   z-index: 50;
-  color: var(--color-text);
+  padding: 14px var(--gutter) 0;
   pointer-events: none;
+  transition: translate 0.5s var(--ease-land);
 }
 
-/* While a page's intro (the homepage preloader) runs, the header waits
-   hidden and fades in once it clears. Before the script takes over, or
-   without JS, it shows itself when the preloader's own fallback clears. */
-:global(body:has([data-intro="pending"])) .header {
-  animation: header-in 0.6s ease 2.6s both;
+.header[data-hidden] {
+  translate: 0 -120%;
 }
 
-:global(body:has([data-intro="loading"])) .header {
+.bar {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--space-5);
+  max-width: 1320px;
+  height: 56px;
+  margin-inline: auto;
+  padding-inline: 10px;
+  border: 1px solid transparent;
+  border-radius: 18px;
+  pointer-events: auto;
+  transition:
+    max-width 0.6s var(--ease-land),
+    padding 0.6s var(--ease-land),
+    background-color 0.4s ease,
+    border-color 0.4s ease,
+    box-shadow 0.4s ease;
+}
+
+.header[data-scrolled] .bar {
+  max-width: 1040px;
+  padding-inline: 10px 8px;
+  border-color: rgb(244 241 234 / 0.08);
+  background-color: rgb(16 17 19 / 0.72);
+  box-shadow:
+    0 1px 0 rgb(244 241 234 / 0.05) inset,
+    0 18px 40px -18px rgb(0 0 0 / 0.8);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  backdrop-filter: blur(16px) saturate(1.4);
+}
+
+.brand {
+  justify-self: start;
+  padding: 4px;
+  /* The lockup's box is taller than its letters; lift it onto the bar's
+     centre line (see OPTICAL_LIFT in the logo composition). */
+  translate: 0 -9.3%;
+}
+
+/* Navigation with a light that slides to the hovered link. */
+.nav {
+  position: relative;
+  display: flex;
+  gap: 2px;
+  padding: 4px;
+  border-radius: 12px;
+}
+
+.light {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 0;
+  width: var(--lw, 0);
+  border-radius: 9px;
+  background: rgb(244 241 234 / 0.07);
+  box-shadow: 0 1px 0 rgb(244 241 234 / 0.06) inset;
   opacity: 0;
-  visibility: hidden;
+  translate: var(--lx, 0) 0;
+  transition:
+    translate 0.35s var(--ease-land),
+    width 0.35s var(--ease-land),
+    opacity 0.25s ease;
 }
 
-:global(body:has([data-intro="done"])) .header {
-  animation: header-in 0.7s ease 0.15s both;
+.nav[data-lit] .light {
+  opacity: 1;
 }
 
-@keyframes header-in {
+.link {
+  position: relative;
+  padding: 7px 14px;
+  border-radius: 9px;
+  color: rgb(244 241 234 / 0.66);
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  text-decoration: none;
+  transition: color var(--dur-ui) ease;
+}
+
+.link:hover,
+.link:focus-visible {
+  color: var(--paper);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-self: end;
+  gap: 6px;
+}
+
+.signIn {
+  padding: 8px 14px;
+  border-radius: 10px;
+  color: rgb(244 241 234 / 0.8);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition:
+    color var(--dur-ui) ease,
+    background-color var(--dur-ui) ease;
+}
+
+.signIn:hover {
+  background: rgb(244 241 234 / 0.06);
+  color: var(--paper);
+}
+
+/* Primary action: soft mint, with a sheen that crosses on hover. */
+.cta {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 14px 0 16px;
+  overflow: hidden;
+  border-radius: 11px;
+  background: var(--soft-mint);
+  box-shadow:
+    0 1px 0 rgb(255 255 255 / 0.45) inset,
+    0 0 0 1px rgb(95 224 176 / 0.4),
+    0 8px 24px -10px rgb(95 224 176 / 0.7);
+  color: var(--mint-ink);
+  font-size: 0.875rem;
+  font-weight: 620;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  transition:
+    box-shadow 0.3s ease,
+    translate 0.3s var(--ease-land);
+}
+
+.cta::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 30%, rgb(255 255 255 / 0.55) 50%, transparent 70%);
+  translate: -110% 0;
+  transition: translate 0.7s var(--ease-land);
+}
+
+.cta svg {
+  transition: translate 0.3s var(--ease-land);
+}
+
+.cta:hover {
+  box-shadow:
+    0 1px 0 rgb(255 255 255 / 0.45) inset,
+    0 0 0 1px rgb(95 224 176 / 0.6),
+    0 10px 34px -8px rgb(95 224 176 / 0.85);
+  translate: 0 -1px;
+}
+
+.cta:hover::after {
+  translate: 110% 0;
+}
+
+.cta:hover svg {
+  translate: 2px -2px;
+}
+
+/* Menu button: two lines that cross into an X. */
+.toggle {
+  display: none;
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgb(244 241 234 / 0.1);
+  border-radius: 11px;
+  background: rgb(244 241 234 / 0.04);
+  color: var(--paper);
+  cursor: pointer;
+}
+
+.toggle span {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  height: 1.5px;
+  border-radius: 2px;
+  background: currentColor;
+  transition:
+    translate 0.35s var(--ease-land),
+    rotate 0.35s var(--ease-land);
+}
+
+.toggle span:first-child {
+  translate: 0 -3.5px;
+}
+
+.toggle span:last-child {
+  translate: 0 3.5px;
+}
+
+.toggle[aria-expanded="true"] span:first-child {
+  translate: 0;
+  rotate: 45deg;
+}
+
+.toggle[aria-expanded="true"] span:last-child {
+  translate: 0;
+  rotate: -45deg;
+}
+
+/* Small-screen menu panel, dropping out of the pill. */
+.menu {
+  max-width: 1040px;
+  margin: 8px auto 0;
+  padding: 10px;
+  border: 1px solid rgb(244 241 234 / 0.08);
+  border-radius: 18px;
+  background: rgb(16 17 19 / 0.92);
+  box-shadow: 0 24px 60px -20px rgb(0 0 0 / 0.9);
+  pointer-events: auto;
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  transform-origin: top center;
+  animation: drop 0.45s var(--ease-land);
+}
+
+.menu[hidden] {
+  display: none;
+}
+
+.menu nav {
+  display: grid;
+}
+
+.menuLink {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  padding: 14px 12px;
+  border-bottom: 1px solid rgb(244 241 234 / 0.07);
+  color: var(--paper);
+  font-size: 1.5rem;
+  font-weight: 520;
+  letter-spacing: -0.03em;
+  text-decoration: none;
+  animation: rise 0.5s var(--ease-land) backwards;
+  animation-delay: calc(var(--i) * 60ms + 80ms);
+}
+
+.menuIndex {
+  color: var(--soft-mint);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+}
+
+.menuActions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.menuActions .signIn,
+.menuActions .cta {
+  justify-content: center;
+  height: 46px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.menuActions .signIn {
+  border: 1px solid rgb(244 241 234 / 0.1);
+}
+
+@keyframes drop {
   from {
     opacity: 0;
-    visibility: hidden;
+    scale: 0.96 0.9;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    translate: 0 10px;
+  }
+}
+
+@media (max-width: 860px) {
+  .bar {
+    grid-template-columns: 1fr auto;
+    height: 54px;
   }
 
-  to {
-    opacity: 1;
-    visibility: visible;
+  .nav,
+  .actions > .signIn {
+    display: none;
+  }
+
+  .toggle {
+    display: block;
+  }
+
+  .actions > .cta {
+    height: 40px;
+  }
+}
+
+@media (max-width: 420px) {
+  .actions > .cta {
+    display: none;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  :global(body:has([data-intro="done"])) .header {
+  .menu,
+  .menuLink {
     animation: none;
   }
-}
 
-/* Overrides the global [data-tone] fill: the header has no band at all. */
-.header[data-tone] {
-  background: transparent;
-}
-
-.bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-5);
-  height: var(--header-h);
-  padding-inline: var(--gutter);
-}
-
-.brand,
-.cta {
-  pointer-events: auto;
-}
-
-.brand {
-  /* Optical centring: lift the logo so its letters (not its taller box)
-     sit on the bar's centre line (OPTICAL_LIFT in logo/composition.js). */
-  translate: 0 -9.3%;
-}
-
-/* "↘ Get Keyfly": small, spaced capitals, like a caption on a frame. */
-.cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 44px;
-  color: var(--color-text);
-  font-size: 0.6875rem;
-  font-weight: 500;
-  letter-spacing: 0.16em;
-  text-decoration: none;
-  text-transform: uppercase;
-}
-
-.ctaArrow {
-  color: var(--color-point); /* soft mint on Night, deep mint on light */
-  transition: transform 0.35s var(--ease-land);
-}
-
-@media (hover: hover) {
-  .cta:hover .ctaArrow {
-    transform: translate(2px, 2px);
+  .cta::after {
+    display: none;
   }
 }

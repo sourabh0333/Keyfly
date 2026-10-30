@@ -1,0 +1,212 @@
+/* The timeline laid flat: a wide plane tipped back toward the horizon. */
+.stage {
+  position: absolute;
+  inset: auto 0 0;
+  height: 42%;
+  overflow: hidden;
+  perspective: 560px;
+  perspective-origin: 50% -40%;
+  /* Fade out toward the horizon and the sides. */
+  -webkit-mask-image:
+    linear-gradient(to bottom, transparent 0%, rgb(0 0 0 / 0.5) 30%, #000 60%, #000 100%),
+    linear-gradient(to right, transparent 0%, #000 22%, #000 78%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(to bottom, transparent 0%, rgb(0 0 0 / 0.5) 30%, #000 60%, #000 100%),
+    linear-gradient(to right, transparent 0%, #000 22%, #000 78%, transparent 100%);
+  mask-composite: intersect;
+}
+
+.plane {
+  position: absolute;
+  left: -60%;
+  right: -60%;
+  bottom: -6%;
+  height: 190%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9%;
+  padding: 0 0 2%;
+  transform-origin: 50% 100%;
+  transform: rotateX(68deg) rotateZ(calc(var(--nx, 0) * -2.5deg));
+  transition: transform 1.2s var(--ease-land);
+}
+
+/* Time runs left to right; each strip holds two copies of one loop and
+   slides by one loop, so playback never ends. */
+.ruler,
+.track {
+  position: relative;
+  overflow: hidden;
+}
+
+.ruler {
+  flex: 0 0 4%;
+  border-bottom: 1px solid rgb(244 241 234 / 0.12);
+}
+
+.track {
+  flex: 1;
+  border-top: 1px solid rgb(244 241 234 / 0.04);
+}
+
+.track[data-kind="title"],
+.track[data-kind="fx"] {
+  flex: 0.6;
+}
+
+.strip,
+.rulerStrip {
+  position: absolute;
+  inset: 0 auto 0 0;
+  display: flex;
+  width: 200%;
+  animation: play 70s linear infinite;
+}
+
+.rulerStrip {
+  background:
+    repeating-linear-gradient(to right, rgb(244 241 234 / 0.35) 0 2px, transparent 2px 6.25%) 0 0 / 100% 100%,
+    repeating-linear-gradient(to right, rgb(244 241 234 / 0.16) 0 1px, transparent 1px 1.25%) 0 100% / 100% 45% no-repeat;
+}
+
+.loop {
+  position: relative;
+  flex: 0 0 50%;
+  height: 100%;
+}
+
+.clip {
+  position: absolute;
+  top: 8%;
+  bottom: 8%;
+  border: 1px solid rgb(244 241 234 / 0.14);
+  border-radius: 7px;
+  background:
+    repeating-linear-gradient(to right, transparent 0 calc(25% - 1px), rgb(0 0 0 / 0.35) calc(25% - 1px) 25%),
+    linear-gradient(180deg, rgb(244 241 234 / 0.1), rgb(244 241 234 / 0.03));
+}
+
+.clip[data-kind="video"]:nth-child(3n + 1) {
+  background:
+    repeating-linear-gradient(to right, transparent 0 calc(25% - 1px), rgb(0 0 0 / 0.35) calc(25% - 1px) 25%),
+    linear-gradient(180deg, rgb(130 160 190 / 0.18), rgb(60 70 90 / 0.08));
+}
+
+.clip[data-kind="video"]:nth-child(3n + 2) {
+  background:
+    repeating-linear-gradient(to right, transparent 0 calc(20% - 1px), rgb(0 0 0 / 0.35) calc(20% - 1px) 20%),
+    linear-gradient(180deg, rgb(200 170 140 / 0.16), rgb(90 70 60 / 0.06));
+}
+
+.clip[data-kind="title"],
+.clip[data-kind="fx"] {
+  border-color: rgb(244 241 234 / 0.2);
+  background: rgb(244 241 234 / 0.06);
+}
+
+.clip[data-kind="fx"] {
+  border-style: dashed;
+}
+
+.clip[data-kind="audio"] {
+  border-color: rgb(244 241 234 / 0.1);
+  background: rgb(244 241 234 / 0.035);
+  color: rgb(244 241 234 / 0.4);
+}
+
+/* A few clips carry the accent, breathing softly as if selected. */
+.clip[data-lit] {
+  border-color: rgb(95 224 176 / 0.75);
+  background-color: rgb(95 224 176 / 0.14);
+  box-shadow: 0 0 24px rgb(95 224 176 / 0.25);
+  color: var(--soft-mint);
+  animation: breathe 3.2s ease-in-out infinite;
+  animation-delay: var(--d, 0s);
+}
+
+.wave {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.wave path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 0.9;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+
+.key {
+  position: absolute;
+  top: 50%;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 2px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 12px rgb(95 224 176 / 0.8);
+  rotate: 45deg;
+}
+
+/* The playhead stays put while the tracks run under it. */
+.playhead {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 3px;
+  margin-left: -1.5px;
+  background: linear-gradient(to bottom, rgb(95 224 176 / 0.2), var(--soft-mint) 40%);
+  box-shadow:
+    0 0 18px 2px rgb(95 224 176 / 0.55),
+    0 0 80px 10px rgb(95 224 176 / 0.18);
+}
+
+.playhead::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -1%;
+  width: 40px;
+  height: 40px;
+  margin-left: -20px;
+  border-radius: 50%;
+  background: var(--soft-mint);
+  box-shadow: 0 0 40px 8px rgb(95 224 176 / 0.6);
+}
+
+@keyframes play {
+  to {
+    translate: -50% 0;
+  }
+}
+
+@keyframes breathe {
+  50% {
+    border-color: rgb(95 224 176 / 0.35);
+    background-color: rgb(95 224 176 / 0.06);
+    box-shadow: 0 0 0 rgb(95 224 176 / 0);
+  }
+}
+
+@media (max-width: 720px) {
+  .stage {
+    height: 34%;
+  }
+
+  .plane {
+    left: -120%;
+    right: -120%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .strip,
+  .rulerStrip,
+  .clip[data-lit] {
+    animation: none;
+  }
+}
