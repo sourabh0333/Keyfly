@@ -7,7 +7,7 @@
 .section {
   position: relative;
   isolation: isolate;
-  padding: var(--section-pad) var(--gutter);
+  padding: var(--section-pad) 0;
   color: var(--paper);
 }
 
@@ -23,9 +23,11 @@
   pointer-events: none;
 }
 
+/* The same column as "How it works" and "Use cases". */
 .inner {
   max-width: 1320px;
   margin: 0 auto;
+  padding: 0 var(--gutter);
 }
 
 /* ---------- Heading (as in Use cases) ---------- */

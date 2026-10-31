@@ -1,12 +1,14 @@
 /*
- * "Use cases" as an open index beside a frameless projection. Switcher sets
- * data-on on the row and feed on air, data-auto while it auto-cuts, and
- * data-paused while off screen. No frames or tiles: type, light and lines.
+ * "Use cases", laid out and drawn like "How it works": the copy and a rail
+ * on the left, the Keyfly editor on the right, with the same window,
+ * viewer, panel and timeline. PresetReel writes --ph (playhead) and --cp
+ * (progress of the clip on air) on .stage, data-format for the frame,
+ * data-on and data-past on rows and clips, and data-paused off screen.
  */
 .section {
   position: relative;
   isolation: isolate;
-  padding: var(--section-pad) var(--gutter);
+  padding: var(--section-pad) 0;
   color: var(--paper);
 }
 
@@ -22,19 +24,22 @@
   pointer-events: none;
 }
 
-.inner {
+.stage {
+  --ph: 0;
+  --cp: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.45fr);
+  align-items: center;
+  gap: clamp(32px, 5vw, 80px);
   max-width: 1320px;
   margin: 0 auto;
+  padding: 0 var(--gutter);
 }
 
-/* ---------- Heading ---------- */
+/* ---------- Copy ---------- */
 
-.head {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 32px;
-  margin-bottom: clamp(32px, 5vw, 56px);
+.copy {
+  min-width: 0;
 }
 
 .eyebrow {
@@ -46,6 +51,7 @@
   font-size: 0.6875rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
+  transition: color 0.5s ease;
 }
 
 .eyebrowMark {
@@ -69,7 +75,7 @@
 }
 
 .title {
-  margin-top: 16px;
+  margin-top: 18px;
   font-size: clamp(2.1rem, 1.1rem + 2.2vw, 3.4rem);
   font-weight: 560;
   letter-spacing: -0.045em;
@@ -79,6 +85,7 @@
 .plain,
 .accent {
   display: block;
+  white-space: nowrap;
 }
 
 .accent {
@@ -95,276 +102,245 @@
 }
 
 .lead {
-  max-width: 34ch;
+  max-width: 38ch;
+  margin-top: 16px;
   color: rgb(244 241 234 / 0.62);
   font-size: 0.9375rem;
   line-height: 1.5;
-  text-align: right;
 }
 
-/* ---------- Index and projection ---------- */
-
-.switcher {
-  display: grid;
-  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.25fr);
-  align-items: center;
-  gap: clamp(32px, 5vw, 80px);
-}
-
-.indexCol {
-  min-width: 0;
-}
-
-.hint {
-  margin-bottom: 14px;
-  color: rgb(244 241 234 / 0.4);
-  font-family: var(--font-mono-stack);
-  font-size: 0.6875rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.index {
-  margin: 0;
-  padding: 0;
+/* The six presets on a rail, like the steps above. Each row's stretch of
+   rail fills as its clip plays, with the mint point at the tip. */
+.rows {
+  margin: clamp(22px, 4vh, 36px) 0 0;
+  padding: 0 0 0 28px;
   list-style: none;
 }
 
 .row {
   position: relative;
-  border-top: 1px solid rgb(244 241 234 / 0.08);
 }
 
-.row:last-child {
-  border-bottom: 1px solid rgb(244 241 234 / 0.08);
+.rowRail {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -24px;
+  width: 1px;
+  background: rgb(244 241 234 / 0.12);
+}
+
+.rowRail::before,
+.rowRail::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+}
+
+.rowRail::before {
+  top: 0;
+  height: 100%;
+  background: var(--soft-mint);
+  box-shadow: 0 0 10px rgb(95 224 176 / 0.6);
+  transform-origin: top;
+  scale: 1 0;
+}
+
+.row[data-past] .rowRail::before {
+  scale: 1 1;
+}
+
+.row[data-on] .rowRail::before {
+  scale: 1 var(--cp);
+}
+
+.rowRail::after {
+  top: calc(var(--cp) * 100%);
+  left: 50%;
+  width: 9px;
+  height: 9px;
+  margin: -4.5px 0 0 -4.5px;
+  border-radius: 50%;
+  background: var(--soft-mint);
+  box-shadow: 0 0 14px var(--soft-mint);
+  opacity: 0;
+}
+
+.row[data-on] .rowRail::after {
+  opacity: 1;
 }
 
 .rowButton {
   display: grid;
-  grid-template-columns: 32px minmax(0, 1fr) auto;
+  grid-template-columns: 34px minmax(0, 1fr) auto;
   align-items: baseline;
-  gap: 16px;
+  column-gap: 8px;
   width: 100%;
-  padding: clamp(12px, 1.4vw, 18px) 0;
+  padding: 9px 0;
   border: 0;
   background: none;
-  color: rgb(244 241 234 / 0.42);
+  color: var(--paper);
   font: inherit;
   text-align: left;
+  opacity: 0.38;
   cursor: pointer;
+  transition: opacity 0.4s ease;
 }
 
-.rowNum,
-.rowFormat {
-  font-family: var(--font-mono-stack);
-  font-size: 0.75rem;
-  letter-spacing: 0.06em;
-  transition: color 0.3s ease;
-}
-
-.rowName {
-  font-size: clamp(1.5rem, 0.9rem + 1.6vw, 2.375rem);
-  font-weight: 560;
-  letter-spacing: -0.045em;
-  line-height: 1.05;
-  transition:
-    color 0.3s ease,
-    translate 0.4s var(--ease-land);
-}
-
-.rowButton:hover .rowName,
-.rowButton:focus-visible .rowName {
-  color: var(--paper);
-  translate: 6px 0;
+.rowButton:hover {
+  opacity: 0.7;
 }
 
 .rowButton:focus-visible {
-  outline: none;
+  outline: 1.5px solid var(--soft-mint);
+  outline-offset: 4px;
+  border-radius: 6px;
 }
 
-.rowButton:focus-visible .rowNum {
+.row[data-on] .rowButton {
+  opacity: 1;
+}
+
+.rowIndex {
   color: var(--soft-mint);
+  font-family: var(--font-mono-stack);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
 }
 
-/* On air: the name turns to the heading's mint accent. */
-.row[data-on] .rowNum {
-  color: var(--soft-mint);
+.rowTitle {
+  font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem);
+  font-weight: 560;
+  letter-spacing: -0.03em;
 }
 
-.row[data-on] .rowFormat {
-  color: rgb(244 241 234 / 0.7);
-}
-
-.row[data-on] .rowName {
-  padding-bottom: 0.04em;
-  background: linear-gradient(100deg, var(--mint-text-dark), #eafff6 50%, var(--soft-mint));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  font-family: var(--font-accent-stack);
-  font-size: clamp(1.75rem, 1rem + 1.9vw, 2.75rem);
-  font-style: italic;
-  font-weight: 400;
-  letter-spacing: -0.02em;
-  translate: 0 0;
-}
-
-/* The line and "Try this prompt" open under the row on air. */
-.detail {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 0.5s var(--ease-land);
-}
-
-.row[data-on] .detail {
-  grid-template-rows: 1fr;
-}
-
-.detailInner {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 20px;
-  min-height: 0;
-  overflow: hidden;
-  padding-left: 48px;
-}
-
-.detailInner > * {
-  margin-bottom: clamp(16px, 1.6vw, 22px);
-}
-
-.detailBody {
-  max-width: 40ch;
+.rowFormat {
   color: rgb(244 241 234 / 0.6);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+}
+
+.rowBody {
+  display: none;
+  max-width: 36ch;
+  padding: 0 0 10px 42px;
+  color: rgb(244 241 234 / 0.62);
   font-size: 0.9375rem;
   line-height: 1.5;
 }
 
-.try {
-  display: inline-flex;
-  flex: none;
-  align-items: center;
-  gap: 8px;
-  height: 42px;
-  padding: 0 14px 0 16px;
-  border: 0;
-  border-radius: 12px;
-  background: var(--soft-mint);
-  box-shadow:
-    0 1px 0 rgb(255 255 255 / 0.45) inset,
-    0 8px 24px -10px rgb(95 224 176 / 0.8);
-  color: var(--mint-ink);
-  font: inherit;
-  font-size: 0.875rem;
-  font-weight: 620;
-  white-space: nowrap;
-  cursor: pointer;
-  transition:
-    box-shadow 0.3s ease,
-    translate 0.3s var(--ease-land);
+.row[data-on] .rowBody {
+  display: block;
+  animation: rise 0.5s var(--ease-land);
 }
 
-.try svg {
-  transition: translate 0.3s var(--ease-land);
-}
+/* ---------- The editor ---------- */
 
-.try:hover {
-  box-shadow:
-    0 1px 0 rgb(255 255 255 / 0.45) inset,
-    0 10px 34px -8px rgb(95 224 176 / 0.9);
-  translate: 0 -1px;
-}
-
-.try:hover svg {
-  translate: 0 -2px;
-}
-
-/* The row's own rule doubles as the countdown to the next auto-cut. */
-.countdown {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -1px;
-  z-index: 1;
-  height: 1px;
-  background: var(--soft-mint);
-  box-shadow: 0 0 10px var(--soft-mint);
-  transform-origin: left;
-  opacity: 0.5;
-}
-
-.switcher[data-auto] .countdown {
-  opacity: 1;
-  animation: countdown 6s linear both;
-}
-
-/* ---------- The projection ---------- */
-
-.projection {
+.demo {
   position: relative;
   min-width: 0;
+  margin: 0;
 }
 
-/* Light from the picture spilling onto the night around it. */
-.projection::before {
+/* A soft mint light under the window. */
+.demo::before {
   content: "";
   position: absolute;
-  inset: 10% 6% -18%;
+  inset: 12% 8% -6%;
   z-index: -1;
-  background: radial-gradient(50% 50% at 50% 55%, rgb(95 224 176 / 0.12), transparent 70%);
-  pointer-events: none;
-}
-
-.tally {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 10px;
-  padding: 0 6%;
-  color: rgb(244 241 234 / 0.55);
-  font-family: var(--font-mono-stack);
-  font-size: 0.6875rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.onAir {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  color: var(--soft-mint);
-  font-weight: 700;
-}
-
-.onAir i {
-  width: 7px;
-  height: 7px;
   border-radius: 50%;
-  background: var(--soft-mint);
-  box-shadow: 0 0 10px var(--soft-mint);
-  animation: blink 1.2s steps(1) infinite;
+  background: radial-gradient(closest-side, rgb(95 224 176 / 0.18), transparent);
 }
 
-.cam {
+.window {
   overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  border-radius: var(--radius-window);
+  background: #121316;
+  box-shadow:
+    0 0 0 1px rgb(244 241 234 / 0.09),
+    0 1px 0 rgb(244 241 234 / 0.07) inset,
+    0 40px 100px -40px rgb(0 0 0 / 0.95);
+  font-size: 12px;
 }
 
-.code {
-  margin-left: auto;
+.chrome {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  height: 36px;
+  padding: 0 14px;
+  border-bottom: 1px solid rgb(244 241 234 / 0.06);
+  background: #18191d;
+}
+
+.dots {
+  display: flex;
+  gap: 6px;
+}
+
+.dots i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgb(244 241 234 / 0.14);
+}
+
+.file {
+  color: rgb(244 241 234 / 0.85);
+  font-weight: 560;
+}
+
+.fileMuted {
+  color: rgb(244 241 234 / 0.4);
+  font-weight: 450;
+}
+
+.timecode {
+  justify-self: end;
   color: var(--mint-text-dark);
+  font-family: var(--font-mono-stack);
+  font-size: 11px;
   font-variant-numeric: tabular-nums;
 }
 
-/* The picture has no frame: its edges dissolve into the night. */
-.program {
+.body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(190px, 30%, 250px);
+  border-bottom: 1px solid rgb(244 241 234 / 0.06);
+}
+
+/* Viewer: the frame keeps a 16:9 height and takes each preset's width, so
+   the format change animates, as in "How it works". */
+.viewer {
+  --frame-h: calc(100cqw * 9 / 16);
   position: relative;
-  aspect-ratio: 16 / 9;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  gap: 10px;
+  padding: 14px;
+  background: #0c0d0f;
+  container-type: inline-size;
+}
+
+.frame {
+  position: relative;
+  justify-self: center;
+  width: 100%;
+  height: var(--frame-h);
   overflow: hidden;
-  -webkit-mask-image: radial-gradient(closest-side, #000 58%, rgb(0 0 0 / 0.6) 80%, transparent);
-  mask-image: radial-gradient(closest-side, #000 58%, rgb(0 0 0 / 0.6) 80%, transparent);
+  border-radius: 8px;
+  background: #050506;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.08);
+  transition: width 0.7s var(--ease-land);
+}
+
+.stage[data-format="9:16"] .frame {
+  width: calc(var(--frame-h) * 9 / 16);
+}
+
+.stage[data-format="1:1"] .frame {
+  width: var(--frame-h);
 }
 
 .feed {
@@ -388,8 +364,317 @@
   animation: flash 0.35s ease-out;
 }
 
+.guides {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to right, transparent calc(33.33% - 0.5px), rgb(244 241 234 / 0.08) 33.33%, transparent calc(33.33% + 0.5px)),
+    linear-gradient(to right, transparent calc(66.66% - 0.5px), rgb(244 241 234 / 0.08) 66.66%, transparent calc(66.66% + 0.5px)),
+    linear-gradient(to bottom, transparent calc(33.33% - 0.5px), rgb(244 241 234 / 0.08) 33.33%, transparent calc(33.33% + 0.5px)),
+    linear-gradient(to bottom, transparent calc(66.66% - 0.5px), rgb(244 241 234 / 0.08) 66.66%, transparent calc(66.66% + 0.5px));
+  pointer-events: none;
+}
+
+.formats {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+}
+
+.formats span {
+  padding: 3px 9px;
+  border-radius: 6px;
+  color: rgb(244 241 234 / 0.45);
+  font-family: var(--font-mono-stack);
+  font-size: 10.5px;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+.stage[data-format="16:9"] .formats [data-format="16:9"],
+.stage[data-format="9:16"] .formats [data-format="9:16"],
+.stage[data-format="1:1"] .formats [data-format="1:1"] {
+  background: rgb(95 224 176 / 0.14);
+  color: var(--soft-mint);
+}
+
+/* Side panel: the preset's prompt and the way to try it. */
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  padding: 14px;
+  border-left: 1px solid rgb(244 241 234 / 0.06);
+  background: #141518;
+}
+
+.panelLabel {
+  color: rgb(244 241 234 / 0.4);
+  font-family: var(--font-mono-stack);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.bubble {
+  min-height: calc(5 * 1.5em + 20px);
+  padding: 10px 11px;
+  border-radius: 10px 10px 10px 3px;
+  background: #1e1f23;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.06) inset;
+  color: rgb(244 241 234 / 0.9);
+  font-size: 11.5px;
+  line-height: 1.5;
+}
+
+.caret {
+  display: inline-block;
+  width: 1.5px;
+  height: 1.05em;
+  margin-left: 1px;
+  vertical-align: -0.15em;
+  background: var(--soft-mint);
+  animation: blink 1s steps(1) infinite;
+}
+
+.panelBody {
+  color: rgb(244 241 234 / 0.55);
+  font-size: 11.5px;
+  line-height: 1.5;
+}
+
+.try {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  height: 36px;
+  margin-top: auto;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--soft-mint);
+  box-shadow:
+    0 1px 0 rgb(255 255 255 / 0.45) inset,
+    0 8px 24px -10px rgb(95 224 176 / 0.8);
+  color: var(--mint-ink);
+  font: inherit;
+  font-size: 12.5px;
+  font-weight: 620;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    box-shadow 0.3s ease,
+    translate 0.3s var(--ease-land);
+}
+
+.try svg {
+  transition: translate 0.3s var(--ease-land);
+}
+
+.try:hover {
+  box-shadow:
+    0 1px 0 rgb(255 255 255 / 0.45) inset,
+    0 10px 34px -8px rgb(95 224 176 / 0.9);
+  translate: 0 -1px;
+}
+
+.try:hover svg {
+  translate: 0 -2px;
+}
+
+/* ---------- Timeline ---------- */
+
+.timeline {
+  position: relative;
+  display: grid;
+  gap: 5px;
+  padding: 0 14px 14px;
+  background: #101114;
+}
+
+.ruler {
+  height: 18px;
+  margin-left: 30px;
+  background:
+    repeating-linear-gradient(to right, rgb(244 241 234 / 0.3) 0 1px, transparent 1px 16.666%) 0 100% / 100% 8px no-repeat,
+    repeating-linear-gradient(to right, rgb(244 241 234 / 0.14) 0 1px, transparent 1px 2.0833%) 0 100% / 100% 4px no-repeat;
+}
+
+.track {
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  align-items: center;
+  gap: 8px;
+}
+
+.trackLabel {
+  color: rgb(244 241 234 / 0.4);
+  font-family: var(--font-mono-stack);
+  font-size: 10px;
+}
+
+/* The presets end to end, one per sixth of the reel. */
+.lane {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  height: 30px;
+  border-radius: 5px;
+  background: rgb(244 241 234 / 0.025);
+}
+
+.clip {
+  position: relative;
+  min-width: 0;
+  padding: 0 0 0 6px;
+  border: 0;
+  border-radius: 5px;
+  background: var(--thumb) 0 0 / 34px 100%;
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.5) inset;
+  color: #fff;
+  font: inherit;
+  text-align: left;
+  opacity: 0.55;
+  cursor: pointer;
+  transition:
+    opacity 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+/* The thumbnails' frame lines. */
+.clip::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: repeating-linear-gradient(to right, transparent 0 33px, rgb(0 0 0 / 0.55) 33px 34px);
+}
+
+.clip:hover {
+  opacity: 0.85;
+}
+
+.clip[data-on] {
+  opacity: 1;
+  box-shadow:
+    0 0 0 1.5px var(--soft-mint) inset,
+    0 0 16px -4px rgb(95 224 176 / 0.7);
+}
+
+.clipLabel {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  font-size: 9.5px;
+  font-weight: 600;
+  line-height: 30px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-shadow: 0 1px 3px rgb(0 0 0 / 0.8);
+}
+
+.key {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  z-index: 1;
+  width: 7px;
+  height: 7px;
+  margin: -3.5px -3.5px 0 0;
+  border-radius: 1px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 6px var(--soft-mint);
+  rotate: 45deg;
+}
+
+.clip:last-child .key {
+  display: none;
+}
+
+/* Each clip in the colours of its preview. */
+.clip[data-kind="launch"] {
+  --thumb: linear-gradient(180deg, #34405a, #b98a6a 70%, #1b2422 70%);
+}
+
+.clip[data-kind="ugc"] {
+  --thumb: linear-gradient(180deg, #3c3129, #6b5240 62%, #2a2420 62%);
+}
+
+.clip[data-kind="explainer"] {
+  --thumb: linear-gradient(160deg, #101315, #1d3a32);
+}
+
+.clip[data-kind="montage"] {
+  --thumb: linear-gradient(180deg, #2c4a6a, #e2a874 72%, #3b2a1c 72%);
+}
+
+.clip[data-kind="demo"] {
+  --thumb: linear-gradient(180deg, #1b1d22, #2e3a5c);
+}
+
+.clip[data-kind="podcast"] {
+  --thumb: linear-gradient(160deg, #142018, #245a44);
+}
+
+.audio {
+  display: block;
+  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.25) inset;
+  background: rgb(95 224 176 / 0.06);
+  color: rgb(95 224 176 / 0.6);
+}
+
+.wave {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.wave path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.playheadLane {
+  position: absolute;
+  top: 0;
+  bottom: 14px;
+  left: calc(14px + 30px);
+  right: 14px;
+  pointer-events: none;
+}
+
+.playhead {
+  position: absolute;
+  top: 6px;
+  bottom: 0;
+  left: calc(var(--ph) * 100%);
+  width: 2px;
+  margin-left: -1px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 10px rgb(95 224 176 / 0.7);
+}
+
+.playhead::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  translate: -50% 0;
+  border-radius: 2px 2px 50% 50%;
+  background: var(--soft-mint);
+}
+
 .note {
-  margin-top: 14px;
+  max-width: 1320px;
+  margin: 12px auto 0;
+  padding: 0 var(--gutter);
   color: rgb(244 241 234 / 0.38);
   font-family: var(--font-mono-stack);
   font-size: 0.6875rem;
@@ -411,86 +696,185 @@
   }
 }
 
-@keyframes countdown {
+@keyframes rise {
   from {
-    scale: 0 1;
+    opacity: 0;
+    translate: 0 6px;
   }
 }
 
 @keyframes blink {
   50% {
-    opacity: 0.3;
+    opacity: 0;
   }
 }
 
 /* ---------- Smaller screens ---------- */
 
-@media (max-width: 900px) {
-  .head {
-    display: grid;
-    gap: 14px;
-  }
-
-  .lead {
-    text-align: left;
-  }
-
-  .plain,
-  .accent {
-    display: inline;
+@media (max-width: 960px) {
+  .stage {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
   }
 
   .title {
     font-size: clamp(1.9rem, 1.2rem + 3vw, 2.75rem);
   }
 
-  /* The picture on top, the index below it. */
-  .switcher {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 20px;
+  .plain,
+  .accent {
+    display: inline;
+    white-space: normal;
   }
 
-  .projection {
-    order: -1;
+  /* The rail turns into one row along the top; the panel carries the
+     line. */
+  .rows {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 20px;
+    padding: 14px 0 0;
   }
 
-  .hint {
+  .rowRail {
+    top: -14px;
+    right: 0;
+    bottom: auto;
+    left: 0;
+    width: auto;
+    height: 1px;
+  }
+
+  .rowRail::before {
+    width: 100%;
+    transform-origin: left;
+    scale: 0 1;
+  }
+
+  .row[data-past] .rowRail::before {
+    scale: 1 1;
+  }
+
+  .row[data-on] .rowRail::before {
+    scale: var(--cp) 1;
+  }
+
+  .rowRail::after {
+    top: 0;
+    left: calc(var(--cp) * 100%);
+  }
+
+  .rowButton {
+    display: block;
+    padding: 0;
+  }
+
+  .rowIndex {
+    display: block;
+    padding-bottom: 4px;
+  }
+
+  .rowTitle {
+    display: block;
+    overflow: hidden;
+    font-size: 0.875rem;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .rowFormat,
+  .row[data-on] .rowBody {
     display: none;
   }
 }
 
-@media (max-width: 560px) {
-  .tally {
+@media (max-width: 640px) {
+  .rows {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    row-gap: 22px;
+  }
+
+  .window {
+    font-size: 11px;
+  }
+
+  .body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .viewer {
+    padding: 10px 10px 8px;
+  }
+
+  .panel {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
     gap: 10px;
-    padding: 0;
-    font-size: 0.5625rem;
+    padding: 10px;
+    border-left: 0;
+    border-top: 1px solid rgb(244 241 234 / 0.06);
   }
 
-  .rowButton {
-    grid-template-columns: 24px minmax(0, 1fr) auto;
-    gap: 12px;
+  .panelLabel,
+  .panelBody {
+    display: none;
   }
 
-  .detailInner {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
-    padding-left: 36px;
+  .bubble {
+    display: -webkit-box;
+    height: calc(3 * 1.5em + 8px);
+    min-height: 0;
+    overflow: hidden;
+    padding: 8px 9px 0;
+    font-size: 10.5px;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
   }
 
-  .detailInner > .detailBody {
-    margin-bottom: 0;
+  .try {
+    height: 34px;
+    font-size: 12px;
+  }
+
+  .timeline {
+    padding: 0 10px 10px;
+  }
+
+  .playheadLane {
+    left: calc(10px + 30px);
+    right: 10px;
+    bottom: 10px;
+  }
+
+  .lane {
+    height: 24px;
+  }
+
+  .clipLabel {
+    display: none;
+  }
+
+  .chrome {
+    height: 32px;
+  }
+
+  .fileMuted {
+    display: none;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .feed[data-on],
   .flash,
-  .onAir i {
+  .caret,
+  .row[data-on] .rowBody {
     animation: none;
   }
 
-  .detail {
+  .frame {
     transition: none;
   }
 }

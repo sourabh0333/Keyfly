@@ -172,11 +172,25 @@ The root layout renders the skip link, `SiteHeader` and `<main id="main">`. Page
   - **Step 3:** the frame tries 16:9, 9:16 and 1:1 (its width animates at a fixed height, using `cqw` of the viewer), and the export bar fills to "Ready".
   - **Fallback:** without JS or with reduced motion there is no pin, and the CSS defaults (all progress at 1) show the finished cut.
   - **Copy:** in `howItWorks` (content file), PLACEHOLDER.
-- **Use cases** (`src/components/use-cases/`, added 2026-10-31, redesigned twice the same day): the six prompt-box presets as an **open index beside a frameless projection**, captioned "Illustrative previews". Earlier versions were dropped: a pinned reel (broke on short laptop screens), then a boxed multicam switcher with a tile grid (the team asked for no grid or box shapes). Nothing in it sits in a card, tile or frame: only type, light and hairlines. It is not pinned, so it fits any height.
-  - **Index (left):** six rows split by hairlines, each with a mono number, the name and the format. The row on air shows its name in the serif italic mint accent and opens (`grid-template-rows` 0fr → 1fr) to show its line and the mint "Try this prompt" button. Closed rows are `inert`. The row's own hairline fills with mint as the countdown to the next auto-cut.
-  - **Projection (right):** the feed on air plays with no frame. A `closest-side` radial mask dissolves its edges into the night, and a soft mint spill sits behind it. Above it, a plain mono line reads "● On air · 01 · Launch Video" with a running timecode. Each cut has a cut-in and a white flash.
-  - **Cutting:** click a row or press 1–6 while it has focus. It auto-cuts every 6s while at least 35% of it is on screen and it isn't hovered or focused. All previews pause (`data-paused`) when it's off screen. With reduced motion there is no auto-cut and the previews hold still.
-  - **Narrow screens:** the projection moves above the index, and the row's line and button stack.
+- **Use cases** (`src/components/use-cases/`, added 2026-10-31, redesigned three times the same day): laid out and drawn **like How it works**, so the two read as one product. Earlier versions were dropped:
+  - a pinned reel (broke on short laptop screens);
+  - a boxed multicam switcher with a tile grid (the team asked for no grid or box shapes);
+  - a frameless index beside a projection (it didn't match the sections above).
+
+  It is not pinned, so it fits any height.
+  - **Left:** the eyebrow, the h2 (with the heading wipe) and the lead, then the six presets on a rail styled like the steps above. Each row's stretch of rail fills as its clip plays, with the mint point at the tip, and the row on air shows its line.
+  - **Right (`PresetReel`):** the same editor window as How it works, captioned "Illustrative previews". It has:
+    - chrome: "{preset} · Presets" and a running timecode;
+    - a viewer whose frame takes each preset's format (the width animates at a fixed 16:9 height, as above), with the format chips below;
+    - a panel with the preset's real prompt from `prompt.presets` typing itself in, its line, and the mint "Try this prompt" button;
+    - a timeline: ruler, track P1 with the six presets end to end as clips (preview colours, frame lines, keyframes) and A1 audio.
+  - **Playback:** the playhead plays through the reel, 6s per preset, and the clip under it goes on air with a white flash. It writes `--ph` and `--cp` on the root, and `data-format`.
+  - **Interaction:**
+    - Clicking a row or a clip, or pressing 1–6, moves the playhead there.
+    - Hovering or focusing holds it, and it only plays while on screen.
+    - With reduced motion it holds still on the chosen preset.
+  - **Narrow screens:** the rail becomes a row along the top (six columns, three on phones). The panel moves under the viewer, and its prompt is clamped to three lines.
+  - **Columns:** How it works, Use cases and Download share one column: a 1320px max width with the gutter inside it, so their headings line up.
   - **"Try this prompt":** dispatches `keyfly:prompt` with the preset's label. `PromptBox` listens, scrolls back to the hero and types that preset in.
   - **`Preview`:** a CSS-drawn loop at the use case's format, sized in `cqw`/`cqh` of its screen. `bleed` fills its parent edge to edge with no backing or corner marks, and stands 9:16 in the middle.
     - Launch: title cards on the beat.

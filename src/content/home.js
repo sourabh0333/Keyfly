@@ -81,8 +81,11 @@ export const useCases = {
   title: [{ text: "Made for" }, { text: "every kind of video.", accent: true }],
   lead: "Start from a preset or describe your own. Six of the videos people make most:",
   cta: "Try this prompt",
-  hint: "Press 1–6 to cut",
+  file: "Presets",
+  promptLabel: "Prompt",
+  trackLabel: "P1",
   note: "Illustrative previews",
+  // PLACEHOLDER: one line per preset until the product copy is confirmed.
   items: [
     { label: "Launch Video", kind: "launch", format: "16:9", body: "Title cards, quick cuts on the beat and a clear call to action at the end." },
     { label: "UGC", kind: "ugc", format: "9:16", body: "Selfie-style ads with a hook in the first two seconds and punchy captions." },
@@ -90,7 +93,7 @@ export const useCases = {
     { label: "Montage", kind: "montage", format: "16:9", body: "The best moments from your footage, cut to the music with smooth speed ramps." },
     { label: "Product Demo", kind: "demo", format: "16:9", body: "Screen recordings with a zoom on every click, short captions and the pauses trimmed." },
     { label: "Podcast", kind: "podcast", format: "9:16", body: "Long episodes turned into vertical clips with the strongest quotes and captions." },
-  ],
+  ].map((item) => ({ ...item, prompt: presetPrompt(item.label) })),
 };
 
 function presetPrompt(label) {
