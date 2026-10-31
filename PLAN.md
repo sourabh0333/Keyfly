@@ -95,8 +95,8 @@ Copy for anything not yet confirmed is marked PLACEHOLDER in `src/content/home.j
 | 1 | Hero | ✅ | The promise and the prompt box |
 | 2 | How it works | ✅ | Describe → Keyfly edits → Export |
 | 3 | **Edit with words** (`#edit`) | ✅ built 2026-10-31 | The core differentiator: refine the cut by asking, with the timeline following |
-| 4 | **You make the calls** | next | Against black-box generators: every AI decision lands on a real timeline you can adjust |
-| 5 | **One edit, every format** | planned | The 16:9 → 9:16 → 1:1 pain: one cut reframes, captions follow |
+| 4 | **You make the calls** (`#control`) | ✅ built 2026-10-31 | Against black-box generators: every AI decision lands on a real timeline you can adjust |
+| 5 | **One edit, every format** | next | The 16:9 → 9:16 → 1:1 pain: one cut reframes, captions follow |
 | 6 | Use cases | ✅ | Six presets on the jog wheel |
 | 7 | **On brand, every time** | planned (to confirm) | Brand consistency: your fonts, colours and logo applied to every cut |
 | 8 | **Works where you work** | planned | ChatGPT · Claude, desktop and browser |

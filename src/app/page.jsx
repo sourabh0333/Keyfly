@@ -1,5 +1,6 @@
 import { Download } from "@/components/download/download";
 import { EditWithWords } from "@/components/edit-with-words/edit-with-words";
+import { YourCall } from "@/components/your-call/your-call";
 import { Hero } from "@/components/hero/hero";
 import { Scene } from "@/components/scene/scene";
 import { HowItWorks } from "@/components/how-it-works/how-it-works";
@@ -21,6 +22,7 @@ export default function Home() {
       <Hero />
       <HowItWorks />
       <EditWithWords />
+      <YourCall />
       <UseCases />
       <Download />
     </Scene>

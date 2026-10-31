@@ -95,6 +95,25 @@ export const editWithWords = {
   ],
 };
 
+// "You make the calls": Keyfly shows every decision it made, why, and
+// lets you change it. The decisions and reasons are PLACEHOLDER
+// (illustrative) until the team confirms what Keyfly exposes.
+export const yourCall = {
+  eyebrow: "You make the calls",
+  title: [{ text: "Keyfly decides." }, { text: "You have the final say.", accent: true }],
+  lead: "No black box. Every call Keyfly makes is pinned to a real timeline, with the reason beside it, and one click changes it.",
+  chose: "Keyfly chose",
+  pick: "Keyfly's pick",
+  changed: "Changed by you",
+  note: "Illustrative interface",
+  decisions: [
+    { id: "take", label: "Opening shot", reason: "Clearest delivery, steadiest frame.", options: ["Take 1", "Take 2", "Take 3"], pick: 2 },
+    { id: "cuts", label: "Cut points", reason: "Matches the music's 120 BPM.", options: ["On beat", "2 beats", "Free"], pick: 0 },
+    { id: "title", label: "Chapter title", reason: "Long enough to read once.", options: ["1 sec", "2 sec", "3 sec"], pick: 1 },
+    { id: "duck", label: "Music under voice", reason: "Keeps the voice clear.", options: ["Off", "−6 dB", "−12 dB"], pick: 2 },
+  ],
+};
+
 export const useCases = {
   eyebrow: "Use cases",
   title: [{ text: "Made for" }, { text: "every kind of video.", accent: true }],

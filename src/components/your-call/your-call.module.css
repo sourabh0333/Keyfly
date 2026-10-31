@@ -1,0 +1,559 @@
+/*
+ * "You make the calls": a full-width timeline with Keyfly's decisions
+ * pinned to it, over a row of decision cards. DecisionTimeline sets data-on
+ * on the pin, card and timeline parts of the decision in focus, and
+ * data-changed where a choice differs from Keyfly's pick. Clips move by
+ * left and width (a few small boxes); everything else is opacity and
+ * transforms.
+ */
+.section {
+  position: relative;
+  padding: var(--section-pad) 0;
+  color: var(--paper);
+}
+
+.inner {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* ---------- Heading (as in Use cases and Download) ---------- */
+
+.head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+  margin-bottom: clamp(32px, 4vw, 56px);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: rgb(244 241 234 / 0.62);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.eyebrowMark {
+  width: 18px;
+  height: 1px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+}
+
+.title {
+  margin-top: 16px;
+  font-size: clamp(2.1rem, 1.1rem + 2.2vw, 3.4rem);
+  font-weight: 560;
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+
+.plain,
+.accent {
+  display: block;
+}
+
+.accent {
+  padding-bottom: 0.06em;
+  background: linear-gradient(100deg, var(--mint-text-dark), #eafff6 50%, var(--soft-mint));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-family: var(--font-accent-stack);
+  font-size: 1.1em;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.lead {
+  max-width: 38ch;
+  color: rgb(244 241 234 / 0.62);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  text-align: right;
+}
+
+/* ---------- Stage ---------- */
+
+.stage {
+  display: grid;
+  gap: clamp(16px, 2vw, 24px);
+}
+
+/* ---------- Timeline ---------- */
+
+.timeline {
+  position: relative;
+  display: grid;
+  gap: 6px;
+  padding: 56px clamp(14px, 2vw, 24px) clamp(16px, 2vw, 24px);
+  border-radius: 20px;
+  background: #101114;
+  box-shadow:
+    0 0 0 1px rgb(244 241 234 / 0.08),
+    0 40px 100px -40px rgb(0 0 0 / 0.9);
+  overflow: hidden;
+  --label: 34px;
+}
+
+/* Pins sit over the lanes, at the decision they mark. */
+.pins {
+  position: absolute;
+  top: 12px;
+  left: calc(clamp(14px, 2vw, 24px) + var(--label));
+  right: clamp(14px, 2vw, 24px);
+  height: 30px;
+}
+
+.pin {
+  position: absolute;
+  top: 0;
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  translate: -50% 0;
+  color: rgb(244 241 234 / 0.45);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.06em;
+  transition: color 0.3s ease;
+}
+
+.pin b {
+  font-weight: 500;
+}
+
+.pin i {
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+  background: var(--night);
+  box-shadow: 0 0 0 1.5px rgb(244 241 234 / 0.35);
+  rotate: 45deg;
+  transition:
+    background-color 0.3s ease,
+    box-shadow 0.3s ease,
+    scale 0.3s var(--ease-land);
+}
+
+/* A drop line from the pin down through the tracks. */
+.pin::after {
+  content: "";
+  position: absolute;
+  top: 30px;
+  left: 50%;
+  width: 1px;
+  height: 260px;
+  background: linear-gradient(to bottom, rgb(244 241 234 / 0.14), transparent);
+  transition: background 0.3s ease;
+}
+
+.pin[data-on] {
+  color: var(--paper);
+}
+
+.pin[data-on] i {
+  background: var(--soft-mint);
+  box-shadow:
+    0 0 0 1.5px var(--soft-mint),
+    0 0 12px var(--soft-mint);
+  scale: 1.25;
+}
+
+.pin[data-on]::after {
+  background: linear-gradient(to bottom, rgb(95 224 176 / 0.7), transparent);
+}
+
+.pin[data-changed] b {
+  color: var(--soft-mint);
+}
+
+.ruler {
+  height: 10px;
+  margin-left: var(--label);
+  background:
+    repeating-linear-gradient(to right, rgb(244 241 234 / 0.28) 0 1px, transparent 1px 10%) 0 100% / 100% 10px no-repeat,
+    repeating-linear-gradient(to right, rgb(244 241 234 / 0.12) 0 1px, transparent 1px 2%) 0 100% / 100% 5px no-repeat;
+}
+
+.track {
+  display: grid;
+  grid-template-columns: var(--label) minmax(0, 1fr);
+  align-items: center;
+}
+
+.label {
+  color: rgb(244 241 234 / 0.4);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+}
+
+.lane {
+  position: relative;
+  height: 30px;
+  border-radius: 6px;
+  background: rgb(244 241 234 / 0.025);
+}
+
+.clip,
+.titleClip,
+.voice {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: 6px;
+  transition:
+    left 0.6s var(--ease-land),
+    width 0.6s var(--ease-land),
+    box-shadow 0.3s ease,
+    background-color 0.3s ease;
+}
+
+.clip {
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.55) inset;
+  animation: drop 0.5s var(--ease-land);
+}
+
+.clip[data-n="0"] {
+  background: #4f6b8c;
+}
+
+.clip[data-n="1"] {
+  background: #8a5a78;
+}
+
+.clip[data-n="2"] {
+  background: #6aa3b3;
+}
+
+/* The opening take: each take a different shot. */
+.clip[data-n="take0"] {
+  background: #5a5f6a;
+}
+
+.clip[data-n="take1"] {
+  background: #9a7a5a;
+}
+
+.clip[data-n="take2"] {
+  background: #c98a5a;
+}
+
+.clip[data-on] {
+  box-shadow:
+    0 0 0 1px rgb(0 0 0 / 0.55) inset,
+    0 0 0 1.5px var(--soft-mint);
+}
+
+.titleClip {
+  display: grid;
+  align-items: center;
+  overflow: hidden;
+  padding-left: 8px;
+  background: rgb(244 241 234 / 0.1);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.25) inset;
+  color: rgb(244 241 234 / 0.75);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.titleClip[data-on] {
+  box-shadow: 0 0 0 1.5px var(--soft-mint) inset;
+  color: var(--paper);
+}
+
+.music {
+  background: rgb(95 224 176 / 0.05);
+  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.18) inset;
+}
+
+.music[data-on] {
+  box-shadow: 0 0 0 1.5px var(--soft-mint) inset;
+}
+
+.level {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.level path {
+  fill: none;
+  stroke: var(--soft-mint);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+  transition: d 0.6s var(--ease-land);
+}
+
+.voice {
+  display: grid;
+  align-items: center;
+  overflow: hidden;
+  padding-left: 8px;
+  background: repeating-linear-gradient(90deg, rgb(244 241 234 / 0.22) 0 2px, transparent 2px 5px);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.2) inset;
+  color: rgb(244 241 234 / 0.8);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* The playhead runs across the lanes on a rail (a transform only). */
+.rail {
+  position: absolute;
+  top: 46px;
+  bottom: clamp(16px, 2vw, 24px);
+  left: calc(clamp(14px, 2vw, 24px) + var(--label));
+  right: clamp(14px, 2vw, 24px);
+  pointer-events: none;
+  animation: play 9s linear infinite;
+}
+
+.stage[data-paused] .rail {
+  animation-play-state: paused;
+}
+
+.playhead {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 2px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 10px var(--soft-mint);
+}
+
+/* ---------- Decision cards ---------- */
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(12px, 1.4vw, 18px);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.card {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto auto 1fr auto auto;
+  gap: 10px;
+  padding: 18px;
+  border-radius: 16px;
+  background: #121316;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.08);
+  transition:
+    box-shadow 0.35s ease,
+    background-color 0.35s ease;
+}
+
+.card[data-on] {
+  background: #141618;
+  box-shadow:
+    0 0 0 1px rgb(95 224 176 / 0.45),
+    0 0 40px -18px rgb(95 224 176 / 0.6);
+}
+
+.cardHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: rgb(244 241 234 / 0.55);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.cardIndex {
+  color: rgb(244 241 234 / 0.35);
+}
+
+.card[data-on] .cardIndex {
+  color: var(--soft-mint);
+}
+
+.cardChoice {
+  display: grid;
+  gap: 2px;
+  font-size: clamp(1.125rem, 0.95rem + 0.5vw, 1.375rem);
+  font-weight: 560;
+  letter-spacing: -0.03em;
+}
+
+.cardChose {
+  color: rgb(244 241 234 / 0.4);
+  font-size: 0.75rem;
+  font-weight: 450;
+  letter-spacing: 0;
+}
+
+.cardReason {
+  color: rgb(244 241 234 / 0.6);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+/* A segmented switch of the options. */
+.options {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 2px;
+  padding: 3px;
+  border-radius: 10px;
+  background: rgb(244 241 234 / 0.05);
+}
+
+.option {
+  overflow: hidden;
+  padding: 7px 4px;
+  border: 0;
+  border-radius: 8px;
+  background: none;
+  color: rgb(244 241 234 / 0.6);
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 540;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease;
+}
+
+.option:hover {
+  color: var(--paper);
+}
+
+.option[aria-pressed="true"] {
+  background: var(--soft-mint);
+  color: var(--mint-ink);
+}
+
+.option:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 1px;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: rgb(244 241 234 / 0.45);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.status i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgb(244 241 234 / 0.35);
+}
+
+.status[data-changed] {
+  color: var(--soft-mint);
+}
+
+.status[data-changed] i {
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+}
+
+.note {
+  margin-top: 14px;
+  color: rgb(244 241 234 / 0.38);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+@keyframes play {
+  to {
+    translate: 100% 0;
+  }
+}
+
+@keyframes drop {
+  from {
+    opacity: 0;
+    translate: 0 -6px;
+  }
+}
+
+/* ---------- Smaller screens ---------- */
+
+@media (max-width: 1080px) {
+  .cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 860px) {
+  .head {
+    display: grid;
+    gap: 14px;
+  }
+
+  .lead {
+    text-align: left;
+  }
+
+  .plain,
+  .accent {
+    display: inline;
+  }
+
+  .title {
+    font-size: clamp(1.9rem, 1.2rem + 3vw, 2.75rem);
+  }
+}
+
+@media (max-width: 560px) {
+  .cards {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .timeline {
+    --label: 24px;
+  }
+
+  .lane {
+    height: 22px;
+  }
+
+  .titleClip,
+  .voice {
+    font-size: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .clip,
+  .rail {
+    animation: none;
+  }
+
+  .clip,
+  .titleClip,
+  .voice,
+  .level path {
+    transition: none;
+  }
+}
