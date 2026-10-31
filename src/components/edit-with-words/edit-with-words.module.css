@@ -1,10 +1,10 @@
 /*
- * "Edit with words": the asks as a numbered list (left), beside one
- * picture split before | after by a slider over a table of the cut's facts
- * (right), all on one grid. CommandCut sets data-edit on .stage to the ask
- * applied (shorter, pauses, captions, warm, vertical, pace), data-auto
- * while it moves on by itself, data-on on the row in play, data-changed on
- * the facts an ask changed, and --split (the slider) once dragged.
+ * "Edit with words", as a before and after: the first cut, the ask, and
+ * the cut with the ask applied. CommandCut sets data-edit on .stage to the
+ * ask applied (shorter, pauses, captions, warm, vertical, pace), data-auto
+ * while it moves on by itself, and data-changed on the facts an ask
+ * changed. Only transforms and opacity animate, apart from the shot bars'
+ * positions and the frame's width (a few small boxes).
  */
 .section {
   position: relative;
@@ -18,14 +18,14 @@
   padding: 0 var(--gutter);
 }
 
-/* ---------- Heading (as in Use cases and Download) ---------- */
+/* ---------- Heading (centred) ---------- */
 
 .head {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 32px;
-  margin-bottom: clamp(32px, 4vw, 56px);
+  display: grid;
+  justify-items: center;
+  max-width: 760px;
+  margin: 0 auto clamp(32px, 4vw, 52px);
+  text-align: center;
 }
 
 .eyebrow {
@@ -73,206 +73,104 @@
 }
 
 .lead {
-  max-width: 36ch;
+  max-width: 46ch;
+  margin-top: 18px;
   color: rgb(244 241 234 / 0.62);
   font-size: 0.9375rem;
-  line-height: 1.5;
-  text-align: right;
+  line-height: 1.55;
 }
 
-/* ---------- Stage: list | compare ---------- */
+/* ---------- Stage ---------- */
 
 .stage {
   display: grid;
-  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.45fr);
-  align-items: start;
-  gap: clamp(32px, 5vw, 72px);
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(24px, 3vw, 40px);
+  max-width: 1320px;
+  margin: 0 auto;
 }
 
-/* ---------- The asks ---------- */
-
-.asks {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  border-bottom: 1px solid rgb(244 241 234 / 0.08);
-}
-
-.row {
-  position: relative;
-  border-top: 1px solid rgb(244 241 234 / 0.08);
-}
-
-.rowButton {
+/* Before | the ask | after, on one set of rows (labels, pictures, facts,
+   shots) that all three columns share, so everything lines up across. */
+.diff {
   display: grid;
-  grid-template-columns: 40px minmax(0, 1fr);
-  align-items: baseline;
-  width: 100%;
-  padding: clamp(14px, 1.6vw, 20px) 0;
-  border: 0;
-  background: none;
-  color: rgb(244 241 234 / 0.4);
-  font: inherit;
-  text-align: left;
-  cursor: pointer;
-  transition: color 0.3s ease;
+  grid-template-columns: minmax(0, 1fr) clamp(200px, 19vw, 270px) minmax(0, 1fr);
+  grid-template-rows: auto auto auto auto;
+  column-gap: clamp(16px, 2vw, 28px);
+  row-gap: 12px;
 }
 
-.rowButton:hover {
-  color: rgb(244 241 234 / 0.75);
+.side,
+.ask {
+  display: grid;
+  grid-row: span 4;
+  grid-template-rows: subgrid;
+  min-width: 0;
+  margin: 0;
 }
 
-.rowButton:focus-visible {
-  outline: 2px solid var(--soft-mint);
-  outline-offset: 2px;
-  border-radius: 6px;
-}
-
-.row[data-on] .rowButton {
-  color: var(--paper);
-}
-
-.rowIndex {
+.sideLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: rgb(244 241 234 / 0.45);
   font-family: var(--font-mono-stack);
-  font-size: 0.75rem;
-  letter-spacing: 0.04em;
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
-.row[data-on] .rowIndex {
+.side[data-after] .sideLabel {
   color: var(--soft-mint);
 }
 
-.rowAsk {
-  min-height: 1.2em;
-  font-size: clamp(1.125rem, 0.95rem + 0.6vw, 1.5rem);
-  font-weight: 560;
-  letter-spacing: -0.03em;
-  line-height: 1.2;
-}
-
-.caret {
-  display: inline-block;
-  width: 2px;
-  height: 0.95em;
-  margin-left: 3px;
-  vertical-align: -0.1em;
-  background: var(--soft-mint);
-  animation: blink 1s steps(1) infinite;
-}
-
-.rowReply {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin: -6px 0 0;
-  padding: 0 0 clamp(14px, 1.6vw, 20px) 40px;
-  color: rgb(244 241 234 / 0.45);
-  font-family: var(--font-mono-stack);
-  font-size: 0.75rem;
-  letter-spacing: 0.04em;
-  animation: rise 0.4s var(--ease-land);
-}
-
-.rowReply i {
-  flex: none;
-  width: 14px;
-  height: 14px;
+.side[data-after] .sideLabel::before {
+  content: "";
+  width: 6px;
+  height: 6px;
   border-radius: 50%;
-  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.3) inset;
-}
-
-.rowReply[data-on] {
-  color: var(--mint-text-dark);
-}
-
-.rowReply[data-on] i {
-  background:
-    linear-gradient(var(--mint-ink), var(--mint-ink)) 4px 7px / 3px 1.5px no-repeat,
-    var(--soft-mint);
-  box-shadow: 0 0 8px rgb(95 224 176 / 0.6);
-}
-
-/* The row in play fills its rule while it waits for the next. */
-.rowFill {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -1px;
-  z-index: 1;
-  height: 1px;
   background: var(--soft-mint);
   box-shadow: 0 0 8px var(--soft-mint);
-  transform-origin: left;
-  scale: 0 1;
 }
 
-.stage[data-auto] .row[data-on] .rowFill {
-  animation: fill 4.8s linear forwards;
-}
-
-/* ---------- Compare: picture over table ---------- */
-
-@property --split {
-  syntax: "<percentage>";
-  inherits: true;
-  initial-value: 50%;
-}
-
-.compare {
+/* The picture keeps a 16:9 box; After narrows to 9:16, centred, when
+   reframed. (No container units here: a size container can't share its
+   parent's rows, which keeps the three columns aligned.) */
+.screen {
   display: grid;
-  gap: 18px;
-  min-width: 0;
-}
-
-.picture {
-  --split: 50%;
-  position: relative;
+  justify-items: center;
   aspect-ratio: 16 / 9;
-  overflow: hidden;
-  border-radius: 18px;
-  background: #050506;
-  box-shadow:
-    0 0 0 1px rgb(244 241 234 / 0.09),
-    0 40px 100px -40px rgb(0 0 0 / 0.95),
-    0 0 80px -30px rgb(95 224 176 / 0.35);
-  cursor: ew-resize;
-  touch-action: pan-y;
-  user-select: none;
 }
 
-.layer {
-  position: absolute;
-  inset: 0;
-}
-
-/* Before sits back a little. */
-.layer:first-child {
-  filter: saturate(0.7) brightness(0.8);
-}
-
-/* After shows to the right of the line, and sweeps in from the right on
-   every ask. */
-.after {
-  display: grid;
-  place-items: center;
-  background: #050506;
-  clip-path: inset(0 0 0 var(--split));
-  container-type: size;
-}
-
-.afterFrame {
+.frame {
   position: relative;
   width: 100%;
   height: 100%;
   overflow: hidden;
+  border-radius: 16px;
+  background: #050506;
+  box-shadow:
+    0 0 0 1px rgb(244 241 234 / 0.09),
+    0 30px 80px -36px rgb(0 0 0 / 0.95);
   transition: width 0.7s var(--ease-land);
 }
 
-.stage[data-edit="vertical"] .afterFrame {
-  width: calc(100cqh * 9 / 16);
+/* Before sits back a little. */
+.side:not([data-after]) .frame {
+  opacity: 0.72;
+  filter: saturate(0.75);
+}
+
+.side[data-after] .frame {
   box-shadow:
-    -1px 0 0 rgb(95 224 176 / 0.5),
-    1px 0 0 rgb(95 224 176 / 0.5);
+    0 0 0 1px rgb(95 224 176 / 0.4),
+    0 30px 80px -36px rgb(0 0 0 / 0.95),
+    0 0 70px -24px rgb(95 224 176 / 0.45);
+}
+
+/* 9:16 at the same height: (9/16) × (9/16) of the width. */
+.stage[data-edit="vertical"] .side[data-after] .frame {
+  width: 31.64%;
 }
 
 /* A warm grade over the picture. */
@@ -280,29 +178,30 @@
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(180deg, rgb(255 170 90 / 0.22), rgb(255 120 60 / 0.16)),
-    radial-gradient(70% 60% at 50% 40%, rgb(255 200 140 / 0.24), transparent 70%);
+    linear-gradient(180deg, rgb(255 170 90 / 0.2), rgb(255 120 60 / 0.14)),
+    radial-gradient(70% 60% at 50% 40%, rgb(255 200 140 / 0.22), transparent 70%);
   mix-blend-mode: soft-light;
   opacity: 0;
+  transition: opacity 0.6s ease;
 }
 
 .stage[data-edit="warm"] .grade {
   opacity: 1;
 }
 
-/* Captions, word by word, centred in the After half. */
+/* Captions, word by word. */
 .captions {
   position: absolute;
-  left: var(--split);
-  right: 0;
-  bottom: 9%;
+  left: 50%;
+  bottom: 10%;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 0.3em;
-  padding: 0 6%;
+  width: 84%;
+  translate: -50% 0;
   color: #fff;
-  font-size: clamp(0.75rem, 0.45rem + 0.9vw, 1.25rem);
+  font-size: clamp(0.75rem, 0.5rem + 0.9vw, 1.25rem);
   font-weight: 760;
   letter-spacing: -0.01em;
   text-shadow: 0 2px 10px rgb(0 0 0 / 0.7);
@@ -312,12 +211,16 @@
 
 .captions span {
   opacity: 0;
+  translate: 0 8px;
+  transition:
+    opacity 0.3s ease,
+    translate 0.3s var(--ease-land);
 }
 
 .stage[data-edit="captions"] .captions span {
   opacity: 1;
-  animation: rise 0.35s var(--ease-land) both;
-  animation-delay: calc(var(--i) * 120ms + 300ms);
+  translate: 0 0;
+  transition-delay: calc(var(--i) * 120ms + 150ms);
 }
 
 .stage[data-edit="captions"] .captions span:nth-child(3) {
@@ -328,156 +231,40 @@
   text-shadow: none;
 }
 
-/* Labels in the top corners. */
-.tag {
-  position: absolute;
-  top: 14px;
-  z-index: 2;
+/* The facts under each picture; what an ask changed lights mint. */
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+}
+
+.facts div {
   padding: 4px 9px;
   border-radius: 7px;
-  background: rgb(11 11 13 / 0.7);
-  color: rgb(244 241 234 / 0.8);
+  background: rgb(244 241 234 / 0.05);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.08) inset;
+  color: rgb(244 241 234 / 0.6);
   font-family: var(--font-mono-stack);
-  font-size: 0.625rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  pointer-events: none;
-}
-
-.tagBefore {
-  left: 14px;
-}
-
-.tagAfter {
-  right: 14px;
-  color: var(--soft-mint);
-  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.45);
-}
-
-/* The line between them, with a knob to drag. */
-.handle {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: var(--split);
-  z-index: 3;
-  width: 2px;
-  margin-left: -1px;
-  background: var(--soft-mint);
-  box-shadow:
-    0 0 12px var(--soft-mint),
-    0 0 40px rgb(95 224 176 / 0.4);
-}
-
-.handle i {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 34px;
-  height: 34px;
-  translate: -50% -50%;
-  border-radius: 50%;
-  background: var(--soft-mint);
-  box-shadow:
-    0 0 0 4px rgb(95 224 176 / 0.2),
-    0 6px 20px rgb(0 0 0 / 0.5);
-}
-
-/* Two small arrows on the knob. */
-.handle i::before,
-.handle i::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  width: 6px;
-  height: 6px;
-  margin-top: -3px;
-  border-top: 2px solid var(--mint-ink);
-  border-left: 2px solid var(--mint-ink);
-}
-
-.handle i::before {
-  left: 8px;
-  rotate: -45deg;
-}
-
-.handle i::after {
-  right: 8px;
-  rotate: 135deg;
-}
-
-.handle:focus-visible {
-  outline: none;
-}
-
-.handle:focus-visible i {
-  box-shadow:
-    0 0 0 3px var(--night),
-    0 0 0 5px var(--soft-mint);
-}
-
-/* ---------- The table of facts ---------- */
-
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  font-family: var(--font-mono-stack);
-  font-size: 0.75rem;
-  letter-spacing: 0.04em;
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
   font-variant-numeric: tabular-nums;
 }
 
-.table th,
-.table td {
-  padding: 10px 12px 10px 0;
-  border-bottom: 1px solid rgb(244 241 234 / 0.07);
-  text-align: left;
-  white-space: nowrap;
+.facts dd {
+  margin: 0;
 }
 
-.table thead th {
-  padding-top: 0;
-  color: rgb(244 241 234 / 0.38);
-  font-size: 0.625rem;
-  font-weight: 400;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-
-.table tbody th {
-  width: 70px;
-  color: rgb(244 241 234 / 0.5);
-  font-weight: 400;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.table td {
-  color: rgb(244 241 234 / 0.62);
-}
-
-.table tr[data-after] th {
+.facts div[data-changed] {
+  background: rgb(95 224 176 / 0.14);
+  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.5) inset;
   color: var(--soft-mint);
-}
-
-.table tr[data-after] td {
-  color: rgb(244 241 234 / 0.85);
-}
-
-.table td[data-changed] {
-  color: var(--soft-mint);
-  text-shadow: 0 0 12px rgb(95 224 176 / 0.5);
-  animation: rise 0.4s var(--ease-land);
-}
-
-.shotsCell {
-  width: 38%;
+  animation: pop 0.45s var(--ease-land);
 }
 
 /* The shots of the cut, as one clean bar. */
 .shots {
   position: relative;
-  display: block;
   height: 8px;
 }
 
@@ -505,7 +292,11 @@
   background: #6aa3b3;
 }
 
-.stage[data-edit="warm"] tr[data-after] .shot {
+.side[data-after] .shot {
+  filter: brightness(1.15);
+}
+
+.stage[data-edit="warm"] .side[data-after] .shot {
   background: #c98a5a;
 }
 
@@ -528,11 +319,201 @@
 }
 
 .gap {
-  background: repeating-linear-gradient(90deg, rgb(244 241 234 / 0.22) 0 2px, transparent 2px 5px);
+  background: repeating-linear-gradient(90deg, rgb(244 241 234 / 0.2) 0 2px, transparent 2px 5px);
 }
 
 .gap[data-closed] {
   opacity: 0;
+}
+
+/* ---------- The ask ---------- */
+
+/* The ask sits level with the pictures, centred on them. */
+.ask .sideLabel {
+  justify-self: center;
+}
+
+.askBody {
+  position: relative;
+  align-self: center;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+/* The line from before to after, with a light running along it. */
+.askBody::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -12px;
+  right: -12px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(95 224 176 / 0.45) 20%, rgb(95 224 176 / 0.45) 80%, transparent);
+}
+
+.flow {
+  position: absolute;
+  top: 50%;
+  left: -12px;
+  width: 40px;
+  height: 3px;
+  margin-top: -1px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, transparent, var(--soft-mint));
+  box-shadow: 0 0 10px var(--soft-mint);
+  animation: flow 2.2s ease-in-out infinite;
+}
+
+/* The arrowhead at the after end. */
+.askBody::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -14px;
+  width: 8px;
+  height: 8px;
+  margin-top: -4px;
+  border-top: 1.5px solid var(--soft-mint);
+  border-right: 1.5px solid var(--soft-mint);
+  rotate: 45deg;
+}
+
+.pill {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 52px;
+  padding: 12px 16px;
+  border-radius: 16px;
+  background: #141518;
+  box-shadow:
+    0 0 0 1px rgb(95 224 176 / 0.45),
+    0 0 40px -12px rgb(95 224 176 / 0.55),
+    0 20px 50px -20px rgb(0 0 0 / 0.9);
+}
+
+.spark {
+  color: var(--soft-mint);
+}
+
+.askText {
+  min-width: 0;
+  color: var(--paper);
+  font-size: 1rem;
+  font-weight: 540;
+  line-height: 1.3;
+}
+
+.caret {
+  display: inline-block;
+  width: 1.5px;
+  height: 1.05em;
+  margin-left: 2px;
+  vertical-align: -0.15em;
+  background: var(--soft-mint);
+  animation: blink 1s steps(1) infinite;
+}
+
+.reply {
+  position: relative;
+  z-index: 1;
+  max-width: 100%;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: var(--night);
+  color: rgb(244 241 234 / 0.5);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+  line-height: 1.5;
+  text-align: center;
+  animation: rise 0.4s var(--ease-land);
+}
+
+.reply[data-on] {
+  color: var(--mint-text-dark);
+}
+
+/* ---------- Tabs ---------- */
+
+/* An even bar of six, as wide as the comparison above. */
+.tabs {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.tab {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  overflow: hidden;
+  padding: 12px 14px;
+  border: 0;
+  border-radius: 12px;
+  background: rgb(244 241 234 / 0.04);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.08) inset;
+  color: rgb(244 241 234 / 0.62);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 540;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 0.25s ease,
+    box-shadow 0.25s ease,
+    color 0.25s ease;
+}
+
+.tabIndex {
+  color: rgb(244 241 234 / 0.35);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+}
+
+.tab:hover {
+  background: rgb(244 241 234 / 0.07);
+  color: var(--paper);
+}
+
+.tab[aria-pressed="true"] {
+  background: rgb(95 224 176 / 0.1);
+  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.45) inset;
+  color: var(--paper);
+}
+
+.tab[aria-pressed="true"] .tabIndex {
+  color: var(--soft-mint);
+}
+
+.tab:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 2px;
+}
+
+/* The ask in play fills while it waits for the next. */
+.tabFill {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+  transform-origin: left;
+  scale: 0 1;
+}
+
+.stage[data-auto] .tab[aria-pressed="true"] .tabFill {
+  animation: fill 4.6s linear forwards;
 }
 
 .visuallyHidden {
@@ -550,13 +531,36 @@
   font-family: var(--font-mono-stack);
   font-size: 0.6875rem;
   letter-spacing: 0.1em;
-  text-align: right;
+  text-align: center;
   text-transform: uppercase;
+}
+
+@keyframes flow {
+  from {
+    translate: 0 0;
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  to {
+    translate: calc(clamp(200px, 19vw, 270px) - 16px) 0;
+    opacity: 0;
+  }
 }
 
 @keyframes fill {
   to {
     scale: 1 1;
+  }
+}
+
+@keyframes pop {
+  50% {
+    scale: 1.08;
   }
 }
 
@@ -575,27 +579,60 @@
 
 /* ---------- Smaller screens ---------- */
 
-/* One column: the picture and table first, then the asks. */
-@media (max-width: 960px) {
-  .stage {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .compare {
-    order: -1;
+/* Three tabs to a row on mid-size screens. */
+@media (max-width: 1180px) {
+  .tabs {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
-@media (max-width: 860px) {
-  .head {
-    display: grid;
-    gap: 14px;
+/* Stacked: before, the ask, after; the tabs scroll sideways. */
+@media (max-width: 900px) {
+  .diff {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+    gap: 20px;
   }
 
-  .lead {
-    text-align: left;
+  .side,
+  .ask {
+    grid-row: auto;
+    grid-template-rows: none;
+    gap: 12px;
   }
 
+  .ask .sideLabel {
+    display: none;
+  }
+
+  .askBody::before,
+  .askBody::after,
+  .flow {
+    display: none;
+  }
+
+  .ask {
+    max-width: 420px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .tabs {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    scrollbar-width: none;
+    margin: 0 calc(var(--gutter) * -1);
+    padding: 2px var(--gutter);
+  }
+
+  .tab {
+    flex: none;
+  }
+}
+
+@media (max-width: 640px) {
   .plain,
   .accent {
     display: inline;
@@ -604,45 +641,28 @@
   .title {
     font-size: clamp(1.9rem, 1.2rem + 3vw, 2.75rem);
   }
-}
 
-@media (max-width: 560px) {
-  .table thead th:last-child,
-  .shotsCell {
-    display: none;
-  }
-
-  .table th,
-  .table td {
-    padding-right: 8px;
-  }
-
-  .tag {
-    top: 10px;
-  }
-
-  .tagBefore {
-    left: 10px;
-  }
-
-  .tagAfter {
-    right: 10px;
+  .tab {
+    padding: 9px 13px;
+    font-size: 0.8125rem;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .caret,
-  .rowReply,
-  .table td[data-changed],
-  .stage[data-edit="captions"] .captions span,
-  .stage[data-auto] .row[data-on] .rowFill {
-    animation: none;
-  }
-
-  .afterFrame,
+  .frame,
+  .grade,
+  .captions span,
   .shot,
   .shot::after,
   .gap {
     transition: none;
+  }
+
+  .flow,
+  .caret,
+  .reply,
+  .facts div[data-changed],
+  .stage[data-auto] .tab[aria-pressed="true"] .tabFill {
+    animation: none;
   }
 }

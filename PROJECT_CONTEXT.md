@@ -210,14 +210,23 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
   - **Fallback:** without JS or with reduced motion there is no pin, and the CSS defaults (all progress at 1) show the finished cut.
   - **Copy:** in `howItWorks` (content file), PLACEHOLDER.
 - **Edit with words** (`src/components/edit-with-words/`, added 2026-10-31; the first of the new sections in `PLAN.md`): "Change anything *by saying it.*" The core differentiator, refining the first cut by asking. The heading is centred; the stage spans the full column. It is captioned "Illustrative interface".
-  - **Heading:** laid out like Use cases and Download (eyebrow and h2 left, lead right).
-  - **`CommandCut`** (client), restructured 2026-10-31 for alignment; two earlier versions (a mock editor, then a three-column before/after) were dropped. Two columns on one grid (stacked below 960px, picture first):
-    - **Left, the asks as a numbered list:** large rows (01 Make it shorter … 06 Faster pace) between hairlines. The row in play is bright, its ask types itself in, Keyfly's reply shows under it with a mint tick, and its rule fills for 4.8s while it waits.
-    - **Right, one picture split before | after by a slider:** Before (dimmed) on the left of the line, After on the right, with corner tags.
-  - **When an ask lands:** After sweeps in from the right to the middle (Web Animations on `clip-path` and the line, animated in place so both halves keep playing the same frame). The line can be dragged, or moved with the arrow keys (`role="slider"`), and then sets `--split`.
-  - **What After shows:** a warm grade, captions centred in the After half, or a 9:16 reframe with black either side.
-  - **Under the picture, a table:** Before / After rows × Time · Format · Cuts · Look · Shots. The After row lights what the ask changed (`data-changed`). The shot bar shrinks, closes its pauses or splits each shot; on phones the Shots column hides.
-  - **Playback:** it holds while hovered or focused. With reduced motion it waits for a click and nothing sweeps.
+  - **`CommandCut`** (client), redesigned 2026-10-31 as a **before and after**; the mock editor with a striped timeline looked dated. Three columns on wide screens (stacked below 900px):
+    - **Before:** the first cut, dimmed, with its facts as mono chips (0:42 · 16:9 · 8 cuts) and a clean bar of its shots.
+    - **The ask:** a glowing prompt pill where the ask types itself in, Keyfly's reply beneath, and a mint line with a running light and an arrowhead from Before to After.
+    - **After:** the same cut with the ask applied, with a mint edge and an "● After" label.
+  - **What lights mint:** whatever the ask changed (`data-edit` on `.stage`, `data-changed` on the facts):
+    - **shorter:** 0:30, and the shots shrink;
+    - **pauses:** 0:36, and the dotted pauses close;
+    - **captions:** words on the picture, plus a "Captions" chip;
+    - **warm:** a grade, warm shots and a "Warm grade" chip;
+    - **vertical:** the frame narrows to 9:16 at the same height, and "9:16";
+    - **pace:** each shot is cut in two, and "15 cuts".
+  - **Tabs:** six numbered tabs choose the ask. The one in play fills along its foot for 4.6s while it waits, then the next plays. It holds while hovered or focused, and on narrow screens the tabs scroll sideways. With reduced motion it waits for a click and changes without easing.
+  - **Layout** (tidied 2026-10-31; a list-plus-slider restructure was tried and reverted at the team's request):
+    - The three columns share one set of rows through `subgrid` (labels "Before · Your ask · After", pictures, facts, shot bars), so everything lines up across, and the prompt is centred against the pictures.
+    - The pictures are `aspect-ratio: 16 / 9` boxes; a size container there would stop the subgrid from sharing rows.
+    - The six tabs form an even bar as wide as the comparison (three per row below 1180px; scrolling sideways below 900px).
+    - The shot layout is computed in a pure function, so render doesn't reassign variables (React lint).
   - **Copy:** `editWithWords` in the content file, all PLACEHOLDER until the team confirms which follow-up edits are real.
   - **Flight thread:** it crosses from How it works' channel to the left margin in the gap before this section and runs down beside it.
 - **Use cases** (`src/components/use-cases/`, added 2026-10-31, redesigned four times the same day): the six prompt-box presets on a **jog wheel**, the dial editors spin to move through footage. Captioned "Illustrative previews". It is not pinned, so it fits any height. Earlier versions were dropped:
