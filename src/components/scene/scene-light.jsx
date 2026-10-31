@@ -33,6 +33,8 @@ export function SceneLight() {
         const r = section.getBoundingClientRect();
         const seen = Math.max(0, Math.min(r.bottom, vh) - Math.max(r.top, 0)) / vh;
         layer.style.setProperty("--w", Math.min(1, seen * 1.25).toFixed(3));
+        // An unseen layer is hidden, so it costs nothing.
+        layer.toggleAttribute("data-off", seen === 0);
       }
     }
     const schedule = () => (frame ||= requestAnimationFrame(update));

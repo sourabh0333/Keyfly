@@ -1,4 +1,5 @@
 import { hero, prompt } from "@/content/home";
+import { PauseOffscreen } from "@/components/pause-offscreen";
 import { PointerField } from "./pointer-field";
 import { PromptBox } from "./prompt-box";
 import { TimelineFloor } from "./timeline-floor";
@@ -20,6 +21,7 @@ export function Hero() {
         <div className={styles.grain} />
       </div>
       <PointerField className={styles.spot} />
+      <PauseOffscreen />
 
       <div className={styles.inner}>
         <p className={styles.eyebrow}>

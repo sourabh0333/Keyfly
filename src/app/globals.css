@@ -240,3 +240,12 @@ a {
   clip-path: inset(50%);
   white-space: nowrap;
 }
+
+/* Sections scrolled out of view hold their animations still (see
+   PauseOffscreen), so they cost nothing while unseen. */
+[data-offscreen],
+[data-offscreen] *,
+[data-offscreen] *::before,
+[data-offscreen] *::after {
+  animation-play-state: paused !important;
+}

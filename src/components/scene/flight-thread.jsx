@@ -124,9 +124,23 @@ function measure(page, path) {
     }
   }
 
+  // A table of points along the line (every 4px), so the comet's position
+  // is a lookup on every frame rather than a measurement of the whole path.
+  const total = keys.at(-1)[1];
+  const step = 4;
+  const count = Math.ceil(total / step) + 1;
+  const xs = new Float32Array(count);
+  const ys = new Float32Array(count);
+  for (let i = 0; i < count; i++) {
+    const p = path.getPointAtLength(Math.min(total, i * step));
+    xs[i] = p.x;
+    ys[i] = p.y;
+  }
+
   return {
     top0,
     w,
+    points: { xs, ys, step },
     h: Math.max(page.offsetHeight, end ? Math.ceil(end.bottom) : 0),
     footer: end?.panel.closest("footer") ?? null,
     stop: end?.stop ?? null,
@@ -136,6 +150,14 @@ function measure(page, path) {
     frames,
     landings: landings.map((l, i) => ({ ...l, tx, len: at[`land${i}`] })),
   };
+}
+
+// The point at `len` along the line, from its table.
+function pointAt({ xs, ys, step }, len) {
+  const f = Math.max(0, len) / step;
+  const i = Math.min(xs.length - 2, Math.floor(f));
+  const t = Math.min(1, f - i);
+  return { x: xs[i] + (xs[i + 1] - xs[i]) * t, y: ys[i] + (ys[i + 1] - ys[i]) * t };
 }
 
 // The length of line drawn when the head is at page height `t`.
@@ -156,8 +178,8 @@ function lengthAt(keys, t) {
  * the language of the logo's comet. It draws itself as you scroll, its head
  * riding a fixed height on screen: a white-hot core leads a burning mint
  * tail that cools behind it into the finished line, and the tail stretches
- * and the head sheds sparks with the speed of the scroll. Pulses of light
- * keep flowing along what is drawn. It lights a keyframe wherever a pinned
+ * and the head sheds sparks with the speed of the scroll. It lights a
+ * keyframe wherever a pinned
  * section changes (with a burst), lands as a point on each section's
  * eyebrow (which lights in answer, data-landed) and finishes at the
  * footer's playhead (data-arrived on the footer). With reduced motion it is
@@ -167,7 +189,6 @@ export function FlightThread({ pageRef }) {
   const [geo, setGeo] = useState(null);
   const svgRef = useRef(null);
   const baseRef = useRef(null);
-  const maskRef = useRef(null);
   const glowRef = useRef(null);
   const hotRef = useRef(null);
   const coreRef = useRef(null);
@@ -219,7 +240,6 @@ export function FlightThread({ pageRef }) {
 
     const dash = `${total} ${total + 1}`;
     base.style.strokeDasharray = dash;
-    maskRef.current.style.strokeDasharray = dash;
 
     // Page → screen.
     const screen = (x, yy) => [x, yy + geo.top0 - scrollY];
@@ -243,7 +263,6 @@ export function FlightThread({ pageRef }) {
     function paint(len, v, dt) {
       const flying = len > 0.5 && len < total - 0.5;
       base.style.strokeDashoffset = String(total - len);
-      maskRef.current.style.strokeDashoffset = String(total - len);
 
       // The comet's tail: windows of the line ending at the head, longer
       // the faster it moves.
@@ -259,13 +278,13 @@ export function FlightThread({ pageRef }) {
       head.toggleAttribute("data-on", flying);
       let p = null;
       if (flying) {
-        p = base.getPointAtLength(len);
+        p = pointAt(geo.points, len);
         head.setAttribute("transform", `translate(${f(p.x)} ${f(p.y)}) scale(${f(clamp(0.8 + v * 0.8, 0.8, 1.8))})`);
       }
 
       // Sparks shed from the head while it moves.
       if (p && dt && v > 0.06 && !reduced) {
-        const back = base.getPointAtLength(Math.max(0, len - 8));
+        const back = pointAt(geo.points, len - 8);
         const dx = p.x - back.x;
         const dy = p.y - back.y;
         const n = Math.hypot(dx, dy) || 1;
@@ -394,15 +413,10 @@ export function FlightThread({ pageRef }) {
             <stop offset="0.35" stopColor="#eafff6" stopOpacity="0.9" />
             <stop offset="1" stopColor="#5fe0b0" stopOpacity="0" />
           </radialGradient>
-          {/* Only what is drawn lets the flowing pulses through. */}
-          <mask id="thread-drawn" maskUnits="userSpaceOnUse" x="0" y="0" width={geo?.w ?? 0} height={geo?.h ?? 0}>
-            <path ref={maskRef} d={geo?.d} fill="none" stroke="#fff" strokeWidth="8" />
-          </mask>
         </defs>
 
         {geo ? <path d={geo.d} className={styles.track} /> : null}
         <path ref={baseRef} d={geo?.d} className={styles.base} />
-        {geo ? <path d={geo.d} className={styles.pulses} mask="url(#thread-drawn)" /> : null}
         <path ref={glowRef} d={geo?.d} className={styles.glowTrail} />
         <path ref={hotRef} d={geo?.d} className={styles.hotTrail} />
         <path ref={coreRef} d={geo?.d} className={styles.coreTrail} />

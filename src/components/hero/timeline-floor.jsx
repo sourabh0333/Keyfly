@@ -59,7 +59,7 @@ function Loop({ track }) {
           className={styles.clip}
           data-kind={track.kind}
           data-lit={clip.lit ? "" : undefined}
-          style={{ left: `${clip.at}%`, width: `${clip.width}%`, "--d": `${i * 0.37 + track.seed * 0.11}s` }}
+          style={{ left: `${clip.at}%`, width: `${clip.width}%` }}
         >
           {track.kind === "audio" ? (
             <svg className={styles.wave} viewBox="0 0 100 20" preserveAspectRatio="none" aria-hidden="true">
@@ -88,17 +88,17 @@ export function TimelineFloor() {
   return (
     <div className={styles.stage}>
       <div className={styles.plane}>
-        <div className={styles.ruler}>
-          <div className={styles.rulerStrip} />
-        </div>
-        {TRACKS.map((track) => (
-          <div key={track.seed} className={styles.track} data-kind={track.kind}>
-            <div className={styles.strip}>
+        {/* One reel holds the ruler and every track, twice over, and slides
+            as a single layer. */}
+        <div className={styles.reel}>
+          <div className={styles.ruler} />
+          {TRACKS.map((track) => (
+            <div key={track.seed} className={styles.track} data-kind={track.kind}>
               <Loop track={track} />
               <Loop track={track} />
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
         <div className={styles.playhead} />
       </div>
     </div>

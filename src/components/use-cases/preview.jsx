@@ -1,3 +1,4 @@
+import { memo } from "react";
 import styles from "./preview.module.css";
 
 const BARS = Array.from({ length: 18 }, (_, i) => i);
@@ -129,7 +130,7 @@ const KINDS = { launch: Launch, ugc: Ugc, explainer: Explainer, montage: Montage
  * monitor edge to edge (a vertical format is pillarboxed). Any ancestor
  * with data-paused pauses it, and it holds still with reduced motion.
  */
-export function Preview({ kind, format, bleed = false }) {
+export const Preview = memo(function Preview({ kind, format, bleed = false }) {
   const Kind = KINDS[kind];
   return (
     <div className={styles.stage} data-bleed={bleed ? "" : undefined} aria-hidden="true">
@@ -139,4 +140,4 @@ export function Preview({ kind, format, bleed = false }) {
       </div>
     </div>
   );
-}
+});

@@ -253,6 +253,18 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
   - **Fallback:** it pins only where the stage fits the screen (content + 96px ≤ the window's height) and motion is allowed; otherwise it shows landed. The server HTML shows it landed too.
   - **Pinned stages** (here and in Use cases) sit at the top of the pin (padding `clamp(64px, 10vh, 84px)`, clear of the header), not centred, so they follow their heading without a gap.
   - **Copy:** the Windows step is PLACEHOLDER. The macOS step and the footnote ("Keyfly.si is a Cevrynt Inc. product") come from the installer art.
+- **Performance rules** (2026-10-31, after the hero lagged; measured frame by frame, the hero went from about 9 to 26 fps in a GPU-less test browser, How it works from 18 to 28, Use cases from 27 to 47):
+  - **Animate only `transform` and `opacity`.** Animating borders, backgrounds or shadows (as the timeline floor's breathing clips did) repaints everything around them every frame.
+  - **One moving layer, not many:** the hero's timeline floor slides as one reel (`.reel`, `will-change: transform`), not one strip per track.
+  - **No masks or blend modes over moving content:**
+    - the floor's edge fades are night painted over it (`.stage::after`), not a mask;
+    - the hero grain uses a normal blend at 0.035, not `overlay`.
+  - **No filters on page-tall SVG paths** (the flight thread): a filter there repaints the whole page height on every scroll. The comet's glow comes from its wide soft stroke, and only the small head keeps a drop-shadow. The always-running light pulses were removed.
+  - **Nothing runs out of sight:**
+    - `PauseOffscreen` sets `data-offscreen` on a section once it leaves the screen, and `globals.css` pauses every animation inside it (hero, Use cases);
+    - the background glows are still (no drift), and an unseen one is hidden (`data-off`).
+  - **Per-frame scripts do lookups, not measurements:** the thread reads its comet position from a table of points (every 4px) built once.
+  - **React:** the jog wheel's ticks are built once and `Preview` is memoised, so turning the wheel doesn't re-render the previews.
 - **Gotchas:**
   - **Grid overflow:** grid containers that hold the scrolling chip row need `grid-template-columns: minmax(0, 1fr)`. Without it the row's `max-content` width widens the page on mobile.
   - **No large blur:** never put a large `filter: blur()` in a 3D, animated stage.

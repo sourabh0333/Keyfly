@@ -6,15 +6,19 @@
   overflow: hidden;
   perspective: 560px;
   perspective-origin: 50% -40%;
-  /* Fade out toward the horizon and the sides. */
-  -webkit-mask-image:
-    linear-gradient(to bottom, transparent 0%, rgb(0 0 0 / 0.5) 30%, #000 60%, #000 100%),
-    linear-gradient(to right, transparent 0%, #000 22%, #000 78%, transparent 100%);
-  -webkit-mask-composite: source-in;
-  mask-image:
-    linear-gradient(to bottom, transparent 0%, rgb(0 0 0 / 0.5) 30%, #000 60%, #000 100%),
-    linear-gradient(to right, transparent 0%, #000 22%, #000 78%, transparent 100%);
-  mask-composite: intersect;
+}
+
+/* Fade out toward the horizon and the sides: night painted over the edges
+   (a mask here was re-applied to the moving plane on every frame). */
+.stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    linear-gradient(to bottom, var(--night) 0%, rgb(11 11 13 / 0.5) 30%, transparent 60%),
+    linear-gradient(to right, var(--night) 0%, transparent 22%, transparent 78%, var(--night) 100%);
+  pointer-events: none;
 }
 
 .plane {
@@ -23,29 +27,36 @@
   right: -60%;
   bottom: -6%;
   height: 190%;
-  display: flex;
-  flex-direction: column;
-  gap: 0.9%;
-  padding: 0 0 2%;
   transform-origin: 50% 100%;
   transform: rotateX(68deg) rotateZ(calc(var(--nx, 0) * -2.5deg));
   transition: transform 1.2s var(--ease-land);
 }
 
-/* Time runs left to right; each strip holds two copies of one loop and
-   slides by one loop, so playback never ends. */
-.ruler,
-.track {
-  position: relative;
-  overflow: hidden;
+/* Time runs left to right: the reel holds two copies of one loop on every
+   row and slides by one loop, so playback never ends. It is the only
+   moving part, on its own GPU layer, so nothing repaints as it runs. */
+.reel {
+  position: absolute;
+  inset: 0 auto 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9%;
+  width: 200%;
+  padding: 0 0 2%;
+  animation: play 70s linear infinite;
+  will-change: transform;
 }
 
 .ruler {
   flex: 0 0 4%;
   border-bottom: 1px solid rgb(244 241 234 / 0.12);
+  background:
+    repeating-linear-gradient(to right, rgb(244 241 234 / 0.35) 0 2px, transparent 2px 3.125%) 0 0 / 100% 100%,
+    repeating-linear-gradient(to right, rgb(244 241 234 / 0.16) 0 1px, transparent 1px 0.625%) 0 100% / 100% 45% no-repeat;
 }
 
 .track {
+  display: flex;
   flex: 1;
   border-top: 1px solid rgb(244 241 234 / 0.04);
 }
@@ -53,21 +64,6 @@
 .track[data-kind="title"],
 .track[data-kind="fx"] {
   flex: 0.6;
-}
-
-.strip,
-.rulerStrip {
-  position: absolute;
-  inset: 0 auto 0 0;
-  display: flex;
-  width: 200%;
-  animation: play 70s linear infinite;
-}
-
-.rulerStrip {
-  background:
-    repeating-linear-gradient(to right, rgb(244 241 234 / 0.35) 0 2px, transparent 2px 6.25%) 0 0 / 100% 100%,
-    repeating-linear-gradient(to right, rgb(244 241 234 / 0.16) 0 1px, transparent 1px 1.25%) 0 100% / 100% 45% no-repeat;
 }
 
 .loop {
@@ -115,14 +111,14 @@
   color: rgb(244 241 234 / 0.4);
 }
 
-/* A few clips carry the accent, breathing softly as if selected. */
+/* A few clips carry the accent, as if selected. (They used to breathe,
+   but animating borders and shadows repainted the whole tipped plane every
+   frame, which made the hero lag.) */
 .clip[data-lit] {
-  border-color: rgb(95 224 176 / 0.75);
-  background-color: rgb(95 224 176 / 0.14);
-  box-shadow: 0 0 24px rgb(95 224 176 / 0.25);
+  border-color: rgb(95 224 176 / 0.6);
+  background-color: rgb(95 224 176 / 0.11);
+  box-shadow: 0 0 18px rgb(95 224 176 / 0.18);
   color: var(--soft-mint);
-  animation: breathe 3.2s ease-in-out infinite;
-  animation-delay: var(--d, 0s);
 }
 
 .wave {
@@ -184,14 +180,6 @@
   }
 }
 
-@keyframes breathe {
-  50% {
-    border-color: rgb(95 224 176 / 0.35);
-    background-color: rgb(95 224 176 / 0.06);
-    box-shadow: 0 0 0 rgb(95 224 176 / 0);
-  }
-}
-
 @media (max-width: 720px) {
   .stage {
     height: 34%;
@@ -204,9 +192,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .strip,
-  .rulerStrip,
-  .clip[data-lit] {
+  .reel {
     animation: none;
   }
 }

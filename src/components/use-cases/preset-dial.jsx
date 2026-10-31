@@ -4,7 +4,11 @@ import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { Preview } from "./preview";
 import styles from "./use-cases.module.css";
 
-const TICKS = Array.from({ length: 90 }, (_, i) => i * 4);
+// The wheel's ticks never change, so they are built once, not on every
+// turn of the wheel.
+const TICK_LINES = Array.from({ length: 90 }, (_, i) => i * 4).map((a) => (
+  <line key={a} x1="91" x2={a % 24 === 0 ? 85 : 95} transform={`rotate(${a})`} className={a % 24 === 0 ? styles.major : undefined} />
+));
 
 const pad = (n) => String(n).padStart(2, "0");
 const clamp = (n, lo, hi) => Math.min(hi, Math.max(lo, n));
@@ -270,11 +274,7 @@ export function PresetDial({ items, cta, dialLabel, promptLabel, hint }) {
                   </radialGradient>
                 </defs>
                 <circle r="99" className={styles.face} fill="url(#dial-face)" />
-                <g className={styles.ticks}>
-                  {TICKS.map((a) => (
-                    <line key={a} x1="91" x2={a % 24 === 0 ? 85 : 95} transform={`rotate(${a})`} className={a % 24 === 0 ? styles.major : undefined} />
-                  ))}
-                </g>
+                <g className={styles.ticks}>{TICK_LINES}</g>
                 <circle r="80" className={styles.groove} />
                 <circle r="34" className={styles.hubRing} />
                 {/* How far through the six the wheel has turned. */}
