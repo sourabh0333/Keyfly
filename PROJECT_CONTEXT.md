@@ -64,14 +64,6 @@ On 2026-10-30 the team dropped every earlier direction ("Paper and mint", "Relay
 - **Built step by step:** header and hero first. Each later section is added only after the previous one is agreed.
 - The cardboard.ai and app.keyfly.si pages could not be opened from the cloud session (network policy). The hero follows the team's screenshot of the app.
 
-## Lab (added 2026-10-31)
-
-`/lab` (development only; 404 in production, like `/styleguide`) holds test pages for page-wide motion ideas, so the team can feel them before one goes into the homepage. The edit transitions on the homepage were judged "not clean, smooth, unique and modern", which is what led here. Built from the real content, with mock visuals in `src/components/lab/`:
-
-- **`/lab/morph`, idea A, one object that transforms:** a single fixed element takes the shape of invisible anchors (`data-stop`) in each section. It interpolates between the two anchors either side of the middle of the screen, easing its box and corner radius and cross-fading its contents: prompt box → editor → preview → app icon.
-- **`/lab/stack`, idea B, stacking scenes:** full-screen sticky panels. The next one slides over while the one beneath shrinks (to 91%), rounds its corners and dims, with smooth inertia scrolling throughout from **Lenis** (`lenis`, added as a dependency for this test).
-- A switcher pill at the foot of each lab page moves between them.
-
 ## Design foundations (step 2)
 
 `/styleguide` shows every token and component in development and returns 404 in production. Check it after changing a foundation.
@@ -141,14 +133,14 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
   - Brand: the logo (30px, intro on scroll), the site description (PLACEHOLDER, from `siteConfig`) and a "macOS · Windows" pill.
   - Three link columns: Product (How it works, Use cases, Download); Use cases (the six presets); Keyfly (Open Keyfly, Sign in, Keyfly for macOS, Keyfly for Windows).
 - **Bottom bar:** "© {year} Cevrynt Inc.", keyfly.si and Back to top.
-- **The arrival** (added 2026-10-31; cued by `SceneLight`):
-  - While `data-await` is on and `data-arrived` isn't, the contents wait at 22% opacity, 18px low and lightly blurred.
+- **The thread's arrival** (added 2026-10-31 at the team's request: "the line should extend to the footer and trigger an animation there"):
+  - While `data-thread` is on and the line hasn't arrived, the contents wait at 22% opacity, 18px low and lightly blurred.
   - On `data-arrived`:
     - the playhead sends out a pulse ring;
     - a conic comet of mint light (`@property --sweep`) runs once round the panel's edge;
     - the panel's mint edge and glow come up;
     - the CTA, brand, three columns and bottom bar rise in, staggered by `--i`.
-  - Without JS the footer simply shows. With reduced motion nothing animates.
+  - Without JS the footer simply shows. With reduced motion the line arrives at once and nothing animates.
 - **No inventions:** no social links, no legal pages and no newsletter until they exist.
 - **Narrow screens:** the brand sits above the columns. On phones the columns become two, and the CTA buttons share the row.
 - **Logo fix (same day):** the logo's glowing-trail layer (`.glowLayer`) is drawn only while light runs: during the intro (`data-state="running"`) or a hover relight (`data-lit`). At rest its filter region left a faint mark beside the symbol at larger sizes. The logo's shapes and colours are unchanged.
@@ -158,21 +150,30 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
 `src/app/page.jsx` renders, inside `Scene`, Hero → HowItWorks (`#product`) → UseCases (`#use-cases`) → Download (`#download`). All copy lives in `src/content/home.js`. Lines marked `PLACEHOLDER` wait for the confirmed product description, so the page is `noindex` until then.
 
 - **Scene** (`src/components/scene/`, added 2026-10-31 at the team's request: the page was flat black and the sections felt disconnected). It ties the sections together as one scroll:
-  - **Edits between sections** (2026-10-31, the team's pick from three proposals; tried before it and dropped: a flight-thread line, a camera focus frame, WebGL "generated light" and "clean motion" beams, reveals and spotlight edges). Each section change plays as a real edit transition, scrubbed by the scroll (view timelines, so it runs both ways), in `src/components/scene/cuts.module.css`:
-    - **Hero → How it works, wipe:** the section's `clip-path` opens left to right behind a mint playhead line (`--cut`).
-    - **How it works → Use cases, iris:** a circle with a mint ring opens from the middle of the screen (`--ir`, centred at 45vh of the section, over entry 35%→100%).
-    - **Use cases → Download, push:** Use cases leaves left (exit range) as Download comes in from the right, with a mint seam on its leading edge.
-    - **Download → footer, cross-dissolve.**
-    - **Chips:** a small chip names each transition while it plays ("Transition · Wipe" and so on; `--tp` drives their visibility).
-    - **Two transitions on one section:** Use cases and Download each run two animations (in and out), so they have combined rules.
-    - `.page` has `overflow-x: clip`, so a push never widens the page.
-    - Without scroll-driven animation support, or with reduced motion, sections simply follow on.
-    - No grain on the sections or the footer (the hero keeps its own).
-  - **`SceneLight`:** the fixed light root behind every section (sections leave their own backgrounds transparent; the hero's backdrop fades out at its foot with a mask). It holds one soft, still glow per section, brought up as its section fills the screen (`--w`):
-    - How it works: dusk.
-    - Use cases: the colours of the feed on air, cross-faded through registered `@property` colours.
-    - Download: mint.
-    - **Footer cue:** it sets `data-await` on the footer, and `data-arrived` once the footer's top is above 55% of the screen.
+  - **`SceneLight`:** a fixed light behind every section, so sections leave their own backgrounds transparent (the hero's backdrop fades out at its foot with a mask). Each section brings up its own layer as it fills the screen (`--w`), and the layers drift slowly:
+    - How it works: dusk (violet-blue and peach, from its viewer's shots).
+    - Use cases: the colours of the feed on air. `Switcher` sets `html[data-feed]`, and the colours cross-fade through registered `@property` colours.
+    - Download: mint, where the thread lands.
+  - **`FlightThread`** (reworked 2026-10-31: "the line is just moving along one side… lackluster"): one line of light in page coordinates (SVG over the page, `pointer-events: none`), laid out from the sections and re-measured with a `ResizeObserver` on the page and the footer. It speaks the logo intro's language.
+    - **Route:**
+      1. It picks up the hero's playhead and swings out to the left margin.
+      2. It runs down past How it works.
+      3. A **swerve** out into the page (up to 340px) brings it back down onto the Use cases eyebrow.
+      4. It flies one loop of the brand's flight path across the next gap and lands on the Download eyebrow.
+      5. It runs on to the footer, turns at the panel's corner onto its top edge (the ruler) and runs along it to the playhead (`[data-thread-end]`, `[data-thread-stop]`). That last run gets its own stretch of scroll (up to 260px).
+    - **The comet:** the head rides 62% down the screen. A white-hot core leads a burning mint tail (three windows of the path, at 210, 110 and 34px, set by `stroke-dasharray` and `stroke-dashoffset`), which cools behind into the thin finished line (`.base`).
+    - **Speed:** the tail stretches (up to 2.6×), brightens and the head grows with the scroll speed, measured from the line's own progress and smoothed.
+    - **Sparks:** the head sheds sparks while it moves, on a fixed `<canvas>`, falling under gravity and carried with the page. There are bursts at keyframes, at each landing and at the footer's playhead.
+    - **Flowing light:** pulses of light (`.pulses`, a dashed copy masked to what is drawn) keep travelling along the finished line.
+    - **Keyframe diamonds** light (with a burst) wherever a pinned section changes. Each pinned track lists its stops as fractions of its scroll in `data-thread-stops`, and diamonds are only placed on the vertical runs:
+      - How it works: `0.333,0.667`;
+      - the jog wheel: one per preset;
+      - Download: lift-off and landing.
+    - **Landings:** at each eyebrow (`data-landing`) the line lands as a point with a bloom, a ring and a reach to the eyebrow's mark; the eyebrow lights in answer (`data-landed`).
+    - **Footer:** it has `data-thread` while the line is on its way and `data-arrived` once the line reaches the playhead. Scrolling back up resets it, so it replays.
+    - **Performance:** one rAF loop runs only while the line moves or sparks live.
+    - **Reduced motion:** the line is drawn whole and still, with no pulses or sparks, and everything has landed.
+  - The thread stays in margins and gaps; never route it across copy.
   - **`Scrubber`** (added 2026-10-31, "the page is an edit"; moved the same day to the right-hand margin because, at the foot of the screen, it covered content): a slim vertical timeline fixed in the right margin once the hero is left behind. It is hidden at 1024px and below, where there is no margin.
     - One clip per `[data-section]` (Intro, How it works, Use cases, Download), sized by its length, filled with its section's light, with film-frame lines.
     - A mint playhead bar at the scroll position.
@@ -196,7 +197,7 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
     - The floor turns slightly with the pointer.
   - **Also on the hero:** a pointer light (`PointerField`, fine pointers only) and film grain.
 - **How it works** (`src/components/how-it-works/`, added 2026-10-31): three steps beside an illustrative Keyfly editor window, captioned "Illustrative interface".
-  - **Continuity:** the section wipes in over the hero behind a playhead line (see Scene).
+  - **Continuity:** the flight thread (see Scene) picks up the hero's playhead at the top of the section.
   - **Steps:** Describe it, Keyfly edits, Export anywhere, on a rail that fills with the mint point at its tip. Only the current step shows its body. On narrow screens they become one row of three.
   - **Scroll progress:** `ScrollStage` (client) pins the section (`data-live`, 420svh, sticky 100svh stage). It writes to the DOM:
     - `--p`, `--s1`, `--s2`, `--s3` (one per step), `--asm` (assembly) and `--ph` (playhead);
@@ -236,7 +237,7 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
     - Product demo: a cursor click, then a zoom.
     - Podcast: a speaker, a waveform and a quote.
   - **Copy:** in `useCases` (content file), PLACEHOLDER.
-- **Download** (`src/components/download/`, added 2026-10-31, redesigned twice the same day): "Land Keyfly *on your desktop.*" A **landing played by the scroll**, the page's finale. The installer-window version was dropped because the team wanted each section to be its own, yet match.
+- **Download** (`src/components/download/`, added 2026-10-31, redesigned twice the same day): "Land Keyfly *on your desktop.*" A **landing played by the scroll**, the page's finale, where the flight thread lands too. The installer-window version was dropped because the team wanted each section to be its own, yet match.
   - **Heading:** laid out like Use cases (eyebrow and h2 left, lead right).
   - **`Landing`** (client): the track (`data-live`, 260svh) pins a 100svh stage. The scroll then plays the flight:
     - Lift-off (first 12%): the icon rises off the source.

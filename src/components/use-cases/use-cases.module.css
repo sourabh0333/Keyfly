@@ -11,6 +11,17 @@
   color: var(--paper);
 }
 
+/* The same film grain as the sections above. */
+.section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+  opacity: 0.06;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
 
 
 /* The same column as the sections above and below. */
@@ -39,6 +50,7 @@
   font-size: 0.6875rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
+  transition: color 0.5s ease;
 }
 
 .eyebrowMark {
@@ -46,6 +58,19 @@
   height: 1px;
   background: var(--soft-mint);
   box-shadow: 0 0 8px var(--soft-mint);
+  transition:
+    width 0.5s var(--ease-land),
+    box-shadow 0.5s ease;
+}
+
+/* The flight thread has landed here (see FlightThread). */
+.eyebrow[data-landed] {
+  color: rgb(244 241 234 / 0.85);
+}
+
+.eyebrow[data-landed] .eyebrowMark {
+  width: 30px;
+  box-shadow: 0 0 12px var(--soft-mint);
 }
 
 .title {

@@ -1,18 +1,24 @@
+"use client";
+
+import { useRef } from "react";
+import { FlightThread } from "./flight-thread";
 import { SceneLight } from "./scene-light";
 import { Scrubber } from "./scrubber";
 import styles from "./scene.module.css";
 
 /**
- * Holds the homepage's sections in one scene: the soft light behind them
- * and the page timeline in the margin (see SceneLight and Scrubber). The
- * sections cut into each other with edit transitions (see cuts.module.css);
- * the scene clips them sideways so a push never widens the page.
+ * Holds the homepage's sections in one scene: the light behind them, the
+ * flight thread that runs through them and the page timeline at the foot
+ * of the screen (see SceneLight, FlightThread and Scrubber).
  */
 export function Scene({ children }) {
+  const pageRef = useRef(null);
+
   return (
-    <div className={styles.page}>
+    <div ref={pageRef} className={styles.page}>
       <SceneLight />
       {children}
+      <FlightThread pageRef={pageRef} />
       <Scrubber />
     </div>
   );

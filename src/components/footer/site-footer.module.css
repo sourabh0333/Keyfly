@@ -1,9 +1,9 @@
 /*
  * The site footer: one night panel holding the closing call to action,
  * the brand and link columns, and the bottom bar. Its top edge is a
- * timeline ruler with the mint playhead at the end. data-await on the
- * footer while the page is above it, data-arrived once it is well into
- * view (see SceneLight).
+ * timeline ruler with the mint playhead at the end, where the page's
+ * flight thread finishes: data-thread on the footer while it is on its
+ * way, data-arrived once it reaches the playhead.
  */
 .footer {
   position: relative;
@@ -12,6 +12,17 @@
   color: var(--paper);
 }
 
+/* The same film grain as the sections above, so there is no seam. */
+.footer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+  opacity: 0.06;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
 
 .inner {
   max-width: 1320px;
@@ -68,9 +79,9 @@
   rotate: 45deg;
 }
 
-/* ---------- The arrival ---------- */
+/* ---------- The thread's arrival ---------- */
 
-/* Until the footer arrives, the contents wait, dimmed and low. */
+/* While the line is on its way, the contents wait, dimmed and low. */
 .cta,
 .brand,
 .column,
@@ -81,7 +92,7 @@
     filter 0.7s ease calc(var(--i, 0) * 90ms + 250ms);
 }
 
-.footer[data-await]:not([data-arrived]) :is(.cta, .brand, .column, .bottom) {
+.footer[data-thread]:not([data-arrived]) :is(.cta, .brand, .column, .bottom) {
   opacity: 0.22;
   translate: 0 18px;
   filter: blur(2px);
@@ -89,7 +100,7 @@
   transition-delay: 0s;
 }
 
-/* The panel's light comes up as it arrives. */
+/* The panel's light comes up as the line arrives. */
 .panel {
   transition: box-shadow 0.8s ease;
 }
@@ -131,7 +142,7 @@
   animation: sweep 1.8s cubic-bezier(0.45, 0, 0.25, 1) forwards;
 }
 
-/* The playhead answers: a pulse goes out from its foot. */
+/* The playhead takes the line in: a pulse goes out from its foot. */
 .playhead::before {
   content: "";
   position: absolute;
@@ -149,11 +160,11 @@
   animation: pulse 1s ease-out;
 }
 
-.footer[data-await] .playhead {
+.footer[data-thread] .playhead {
   transition: box-shadow 0.5s ease;
 }
 
-.footer[data-await]:not([data-arrived]) .playhead {
+.footer[data-thread]:not([data-arrived]) .playhead {
   box-shadow: none;
   opacity: 0.45;
 }

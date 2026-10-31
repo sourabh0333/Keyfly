@@ -238,6 +238,7 @@ export function PresetDial({ items, cta, dialLabel, promptLabel, hint }) {
       ref={trackRef}
       className={styles.track}
       data-live={live ? "" : undefined}
+      data-thread-stops={items.slice(1).map((_, i) => ((i + 1) / last).toFixed(3)).join(",")}
       style={{ "--count": items.length }}
     >
       <div ref={stageRef} className={styles.pin}>

@@ -1,6 +1,5 @@
 import { howItWorks } from "@/content/home";
 import wipe from "@/components/scene/wipe.module.css";
-import cuts from "@/components/scene/cuts.module.css";
 import { ScrollStage } from "./scroll-stage";
 import styles from "./how-it-works.module.css";
 
@@ -58,10 +57,6 @@ export function HowItWorks() {
 
   return (
     <ScrollStage className={styles.section} id="product" labelledBy="how-title" label="How it works" prompt={demo.prompt}>
-      <span className={cuts.wipeLine} aria-hidden="true" />
-      <span className={`${cuts.chip} ${cuts.wipeChip}`} aria-hidden="true">
-        Transition · Wipe
-      </span>
       <div className={styles.stage}>
         <div className={styles.copy}>
           <p className={styles.eyebrow}>

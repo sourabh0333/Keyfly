@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { Logo } from "@/components/logo";
-import cuts from "@/components/scene/cuts.module.css";
 import { footer } from "@/content/footer";
 import styles from "./site-footer.module.css";
 
@@ -30,10 +29,11 @@ function Arrow() {
  * copyright. Its top edge is a timeline ruler with the mint playhead at the
  * end of the reel.
  *
- * While the page is above it the footer has data-await (set by the page's
- * light, see SceneLight) and its contents wait, dimmed; as it comes well
- * into view (data-arrived) the playhead pulses, a comet of light runs round
- * the panel and the contents rise in. Without the script, everything just
+ * The page's flight thread finishes here: it turns onto the ruler and runs
+ * to the playhead (data-thread-end, data-thread-stop). While it is on its
+ * way the footer has data-thread, and its contents wait, dimmed; when it
+ * arrives (data-arrived) the playhead pulses, a comet of light runs round
+ * the panel and the contents rise in. Without the thread, everything just
  * shows.
  */
 export function SiteFooter() {
@@ -41,15 +41,12 @@ export function SiteFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className={`${styles.footer} ${cuts.dissolveIn}`}>
-      <span className={`${cuts.chip} ${cuts.dissolveChip}`} aria-hidden="true">
-        Transition · Cross dissolve
-      </span>
+    <footer className={styles.footer}>
       <div className={styles.inner}>
-        <div className={styles.panel}>
+        <div className={styles.panel} data-thread-end>
           <span className={styles.comet} aria-hidden="true" />
           <div className={styles.reel} aria-hidden="true">
-            <span className={styles.playhead} />
+            <span className={styles.playhead} data-thread-stop />
           </div>
 
           <div className={styles.cta} style={{ "--i": 0 }}>
