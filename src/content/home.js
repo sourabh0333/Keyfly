@@ -72,8 +72,8 @@ export const howItWorks = {
   },
 };
 
-// "Use cases": one clip per preset in the prompt box, on a reel that slides
-// under the playhead. Each opens with a small illustrative preview, and
+// "Use cases": the presets in the prompt box as six live feeds on a
+// multicam switcher. The one on air plays on the program monitor, and
 // "Try this prompt" hands its preset back to the hero's prompt box.
 // PLACEHOLDER until the product description is confirmed.
 export const useCases = {
@@ -81,6 +81,8 @@ export const useCases = {
   title: [{ text: "Made for" }, { text: "every kind of video.", accent: true }],
   lead: "Start from a preset or describe your own. Six of the videos people make most:",
   cta: "Try this prompt",
+  sources: "Sources",
+  hint: "Press 1–6 to cut",
   note: "Illustrative previews",
   items: [
     { label: "Launch Video", kind: "launch", format: "16:9", body: "Title cards, quick cuts on the beat and a clear call to action at the end." },

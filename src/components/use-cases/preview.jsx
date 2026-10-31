@@ -125,14 +125,14 @@ const KINDS = { launch: Launch, ugc: Ugc, explainer: Explainer, montage: Montage
 
 /**
  * A small looping preview of one use case, drawn in CSS at the use case's
- * format. Decorative: the card's text says what it is. It plays only while
- * its card sits under the playhead (or always, without the reel's script),
- * and holds still with reduced motion.
+ * format. Decorative: the text beside it says what it is. `bleed` fills a
+ * monitor edge to edge (a vertical format is pillarboxed). Any ancestor
+ * with data-paused pauses it, and it holds still with reduced motion.
  */
-export function Preview({ kind, format }) {
+export function Preview({ kind, format, bleed = false }) {
   const Kind = KINDS[kind];
   return (
-    <div className={styles.stage} aria-hidden="true">
+    <div className={styles.stage} data-bleed={bleed ? "" : undefined} aria-hidden="true">
       <div className={styles.screen} data-format={format}>
         <Kind />
         <span className={styles.safe} />
