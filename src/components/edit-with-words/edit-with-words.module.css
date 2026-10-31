@@ -1,10 +1,10 @@
 /*
- * "Edit with words": a centred stage, the picture over its timeline with
- * the command bar beneath. CommandCut sets data-edit on .stage to the edit
- * applied (shorter, pauses, captions, warm, vertical, pace); the picture
- * and the timeline answer from here. Only transforms and opacity animate,
- * apart from the clips' positions and the frame's width (a few small
- * boxes).
+ * "Edit with words", as a before and after: the first cut, the ask, and
+ * the cut with the ask applied. CommandCut sets data-edit on .stage to the
+ * ask applied (shorter, pauses, captions, warm, vertical, pace), data-auto
+ * while it moves on by itself, and data-changed on the facts an ask
+ * changed. Only transforms and opacity animate, apart from the shot bars'
+ * positions and the frame's width (a few small boxes).
  */
 .section {
   position: relative;
@@ -82,47 +82,90 @@
 
 /* ---------- Stage ---------- */
 
-/* Two columns on wide screens: the picture and its timeline, and the Ask
-   Keyfly panel. The picture keeps a 16:9 height from its column's width
-   and narrows to 9:16, centred, when reframed. */
 .stage {
   display: grid;
-  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
-  align-items: start;
-  gap: clamp(24px, 3.5vw, 48px);
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(24px, 3vw, 40px);
   max-width: 1320px;
   margin: 0 auto;
 }
 
-.picture {
+/* Before | the ask | after. */
+.diff {
   display: grid;
-  gap: 14px;
+  grid-template-columns: minmax(0, 1fr) clamp(200px, 19vw, 270px) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(16px, 2vw, 28px);
+}
+
+.side {
+  display: grid;
+  gap: 12px;
   min-width: 0;
+  margin: 0;
   container-type: inline-size;
 }
 
-.viewer {
-  --h: calc(100cqw * 9 / 16);
+.sideLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: rgb(244 241 234 / 0.45);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.side[data-after] .sideLabel {
+  color: var(--soft-mint);
+}
+
+.side[data-after] .sideLabel::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+}
+
+/* The picture keeps a 16:9 height from its column; After narrows to 9:16,
+   centred, when reframed. */
+.screen {
   display: grid;
   justify-items: center;
+  height: calc(100cqw * 9 / 16);
 }
 
 .frame {
   position: relative;
   width: 100%;
-  height: var(--h);
+  height: 100%;
   overflow: hidden;
-  border-radius: 18px;
+  border-radius: 16px;
   background: #050506;
   box-shadow:
-    0 0 0 1px rgb(244 241 234 / 0.1),
-    0 40px 100px -40px rgb(0 0 0 / 0.95),
-    0 0 80px -30px rgb(95 224 176 / 0.35);
+    0 0 0 1px rgb(244 241 234 / 0.09),
+    0 30px 80px -36px rgb(0 0 0 / 0.95);
   transition: width 0.7s var(--ease-land);
 }
 
-.stage[data-edit="vertical"] .frame {
-  width: calc(var(--h) * 9 / 16);
+/* Before sits back a little. */
+.side:not([data-after]) .frame {
+  opacity: 0.72;
+  filter: saturate(0.75);
+}
+
+.side[data-after] .frame {
+  box-shadow:
+    0 0 0 1px rgb(95 224 176 / 0.4),
+    0 30px 80px -36px rgb(0 0 0 / 0.95),
+    0 0 70px -24px rgb(95 224 176 / 0.45);
+}
+
+.stage[data-edit="vertical"] .side[data-after] .frame {
+  width: calc(100cqw * 81 / 256);
 }
 
 /* A warm grade over the picture. */
@@ -130,8 +173,8 @@
   position: absolute;
   inset: 0;
   background:
-    linear-gradient(180deg, rgb(255 170 90 / 0.18), rgb(255 120 60 / 0.12)),
-    radial-gradient(70% 60% at 50% 40%, rgb(255 200 140 / 0.2), transparent 70%);
+    linear-gradient(180deg, rgb(255 170 90 / 0.2), rgb(255 120 60 / 0.14)),
+    radial-gradient(70% 60% at 50% 40%, rgb(255 200 140 / 0.22), transparent 70%);
   mix-blend-mode: soft-light;
   opacity: 0;
   transition: opacity 0.6s ease;
@@ -150,10 +193,10 @@
   flex-wrap: wrap;
   justify-content: center;
   gap: 0.3em;
-  width: 80%;
+  width: 84%;
   translate: -50% 0;
   color: #fff;
-  font-size: clamp(0.9rem, 0.6rem + 1.2vw, 1.5rem);
+  font-size: clamp(0.75rem, 4.4cqw, 1.25rem);
   font-weight: 760;
   letter-spacing: -0.01em;
   text-shadow: 0 2px 10px rgb(0 0 0 / 0.7);
@@ -183,238 +226,181 @@
   text-shadow: none;
 }
 
-/* What the cut is, how long it runs, at what format. */
-.meta {
-  display: grid;
-  grid-template-columns: 1fr auto auto;
-  align-items: center;
-  gap: 14px;
-  width: 100%;
+/* The facts under each picture; what an ask changed lights mint. */
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+}
+
+.facts div {
+  padding: 4px 9px;
+  border-radius: 7px;
+  background: rgb(244 241 234 / 0.05);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.08) inset;
+  color: rgb(244 241 234 / 0.6);
   font-family: var(--font-mono-stack);
   font-size: 0.6875rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: rgb(244 241 234 / 0.75);
-}
-
-.metaMuted {
-  color: rgb(244 241 234 / 0.4);
-}
-
-.length {
-  color: var(--mint-text-dark);
+  letter-spacing: 0.06em;
   font-variant-numeric: tabular-nums;
 }
 
-.format {
-  padding: 3px 8px;
-  border-radius: 6px;
-  background: rgb(95 224 176 / 0.12);
+.facts dd {
+  margin: 0;
+}
+
+.facts div[data-changed] {
+  background: rgb(95 224 176 / 0.14);
+  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.5) inset;
   color: var(--soft-mint);
+  animation: pop 0.45s var(--ease-land);
 }
 
-/* ---------- Timeline ---------- */
-
-.timeline {
-  display: grid;
-  gap: 5px;
-  width: 100%;
-  padding: 12px 14px;
-  border-radius: 14px;
-  background: #101114;
-  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.07);
-}
-
-.track {
-  display: grid;
-  grid-template-columns: 22px minmax(0, 1fr);
-  align-items: center;
-  gap: 8px;
-}
-
-.trackLabel {
-  color: rgb(244 241 234 / 0.4);
-  font-family: var(--font-mono-stack);
-  font-size: 10px;
-}
-
-.lane {
+/* The shots of the cut, as one clean bar. */
+.shots {
   position: relative;
-  height: 26px;
-  border-radius: 5px;
-  background: rgb(244 241 234 / 0.025);
-  /* Clip sideways only: the playhead's rail slides past the lane's end,
-     while the playhead itself stands taller than the lane. */
-  overflow-x: clip;
+  height: 8px;
 }
 
-.track[data-kind="captions"] .lane,
-.track[data-kind="grade"] .lane {
-  height: 12px;
-}
-
-.clip,
-.pause,
-.caption {
+.shot,
+.gap {
   position: absolute;
   top: 0;
   bottom: 0;
-  border-radius: 5px;
+  border-radius: 3px;
   transition:
     left 0.7s var(--ease-land),
     width 0.7s var(--ease-land),
     opacity 0.4s ease;
 }
 
-.clip {
-  background:
-    repeating-linear-gradient(to right, transparent 0 33px, rgb(0 0 0 / 0.5) 33px 34px),
-    var(--thumb);
-  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.5) inset;
+.shot[data-n="0"] {
+  background: #4f6b8c;
 }
 
-.clip[data-n="0"] {
-  --thumb: linear-gradient(180deg, #2c4a6a, #e2a874 72%, #3b2a1c 72%);
+.shot[data-n="1"] {
+  background: #8a5a78;
 }
 
-.clip[data-n="1"] {
-  --thumb: linear-gradient(180deg, #3a2b52, #b0607a 70%, #251a2e 70%);
+.shot[data-n="2"] {
+  background: #6aa3b3;
 }
 
-.clip[data-n="2"] {
-  --thumb: linear-gradient(180deg, #8ec5d6, #3f7f90);
+.side[data-after] .shot {
+  filter: brightness(1.15);
 }
 
-/* A faster pace: every clip cut in two. */
-.clip::after {
+.stage[data-edit="warm"] .side[data-after] .shot {
+  background: #c98a5a;
+}
+
+/* A faster pace cuts every shot in two. */
+.shot::after {
   content: "";
   position: absolute;
-  top: 0;
-  bottom: 0;
+  top: -1px;
+  bottom: -1px;
   left: 50%;
   width: 2px;
   margin-left: -1px;
   background: var(--night);
-  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.6);
   opacity: 0;
-  scale: 1 0.4;
-  transition:
-    opacity 0.3s ease,
-    scale 0.4s var(--ease-land);
+  transition: opacity 0.3s ease;
 }
 
-.stage[data-edit="pace"] .clip::after {
+.shot[data-split]::after {
   opacity: 1;
-  scale: 1 1;
 }
 
-/* Pauses: hatched gaps that close when cut. */
-.pause {
-  background: repeating-linear-gradient(135deg, rgb(244 241 234 / 0.14) 0 2px, transparent 2px 6px);
-  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.1) inset;
+.gap {
+  background: repeating-linear-gradient(90deg, rgb(244 241 234 / 0.2) 0 2px, transparent 2px 5px);
 }
 
-.stage[data-edit="pauses"] .pause {
+.gap[data-closed] {
   opacity: 0;
 }
 
-/* Captions track: blocks under each clip, when captions are on. */
-.caption {
-  background: rgb(244 241 234 / 0.16);
-  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.2) inset;
-  opacity: 0;
-}
+/* ---------- The ask ---------- */
 
-.stage[data-edit="captions"] .caption {
-  opacity: 1;
-  transition-delay: calc(var(--i) * 50ms);
-}
-
-/* Grade track: one bar across the cut when graded. */
-.gradeBar {
-  position: absolute;
-  inset: 0;
-  border-radius: 5px;
-  background: linear-gradient(90deg, rgb(255 170 90 / 0.5), rgb(255 120 60 / 0.4));
-  transform-origin: left;
-  scale: 0 1;
-  transition: scale 0.7s var(--ease-land);
-}
-
-.stage[data-edit="warm"] .gradeBar {
-  scale: 1 1;
-}
-
-/* The playhead rides a rail the width of the lane, which slides by its
-   own width (a transform, so nothing re-lays out). */
-.rail {
-  position: absolute;
-  inset: 0;
-  animation: play 6s linear infinite;
-  pointer-events: none;
-}
-
-.stage[data-paused] .rail {
-  animation-play-state: paused;
-}
-
-.playhead {
-  position: absolute;
-  top: -6px;
-  bottom: -6px;
-  left: 0;
-  width: 2px;
-  background: var(--soft-mint);
-  box-shadow: 0 0 10px var(--soft-mint);
-}
-
-/* ---------- Ask Keyfly panel ---------- */
-
-.command {
+.ask {
+  position: relative;
   display: grid;
-  gap: 14px;
-  min-width: 0;
-  padding: clamp(16px, 2vw, 22px);
-  border-radius: 18px;
-  background: #121316;
-  box-shadow:
-    0 0 0 1px rgb(244 241 234 / 0.08),
-    0 40px 100px -40px rgb(0 0 0 / 0.9);
-}
-
-.commandLabel {
-  color: rgb(244 241 234 / 0.45);
-  font-family: var(--font-mono-stack);
-  font-size: 0.625rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-
-.bar {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: center;
+  justify-items: center;
+  align-content: center;
   gap: 12px;
-  height: 54px;
-  padding: 0 8px 0 16px;
-  border-radius: 14px;
-  background: #18191d;
+  min-width: 0;
+}
+
+/* The line from before to after, with a light running along it. */
+.ask::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -12px;
+  right: -12px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgb(95 224 176 / 0.45) 20%, rgb(95 224 176 / 0.45) 80%, transparent);
+}
+
+.flow {
+  position: absolute;
+  top: 50%;
+  left: -12px;
+  width: 40px;
+  height: 3px;
+  margin-top: -1px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, transparent, var(--soft-mint));
+  box-shadow: 0 0 10px var(--soft-mint);
+  animation: flow 2.2s ease-in-out infinite;
+}
+
+.flow + .flow {
+  display: none;
+}
+
+/* The arrowhead at the after end. */
+.ask::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -14px;
+  width: 8px;
+  height: 8px;
+  margin-top: -4px;
+  border-top: 1.5px solid var(--soft-mint);
+  border-right: 1.5px solid var(--soft-mint);
+  rotate: 45deg;
+}
+
+.pill {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 52px;
+  padding: 12px 16px;
+  border-radius: 16px;
+  background: #141518;
   box-shadow:
-    0 0 0 1px rgb(95 224 176 / 0.35),
-    0 0 40px -16px rgb(95 224 176 / 0.45);
+    0 0 0 1px rgb(95 224 176 / 0.45),
+    0 0 40px -12px rgb(95 224 176 / 0.55),
+    0 20px 50px -20px rgb(0 0 0 / 0.9);
 }
 
 .spark {
   color: var(--soft-mint);
-  font-size: 1rem;
 }
 
-.ask {
-  overflow: hidden;
+.askText {
+  min-width: 0;
   color: var(--paper);
   font-size: 1rem;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+  font-weight: 540;
+  line-height: 1.3;
 }
 
 .caret {
@@ -427,119 +413,99 @@
   animation: blink 1s steps(1) infinite;
 }
 
-.send {
-  display: grid;
-  place-items: center;
-  width: 38px;
-  height: 38px;
-  border-radius: 11px;
-  background: rgb(244 241 234 / 0.08);
-  color: rgb(244 241 234 / 0.6);
-  transition:
-    background-color 0.3s ease,
-    color 0.3s ease;
-}
-
-.send[data-on] {
-  background: var(--soft-mint);
-  color: var(--mint-ink);
-}
-
 .reply {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 1.6em;
+  position: relative;
+  z-index: 1;
+  max-width: 100%;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: var(--night);
   color: rgb(244 241 234 / 0.5);
   font-family: var(--font-mono-stack);
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   letter-spacing: 0.04em;
+  line-height: 1.5;
+  text-align: center;
   animation: rise 0.4s var(--ease-land);
-}
-
-.reply i {
-  flex: none;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.3) inset;
 }
 
 .reply[data-on] {
   color: var(--mint-text-dark);
 }
 
-.reply[data-on] i {
-  background:
-    linear-gradient(var(--mint-ink), var(--mint-ink)) 4px 7px / 3px 1.5px no-repeat,
-    var(--soft-mint);
-  box-shadow: 0 0 8px rgb(95 224 176 / 0.6);
-}
+/* ---------- Tabs ---------- */
 
-/* The asks: a list of rows on wide screens, chips on narrow ones. */
-.chips {
-  display: grid;
-  gap: 4px;
-  padding-top: 12px;
-  border-top: 1px solid rgb(244 241 234 / 0.07);
-}
-
-.chip {
-  position: relative;
+.tabs {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.tab {
+  position: relative;
+  display: inline-flex;
   align-items: center;
-  gap: 12px;
-  padding: 11px 12px;
+  gap: 10px;
+  overflow: hidden;
+  padding: 11px 16px;
   border: 0;
-  border-radius: 10px;
-  background: none;
-  color: rgb(244 241 234 / 0.7);
+  border-radius: 12px;
+  background: rgb(244 241 234 / 0.04);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.08) inset;
+  color: rgb(244 241 234 / 0.62);
   font: inherit;
-  font-size: 0.9375rem;
+  font-size: 0.875rem;
   font-weight: 540;
-  text-align: left;
+  white-space: nowrap;
   cursor: pointer;
   transition:
     background-color 0.25s ease,
+    box-shadow 0.25s ease,
     color 0.25s ease;
 }
 
-.chipIndex {
+.tabIndex {
   color: rgb(244 241 234 / 0.35);
   font-family: var(--font-mono-stack);
   font-size: 0.6875rem;
 }
 
-.chip:hover {
-  background: rgb(244 241 234 / 0.05);
+.tab:hover {
+  background: rgb(244 241 234 / 0.07);
   color: var(--paper);
 }
 
-.chip[aria-pressed="true"] {
+.tab[aria-pressed="true"] {
   background: rgb(95 224 176 / 0.1);
+  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.45) inset;
   color: var(--paper);
 }
 
-.chip[aria-pressed="true"] .chipIndex {
+.tab[aria-pressed="true"] .tabIndex {
   color: var(--soft-mint);
 }
 
-/* A mint marker on the ask in play. */
-.chip[aria-pressed="true"]::before {
-  content: "";
-  position: absolute;
-  top: 10px;
-  bottom: 10px;
-  left: 0;
-  width: 2px;
-  border-radius: 2px;
-  background: var(--soft-mint);
-  box-shadow: 0 0 8px var(--soft-mint);
-}
-
-.chip:focus-visible {
+.tab:focus-visible {
   outline: 2px solid var(--soft-mint);
   outline-offset: 2px;
+}
+
+/* The ask in play fills while it waits for the next. */
+.tabFill {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+  transform-origin: left;
+  scale: 0 1;
+}
+
+.stage[data-auto] .tab[aria-pressed="true"] .tabFill {
+  animation: fill 4.6s linear forwards;
 }
 
 .visuallyHidden {
@@ -561,9 +527,32 @@
   text-transform: uppercase;
 }
 
-@keyframes play {
+@keyframes flow {
+  from {
+    translate: 0 0;
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
   to {
-    translate: 100% 0;
+    translate: calc(clamp(200px, 19vw, 270px) - 16px) 0;
+    opacity: 0;
+  }
+}
+
+@keyframes fill {
+  to {
+    scale: 1 1;
+  }
+}
+
+@keyframes pop {
+  50% {
+    scale: 1.08;
   }
 }
 
@@ -582,34 +571,36 @@
 
 /* ---------- Smaller screens ---------- */
 
-/* One column: the picture, then the panel, the asks as chips. */
+/* Stacked: before, the ask, after; the tabs scroll sideways. */
 @media (max-width: 900px) {
-  .stage {
+  .diff {
     grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
   }
 
-  .chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .chip {
-    padding: 7px 12px;
-    border-radius: 999px;
-    background: rgb(244 241 234 / 0.05);
-    box-shadow: 0 0 0 1px rgb(244 241 234 / 0.1) inset;
-    font-size: 0.8125rem;
-  }
-
-  .chip[aria-pressed="true"] {
-    box-shadow: 0 0 0 1px rgb(95 224 176 / 0.55) inset;
-    color: var(--soft-mint);
-  }
-
-  .chip[aria-pressed="true"]::before,
-  .chipIndex {
+  .ask::before,
+  .ask::after,
+  .flow {
     display: none;
+  }
+
+  .ask {
+    max-width: 420px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .tabs {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    overflow-x: auto;
+    scrollbar-width: none;
+    margin: 0 calc(var(--gutter) * -1);
+    padding: 2px var(--gutter);
+  }
+
+  .tab {
+    flex: none;
   }
 }
 
@@ -623,12 +614,9 @@
     font-size: clamp(1.9rem, 1.2rem + 3vw, 2.75rem);
   }
 
-  .bar {
-    height: 50px;
-  }
-
-  .ask {
-    font-size: 0.9375rem;
+  .tab {
+    padding: 9px 13px;
+    font-size: 0.8125rem;
   }
 }
 
@@ -636,17 +624,17 @@
   .frame,
   .grade,
   .captions span,
-  .clip,
-  .clip::after,
-  .pause,
-  .caption,
-  .gradeBar {
+  .shot,
+  .shot::after,
+  .gap {
     transition: none;
   }
 
-  .rail,
+  .flow,
   .caret,
-  .reply {
+  .reply,
+  .facts div[data-changed],
+  .stage[data-auto] .tab[aria-pressed="true"] .tabFill {
     animation: none;
   }
 }
