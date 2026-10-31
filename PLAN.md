@@ -1,6 +1,6 @@
 # Keyfly website: build plan
 
-Last updated: 2026-10-28
+Last updated: 2026-10-31
 
 ## What we know from the brand kit
 
@@ -55,3 +55,64 @@ The reference site (cardboard.ai) is all black and cinematic, with a prompt-box 
 4. Is there pricing? Is there a free tier?
 5. Do we have real screenshots or screen recordings of the app?
 6. Is the domain `keyfly.si`?
+
+
+## Homepage expansion (planned 2026-10-31)
+
+The homepage reads as too short (Hero, How it works, Use cases, Download, footer). The team asked for a bigger homepage built around what Keyfly does that competitors don't, planned first and then built one section at a time.
+
+### The competition, briefly (from 2026 reviews)
+
+- **Descript:** edit video by editing its transcript; an AI co-editor on metered credits.
+- **Runway:** generative video; its core is a model, not a timeline.
+- **CapCut:** free and social-first (auto captions, reframe, templates), with little prompt-based editing.
+- **OpusClip:** long video to short clips, billed by minute.
+
+None of them let you **describe a whole video and get an edited cut back**, then refine it in plain words, inside a desktop editor. That is Keyfly's lane as far as we can see.
+
+### What we know Keyfly does (from the app's prompt box and installer art)
+
+- You describe a video or drop footage, and Keyfly edits it.
+- Presets: Launch Video, UGC, Explainer, Montage, Product Demo, Podcast.
+- Formats: Auto, 16:9, 9:16, 1:1 (the list is a placeholder).
+- "Or make it in ChatGPT · Claude": Keyfly can apparently be used from inside ChatGPT and Claude.
+- A desktop app (macOS, Windows) plus a web app at app.keyfly.si.
+
+Everything else below that names a feature must be **confirmed by the team before it is built**. We never invent features, customers, metrics or pricing.
+
+### Proposed homepage, top to bottom
+
+Existing sections are marked. New ones are numbered in the suggested build order.
+
+| Order | Section | Purpose | Content we need |
+|---|---|---|---|
+| (existing) | **Hero** | The promise and the prompt box | — |
+| **N1** | **Proof strip** | Instant credibility under the hero | Real numbers or logos, or else "Works with ChatGPT · Claude · macOS · Windows" |
+| (existing) | **How it works** | Three steps: describe, Keyfly edits, export | Confirmed copy |
+| **N2** | **"Edit with words"** | The differentiator: refine a cut by talking to it ("make it shorter", "warmer colour", "cut the pauses"), with the timeline changing live | Which follow-up edits are real |
+| **N3** | **"Why Keyfly" feature grid** | 4–6 headline features that competitors lack | The real feature list |
+| **N4** | **"One edit, every format"** | One cut reframing itself to 16:9, 9:16 and 1:1, with captions following | Whether auto-reframe is real; the real format list |
+| (existing) | **Use cases** (jog wheel) | Six presets | Confirmed one-liners |
+| **N5** | **"Make it in ChatGPT · Claude"** | Keyfly inside the assistants people already use: a chat that returns a finished video | How the integration works (plugin, MCP, app?) and its links |
+| **N6** | **Before → after** | Raw footage against the finished cut, with a drag slider | Real (or approved illustrative) footage |
+| **N7** | **Keyfly vs the old way** | Calm comparison: manual editing, generic AI tools and Keyfly, by category (time to first cut, formats, effort), never naming rivals | The claims the team is comfortable making |
+| **N8** | **Desktop + browser** (could merge into Download) | Why the desktop app: speed, local footage, offline? | What is actually true |
+| (existing) | **Download** | Get the app | Download links, Windows step |
+| **N9** | **Pricing** | Plans, if there are any | Plans and prices, or skip |
+| **N10** | **FAQ** | Answer objections: formats, export, privacy, ownership, pricing | Real answers |
+| (existing) | **Footer** | — | Social and legal links when they exist |
+
+### Suggested build order
+
+N2 Edit with words → N3 Why Keyfly → N4 One edit, every format → N5 ChatGPT · Claude → N10 FAQ → N1 Proof strip → N6 Before/after → N7 Comparison → N9 Pricing (if any) → N8 (or fold into Download).
+
+### Questions for the team before building
+
+1. What can Keyfly do after the first cut? (Follow-up prompts? Which kinds of change?)
+2. What are the 4–6 features you're proudest of, especially ones Descript, CapCut, Runway or OpusClip don't have?
+3. How does "make it in ChatGPT · Claude" work, and where do its links go?
+4. Does Keyfly reframe one edit to several formats? Which formats and which export settings?
+5. What does the desktop app do that the browser doesn't (speed, local files, offline, privacy)?
+6. Is there pricing or a free tier?
+7. Any real numbers, customers or reviews we may show?
+8. Can we have real footage or screen recordings (for before/after and the feature visuals)?
