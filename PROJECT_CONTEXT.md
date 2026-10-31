@@ -133,7 +133,7 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
   - Brand: the logo (30px, intro on scroll), the site description (PLACEHOLDER, from `siteConfig`) and a "macOS · Windows" pill.
   - Three link columns: Product (How it works, Use cases, Download); Use cases (the six presets); Keyfly (Open Keyfly, Sign in, Keyfly for macOS, Keyfly for Windows).
 - **Bottom bar:** "© {year} Cevrynt Inc.", keyfly.si and Back to top.
-- **The arrival** (added 2026-10-31; first triggered by the flight thread, now by the focus frame):
+- **The arrival** (added 2026-10-31; cued by `SceneLight`):
   - While `data-await` is on and `data-arrived` isn't, the contents wait at 22% opacity, 18px low and lightly blurred.
   - On `data-arrived`:
     - the playhead sends out a pulse ring;
@@ -150,21 +150,23 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
 `src/app/page.jsx` renders, inside `Scene`, Hero → HowItWorks (`#product`) → UseCases (`#use-cases`) → Download (`#download`). All copy lives in `src/content/home.js`. Lines marked `PLACEHOLDER` wait for the confirmed product description, so the page is `noindex` until then.
 
 - **Scene** (`src/components/scene/`, added 2026-10-31 at the team's request: the page was flat black and the sections felt disconnected). It ties the sections together as one scroll:
-  - **`SceneLight`:** a fixed light behind every section, so sections leave their own backgrounds transparent (the hero's backdrop fades out at its foot with a mask). Each section brings up its own layer as it fills the screen (`--w`), and the layers drift slowly:
-    - How it works: dusk (violet-blue and peach, from its viewer's shots).
-    - Use cases: the colours of the feed on air. `Switcher` sets `html[data-feed]`, and the colours cross-fade through registered `@property` colours.
-    - Download: mint, for the landing.
-  - **`FocusFrame`** (replaced the flight thread on 2026-10-31; the team found the line effect lackluster and asked for something that matches better): the camera's autofocus frame, four mint corner brackets fixed on screen that travel with the scroll and lock onto the one thing that matters in each section. Each target is marked `data-focus="Label"`:
-    - the hero's prompt box (`Prompt`);
-    - How it works' editor (`Editor`);
-    - the Use cases preview on air (`Preview`; the frame follows it as it changes format);
-    - the Download flight (`Landing`);
-    - the footer's call to action (`Next`).
-    - **Choosing a target:** the target is whichever fills the middle 80% of the screen best (a 0.45 share, with stickiness for the current one). Otherwise the frame fades out.
-    - **On a new target:** the frame lets go (soft white brackets and a reticle, the tag reading "AF · Focusing"), glides and resizes over 650ms, then snaps tight. A mint flash runs round the box, the tag reads "AF · Locked · {label}" and the target pulls into focus (`data-focused`: a brief blur-to-sharp).
-    - **Performance:** one rAF loop runs while the frame travels or its target moves, and rests after a second still.
-    - **Footer:** it has `data-await` while the frame is on the page, and `data-arrived` once its top is above 55% of the screen.
-    - **Reduced motion:** the frame jumps straight to each target with no flash and no focus pull.
+  - **`LightField`** (WebGL, added 2026-10-31, replacing first a flight-thread line and then a camera focus frame, both judged not unique enough; research pointed at custom shaders and one or two strong moments): **"generated light"**. A full-screen fixed canvas behind every section, drawn by one raw WebGL fragment shader (no library).
+    - **The light:** a slow, domain-warped flow (fbm warping fbm), like light leaks on film, in each scene's three dark colours (`PALETTES`):
+      - intro: mint;
+      - How it works: dusk;
+      - Use cases: the preset on air, read from `html[data-feed]` and eased;
+      - Download: mint;
+      - footer: dim mint.
+      It bends round the pointer, splits its colour slightly when the page is flung (scroll speed), and has a vignette and grain.
+    - **The signature, a "denoise" transition:** crossing into the next section (as its top moves from 72% to 28% of the screen), the light breaks into blocks that grow coarse (up to 14px) and fizz with static at the threshold, then refine as the next scene's light resolves out of them, like a diffusion model rendering a frame. It is scrubbed by the scroll.
+    - **Performance:** drawn at 0.55× resolution (0.45× on phones) and scaled up; the loop pauses when the tab is hidden. The second scene is only computed during a transition.
+    - **Reduced motion:** one still frame per scene, redrawn on scroll, with no blocks.
+    - **Fallback:** sets `data-gl` on the light's root, and the CSS layers below step aside. Without WebGL they remain.
+  - **`SceneLight`:** the fixed light root behind every section (sections leave their own backgrounds transparent; the hero's backdrop fades out at its foot with a mask). It holds `LightField` and the CSS fallback layers, each brought up as its section fills the screen (`--w`):
+    - How it works: dusk.
+    - Use cases: the colours of the feed on air, cross-faded through registered `@property` colours.
+    - Download: mint.
+    - **Footer cue:** it sets `data-await` on the footer, and `data-arrived` once the footer's top is above 55% of the screen.
   - **`Scrubber`** (added 2026-10-31, "the page is an edit"; moved the same day to the right-hand margin because, at the foot of the screen, it covered content): a slim vertical timeline fixed in the right margin once the hero is left behind. It is hidden at 1024px and below, where there is no margin.
     - One clip per `[data-section]` (Intro, How it works, Use cases, Download), sized by its length, filled with its section's light, with film-frame lines.
     - A mint playhead bar at the scroll position.
@@ -188,7 +190,7 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
     - The floor turns slightly with the pointer.
   - **Also on the hero:** a pointer light (`PointerField`, fine pointers only) and film grain.
 - **How it works** (`src/components/how-it-works/`, added 2026-10-31): three steps beside an illustrative Keyfly editor window, captioned "Illustrative interface".
-  - **Continuity:** the hero's backdrop fades into the page's light, and the focus frame (see Scene) travels on from the prompt box to this section's editor.
+  - **Continuity:** the hero's backdrop fades into the page's light, which "generates" this section's dusk out of the hero's mint (see Scene).
   - **Steps:** Describe it, Keyfly edits, Export anywhere, on a rail that fills with the mint point at its tip. Only the current step shows its body. On narrow screens they become one row of three.
   - **Scroll progress:** `ScrollStage` (client) pins the section (`data-live`, 420svh, sticky 100svh stage). It writes to the DOM:
     - `--p`, `--s1`, `--s2`, `--s3` (one per step), `--asm` (assembly) and `--ph` (playhead);

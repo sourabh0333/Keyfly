@@ -1,9 +1,9 @@
 /*
  * The site footer: one night panel holding the closing call to action,
  * the brand and link columns, and the bottom bar. Its top edge is a
- * timeline ruler with the mint playhead at the end. The page's focus frame
- * finishes here: data-await on the footer while it is on the page,
- * data-arrived once the footer is well into view.
+ * timeline ruler with the mint playhead at the end. data-await on the
+ * footer while the page is above it, data-arrived once it is well into
+ * view (see SceneLight).
  */
 .footer {
   position: relative;
@@ -79,9 +79,9 @@
   rotate: 45deg;
 }
 
-/* ---------- The focus frame's arrival ---------- */
+/* ---------- The arrival ---------- */
 
-/* While the frame is on its way, the contents wait, dimmed and low. */
+/* Until the footer arrives, the contents wait, dimmed and low. */
 .cta,
 .brand,
 .column,
@@ -100,7 +100,7 @@
   transition-delay: 0s;
 }
 
-/* The panel's light comes up as the frame arrives. */
+/* The panel's light comes up as it arrives. */
 .panel {
   transition: box-shadow 0.8s ease;
 }

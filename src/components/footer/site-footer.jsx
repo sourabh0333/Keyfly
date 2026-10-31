@@ -29,11 +29,11 @@ function Arrow() {
  * copyright. Its top edge is a timeline ruler with the mint playhead at the
  * end of the reel.
  *
- * The page's focus frame finishes here, on the call to action (data-focus).
- * While the frame is on the page the footer has data-await and its
- * contents wait, dimmed; as the footer comes well into view (data-arrived)
- * the playhead pulses, a comet of light runs round the panel and the
- * contents rise in. Without the frame, everything just shows.
+ * While the page is above it the footer has data-await (set by the page's
+ * light, see SceneLight) and its contents wait, dimmed; as it comes well
+ * into view (data-arrived) the playhead pulses, a comet of light runs round
+ * the panel and the contents rise in. Without the script, everything just
+ * shows.
  */
 export function SiteFooter() {
   const { cta, about, platforms, columns, company, domain, top } = footer;
@@ -48,7 +48,7 @@ export function SiteFooter() {
             <span className={styles.playhead} />
           </div>
 
-          <div className={styles.cta} style={{ "--i": 0 }} data-focus="Next">
+          <div className={styles.cta} style={{ "--i": 0 }}>
             <p className={styles.ctaTitle}>
               {cta.title.map((line, i) => (
                 <span key={i} className={line.accent ? styles.accent : styles.plain}>

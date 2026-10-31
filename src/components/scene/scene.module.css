@@ -1,7 +1,7 @@
 /*
  * The homepage as one scene: a light behind every section that changes
- * with the section on screen, and the camera's focus frame that travels
- * from section to section. Sections leave their own backgrounds
+ * with the section on screen (live on the GPU, see LightField, with CSS
+ * layers as the fallback). Sections leave their own backgrounds
  * transparent so the light shows.
  */
 .page {
@@ -107,194 +107,19 @@
   }
 }
 
-/* ---------- Focus frame ---------- */
+/* ---------- Generated light (WebGL) ---------- */
 
-/* Four autofocus brackets on the screen; FocusFrame sets their box. */
-.focus {
-  --c: var(--soft-mint);
-  --len: clamp(14px, 1.6vw, 22px);
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 30;
-  width: 0;
-  height: 0;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.4s ease;
-  will-change: transform, width, height;
-}
-
-.focus[data-on] {
-  opacity: 1;
-}
-
-.focus i {
-  position: absolute;
-  width: var(--len);
-  height: var(--len);
-  border: 0 solid var(--c);
-  filter: drop-shadow(0 0 6px rgb(95 224 176 / 0.7));
-  transition:
-    width 0.35s var(--ease-land),
-    height 0.35s var(--ease-land),
-    border-color 0.35s ease;
-}
-
-.focus [data-corner="tl"] {
-  top: 0;
-  left: 0;
-  border-width: 2px 0 0 2px;
-  border-top-left-radius: 6px;
-}
-
-.focus [data-corner="tr"] {
-  top: 0;
-  right: 0;
-  border-width: 2px 2px 0 0;
-  border-top-right-radius: 6px;
-}
-
-.focus [data-corner="bl"] {
-  bottom: 0;
-  left: 0;
-  border-width: 0 0 2px 2px;
-  border-bottom-left-radius: 6px;
-}
-
-.focus [data-corner="br"] {
-  right: 0;
-  bottom: 0;
-  border-width: 0 2px 2px 0;
-  border-bottom-right-radius: 6px;
-}
-
-/* Hunting: softer brackets and a reticle in the middle. */
-.focus:not([data-locked]) i {
-  --c: rgb(244 241 234 / 0.75);
-  width: calc(var(--len) * 0.7);
-  height: calc(var(--len) * 0.7);
-  filter: none;
-}
-
-.reticle {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 22px;
-  height: 22px;
-  margin: -11px 0 0 -11px;
-  background:
-    linear-gradient(rgb(244 241 234 / 0.7), rgb(244 241 234 / 0.7)) 50% 0 / 1px 7px no-repeat,
-    linear-gradient(rgb(244 241 234 / 0.7), rgb(244 241 234 / 0.7)) 50% 100% / 1px 7px no-repeat,
-    linear-gradient(rgb(244 241 234 / 0.7), rgb(244 241 234 / 0.7)) 0 50% / 7px 1px no-repeat,
-    linear-gradient(rgb(244 241 234 / 0.7), rgb(244 241 234 / 0.7)) 100% 50% / 7px 1px no-repeat;
-  opacity: 0.8;
-  transition:
-    opacity 0.3s ease,
-    scale 0.3s var(--ease-land);
-}
-
-.focus[data-locked] .reticle {
-  opacity: 0;
-  scale: 0.4;
-}
-
-/* Lock: a mint flash runs round the box. */
-.focus::after {
-  content: "";
+/* The live light field over the CSS layers, which step aside when it
+   runs (data-gl). Drawn at reduced resolution and scaled up. */
+.field {
   position: absolute;
   inset: 0;
-  border: 1px solid var(--soft-mint);
-  border-radius: 8px;
-  box-shadow:
-    0 0 24px rgb(95 224 176 / 0.45),
-    inset 0 0 24px rgb(95 224 176 / 0.2);
-  opacity: 0;
+  width: 100%;
+  height: 100%;
 }
 
-.focus[data-locked]::after {
-  animation: lockFlash 0.6s ease-out;
-}
-
-/* The tag above the top-left bracket. */
-.tag {
-  position: absolute;
-  bottom: calc(100% + 8px);
-  left: 0;
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 3px 8px;
-  border-radius: 6px;
-  background: rgb(11 11 13 / 0.78);
-  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.12);
-  color: var(--paper);
-  font-family: var(--font-mono-stack);
-  font-size: 0.5625rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  white-space: nowrap;
-  text-transform: uppercase;
-}
-
-.tag b {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: rgb(244 241 234 / 0.6);
-  transition: background-color 0.3s ease;
-}
-
-.focus[data-locked] .tag b {
-  background: var(--soft-mint);
-  box-shadow: 0 0 8px var(--soft-mint);
-}
-
-.tagState::before {
-  content: "· " attr(data-seek);
-  color: rgb(244 241 234 / 0.55);
-}
-
-.focus[data-locked] .tagState::before {
-  content: "· " attr(data-lock);
-  color: var(--mint-text-dark);
-}
-
-.tagLabel {
-  color: rgb(244 241 234 / 0.55);
-}
-
-.tagLabel::before {
-  content: "· ";
-}
-
-/* The target pulls into focus as the frame locks. */
-:global([data-focused]) {
-  animation: focusPull 0.55s ease-out;
-}
-
-@keyframes lockFlash {
-  from {
-    opacity: 1;
-    inset: -8px;
-  }
-  to {
-    opacity: 0;
-    inset: 0;
-  }
-}
-
-@keyframes focusPull {
-  from {
-    filter: blur(2.5px) brightness(1.15);
-  }
-}
-
-@media (max-width: 640px) {
-  .focus {
-    --len: 14px;
-  }
+.light[data-gl] .layer {
+  display: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -302,12 +127,4 @@
     animation: none;
   }
 
-  .focus,
-  .focus i {
-    transition: none;
-  }
-
-  .focus[data-locked]::after {
-    animation: none;
-  }
 }

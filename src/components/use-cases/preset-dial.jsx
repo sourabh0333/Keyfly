@@ -319,7 +319,7 @@ export function PresetDial({ items, cta, dialLabel, promptLabel, hint }) {
 
           <div className={styles.output}>
             <div className={styles.viewer} aria-hidden="true">
-              <div className={styles.frame} data-focus="Preview">
+              <div className={styles.frame}>
                 {items.map((it, i) => (
                   <div key={it.label} className={styles.feed} data-on={i === active ? "" : undefined} data-paused={i === active ? undefined : ""}>
                     <Preview kind={it.kind} format={it.format} bleed />
