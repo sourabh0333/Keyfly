@@ -1,8 +1,7 @@
 /*
- * "Use cases" as a multicam switcher: a program monitor on the left, six
- * live source feeds on the right. Switcher sets data-on on the feed and
- * tile on air, data-auto while it auto-cuts, and data-paused while off
- * screen.
+ * "Use cases" as an open index beside a frameless projection. Switcher sets
+ * data-on on the row and feed on air, data-auto while it auto-cuts, and
+ * data-paused while off screen. No frames or tiles: type, light and lines.
  */
 .section {
   position: relative;
@@ -93,224 +92,148 @@
   text-align: right;
 }
 
-/* ---------- The switcher ---------- */
+/* ---------- Index and projection ---------- */
 
 .switcher {
   display: grid;
-  grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
-  gap: clamp(16px, 2vw, 24px);
-  padding: clamp(10px, 1.2vw, 14px);
-  border-radius: 26px;
-  background: #101114;
-  box-shadow:
-    0 0 0 1px rgb(244 241 234 / 0.07),
-    0 1px 0 rgb(244 241 234 / 0.05) inset,
-    0 40px 120px -40px rgb(0 0 0 / 0.9);
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.25fr);
+  align-items: center;
+  gap: clamp(32px, 5vw, 80px);
 }
 
-.programCol {
-  display: grid;
-  grid-template-rows: auto 1fr;
+.indexCol {
   min-width: 0;
 }
 
-/* Program monitor */
-.program {
-  position: relative;
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
-  border-radius: 16px;
-  background: #08090a;
-  box-shadow:
-    0 0 0 1px rgb(95 224 176 / 0.35),
-    0 0 60px -20px rgb(95 224 176 / 0.35);
-}
-
-.feed {
-  position: absolute;
-  inset: 0;
-  visibility: hidden;
-}
-
-.feed[data-on] {
-  visibility: visible;
-  animation: cutIn 0.6s var(--ease-land);
-}
-
-/* A frame of white on every cut. */
-.flash {
-  position: absolute;
-  inset: 0;
-  background: #fff;
-  opacity: 0;
-  pointer-events: none;
-  animation: flash 0.35s ease-out;
-}
-
-.thirds {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background:
-    linear-gradient(to right, transparent calc(33.33% - 0.5px), rgb(244 241 234 / 0.07) 33.33%, transparent calc(33.33% + 0.5px)),
-    linear-gradient(to right, transparent calc(66.66% - 0.5px), rgb(244 241 234 / 0.07) 66.66%, transparent calc(66.66% + 0.5px)),
-    linear-gradient(to bottom, transparent calc(33.33% - 0.5px), rgb(244 241 234 / 0.07) 33.33%, transparent calc(33.33% + 0.5px)),
-    linear-gradient(to bottom, transparent calc(66.66% - 0.5px), rgb(244 241 234 / 0.07) 66.66%, transparent calc(66.66% + 0.5px));
-}
-
-/* Viewfinder corners. */
-.corners {
-  position: absolute;
-  inset: 16px;
-  pointer-events: none;
-  --c: rgb(244 241 234 / 0.55);
-  background:
-    linear-gradient(var(--c), var(--c)) 0 0 / 18px 1.5px no-repeat,
-    linear-gradient(var(--c), var(--c)) 0 0 / 1.5px 18px no-repeat,
-    linear-gradient(var(--c), var(--c)) 100% 0 / 18px 1.5px no-repeat,
-    linear-gradient(var(--c), var(--c)) 100% 0 / 1.5px 18px no-repeat,
-    linear-gradient(var(--c), var(--c)) 0 100% / 18px 1.5px no-repeat,
-    linear-gradient(var(--c), var(--c)) 0 100% / 1.5px 18px no-repeat,
-    linear-gradient(var(--c), var(--c)) 100% 100% / 18px 1.5px no-repeat,
-    linear-gradient(var(--c), var(--c)) 100% 100% / 1.5px 18px no-repeat;
-}
-
-.programBar {
-  position: absolute;
-  top: 24px;
-  left: 28px;
-  right: 28px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
+.hint {
+  margin-bottom: 14px;
+  color: rgb(244 241 234 / 0.4);
   font-family: var(--font-mono-stack);
   font-size: 0.6875rem;
-  letter-spacing: 0.08em;
-  pointer-events: none;
-}
-
-.onAir {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 3px 8px;
-  border-radius: 5px;
-  background: var(--soft-mint);
-  color: var(--mint-ink);
-  font-weight: 700;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  box-shadow: 0 0 18px rgb(95 224 176 / 0.6);
 }
 
-.onAir i {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--mint-ink);
-  animation: blink 1.2s steps(1) infinite;
+.index {
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
-.programCam {
-  padding: 3px 8px;
-  border-radius: 5px;
-  background: rgb(0 0 0 / 0.55);
-  color: rgb(244 241 234 / 0.85);
-}
-
-.programCode {
-  margin-left: auto;
-  padding: 3px 8px;
-  border-radius: 5px;
-  background: rgb(0 0 0 / 0.55);
-  color: var(--mint-text-dark);
-  font-variant-numeric: tabular-nums;
-}
-
-/* What's on air, under the monitor. */
-.info {
+.row {
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  padding: 22px 10px 8px;
+  border-top: 1px solid rgb(244 241 234 / 0.08);
 }
 
-/* Counts down to the next auto-cut. */
-.countdown {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  right: 10px;
-  height: 2px;
-  border-radius: 2px;
-  background: rgb(244 241 234 / 0.08);
+.row:last-child {
+  border-bottom: 1px solid rgb(244 241 234 / 0.08);
 }
 
-.countdown::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: var(--soft-mint);
-  box-shadow: 0 0 8px var(--soft-mint);
-  transform-origin: left;
-  scale: 0 1;
+.rowButton {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 16px;
+  width: 100%;
+  padding: clamp(12px, 1.4vw, 18px) 0;
+  border: 0;
+  background: none;
+  color: rgb(244 241 234 / 0.42);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
 }
 
-.switcher[data-auto] .countdown::after {
-  animation: countdown 6s linear forwards;
-}
-
-.infoMain {
-  display: flex;
-  align-items: flex-start;
-  gap: 18px;
-  min-width: 0;
-  animation: rise 0.5s var(--ease-land);
-}
-
-.infoIndex {
-  color: var(--soft-mint);
+.rowNum,
+.rowFormat {
   font-family: var(--font-mono-stack);
-  font-size: clamp(1.75rem, 1.2rem + 1.4vw, 2.5rem);
-  letter-spacing: -0.04em;
-  line-height: 1;
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  transition: color 0.3s ease;
 }
 
-.infoTitle {
-  font-size: clamp(1.5rem, 1.2rem + 1vw, 2.125rem);
+.rowName {
+  font-size: clamp(1.5rem, 0.9rem + 1.6vw, 2.375rem);
   font-weight: 560;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.045em;
   line-height: 1.05;
+  transition:
+    color 0.3s ease,
+    translate 0.4s var(--ease-land);
 }
 
-.infoBody {
-  max-width: 46ch;
-  margin-top: 6px;
+.rowButton:hover .rowName,
+.rowButton:focus-visible .rowName {
+  color: var(--paper);
+  translate: 6px 0;
+}
+
+.rowButton:focus-visible {
+  outline: none;
+}
+
+.rowButton:focus-visible .rowNum {
+  color: var(--soft-mint);
+}
+
+/* On air: the name turns to the heading's mint accent. */
+.row[data-on] .rowNum {
+  color: var(--soft-mint);
+}
+
+.row[data-on] .rowFormat {
+  color: rgb(244 241 234 / 0.7);
+}
+
+.row[data-on] .rowName {
+  padding-bottom: 0.04em;
+  background: linear-gradient(100deg, var(--mint-text-dark), #eafff6 50%, var(--soft-mint));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-family: var(--font-accent-stack);
+  font-size: clamp(1.75rem, 1rem + 1.9vw, 2.75rem);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  translate: 0 0;
+}
+
+/* The line and "Try this prompt" open under the row on air. */
+.detail {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.5s var(--ease-land);
+}
+
+.row[data-on] .detail {
+  grid-template-rows: 1fr;
+}
+
+.detailInner {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  min-height: 0;
+  overflow: hidden;
+  padding-left: 48px;
+}
+
+.detailInner > * {
+  margin-bottom: clamp(16px, 1.6vw, 22px);
+}
+
+.detailBody {
+  max-width: 40ch;
   color: rgb(244 241 234 / 0.6);
   font-size: 0.9375rem;
   line-height: 1.5;
 }
 
-.infoSide {
-  display: flex;
-  flex: none;
-  align-items: center;
-  gap: 12px;
-}
-
-.format {
-  padding: 4px 9px;
-  border-radius: 7px;
-  background: rgb(244 241 234 / 0.06);
-  color: rgb(244 241 234 / 0.65);
-  font-family: var(--font-mono-stack);
-  font-size: 0.75rem;
-}
-
 .try {
   display: inline-flex;
+  flex: none;
   align-items: center;
   gap: 8px;
   height: 42px;
@@ -347,147 +270,112 @@
   translate: 0 -2px;
 }
 
-/* ---------- Source feeds ---------- */
+/* The row's own rule doubles as the countdown to the next auto-cut. */
+.countdown {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  z-index: 1;
+  height: 1px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 10px var(--soft-mint);
+  transform-origin: left;
+  opacity: 0.5;
+}
 
-.sources {
-  display: grid;
-  grid-template-rows: auto 1fr;
-  gap: 12px;
+.switcher[data-auto] .countdown {
+  opacity: 1;
+  animation: countdown 6s linear both;
+}
+
+/* ---------- The projection ---------- */
+
+.projection {
+  position: relative;
   min-width: 0;
 }
 
-.sourcesHead {
+/* Light from the picture spilling onto the night around it. */
+.projection::before {
+  content: "";
+  position: absolute;
+  inset: 10% 6% -18%;
+  z-index: -1;
+  background: radial-gradient(50% 50% at 50% 55%, rgb(95 224 176 / 0.12), transparent 70%);
+  pointer-events: none;
+}
+
+.tally {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 4px 4px 0;
-  color: rgb(244 241 234 / 0.75);
+  gap: 16px;
+  margin-bottom: 10px;
+  padding: 0 6%;
+  color: rgb(244 241 234 / 0.55);
   font-family: var(--font-mono-stack);
   font-size: 0.6875rem;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
-.sourcesCount {
-  color: rgb(244 241 234 / 0.4);
-}
-
-.hint {
-  color: rgb(244 241 234 / 0.4);
-  letter-spacing: 0.06em;
-  text-transform: none;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  align-content: start;
-  gap: 10px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.tile {
-  display: grid;
-  gap: 8px;
-  width: 100%;
-  padding: 6px 6px 10px;
-  border: 0;
-  border-radius: 14px;
-  background: #16171b;
-  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.06) inset;
-  color: rgb(244 241 234 / 0.7);
-  font: inherit;
-  text-align: left;
-  cursor: pointer;
-  transition:
-    background-color 0.3s ease,
-    box-shadow 0.3s ease,
-    color 0.3s ease,
-    translate 0.3s var(--ease-land);
-}
-
-.tile:hover {
-  background: #1b1c21;
-  color: var(--paper);
-  translate: 0 -2px;
-}
-
-.tile[data-on] {
-  background: rgb(95 224 176 / 0.07);
-  box-shadow:
-    0 0 0 1px rgb(95 224 176 / 0.6) inset,
-    0 0 30px -10px rgb(95 224 176 / 0.5);
-  color: var(--paper);
-}
-
-.thumb {
-  position: relative;
-  display: block;
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
-  border-radius: 9px;
-}
-
-.tileCam {
-  position: absolute;
-  top: 6px;
-  left: 6px;
+.onAir {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 2px 6px;
-  border-radius: 4px;
-  background: rgb(0 0 0 / 0.6);
-  color: rgb(244 241 234 / 0.8);
-  font-family: var(--font-mono-stack);
-  font-size: 0.5625rem;
-  letter-spacing: 0.06em;
+  gap: 7px;
+  color: var(--soft-mint);
+  font-weight: 700;
 }
 
-/* Tally light: grey on standby, mint on air. */
-.tileCam i {
-  width: 6px;
-  height: 6px;
+.onAir i {
+  width: 7px;
+  height: 7px;
   border-radius: 50%;
-  background: rgb(244 241 234 / 0.3);
-}
-
-.tile[data-on] .tileCam i {
   background: var(--soft-mint);
-  box-shadow: 0 0 8px var(--soft-mint);
+  box-shadow: 0 0 10px var(--soft-mint);
+  animation: blink 1.2s steps(1) infinite;
 }
 
-.tileLabel {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0 4px;
+.cam {
   overflow: hidden;
-  font-size: 0.8125rem;
-  font-weight: 560;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 
-.tileKey {
-  display: grid;
-  flex: none;
-  place-items: center;
-  width: 18px;
-  height: 18px;
-  border-radius: 5px;
-  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.16) inset;
-  color: rgb(244 241 234 / 0.55);
-  font-family: var(--font-mono-stack);
-  font-size: 0.625rem;
+.code {
+  margin-left: auto;
+  color: var(--mint-text-dark);
+  font-variant-numeric: tabular-nums;
 }
 
-.tile[data-on] .tileKey {
-  background: var(--soft-mint);
-  box-shadow: none;
-  color: var(--mint-ink);
+/* The picture has no frame: its edges dissolve into the night. */
+.program {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  -webkit-mask-image: radial-gradient(closest-side, #000 58%, rgb(0 0 0 / 0.6) 80%, transparent);
+  mask-image: radial-gradient(closest-side, #000 58%, rgb(0 0 0 / 0.6) 80%, transparent);
+}
+
+.feed {
+  position: absolute;
+  inset: 0;
+  visibility: hidden;
+}
+
+.feed[data-on] {
+  visibility: visible;
+  animation: cutIn 0.6s var(--ease-land);
+}
+
+/* A frame of white on every cut. */
+.flash {
+  position: absolute;
+  inset: 0;
+  background: #fff;
+  opacity: 0;
+  pointer-events: none;
+  animation: flash 0.35s ease-out;
 }
 
 .note {
@@ -502,26 +390,20 @@
 
 @keyframes cutIn {
   from {
+    opacity: 0.4;
     scale: 1.04;
   }
 }
 
 @keyframes flash {
   from {
-    opacity: 0.35;
+    opacity: 0.3;
   }
 }
 
 @keyframes countdown {
-  to {
-    scale: 1 1;
-  }
-}
-
-@keyframes rise {
   from {
-    opacity: 0;
-    translate: 0 8px;
+    scale: 0 1;
   }
 }
 
@@ -532,14 +414,6 @@
 }
 
 /* ---------- Smaller screens ---------- */
-
-@media (max-width: 1080px) {
-  .info {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 14px;
-  }
-}
 
 @media (max-width: 900px) {
   .head {
@@ -560,15 +434,14 @@
     font-size: clamp(1.9rem, 1.2rem + 3vw, 2.75rem);
   }
 
-  /* Monitor on top, the six feeds in a row of three below. */
+  /* The picture on top, the index below it. */
   .switcher {
     grid-template-columns: minmax(0, 1fr);
-    border-radius: 20px;
+    gap: 20px;
   }
 
-  .grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 8px;
+  .projection {
+    order: -1;
   }
 
   .hint {
@@ -577,50 +450,37 @@
 }
 
 @media (max-width: 560px) {
-  .programBar {
-    top: 12px;
-    left: 12px;
-    right: 12px;
-    gap: 6px;
+  .tally {
+    gap: 10px;
+    padding: 0;
     font-size: 0.5625rem;
   }
 
-  .corners {
-    inset: 8px;
-  }
-
-  .programCam {
-    display: none;
-  }
-
-  .infoMain {
+  .rowButton {
+    grid-template-columns: 24px minmax(0, 1fr) auto;
     gap: 12px;
   }
 
-  .tile {
-    padding: 4px 4px 8px;
-    border-radius: 11px;
+  .detailInner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    padding-left: 36px;
   }
 
-  .tileCam {
-    display: none;
-  }
-
-  .tileLabel {
-    padding: 0 2px;
-    font-size: 0.6875rem;
-  }
-
-  .tileKey {
-    display: none;
+  .detailInner > .detailBody {
+    margin-bottom: 0;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .feed[data-on],
   .flash,
-  .infoMain,
   .onAir i {
     animation: none;
+  }
+
+  .detail {
+    transition: none;
   }
 }

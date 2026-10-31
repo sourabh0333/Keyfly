@@ -154,15 +154,13 @@ The root layout renders the skip link, `SiteHeader` and `<main id="main">`. Page
   - **Step 3:** the frame tries 16:9, 9:16 and 1:1 (its width animates at a fixed height, using `cqw` of the viewer), and the export bar fills to "Ready".
   - **Fallback:** without JS or with reduced motion there is no pin, and the CSS defaults (all progress at 1) show the finished cut.
   - **Copy:** in `howItWorks` (content file), PLACEHOLDER.
-- **Use cases** (`src/components/use-cases/`, added 2026-10-31, redesigned the same day): the six prompt-box presets as live feeds on a **multicam switcher**, captioned "Illustrative previews". The first version, a pinned reel under a playhead, broke on short laptop screens and was dropped. This one is not pinned, so it fits any height.
-  - **Program monitor (left):** the feed on air plays large, with a cut-in and a white flash on each cut. It has:
-    - an "● On air" tally, the CAM number and a running timecode;
-    - viewfinder corners and rule-of-thirds lines.
-  - **Under the monitor:** the number and name, the line, the format and the mint "Try this prompt" button. A mint countdown line runs to the next auto-cut.
-  - **Sources (right):** a 2×3 grid of CAM 01–06 tiles, each a live `Preview` with a tally light (mint on air) and a key number. On narrow screens it becomes three columns below the monitor.
-  - **Cutting:** click a tile or press 1–6 while the switcher has focus. It auto-cuts every 6s while at least 35% of it is on screen and it isn't hovered or focused. All previews pause (`data-paused`) when it's off screen. With reduced motion there is no auto-cut and the previews hold still.
+- **Use cases** (`src/components/use-cases/`, added 2026-10-31, redesigned twice the same day): the six prompt-box presets as an **open index beside a frameless projection**, captioned "Illustrative previews". Earlier versions were dropped: a pinned reel (broke on short laptop screens), then a boxed multicam switcher with a tile grid (the team asked for no grid or box shapes). Nothing in it sits in a card, tile or frame: only type, light and hairlines. It is not pinned, so it fits any height.
+  - **Index (left):** six rows split by hairlines, each with a mono number, the name and the format. The row on air shows its name in the serif italic mint accent and opens (`grid-template-rows` 0fr → 1fr) to show its line and the mint "Try this prompt" button. Closed rows are `inert`. The row's own hairline fills with mint as the countdown to the next auto-cut.
+  - **Projection (right):** the feed on air plays with no frame. A `closest-side` radial mask dissolves its edges into the night, and a soft mint spill sits behind it. Above it, a plain mono line reads "● On air · 01 · Launch Video" with a running timecode. Each cut has a cut-in and a white flash.
+  - **Cutting:** click a row or press 1–6 while it has focus. It auto-cuts every 6s while at least 35% of it is on screen and it isn't hovered or focused. All previews pause (`data-paused`) when it's off screen. With reduced motion there is no auto-cut and the previews hold still.
+  - **Narrow screens:** the projection moves above the index, and the row's line and button stack.
   - **"Try this prompt":** dispatches `keyfly:prompt` with the preset's label. `PromptBox` listens, scrolls back to the hero and types that preset in.
-  - **`Preview`:** a CSS-drawn loop at the use case's format, sized in `cqw`/`cqh` of its screen. `bleed` fills a monitor edge to edge and pillarboxes 9:16.
+  - **`Preview`:** a CSS-drawn loop at the use case's format, sized in `cqw`/`cqh` of its screen. `bleed` fills its parent edge to edge with no backing or corner marks, and stands 9:16 in the middle.
     - Launch: title cards on the beat.
     - UGC: a selfie with word-by-word captions.
     - Explainer: a diagram that builds.

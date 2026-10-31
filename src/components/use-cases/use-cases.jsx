@@ -3,11 +3,11 @@ import { Switcher } from "./switcher";
 import styles from "./use-cases.module.css";
 
 /**
- * "Use cases": the six presets from the prompt box as live feeds on a
- * multicam switcher (see Switcher), under the section heading.
+ * "Use cases": the six presets from the prompt box as an open index
+ * beside a frameless live preview (see Switcher), under the section heading.
  */
 export function UseCases() {
-  const { eyebrow, title, lead, cta, sources, hint, note, items } = useCases;
+  const { eyebrow, title, lead, cta, hint, note, items } = useCases;
 
   return (
     <section id="use-cases" className={styles.section} aria-labelledby="cases-title" data-section="Use cases">
@@ -30,7 +30,7 @@ export function UseCases() {
           <p className={styles.lead}>{lead}</p>
         </div>
 
-        <Switcher items={items} cta={cta} sources={sources} hint={hint} />
+        <Switcher items={items} cta={cta} hint={hint} />
 
         <p className={styles.note}>{note}</p>
       </div>

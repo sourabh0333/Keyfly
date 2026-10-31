@@ -81,7 +81,6 @@ export const useCases = {
   title: [{ text: "Made for" }, { text: "every kind of video.", accent: true }],
   lead: "Start from a preset or describe your own. Six of the videos people make most:",
   cta: "Try this prompt",
-  sources: "Sources",
   hint: "Press 1–6 to cut",
   note: "Illustrative previews",
   items: [

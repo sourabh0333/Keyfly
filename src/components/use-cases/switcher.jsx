@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { Preview } from "./preview";
 import styles from "./use-cases.module.css";
 
-const HOLD = 6000; // ms each feed stays on air before the auto-cut
+const HOLD = 6000; // ms each use case stays on air before the auto-cut
 
 const pad = (n) => String(n).padStart(2, "0");
 
@@ -17,14 +17,14 @@ function Arrow() {
 }
 
 /**
- * A multicam switcher. Every use case is a live source feed; the one on air
- * plays large on the program monitor with its name, line and "Try this
- * prompt" beneath. Clicking a feed or pressing 1–6 cuts to it, and it cuts
- * on by itself every few seconds while the section is on screen and not
- * being hovered or focused. With reduced motion it never auto-cuts and the
- * feeds hold still.
+ * The six use cases as an open index beside a frameless projection: the
+ * one on air plays on the right, its edges dissolving into the night, and
+ * its row opens with the line and "Try this prompt". Clicking a row or
+ * pressing 1–6 cuts to it, and it cuts on by itself every few seconds
+ * while on screen and not hovered or focused. With reduced motion it
+ * never auto-cuts and the feeds hold still.
  */
-export function Switcher({ items, cta, sources, hint }) {
+export function Switcher({ items, cta, hint }) {
   const [active, setActive] = useState(0);
   const [cuts, setCuts] = useState(0);
   const [visible, setVisible] = useState(false);
@@ -47,14 +47,14 @@ export function Switcher({ items, cta, sources, hint }) {
     return () => observer.disconnect();
   }, []);
 
-  // Auto-cut to the next feed.
+  // Auto-cut to the next use case.
   useEffect(() => {
     if (!auto) return;
     const timer = setTimeout(() => cut((active + 1) % items.length), HOLD);
     return () => clearTimeout(timer);
   }, [auto, active, cuts, items.length]);
 
-  // A running program timecode while on screen.
+  // A running timecode while on screen.
   useEffect(() => {
     if (!visible || reduced) return;
     const start = performance.now();
@@ -75,8 +75,6 @@ export function Switcher({ items, cta, sources, hint }) {
     }
   }
 
-  const item = items[active];
-
   return (
     <div
       ref={ref}
@@ -89,7 +87,51 @@ export function Switcher({ items, cta, sources, hint }) {
       onBlur={(event) => !event.currentTarget.contains(event.relatedTarget) && setHeld(false)}
       onKeyDown={onKeyDown}
     >
-      <div className={styles.programCol}>
+      <div className={styles.indexCol}>
+        <p className={styles.hint}>{hint}</p>
+        <ol className={styles.index}>
+          {items.map((it, i) => {
+            const on = i === active;
+            return (
+              <li key={it.label} className={styles.row} data-on={on ? "" : undefined}>
+                <button type="button" className={styles.rowButton} aria-pressed={on} aria-controls={`case-${i}`} onClick={() => cut(i)}>
+                  <span className={styles.rowNum}>{pad(i + 1)}</span>
+                  <span className={styles.rowName}>{it.label}</span>
+                  <span className={styles.rowFormat}>{it.format}</span>
+                </button>
+                <div id={`case-${i}`} className={styles.detail} inert={!on}>
+                  <div className={styles.detailInner}>
+                    <p className={styles.detailBody}>{it.body}</p>
+                    <button
+                      type="button"
+                      className={styles.try}
+                      onClick={() => window.dispatchEvent(new CustomEvent("keyfly:prompt", { detail: { label: it.label } }))}
+                    >
+                      {cta}
+                      <Arrow />
+                    </button>
+                  </div>
+                </div>
+                {on ? <span key={cuts} className={styles.countdown} aria-hidden="true" /> : null}
+              </li>
+            );
+          })}
+        </ol>
+      </div>
+
+      <div className={styles.projection}>
+        <div className={styles.tally} aria-hidden="true">
+          <span className={styles.onAir}>
+            <i />
+            On air
+          </span>
+          <span className={styles.cam}>
+            {pad(active + 1)} · {items[active].label}
+          </span>
+          <span className={styles.code} ref={codeRef}>
+            00:00:00:00
+          </span>
+        </div>
         <div className={styles.program}>
           {items.map((it, i) => (
             <div key={it.label} className={styles.feed} data-on={i === active ? "" : undefined} data-paused={i === active ? undefined : ""}>
@@ -97,71 +139,7 @@ export function Switcher({ items, cta, sources, hint }) {
             </div>
           ))}
           <span key={cuts} className={styles.flash} aria-hidden="true" />
-          <span className={styles.thirds} aria-hidden="true" />
-          <span className={styles.corners} aria-hidden="true" />
-          <div className={styles.programBar} aria-hidden="true">
-            <span className={styles.onAir}>
-              <i />
-              On air
-            </span>
-            <span className={styles.programCam}>CAM {pad(active + 1)}</span>
-            <span className={styles.programCode} ref={codeRef}>
-              00:00:00:00
-            </span>
-          </div>
         </div>
-
-        <div className={styles.info} aria-live="polite">
-          <span key={`${active}-${cuts}`} className={styles.countdown} aria-hidden="true" />
-          <div key={active} className={styles.infoMain}>
-            <span className={styles.infoIndex}>{pad(active + 1)}</span>
-            <div>
-              <h3 className={styles.infoTitle}>{item.label}</h3>
-              <p className={styles.infoBody}>{item.body}</p>
-            </div>
-          </div>
-          <div className={styles.infoSide}>
-            <span className={styles.format}>{item.format}</span>
-            <button
-              type="button"
-              className={styles.try}
-              onClick={() => window.dispatchEvent(new CustomEvent("keyfly:prompt", { detail: { label: item.label } }))}
-            >
-              {cta}
-              <Arrow />
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div className={styles.sources}>
-        <p className={styles.sourcesHead}>
-          <span>
-            {sources} <span className={styles.sourcesCount}>· {pad(items.length)}</span>
-          </span>
-          <span className={styles.hint}>{hint}</span>
-        </p>
-        <ul className={styles.grid}>
-          {items.map((it, i) => (
-            <li key={it.label}>
-              <button type="button" className={styles.tile} data-on={i === active ? "" : undefined} aria-pressed={i === active} onClick={() => cut(i)}>
-                <span className={styles.thumb}>
-                  <Preview kind={it.kind} format={it.format} bleed />
-                  <span className={styles.tileCam} aria-hidden="true">
-                    <i />
-                    CAM {pad(i + 1)}
-                  </span>
-                </span>
-                <span className={styles.tileLabel}>
-                  <span className={styles.tileKey} aria-hidden="true">
-                    {i + 1}
-                  </span>
-                  {it.label}
-                </span>
-              </button>
-            </li>
-          ))}
-        </ul>
       </div>
     </div>
   );
