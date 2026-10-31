@@ -1,0 +1,357 @@
+/*
+ * The lab: test pages for the page-wide motion ideas (A: one object that
+ * transforms down the page; B: stacking scenes with smooth scrolling).
+ * Development only.
+ */
+.lab {
+  position: relative;
+  color: var(--paper);
+  background:
+    radial-gradient(60% 40% at 50% 0%, rgb(95 224 176 / 0.06), transparent 70%),
+    var(--night);
+}
+
+/* The switcher pinned at the foot of every lab page. */
+.labBar {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  z-index: 60;
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 999px;
+  background: rgb(18 19 22 / 0.85);
+  box-shadow:
+    0 0 0 1px rgb(244 241 234 / 0.1),
+    0 20px 50px -20px rgb(0 0 0 / 0.9);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  translate: -50% 0;
+}
+
+.labBar a {
+  padding: 8px 14px;
+  border-radius: 999px;
+  color: rgb(244 241 234 / 0.7);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.labBar a[aria-current="page"] {
+  background: var(--soft-mint);
+  color: var(--mint-ink);
+}
+
+/* ---------- Index ---------- */
+
+.index {
+  display: grid;
+  align-content: center;
+  gap: 32px;
+  min-height: 100svh;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 120px var(--gutter) 80px;
+}
+
+.indexTitle {
+  font-size: clamp(2rem, 1.2rem + 2.4vw, 3.25rem);
+  font-weight: 560;
+  letter-spacing: -0.04em;
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.card {
+  display: grid;
+  gap: 10px;
+  padding: 28px;
+  border-radius: 22px;
+  background: #121316;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.09);
+  color: inherit;
+  text-decoration: none;
+  transition:
+    box-shadow 0.3s ease,
+    translate 0.3s var(--ease-land);
+}
+
+.card:hover {
+  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.5);
+  translate: 0 -2px;
+}
+
+.cardTag {
+  color: var(--soft-mint);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.cardTitle {
+  font-size: 1.5rem;
+  font-weight: 560;
+  letter-spacing: -0.03em;
+}
+
+.cardBody {
+  color: rgb(244 241 234 / 0.62);
+  line-height: 1.55;
+}
+
+/* ---------- Shared type ---------- */
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: rgb(244 241 234 / 0.62);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.eyebrow::before {
+  content: "";
+  width: 18px;
+  height: 1px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+}
+
+.h1,
+.h2 {
+  margin-top: 16px;
+  font-weight: 560;
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+
+.h1 {
+  font-size: clamp(2.6rem, 1.4rem + 4vw, 5rem);
+}
+
+.h2 {
+  font-size: clamp(2rem, 1.1rem + 2.2vw, 3.4rem);
+}
+
+.plain,
+.accent {
+  display: block;
+}
+
+.accent {
+  padding-bottom: 0.06em;
+  background: linear-gradient(100deg, var(--mint-text-dark), #eafff6 50%, var(--soft-mint));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-family: var(--font-accent-stack);
+  font-size: 1.1em;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.lead {
+  max-width: 40ch;
+  margin-top: 18px;
+  color: rgb(244 241 234 / 0.62);
+  font-size: 1rem;
+  line-height: 1.55;
+}
+
+/* ---------- Mocks ---------- */
+
+.promptMock {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  width: 100%;
+  height: 100%;
+  padding: 16px 16px 12px;
+}
+
+.promptText {
+  color: rgb(244 241 234 / 0.45);
+  font-size: 1rem;
+}
+
+.caret {
+  display: inline-block;
+  width: 1.5px;
+  height: 1.05em;
+  margin-left: 2px;
+  vertical-align: -0.15em;
+  background: var(--soft-mint);
+  animation: blink 1s steps(1) infinite;
+}
+
+.promptBar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chipBtn,
+.send {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: rgb(244 241 234 / 0.06);
+  color: rgb(244 241 234 / 0.7);
+  font-size: 0.875rem;
+}
+
+.send {
+  background: var(--soft-mint);
+  color: var(--mint-ink);
+  font-weight: 700;
+}
+
+.auto {
+  color: rgb(244 241 234 / 0.8);
+  font-size: 0.8125rem;
+  font-weight: 560;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.editorMock {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  width: 100%;
+  height: 100%;
+  font-size: 11px;
+}
+
+.chrome {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  height: 30px;
+  padding: 0 12px;
+  border-bottom: 1px solid rgb(244 241 234 / 0.06);
+  background: #18191d;
+  color: rgb(244 241 234 / 0.75);
+}
+
+.dots {
+  display: flex;
+  gap: 5px;
+}
+
+.dots i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgb(244 241 234 / 0.14);
+}
+
+.code {
+  justify-self: end;
+  color: var(--mint-text-dark);
+  font-family: var(--font-mono-stack);
+}
+
+.editorBody {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 26%;
+  min-height: 0;
+}
+
+.viewer {
+  position: relative;
+  margin: 10px;
+  overflow: hidden;
+  border-radius: 6px;
+}
+
+.side {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  padding: 12px;
+  border-left: 1px solid rgb(244 241 234 / 0.06);
+  background: #141518;
+}
+
+.side span {
+  height: 10px;
+  border-radius: 4px;
+  background: rgb(244 241 234 / 0.07);
+}
+
+.side span:first-child {
+  height: 44px;
+}
+
+.tracks {
+  position: relative;
+  display: grid;
+  gap: 5px;
+  padding: 10px 12px 12px;
+  background: #101114;
+}
+
+.tracks span {
+  width: var(--w);
+  height: 9px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #34405a, #b98a6a);
+  opacity: 0.8;
+}
+
+.tracks span:last-of-type {
+  background: rgb(95 224 176 / 0.25);
+}
+
+.playhead {
+  position: absolute;
+  top: 4px;
+  bottom: 6px;
+  left: 42%;
+  width: 2px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+}
+
+.previewMock {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.iconMock {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (max-width: 720px) {
+  .cards {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

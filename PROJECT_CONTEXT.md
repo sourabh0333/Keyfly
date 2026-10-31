@@ -64,6 +64,14 @@ On 2026-10-30 the team dropped every earlier direction ("Paper and mint", "Relay
 - **Built step by step:** header and hero first. Each later section is added only after the previous one is agreed.
 - The cardboard.ai and app.keyfly.si pages could not be opened from the cloud session (network policy). The hero follows the team's screenshot of the app.
 
+## Lab (added 2026-10-31)
+
+`/lab` (development only; 404 in production, like `/styleguide`) holds test pages for page-wide motion ideas, so the team can feel them before one goes into the homepage. The edit transitions on the homepage were judged "not clean, smooth, unique and modern", which is what led here. Built from the real content, with mock visuals in `src/components/lab/`:
+
+- **`/lab/morph`, idea A, one object that transforms:** a single fixed element takes the shape of invisible anchors (`data-stop`) in each section. It interpolates between the two anchors either side of the middle of the screen, easing its box and corner radius and cross-fading its contents: prompt box → editor → preview → app icon.
+- **`/lab/stack`, idea B, stacking scenes:** full-screen sticky panels. The next one slides over while the one beneath shrinks (to 91%), rounds its corners and dims, with smooth inertia scrolling throughout from **Lenis** (`lenis`, added as a dependency for this test).
+- A switcher pill at the foot of each lab page moves between them.
+
 ## Design foundations (step 2)
 
 `/styleguide` shows every token and component in development and returns 404 in production. Check it after changing a foundation.
