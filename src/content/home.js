@@ -118,6 +118,30 @@ export const yourCall = {
   ],
 };
 
+// "One edit, every format": one cut, reframed for each shape. The format
+// list is PLACEHOLDER until the team confirms Keyfly's export options.
+export const everyFormat = {
+  eyebrow: "One edit, every format",
+  title: [{ text: "One edit." }, { text: "Every screen.", accent: true }],
+  lead: "Make the cut once. Keyfly reframes it for every shape it needs, keeps your subject in frame and moves the captions with it.",
+  file: "Launch Video",
+  panel: "Export",
+  panelSub: "One cut, four formats",
+  tracked: "Subject tracked",
+  ready: "Ready",
+  rendering: "Reframing",
+  queued: "Queued",
+  allReady: "files from one edit",
+  timeline: "One timeline",
+  note: "Illustrative interface",
+  formats: [
+    { id: "wide", ratio: "16:9", w: 16, h: 9, name: "Widescreen", use: "YouTube, websites", size: "1920 × 1080" },
+    { id: "vertical", ratio: "9:16", w: 9, h: 16, name: "Vertical", use: "Reels, Shorts, TikTok", size: "1080 × 1920" },
+    { id: "square", ratio: "1:1", w: 1, h: 1, name: "Square", use: "Feeds", size: "1080 × 1080" },
+    { id: "portrait", ratio: "4:5", w: 4, h: 5, name: "Portrait", use: "Feed ads", size: "1080 × 1350" },
+  ],
+};
+
 export const useCases = {
   eyebrow: "Use cases",
   title: [{ text: "Made for" }, { text: "every kind of video.", accent: true }],
