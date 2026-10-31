@@ -5,9 +5,9 @@ import { DecisionTimeline } from "./decision-timeline";
 import styles from "./your-call.module.css";
 
 /**
- * "You make the calls": every decision Keyfly made, pinned to the
- * timeline with its reason and a switch to change it (see
- * DecisionTimeline).
+ * "You make the calls": every decision Keyfly made as an open note, with
+ * its reason and a switch to change it, and a leader line down to where
+ * it acts on the timeline (see DecisionTimeline).
  */
 export function YourCall() {
   const { eyebrow, title, lead, note, ...timeline } = yourCall;
@@ -36,7 +36,7 @@ export function YourCall() {
 
         <DecisionTimeline {...timeline} />
 
-        <p className={styles.note}>{note}</p>
+        <p className={styles.footnote}>{note}</p>
       </div>
     </section>
   );

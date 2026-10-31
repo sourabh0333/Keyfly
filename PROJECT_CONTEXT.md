@@ -231,9 +231,11 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
   - **Copy:** `editWithWords` in the content file, all PLACEHOLDER until the team confirms which follow-up edits are real.
   - **Flight thread:** it crosses from How it works' channel to the left margin in the gap before this section and runs down beside it.
 - **You make the calls** (`src/components/your-call/`, added 2026-10-31; the answer to "black box" AI): "Keyfly decides. *You have the final say.*" The heading is laid out like Use cases. Captioned "Illustrative interface".
-  - **`DecisionTimeline`** (client), two parts:
-    - **A full-width timeline** (T1 chapter title, V1 clips, A1 music level, A2 voice) with four numbered pins and drop lines marking where each decision acts.
-    - **Below it, four decision cards:** label, "Keyfly chose …", the reason, a segmented switch of the options, and a status ("Keyfly's pick", or mint "Changed by you").
+  - **`DecisionTimeline`** (client), redesigned 2026-10-31 as an **annotated diagram, with no panels or cards** (the team asked for no box shapes):
+    - **Four open notes** on one 4-column grid (no gaps), each pure typography: a mono index and label, "Keyfly chose" over the choice in large type (mint gradient once changed), the reason, inline text switches (the one in use underlined mint; a small mint point marks Keyfly's pick), and a mono status.
+    - **A leader line** runs down each note's left edge, across `--drop`, onto the ruler, ending in a node, so each decision lands at 0, 25, 50 or 75% of the timeline, where it acts. The one in focus glows mint with a light running down it.
+    - **An open hairline timeline** on the page: ruler, a chapter-title pill, slim rounded clip bars, the music level line and a voice waveform of thin bars, with the playhead on a rail (the timeline clips sideways with `overflow-x: clip`).
+    - **Below 1000px** the timeline comes first and the notes follow as a list (2 columns, then 1), with the leaders kept as left rules.
   - **Switching an option changes the timeline:**
     - the opening clip's take (its colour);
     - where the cuts fall (on beat / 2 beats / free);
@@ -241,7 +243,6 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
     - how far the music line dips under the voice (an SVG path; `d` transitions).
   - **The self-running demo:** until someone touches a switch, each decision in turn tries its other two options, then returns to Keyfly's pick, every 1.7s, while on screen and not hovered or focused. The focused pin and card light mint. Once touched, it stops and follows the visitor.
   - **Reduced motion:** read with `useSyncExternalStore` (no setState in an effect); there is no demo and nothing eases.
-  - The playhead slides on a rail by transform. Cards go 4 → 2 → 1 columns.
   - **Copy:** `yourCall` in the content file, PLACEHOLDER until the team confirms which decisions Keyfly exposes.
 - **Use cases** (`src/components/use-cases/`, added 2026-10-31, redesigned four times the same day): the six prompt-box presets on a **jog wheel**, the dial editors spin to move through footage. Captioned "Illustrative previews". It is not pinned, so it fits any height. Earlier versions were dropped:
   - a pinned reel (broke on short laptop screens);

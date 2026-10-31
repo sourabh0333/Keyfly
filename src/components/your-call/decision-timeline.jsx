@@ -5,20 +5,22 @@ import styles from "./your-call.module.css";
 
 const STEP = 1700; // ms per step of the self-running demo
 
-// Where each decision's pin sits on the timeline (share of its width).
-const PINS = [9, 44, 68, 86];
-
-// Cut points for each "cuts" option, as shares of the V1 track.
+// Each decision acts where its annotation's leader line lands: at the
+// start of its quarter of the timeline (0, 25, 50, 75%).
+// Cut points for each "cuts" option, as shares of the video track.
 const CUTS = [
   [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
   [0, 20, 40, 60, 80, 100],
   [0, 14, 22, 38, 47, 63, 71, 86, 100],
 ];
 
-const TITLE_WIDTH = [5, 9, 13]; // the chapter title's width per length
-const TITLE_AT = 64;
-const VOICE = [76, 95]; // where the voice-over runs
+const TITLE_WIDTH = [6, 11, 16]; // the chapter title's width per length
+const TITLE_AT = 50.6;
+const VOICE = [75.6, 96]; // where the voice-over runs
 const DUCK = [0, 0.32, 0.62]; // how far the music dips under it
+
+// The voice's waveform: thin bars, seeded so server and client match.
+const VOICE_BARS = Array.from({ length: 38 }, (_, i) => 0.25 + ((Math.sin(i * 1.7) + Math.sin(i * 0.63) + 2) / 4) * 0.75);
 
 const MOTION = "(prefers-reduced-motion: reduce)";
 function onMotionChange(callback) {
@@ -36,9 +38,10 @@ function level(duck) {
 }
 
 /**
- * The decisions behind a cut, laid out where they happen: a timeline with
- * Keyfly's calls pinned to it (01–04), and beneath it a card for each:
- * what Keyfly chose, why, and a switch to change it. Changing a switch
+ * The decisions behind a cut as an annotated diagram: four open notes in a
+ * row (what Keyfly chose, why, and inline switches to change it), each
+ * with a leader line running down onto the timeline beneath, to the point
+ * where that decision acts. Changing a switch
  * changes the timeline: the opening take, where the cuts fall, how long
  * the chapter title holds, how far the music dips under the voice.
  *
@@ -100,94 +103,77 @@ export function DecisionTimeline({ decisions, chose, pick, changed }) {
       onFocus={() => setHeld(true)}
       onBlur={(event) => !event.currentTarget.contains(event.relatedTarget) && setHeld(false)}
     >
+      <ol className={styles.notes}>
+        {decisions.map((d, i) => {
+          const isChanged = choice[i] !== d.pick;
+          return (
+            <li key={d.id} className={styles.note} data-on={i === active ? "" : undefined} data-changed={isChanged ? "" : undefined}>
+              <span className={styles.leader} aria-hidden="true">
+                <i />
+              </span>
+              <p className={styles.noteHead}>
+                <span className={styles.noteIndex}>{String(i + 1).padStart(2, "0")}</span>
+                {d.label}
+              </p>
+              <p className={styles.noteChoice}>
+                <span className={styles.noteChose}>{chose}</span>
+                <span key={choice[i]} className={styles.noteValue}>
+                  {d.options[choice[i]]}
+                </span>
+              </p>
+              <p className={styles.noteReason}>{d.reason}</p>
+              <div className={styles.options} role="group" aria-label={d.label}>
+                {d.options.map((option, o) => (
+                  <button key={option} type="button" className={styles.option} aria-pressed={choice[i] === o} data-pick={o === d.pick ? "" : undefined} onClick={() => choose(i, o)}>
+                    {option}
+                  </button>
+                ))}
+              </div>
+              <p className={styles.status}>{isChanged ? changed : pick}</p>
+            </li>
+          );
+        })}
+      </ol>
+
       <div className={styles.timeline} aria-hidden="true">
-        <div className={styles.pins}>
-          {PINS.map((x, i) => (
-            <span key={i} className={styles.pin} data-on={i === active ? "" : undefined} data-changed={choice[i] !== picks[i] ? "" : undefined} style={{ left: `${x}%` }}>
-              <b>{String(i + 1).padStart(2, "0")}</b>
-              <i />
-            </span>
+        <div className={styles.ruler} />
+
+        <div className={styles.lane} data-kind="title">
+          <i className={styles.titleClip} data-on={active === 2 ? "" : undefined} style={{ left: `${TITLE_AT}%`, width: `${TITLE_WIDTH[title]}%` }}>
+            Chapter 2
+          </i>
+        </div>
+
+        <div className={styles.lane} data-kind="video">
+          {points.slice(0, -1).map((at, i) => (
+            <i
+              key={`${cuts}-${i}`}
+              className={styles.clip}
+              data-n={i === 0 ? `take${take}` : i % 3}
+              data-on={(i === 0 && active === 0) || active === 1 ? "" : undefined}
+              style={{ left: `${at}%`, width: `${points[i + 1] - at}%` }}
+            />
           ))}
         </div>
 
-        <div className={styles.ruler} />
-
-        <div className={styles.track}>
-          <span className={styles.label}>T1</span>
-          <div className={styles.lane}>
-            <i className={styles.titleClip} data-on={active === 2 ? "" : undefined} style={{ left: `${TITLE_AT}%`, width: `${TITLE_WIDTH[title]}%` }}>
-              Chapter 2
-            </i>
-          </div>
+        <div className={styles.lane} data-kind="music" data-on={active === 3 ? "" : undefined}>
+          <svg viewBox="0 0 100 20" preserveAspectRatio="none" className={styles.level}>
+            <path d={level(DUCK[duck])} />
+          </svg>
         </div>
 
-        <div className={styles.track}>
-          <span className={styles.label}>V1</span>
-          <div className={styles.lane}>
-            {points.slice(0, -1).map((at, i) => (
-              <i
-                key={`${cuts}-${i}`}
-                className={styles.clip}
-                data-n={i === 0 ? `take${take}` : i % 3}
-                data-on={(i === 0 && active === 0) || active === 1 ? "" : undefined}
-                style={{ left: `${at}%`, width: `${points[i + 1] - at}%` }}
-              />
+        <div className={styles.lane} data-kind="voice">
+          <span className={styles.voice} style={{ left: `${VOICE[0]}%`, width: `${VOICE[1] - VOICE[0]}%` }}>
+            {VOICE_BARS.map((h, i) => (
+              <i key={i} style={{ "--h": h.toFixed(2) }} />
             ))}
-          </div>
-        </div>
-
-        <div className={styles.track}>
-          <span className={styles.label}>A1</span>
-          <div className={`${styles.lane} ${styles.music}`} data-on={active === 3 ? "" : undefined}>
-            <svg viewBox="0 0 100 20" preserveAspectRatio="none" className={styles.level}>
-              <path d={level(DUCK[duck])} />
-            </svg>
-          </div>
-        </div>
-
-        <div className={styles.track}>
-          <span className={styles.label}>A2</span>
-          <div className={styles.lane}>
-            <i className={styles.voice} style={{ left: `${VOICE[0]}%`, width: `${VOICE[1] - VOICE[0]}%` }}>
-              Voice
-            </i>
-          </div>
+          </span>
         </div>
 
         <span className={styles.rail}>
           <i className={styles.playhead} />
         </span>
       </div>
-
-      <ol className={styles.cards}>
-        {decisions.map((d, i) => {
-          const isChanged = choice[i] !== d.pick;
-          return (
-            <li key={d.id} className={styles.card} data-on={i === active ? "" : undefined}>
-              <p className={styles.cardHead}>
-                <span className={styles.cardIndex}>{String(i + 1).padStart(2, "0")}</span>
-                {d.label}
-              </p>
-              <p className={styles.cardChoice}>
-                <span className={styles.cardChose}>{chose}</span>
-                {d.options[d.pick]}
-              </p>
-              <p className={styles.cardReason}>{d.reason}</p>
-              <div className={styles.options} role="group" aria-label={d.label}>
-                {d.options.map((option, o) => (
-                  <button key={option} type="button" className={styles.option} aria-pressed={choice[i] === o} onClick={() => choose(i, o)}>
-                    {option}
-                  </button>
-                ))}
-              </div>
-              <p className={styles.status} data-changed={isChanged ? "" : undefined}>
-                <i aria-hidden="true" />
-                {isChanged ? changed : pick}
-              </p>
-            </li>
-          );
-        })}
-      </ol>
     </div>
   );
 }
