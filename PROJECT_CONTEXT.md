@@ -230,20 +230,19 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
     - The shot layout is computed in a pure function, so render doesn't reassign variables (React lint).
   - **Copy:** `editWithWords` in the content file, all PLACEHOLDER until the team confirms which follow-up edits are real.
   - **Flight thread:** it crosses from How it works' channel to the left margin in the gap before this section and runs down beside it.
-- **You make the calls** (`src/components/your-call/`, added 2026-10-31; the answer to "black box" AI): "Keyfly decides. *You have the final say.*" The heading is laid out like Use cases. Captioned "Illustrative interface".
-  - **`DecisionTimeline`** (client), redesigned 2026-10-31 as an **annotated diagram, with no panels or cards** (the team asked for no box shapes):
-    - **Four open notes** on one 4-column grid (no gaps), each pure typography: a mono index and label, "Keyfly chose" over the choice in large type (mint gradient once changed), the reason, inline text switches (the one in use underlined mint; a small mint point marks Keyfly's pick), and a mono status.
-    - **A leader line** runs down each note's left edge, across `--drop`, onto the ruler, ending in a node, so each decision lands at 0, 25, 50 or 75% of the timeline, where it acts. The one in focus glows mint with a light running down it.
-    - **An open hairline timeline** on the page: ruler, a chapter-title pill, slim rounded clip bars, the music level line and a voice waveform of thin bars, with the playhead on a rail (the timeline clips sideways with `overflow-x: clip`).
-    - **Below 1000px** the timeline comes first and the notes follow as a list (2 columns, then 1), with the leaders kept as left rules.
-  - **Switching an option changes the timeline:**
-    - the opening clip's take (its colour);
-    - where the cuts fall (on beat / 2 beats / free);
-    - the chapter title's length;
-    - how far the music line dips under the voice (an SVG path; `d` transitions).
-  - **The self-running demo:** until someone touches a switch, each decision in turn tries its other two options, then returns to Keyfly's pick, every 1.7s, while on screen and not hovered or focused. The focused pin and card light mint. Once touched, it stops and follows the visitor.
-  - **Reduced motion:** read with `useSyncExternalStore` (no setState in an effect); there is no demo and nothing eases.
-  - **Copy:** `yourCall` in the content file, PLACEHOLDER until the team confirms which decisions Keyfly exposes.
+- **You make the calls** (`src/components/your-call/`, added 2026-10-31; the answer to "black box" AI): "Keyfly decides. *You have the final say.*" Heading laid out like Use cases; captioned "Illustrative interface". Two earlier versions were dropped as dated: a timeline panel with decision cards, and an annotated diagram.
+  - **`EditSentence`** (client): Keyfly's edit as one large sentence where every choice is a switch (the natural-language-controls pattern, and on theme for "edit with words"): "Keyfly opened on **take 3**, cut **on the beat**, held the chapter title for **2 seconds** and set the music **12 dB lower** under your voice."
+    - **The phrases:** each one is a button with a dotted underline and a ⇕ mark. Clicking flips it to the next option (with a blur-up flip). A phrase changed from Keyfly's pick turns into the serif italic mint accent.
+    - **Under the sentence:** "01/04 · Why Keyfly chose it · {label}" with the reason, plus "Back to Keyfly's cut" once anything has changed.
+    - **Beside it, a monitor of the result** (no panels):
+      - the opening shot per take (a `Preview`), with a "● Take N" tag;
+      - a "Chapter 2" lower third with a three-step hold bar;
+      - music and voice level meters (the music level per setting);
+      - the cut marks along the foot, with a playhead crossing them.
+      The decision in focus lights its part of the monitor (`data-active` on `.stage`, `[data-for]` parts).
+  - **The self-running demo:** until clicked, each phrase in turn flips through its options and back every 1.7s, while on screen and not hovered or focused. Reduced motion is read with `useSyncExternalStore`; there is no demo and nothing animates.
+  - Stacks below 1000px (the sentence, then the monitor).
+  - **Copy:** `yourCall` (the sentence template and the options), PLACEHOLDER until the team confirms which decisions Keyfly exposes.
 - **Use cases** (`src/components/use-cases/`, added 2026-10-31, redesigned four times the same day): the six prompt-box presets on a **jog wheel**, the dial editors spin to move through footage. Captioned "Illustrative previews". It is not pinned, so it fits any height. Earlier versions were dropped:
   - a pinned reel (broke on short laptop screens);
   - a boxed multicam switcher with a tile grid (the team asked for no grid or box shapes);

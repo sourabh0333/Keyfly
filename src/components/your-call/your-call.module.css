@@ -1,10 +1,9 @@
 /*
- * "You make the calls" as an annotated diagram, with no panels or cards:
- * four open notes on one grid, each with a leader line down its left edge
- * onto an open, hairline timeline, landing where that decision acts (0,
- * 25, 50, 75% of its width). DecisionTimeline sets data-on on the note and
- * timeline parts in focus, and data-changed on a note changed from
- * Keyfly's pick.
+ * "You make the calls": Keyfly's edit as one sentence whose choices are
+ * switches, beside a monitor of the result. EditSentence sets data-active
+ * on .stage to the decision in focus (take, cuts, title, duck), which
+ * lights its part of the monitor ([data-for]); data-on and data-changed on
+ * the phrases. No panels: type, the picture and hairlines.
  */
 .section {
   position: relative;
@@ -80,402 +79,436 @@
   text-align: right;
 }
 
-/* ---------- Stage ---------- */
+/* ---------- Stage: sentence | monitor ---------- */
 
 .stage {
-  --drop: clamp(36px, 4vw, 56px); /* from the notes down to the ruler */
   display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(32px, 5vw, 80px);
 }
 
-/* ---------- Notes ---------- */
-
-.notes {
+.words {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  margin: 0 0 var(--drop);
-  padding: 0;
-  list-style: none;
+  gap: clamp(24px, 3vw, 36px);
+  min-width: 0;
 }
 
-.note {
+/* ---------- The sentence ---------- */
+
+.sentence {
+  color: rgb(244 241 234 / 0.42);
+  font-size: clamp(1.625rem, 1rem + 1.7vw, 2.625rem);
+  font-weight: 520;
+  letter-spacing: -0.035em;
+  line-height: 1.32;
+  text-wrap: pretty;
+}
+
+/* A choice: the phrase itself is the switch. */
+.phrase {
   position: relative;
-  display: grid;
-  grid-template-rows: auto auto 1fr auto auto;
-  gap: 10px;
-  padding: 0 clamp(16px, 2vw, 32px) 0 clamp(16px, 1.6vw, 22px);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.18em;
+  margin: 0 0.04em;
+  padding: 0 0.12em;
+  border: 0;
+  border-radius: 0.28em;
+  background: none;
+  color: var(--paper);
+  font: inherit;
+  letter-spacing: inherit;
+  line-height: inherit;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
-/* The leader: down the note's left edge, on to the ruler. */
-.leader {
-  position: absolute;
-  top: 2px;
-  bottom: calc(var(--drop) * -1 - 4px);
-  left: 0;
-  width: 1px;
-  background: linear-gradient(to bottom, rgb(244 241 234 / 0.22), rgb(244 241 234 / 0.1));
-  transition: background 0.35s ease;
-}
-
-/* Where it lands. */
-.leader::after {
+/* A dotted underline that turns solid mint in focus. */
+.phrase::after {
   content: "";
   position: absolute;
-  bottom: -4px;
-  left: 50%;
-  width: 9px;
-  height: 9px;
-  margin-left: -4.5px;
-  border-radius: 50%;
-  background: var(--night);
-  box-shadow: 0 0 0 1.5px rgb(244 241 234 / 0.4);
-  transition:
-    background-color 0.35s ease,
-    box-shadow 0.35s ease;
+  left: 0.12em;
+  right: 0.12em;
+  bottom: 0.06em;
+  height: 2px;
+  background: radial-gradient(circle, rgb(244 241 234 / 0.45) 1px, transparent 1.5px) 0 0 / 6px 2px repeat-x;
+  transition: background 0.3s ease;
 }
 
-/* A light running down the leader in focus. */
-.leader i {
-  position: absolute;
-  top: 0;
-  left: -1px;
-  width: 3px;
-  height: 36px;
-  border-radius: 3px;
-  background: linear-gradient(to bottom, transparent, var(--soft-mint));
-  box-shadow: 0 0 10px var(--soft-mint);
-  opacity: 0;
+.phrase:hover,
+.phrase[data-on] {
+  background: rgb(95 224 176 / 0.08);
 }
 
-.note[data-on] .leader {
-  background: linear-gradient(to bottom, rgb(95 224 176 / 0.9), rgb(95 224 176 / 0.5));
-  box-shadow: 0 0 10px rgb(95 224 176 / 0.4);
-}
-
-.note[data-on] .leader::after {
+.phrase[data-on]::after {
   background: var(--soft-mint);
-  box-shadow:
-    0 0 0 4px rgb(95 224 176 / 0.2),
-    0 0 14px var(--soft-mint);
+  box-shadow: 0 0 10px var(--soft-mint);
 }
 
-.note[data-on] .leader i {
-  opacity: 1;
-  animation: run 1.6s ease-in infinite;
+.phrase:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 2px;
 }
 
-.noteHead {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  color: rgb(244 241 234 / 0.5);
+.phraseValue {
+  display: inline-block;
+  animation: flip 0.45s var(--ease-land);
+}
+
+/* Changed from Keyfly's pick: the serif accent, in mint. */
+.phrase[data-changed] .phraseValue {
+  background: linear-gradient(100deg, var(--mint-text-dark), #eafff6 50%, var(--soft-mint));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-family: var(--font-accent-stack);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+.phraseIcon {
+  width: 0.42em;
+  height: 0.42em;
+  align-self: center;
+  fill: none;
+  stroke: rgb(244 241 234 / 0.4);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 0.3s ease;
+}
+
+.phrase[data-on] .phraseIcon {
+  stroke: var(--soft-mint);
+}
+
+/* ---------- Why, and the way back ---------- */
+
+.why {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: 18px;
+  padding-top: 20px;
+  border-top: 1px solid rgb(244 241 234 / 0.1);
+}
+
+.whyIndex {
+  color: var(--soft-mint);
+  font-family: var(--font-mono-stack);
+  font-size: 0.8125rem;
+  letter-spacing: 0.04em;
+}
+
+.whyIndex span {
+  color: rgb(244 241 234 / 0.3);
+}
+
+.whyText {
+  display: grid;
+  gap: 4px;
+  min-height: calc(2 * 1.5em + 1.2em);
+  color: rgb(244 241 234 / 0.72);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  animation: rise 0.4s var(--ease-land);
+}
+
+.whyLabel {
+  color: rgb(244 241 234 / 0.4);
   font-family: var(--font-mono-stack);
   font-size: 0.6875rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
-.noteIndex {
-  color: rgb(244 241 234 / 0.35);
-}
-
-.note[data-on] .noteIndex {
-  color: var(--soft-mint);
-}
-
-.noteChoice {
-  display: grid;
-  gap: 4px;
-}
-
-.noteChose {
-  color: rgb(244 241 234 / 0.4);
-  font-size: 0.8125rem;
-}
-
-.noteValue {
-  font-size: clamp(1.5rem, 1.1rem + 1vw, 2.125rem);
-  font-weight: 560;
-  letter-spacing: -0.04em;
-  line-height: 1.05;
-  animation: rise 0.4s var(--ease-land);
-}
-
-.note[data-changed] .noteValue {
-  background: linear-gradient(100deg, var(--mint-text-dark), #eafff6 50%, var(--soft-mint));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-}
-
-.noteReason {
-  max-width: 26ch;
-  color: rgb(244 241 234 / 0.58);
-  font-size: 0.875rem;
-  line-height: 1.5;
-}
-
-/* Inline switches: plain words, the one in use underlined in mint. */
-.options {
+.foot {
   display: flex;
-  flex-wrap: wrap;
-  gap: 4px 14px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 32px;
 }
 
-.option {
-  position: relative;
-  padding: 4px 0;
+.hint {
+  color: rgb(244 241 234 / 0.35);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.reset {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 0;
   border: 0;
   background: none;
-  color: rgb(244 241 234 / 0.45);
+  color: var(--soft-mint);
   font: inherit;
   font-size: 0.875rem;
   font-weight: 540;
-  white-space: nowrap;
   cursor: pointer;
-  transition: color 0.25s ease;
+  opacity: 0;
+  translate: 0 4px;
+  pointer-events: none;
+  transition:
+    opacity 0.3s ease,
+    translate 0.3s var(--ease-land);
 }
 
-.option::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  height: 1.5px;
-  border-radius: 2px;
-  background: var(--soft-mint);
-  box-shadow: 0 0 8px var(--soft-mint);
-  transform-origin: left;
-  scale: 0 1;
-  transition: scale 0.35s var(--ease-land);
+.reset[data-on] {
+  opacity: 1;
+  translate: 0 0;
+  pointer-events: auto;
 }
 
-.option:hover {
-  color: var(--paper);
-}
-
-.option[aria-pressed="true"] {
-  color: var(--paper);
-}
-
-.option[aria-pressed="true"]::after {
-  scale: 1 1;
-}
-
-/* Keyfly's pick carries a small mint point. */
-.option[data-pick]::before {
-  content: "";
-  position: absolute;
-  top: 2px;
-  right: -6px;
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: var(--soft-mint);
-  opacity: 0.7;
-}
-
-.option:focus-visible {
+.reset:focus-visible {
   outline: 2px solid var(--soft-mint);
   outline-offset: 3px;
   border-radius: 4px;
 }
 
-.status {
-  color: rgb(244 241 234 / 0.38);
+/* ---------- The monitor ---------- */
+
+.monitor {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-radius: 20px;
+  background: #050506;
+  box-shadow:
+    0 0 0 1px rgb(244 241 234 / 0.09),
+    0 50px 120px -40px rgb(0 0 0 / 0.95),
+    0 0 90px -30px rgb(95 224 176 / 0.35);
+}
+
+.shot {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.shot[data-on] {
+  opacity: 1;
+}
+
+/* Parts of the monitor, lit when their decision is in focus. */
+.monitor [data-for] {
+  transition:
+    box-shadow 0.35s ease,
+    color 0.35s ease,
+    opacity 0.35s ease;
+}
+
+.take {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 10px;
+  border-radius: 8px;
+  background: rgb(11 11 13 / 0.7);
+  color: rgb(244 241 234 / 0.85);
   font-family: var(--font-mono-stack);
-  font-size: 0.625rem;
+  font-size: 0.6875rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
+  animation: rise 0.4s var(--ease-land);
 }
 
-.note[data-changed] .status {
-  color: var(--soft-mint);
+.take i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ff5a5a;
+  box-shadow: 0 0 8px #ff5a5a;
 }
 
-/* ---------- Timeline: open, on the page ---------- */
-
-.timeline {
-  position: relative;
-  display: grid;
-  gap: 12px;
-  padding-bottom: 6px;
-  /* The playhead's rail slides past the end; clip it sideways only. */
-  overflow-x: clip;
+.stage[data-active="take"] .take {
+  box-shadow: 0 0 0 1.5px var(--soft-mint);
 }
 
-.ruler {
-  height: 12px;
-  border-top: 1px solid rgb(244 241 234 / 0.2);
-  background:
-    repeating-linear-gradient(to right, rgb(244 241 234 / 0.3) 0 1px, transparent 1px 5%) 0 0 / 100% 8px no-repeat,
-    repeating-linear-gradient(to right, rgb(244 241 234 / 0.12) 0 1px, transparent 1px 1.25%) 0 0 / 100% 4px no-repeat;
-}
-
-.lane {
-  position: relative;
-  height: 14px;
-}
-
-.lane[data-kind="title"] {
-  height: 18px;
-}
-
-.lane[data-kind="music"],
-.lane[data-kind="voice"] {
-  height: 24px;
-}
-
-.clip,
-.titleClip,
-.voice {
+/* The chapter title as a lower third, with its hold in seconds. */
+.lower {
   position: absolute;
-  top: 0;
-  bottom: 0;
-  transition:
-    left 0.6s var(--ease-land),
-    width 0.6s var(--ease-land);
-}
-
-/* Slim bars with a hairline gap between shots. */
-.clip {
-  border-right: 3px solid var(--night);
-  border-radius: 999px;
-  animation: grow 0.5s var(--ease-land);
-  transition:
-    left 0.6s var(--ease-land),
-    width 0.6s var(--ease-land),
-    box-shadow 0.3s ease;
-}
-
-.clip[data-n="0"] {
-  background: #4f6b8c;
-}
-
-.clip[data-n="1"] {
-  background: #8a5a78;
-}
-
-.clip[data-n="2"] {
-  background: #6aa3b3;
-}
-
-.clip[data-n="take0"] {
-  background: #5a5f6a;
-}
-
-.clip[data-n="take1"] {
-  background: #9a7a5a;
-}
-
-.clip[data-n="take2"] {
-  background: #c98a5a;
-}
-
-.clip[data-on] {
-  box-shadow: 0 0 12px -2px rgb(95 224 176 / 0.7);
-}
-
-.titleClip {
+  left: 7%;
+  bottom: 22%;
   display: grid;
-  align-items: center;
-  overflow: hidden;
-  padding-left: 10px;
-  border-radius: 999px;
-  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.35) inset;
-  color: rgb(244 241 234 / 0.75);
-  font-size: 0.6875rem;
-  font-weight: 600;
-  white-space: nowrap;
+  gap: 8px;
+  padding: 10px 14px 10px 12px;
+  border-left: 2px solid rgb(244 241 234 / 0.8);
+  background: linear-gradient(90deg, rgb(11 11 13 / 0.7), transparent);
 }
 
-.titleClip[data-on] {
-  box-shadow:
-    0 0 0 1.5px var(--soft-mint) inset,
-    0 0 14px -4px var(--soft-mint);
-  color: var(--paper);
+.lowerTitle {
+  color: #fff;
+  font-size: clamp(1rem, 0.7rem + 0.9vw, 1.5rem);
+  font-weight: 640;
+  letter-spacing: -0.02em;
 }
 
-.level {
-  display: block;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-}
-
-.level path {
-  fill: none;
-  stroke: rgb(95 224 176 / 0.65);
-  stroke-width: 1.5;
-  vector-effect: non-scaling-stroke;
-  transition: d 0.6s var(--ease-land);
-}
-
-.lane[data-kind="music"][data-on] .level path {
-  stroke: var(--soft-mint);
-  filter: drop-shadow(0 0 4px var(--soft-mint));
-}
-
-/* The voice as a waveform of thin bars. */
-.voice {
+.hold {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 4px;
 }
 
-.voice i {
-  width: 2px;
-  height: calc(var(--h) * 100%);
-  border-radius: 2px;
-  background: rgb(244 241 234 / 0.45);
+.hold i {
+  width: 22px;
+  height: 3px;
+  border-radius: 3px;
+  background: rgb(244 241 234 / 0.2);
+  transition: background-color 0.3s ease;
 }
 
-/* The playhead runs across on a rail (a transform only). */
-.rail {
+.hold i[data-on] {
+  background: rgb(244 241 234 / 0.85);
+}
+
+.hold b {
+  margin-left: 6px;
+  color: rgb(244 241 234 / 0.7);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  font-weight: 500;
+}
+
+.stage[data-active="title"] .lower {
+  border-color: var(--soft-mint);
+}
+
+.stage[data-active="title"] .hold i[data-on] {
+  background: var(--soft-mint);
+  box-shadow: 0 0 6px var(--soft-mint);
+}
+
+/* Music and voice levels. */
+.meters {
   position: absolute;
-  inset: -6px 0 0;
-  pointer-events: none;
-  animation: play 9s linear infinite;
+  top: 16px;
+  right: 16px;
+  bottom: 56px;
+  display: flex;
+  gap: 6px;
 }
 
-.stage[data-paused] .rail {
-  animation-play-state: paused;
+.meter {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  justify-items: center;
+  gap: 6px;
 }
 
-.playhead {
+.meter i {
+  position: relative;
+  width: 6px;
+  overflow: hidden;
+  border-radius: 6px;
+  background: rgb(11 11 13 / 0.6);
+}
+
+.meter i::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(to top, rgb(95 224 176 / 0.9), rgb(244 241 234 / 0.9));
+  transform-origin: bottom;
+  scale: 1 var(--l);
+  transition: scale 0.6s var(--ease-land);
+}
+
+.meter[data-voice] i::after {
+  background: linear-gradient(to top, rgb(244 241 234 / 0.6), rgb(244 241 234 / 0.95));
+  animation: talk 0.9s ease-in-out infinite alternate;
+}
+
+.meter b {
+  color: rgb(244 241 234 / 0.6);
+  font-family: var(--font-mono-stack);
+  font-size: 0.5625rem;
+  font-weight: 500;
+}
+
+.stage[data-active="duck"] .meter:not([data-voice]) i {
+  box-shadow: 0 0 0 1.5px var(--soft-mint);
+}
+
+/* The cut marks along the foot, with the playhead crossing them. */
+.cutline {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  height: 22px;
+  border-radius: 6px;
+  background: rgb(11 11 13 / 0.55);
+  overflow: hidden;
+}
+
+.cutline i {
+  position: absolute;
+  top: 5px;
+  bottom: 5px;
+  width: 2px;
+  margin-left: -1px;
+  border-radius: 2px;
+  background: rgb(244 241 234 / 0.75);
+  animation: rise 0.4s var(--ease-land);
+}
+
+.stage[data-active="cuts"] .cutline {
+  box-shadow: 0 0 0 1.5px var(--soft-mint);
+}
+
+.stage[data-active="cuts"] .cutline i {
+  background: var(--soft-mint);
+}
+
+.cutHead {
+  position: absolute;
+  inset: 0;
+  animation: play 6s linear infinite;
+}
+
+.cutHead::before {
+  content: "";
   position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
   width: 2px;
-  background: linear-gradient(to bottom, var(--soft-mint), rgb(95 224 176 / 0.3));
-  box-shadow: 0 0 10px var(--soft-mint);
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
 }
 
-@keyframes play {
-  to {
-    translate: 100% 0;
-  }
+.stage[data-paused] .cutHead,
+.stage[data-paused] .meter[data-voice] i::after {
+  animation-play-state: paused;
 }
 
-@keyframes run {
-  from {
-    translate: 0 0;
-    opacity: 0;
-  }
-  20% {
-    opacity: 1;
-  }
-  to {
-    translate: 0 calc(100% * 6);
-    opacity: 0;
-  }
+.footnote {
+  margin-top: 22px;
+  color: rgb(244 241 234 / 0.38);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-align: right;
+  text-transform: uppercase;
 }
 
-@keyframes grow {
+@keyframes flip {
   from {
     opacity: 0;
-    scale: 0.6 1;
+    translate: 0 0.35em;
+    filter: blur(4px);
   }
 }
 
@@ -486,31 +519,26 @@
   }
 }
 
+@keyframes play {
+  to {
+    translate: 100% 0;
+  }
+}
+
+@keyframes talk {
+  from {
+    scale: 1 0.55;
+  }
+  to {
+    scale: 1 0.9;
+  }
+}
+
 /* ---------- Smaller screens ---------- */
 
-/* Two rows of notes would break the leaders, so below 1000px the timeline
-   comes first and the notes follow as a list. */
 @media (max-width: 1000px) {
   .stage {
-    gap: 36px;
-  }
-
-  .timeline {
-    order: -1;
-  }
-
-  .notes {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 32px 0;
-    margin: 0;
-  }
-
-  .leader {
-    bottom: 0;
-  }
-
-  .leader::after {
-    display: none;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
@@ -535,38 +563,49 @@
 }
 
 @media (max-width: 560px) {
-  .notes {
-    grid-template-columns: minmax(0, 1fr);
+  .take,
+  .meters {
+    top: 10px;
   }
 
-  .titleClip {
-    font-size: 0;
+  .take {
+    left: 10px;
+  }
+
+  .meters {
+    right: 10px;
+    bottom: 44px;
+  }
+
+  .cutline {
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    height: 18px;
+  }
+
+  .lower {
+    bottom: 26%;
+  }
+
+  .hint {
+    display: none;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .clip,
-  .rail,
-  .noteValue,
-  .note[data-on] .leader i {
+  .phraseValue,
+  .whyText,
+  .take,
+  .cutline i,
+  .cutHead,
+  .meter[data-voice] i::after {
     animation: none;
   }
 
-  .clip,
-  .titleClip,
-  .voice,
-  .level path,
-  .option::after {
+  .shot,
+  .meter i::after,
+  .reset {
     transition: none;
   }
-}
-
-.footnote {
-  margin-top: 22px;
-  color: rgb(244 241 234 / 0.38);
-  font-family: var(--font-mono-stack);
-  font-size: 0.6875rem;
-  letter-spacing: 0.1em;
-  text-align: right;
-  text-transform: uppercase;
 }

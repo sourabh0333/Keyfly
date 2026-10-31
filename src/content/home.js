@@ -101,16 +101,18 @@ export const editWithWords = {
 export const yourCall = {
   eyebrow: "You make the calls",
   title: [{ text: "Keyfly decides." }, { text: "You have the final say.", accent: true }],
-  lead: "No black box. Every call Keyfly makes is pinned to a real timeline, with the reason beside it, and one click changes it.",
-  chose: "Keyfly chose",
-  pick: "Keyfly's pick",
-  changed: "Changed by you",
+  lead: "No black box. Keyfly explains its edit in plain words, and every choice in the sentence is a switch you can flip.",
+  why: "Why Keyfly chose it",
+  reset: "Back to Keyfly's cut",
+  hint: "Click a highlighted phrase to change it",
   note: "Illustrative interface",
+  // The sentence: plain text, with a decision's index where its phrase goes.
+  sentence: ["Keyfly opened on ", 0, ", cut ", 1, ", held the chapter title for ", 2, " and set the music ", 3, " under your voice."],
   decisions: [
-    { id: "take", label: "Opening shot", reason: "Clearest delivery, steadiest frame.", options: ["Take 1", "Take 2", "Take 3"], pick: 2 },
-    { id: "cuts", label: "Cut points", reason: "Matches the music's 120 BPM.", options: ["On beat", "2 beats", "Free"], pick: 0 },
-    { id: "title", label: "Chapter title", reason: "Long enough to read once.", options: ["1 sec", "2 sec", "3 sec"], pick: 1 },
-    { id: "duck", label: "Music under voice", reason: "Keeps the voice clear.", options: ["Off", "−6 dB", "−12 dB"], pick: 2 },
+    { id: "take", label: "Opening shot", reason: "Take 3 has the clearest delivery and the steadiest frame.", options: ["take 1", "take 2", "take 3"], pick: 2 },
+    { id: "cuts", label: "Cut points", reason: "Cuts on the beat match the music's 120 BPM.", options: ["on the beat", "every 2 beats", "freely"], pick: 0 },
+    { id: "title", label: "Chapter title", reason: "Two seconds is long enough to read it once.", options: ["1 second", "2 seconds", "3 seconds"], pick: 1 },
+    { id: "duck", label: "Music under voice", reason: "Twelve decibels down keeps every word clear.", options: ["at full level", "6 dB lower", "12 dB lower"], pick: 2 },
   ],
 };
 

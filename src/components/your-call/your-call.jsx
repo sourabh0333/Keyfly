@@ -1,13 +1,12 @@
 import { yourCall } from "@/content/home";
 import wipe from "@/components/scene/wipe.module.css";
 import { PauseOffscreen } from "@/components/pause-offscreen";
-import { DecisionTimeline } from "./decision-timeline";
+import { EditSentence } from "./edit-sentence";
 import styles from "./your-call.module.css";
 
 /**
- * "You make the calls": every decision Keyfly made as an open note, with
- * its reason and a switch to change it, and a leader line down to where
- * it acts on the timeline (see DecisionTimeline).
+ * "You make the calls": Keyfly's edit explained in one sentence whose
+ * choices are switches, beside a monitor of the result (see EditSentence).
  */
 export function YourCall() {
   const { eyebrow, title, lead, note, ...timeline } = yourCall;
@@ -34,7 +33,7 @@ export function YourCall() {
           <p className={styles.lead}>{lead}</p>
         </div>
 
-        <DecisionTimeline {...timeline} />
+        <EditSentence {...timeline} />
 
         <p className={styles.footnote}>{note}</p>
       </div>
