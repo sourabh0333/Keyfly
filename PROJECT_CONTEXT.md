@@ -172,25 +172,24 @@ The root layout renders the skip link, `SiteHeader` and `<main id="main">`. Page
   - **Step 3:** the frame tries 16:9, 9:16 and 1:1 (its width animates at a fixed height, using `cqw` of the viewer), and the export bar fills to "Ready".
   - **Fallback:** without JS or with reduced motion there is no pin, and the CSS defaults (all progress at 1) show the finished cut.
   - **Copy:** in `howItWorks` (content file), PLACEHOLDER.
-- **Use cases** (`src/components/use-cases/`, added 2026-10-31, redesigned three times the same day): laid out and drawn **like How it works**, so the two read as one product. Earlier versions were dropped:
+- **Use cases** (`src/components/use-cases/`, added 2026-10-31, redesigned four times the same day): the six prompt-box presets on a **jog wheel**, the dial editors spin to move through footage. Captioned "Illustrative previews". It is not pinned, so it fits any height. Earlier versions were dropped:
   - a pinned reel (broke on short laptop screens);
   - a boxed multicam switcher with a tile grid (the team asked for no grid or box shapes);
-  - a frameless index beside a projection (it didn't match the sections above).
-
-  It is not pinned, so it fits any height.
-  - **Left:** the eyebrow, the h2 (with the heading wipe) and the lead, then the six presets on a rail styled like the steps above. Each row's stretch of rail fills as its clip plays, with the mint point at the tip, and the row on air shows its line.
-  - **Right (`PresetReel`):** the same editor window as How it works, captioned "Illustrative previews". It has:
-    - chrome: "{preset} · Presets" and a running timecode;
-    - a viewer whose frame takes each preset's format (the width animates at a fixed 16:9 height, as above), with the format chips below;
-    - a panel with the preset's real prompt from `prompt.presets` typing itself in, its line, and the mint "Try this prompt" button;
-    - a timeline: ruler, track P1 with the six presets end to end as clips (preview colours, frame lines, keyframes) and A1 audio.
-  - **Playback:** the playhead plays through the reel, 6s per preset, and the clip under it goes on air with a white flash. It writes `--ph` and `--cp` on the root, and `data-format`.
-  - **Interaction:**
-    - Clicking a row or a clip, or pressing 1–6, moves the playhead there.
-    - Hovering or focusing holds it, and it only plays while on screen.
-    - With reduced motion it holds still on the chosen preset.
-  - **Narrow screens:** the rail becomes a row along the top (six columns, three on phones). The panel moves under the viewer, and its prompt is clamped to three lines.
-  - **Columns:** How it works, Use cases and Download share one column: a 1320px max width with the gutter inside it, so their headings line up.
+  - a frameless index beside a projection;
+  - a copy of How it works' layout (the team wanted it different, yet matching the theme).
+  - **Heading:** laid out like Download (eyebrow and h2 left, lead right), sharing the 1320px column with the gutter inside.
+  - **`PresetDial`** (client), left: a round dial.
+    - It has ticks, a knurled inner ring and a hub showing "02/06" and the format.
+    - The six names sit along the radius around the rim. A fixed mint notch with a wedge of light reads the one up, and a mint line runs from the notch to the viewer.
+    - A mint arc around the hub counts down to the next turn.
+    - The wheel position `pos` is a float tweened in JS (ease-out). Names are placed by `--a`, and the ticks and knurl turn by `--turn`.
+  - **Turning the wheel:**
+    - Drag it round (the pointer is only captured after a 4° turn, so clicks still reach the names), click a name, or use the arrow keys, Home/End or 1–6. The dial is a `role="slider"`.
+    - It turns on by itself every 6s while on screen and not held (hover, focus or drag). With reduced motion it never turns by itself and moves are instant.
+    - `touch-action: pan-y` keeps vertical swipes scrolling the page.
+  - **Right:** the preset up, at its format. The frame keeps a 16:9 height, capped at 46svh, and takes the preset's width from the left edge, so the change animates. Below it are the title (serif italic mint), its line, its real prompt from `prompt.presets` typing in, and the mint "Try this prompt" button.
+  - **Short screens:** the dial is capped at 64svh.
+  - **Narrow screens (≤860px):** the order becomes viewer, wheel, then caption. The wheel lies on its side with only its top showing, the notch at the top and the names upright (46° apart). The hub hides.
   - **"Try this prompt":** dispatches `keyfly:prompt` with the preset's label. `PromptBox` listens, scrolls back to the hero and types that preset in.
   - **`Preview`:** a CSS-drawn loop at the use case's format, sized in `cqw`/`cqh` of its screen. `bleed` fills its parent edge to edge with no backing or corner marks, and stands 9:16 in the middle.
     - Launch: title cards on the beat.

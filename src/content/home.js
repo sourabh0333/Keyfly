@@ -81,9 +81,8 @@ export const useCases = {
   title: [{ text: "Made for" }, { text: "every kind of video.", accent: true }],
   lead: "Start from a preset or describe your own. Six of the videos people make most:",
   cta: "Try this prompt",
-  file: "Presets",
+  dialLabel: "Preset",
   promptLabel: "Prompt",
-  trackLabel: "P1",
   note: "Illustrative previews",
   // PLACEHOLDER: one line per preset until the product copy is confirmed.
   items: [

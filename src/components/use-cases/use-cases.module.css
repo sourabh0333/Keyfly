@@ -1,9 +1,8 @@
 /*
- * "Use cases", laid out and drawn like "How it works": the copy and a rail
- * on the left, the Keyfly editor on the right, with the same window,
- * viewer, panel and timeline. PresetReel writes --ph (playhead) and --cp
- * (progress of the clip on air) on .stage, data-format for the frame,
- * data-on and data-past on rows and clips, and data-paused off screen.
+ * "Use cases": the presets on a jog wheel (left) and the one at its notch
+ * playing (right). PresetDial sets --turn and --base on the dial,
+ * data-format, data-auto and data-paused on .stage, and data-on on the
+ * name and feed up.
  */
 .section {
   position: relative;
@@ -24,22 +23,22 @@
   pointer-events: none;
 }
 
-.stage {
-  --ph: 0;
-  --cp: 0;
-  display: grid;
-  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.45fr);
-  align-items: center;
-  gap: clamp(32px, 5vw, 80px);
+
+/* The same column as the sections above and below. */
+.inner {
   max-width: 1320px;
   margin: 0 auto;
   padding: 0 var(--gutter);
 }
 
-/* ---------- Copy ---------- */
+/* ---------- Heading ---------- */
 
-.copy {
-  min-width: 0;
+.head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+  margin-bottom: clamp(24px, 4vw, 48px);
 }
 
 .eyebrow {
@@ -102,236 +101,276 @@
 }
 
 .lead {
-  max-width: 38ch;
-  margin-top: 16px;
+  max-width: 34ch;
   color: rgb(244 241 234 / 0.62);
   font-size: 0.9375rem;
   line-height: 1.5;
+  text-align: right;
 }
 
-/* The six presets on a rail, like the steps above. Each row's stretch of
-   rail fills as its clip plays, with the mint point at the tip. */
-.rows {
-  margin: clamp(22px, 4vh, 36px) 0 0;
-  padding: 0 0 0 28px;
-  list-style: none;
+/* ---------- Stage ---------- */
+
+.stage {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  align-items: center;
+  gap: clamp(32px, 5vw, 80px);
 }
 
-.row {
+/* ---------- The jog wheel ---------- */
+
+.dialWrap {
+  display: grid;
+  place-items: center;
+  min-width: 0;
+}
+
+.dial {
+  --d: min(500px, 100%, 64svh);
+  --turn: 0deg;
+  --base: 0deg;
   position: relative;
+  width: var(--d);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 1px rgb(244 241 234 / 0.07),
+    0 50px 120px -40px rgb(0 0 0 / 0.95),
+    0 0 90px -30px rgb(95 224 176 / 0.25);
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+  container-type: inline-size;
 }
 
-.rowRail {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: -24px;
-  width: 1px;
-  background: rgb(244 241 234 / 0.12);
+.dial[data-dragging] {
+  cursor: grabbing;
 }
 
-.rowRail::before,
-.rowRail::after {
+.dial:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px var(--soft-mint),
+    0 50px 120px -40px rgb(0 0 0 / 0.95);
+}
+
+/* A mint wedge of light where the notch reads the wheel. */
+.dial::before {
   content: "";
   position: absolute;
-  left: 0;
-  right: 0;
-}
-
-.rowRail::before {
-  top: 0;
-  height: 100%;
-  background: var(--soft-mint);
-  box-shadow: 0 0 10px rgb(95 224 176 / 0.6);
-  transform-origin: top;
-  scale: 1 0;
-}
-
-.row[data-past] .rowRail::before {
-  scale: 1 1;
-}
-
-.row[data-on] .rowRail::before {
-  scale: 1 var(--cp);
-}
-
-.rowRail::after {
-  top: calc(var(--cp) * 100%);
-  left: 50%;
-  width: 9px;
-  height: 9px;
-  margin: -4.5px 0 0 -4.5px;
+  inset: 0;
+  z-index: 1;
   border-radius: 50%;
-  background: var(--soft-mint);
-  box-shadow: 0 0 14px var(--soft-mint);
-  opacity: 0;
+  background: conic-gradient(from calc(var(--base) + 72deg), transparent, rgb(95 224 176 / 0.16) 18deg, transparent 36deg);
+  -webkit-mask-image: radial-gradient(closest-side, transparent 30%, #000 34%, #000 86%, transparent 90%);
+  mask-image: radial-gradient(closest-side, transparent 30%, #000 34%, #000 86%, transparent 90%);
+  pointer-events: none;
 }
 
-.row[data-on] .rowRail::after {
-  opacity: 1;
-}
-
-.rowButton {
-  display: grid;
-  grid-template-columns: 34px minmax(0, 1fr) auto;
-  align-items: baseline;
-  column-gap: 8px;
+.wheel {
+  position: absolute;
+  inset: 0;
   width: 100%;
-  padding: 9px 0;
+  height: 100%;
+}
+
+.face {
+  stroke: rgb(244 241 234 / 0.1);
+  stroke-width: 0.5;
+}
+
+/* Ticks and the knurled ring turn with the wheel. */
+.ticks {
+  rotate: var(--turn);
+}
+
+.ticks line {
+  stroke: rgb(244 241 234 / 0.22);
+  stroke-width: 0.45;
+}
+
+.ticks .major {
+  stroke: rgb(244 241 234 / 0.5);
+  stroke-width: 0.7;
+}
+
+.groove {
+  fill: none;
+  stroke: rgb(244 241 234 / 0.05);
+  stroke-width: 0.5;
+}
+
+.hubRing {
+  fill: #121316;
+  stroke: rgb(244 241 234 / 0.1);
+  stroke-width: 0.5;
+}
+
+/* Counts down to the next turn, starting at the notch. */
+.countdown {
+  fill: none;
+  stroke: var(--soft-mint);
+  stroke-width: 1.2;
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+  rotate: var(--base);
+  filter: drop-shadow(0 0 2px var(--soft-mint));
+}
+
+.stage[data-auto] .countdown {
+  animation: countdown 6s linear forwards;
+}
+
+.knurl {
+  position: absolute;
+  inset: 31.5%;
+  border-radius: 50%;
+  background: repeating-conic-gradient(rgb(244 241 234 / 0.2) 0 1.2deg, transparent 1.2deg 6deg);
+  -webkit-mask-image: radial-gradient(closest-side, transparent 84%, #000 86%, #000 98%, transparent 100%);
+  mask-image: radial-gradient(closest-side, transparent 84%, #000 86%, #000 98%, transparent 100%);
+  rotate: var(--turn);
+  pointer-events: none;
+}
+
+/* The names around the rim, read along the radius. */
+.name {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  height: 2em;
+  margin-top: -1em;
+  padding: 0 6px;
   border: 0;
   background: none;
-  color: var(--paper);
-  font: inherit;
-  text-align: left;
-  opacity: 0.38;
-  cursor: pointer;
-  transition: opacity 0.4s ease;
-}
-
-.rowButton:hover {
-  opacity: 0.7;
-}
-
-.rowButton:focus-visible {
-  outline: 1.5px solid var(--soft-mint);
-  outline-offset: 4px;
-  border-radius: 6px;
-}
-
-.row[data-on] .rowButton {
-  opacity: 1;
-}
-
-.rowIndex {
-  color: var(--soft-mint);
-  font-family: var(--font-mono-stack);
-  font-size: 0.75rem;
-  letter-spacing: 0.04em;
-}
-
-.rowTitle {
-  font-size: clamp(1.125rem, 1rem + 0.5vw, 1.375rem);
-  font-weight: 560;
-  letter-spacing: -0.03em;
-}
-
-.rowFormat {
   color: rgb(244 241 234 / 0.6);
+  font: inherit;
+  font-size: clamp(11.5px, 2.7cqw, 13.5px);
+  font-weight: 560;
+  letter-spacing: -0.01em;
+  line-height: 2em;
+  white-space: nowrap;
+  transform-origin: 0 50%;
+  transform: rotate(var(--a)) translateX(19cqw);
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.name:hover {
+  color: var(--paper);
+}
+
+.name[data-on] {
+  color: var(--paper);
+  text-shadow: 0 0 18px rgb(95 224 176 / 0.45);
+}
+
+.nameIndex {
+  color: rgb(244 241 234 / 0.4);
   font-family: var(--font-mono-stack);
-  font-size: 0.6875rem;
+  font-size: 0.72em;
 }
 
-.rowBody {
-  display: none;
-  max-width: 36ch;
-  padding: 0 0 10px 42px;
-  color: rgb(244 241 234 / 0.62);
-  font-size: 0.9375rem;
-  line-height: 1.5;
+.name[data-on] .nameIndex {
+  color: var(--soft-mint);
 }
 
-.row[data-on] .rowBody {
-  display: block;
-  animation: rise 0.5s var(--ease-land);
+/* The hub: which preset, of how many, at what format. */
+.hub {
+  position: absolute;
+  inset: 37%;
+  z-index: 2;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 2px;
+  border-radius: 50%;
+  font-family: var(--font-mono-stack);
+  pointer-events: none;
 }
 
-/* ---------- The editor ---------- */
-
-.demo {
-  position: relative;
-  min-width: 0;
-  margin: 0;
+.hubIndex {
+  color: var(--paper);
+  font-size: clamp(14px, 4.2cqw, 20px);
+  letter-spacing: 0.02em;
 }
 
-/* A soft mint light under the window. */
-.demo::before {
+.hubIndex span {
+  color: rgb(244 241 234 / 0.35);
+}
+
+.hubFormat {
+  color: var(--soft-mint);
+  font-size: clamp(9px, 2cqw, 10.5px);
+  letter-spacing: 0.1em;
+}
+
+/* The notch on the rim, and the line it sends to the viewer. */
+.notch {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 3;
+  width: 14px;
+  height: 14px;
+  margin-top: -7px;
+  transform-origin: 0 50%;
+  transform: rotate(var(--base)) translateX(calc(50cqw - 9px));
+  pointer-events: none;
+}
+
+.notch::before {
   content: "";
   position: absolute;
-  inset: 12% 8% -6%;
-  z-index: -1;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, rgb(95 224 176 / 0.18), transparent);
+  inset: 0;
+  background: var(--soft-mint);
+  clip-path: polygon(0 50%, 100% 0, 100% 100%);
+  filter: drop-shadow(0 0 6px var(--soft-mint));
 }
 
-.window {
-  overflow: hidden;
-  border-radius: var(--radius-window);
-  background: #121316;
-  box-shadow:
-    0 0 0 1px rgb(244 241 234 / 0.09),
-    0 1px 0 rgb(244 241 234 / 0.07) inset,
-    0 40px 100px -40px rgb(0 0 0 / 0.95);
-  font-size: 12px;
+.notch::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  width: clamp(32px, 5vw, 80px);
+  height: 1px;
+  background: linear-gradient(to right, var(--soft-mint), rgb(95 224 176 / 0));
+  box-shadow: 0 0 8px rgb(95 224 176 / 0.6);
 }
 
-.chrome {
+/* ---------- What the notch reads ---------- */
+
+.output {
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  height: 36px;
-  padding: 0 14px;
-  border-bottom: 1px solid rgb(244 241 234 / 0.06);
-  background: #18191d;
+  gap: 18px;
+  min-width: 0;
 }
 
-.dots {
-  display: flex;
-  gap: 6px;
-}
-
-.dots i {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: rgb(244 241 234 / 0.14);
-}
-
-.file {
-  color: rgb(244 241 234 / 0.85);
-  font-weight: 560;
-}
-
-.fileMuted {
-  color: rgb(244 241 234 / 0.4);
-  font-weight: 450;
-}
-
-.timecode {
-  justify-self: end;
-  color: var(--mint-text-dark);
-  font-family: var(--font-mono-stack);
-  font-size: 11px;
-  font-variant-numeric: tabular-nums;
-}
-
-.body {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) clamp(190px, 30%, 250px);
-  border-bottom: 1px solid rgb(244 241 234 / 0.06);
-}
-
-/* Viewer: the frame keeps a 16:9 height and takes each preset's width, so
-   the format change animates, as in "How it works". */
+/* The frame keeps a 16:9 height (capped on short screens) and takes the
+   preset's width, so the format change animates. */
 .viewer {
-  --frame-h: calc(100cqw * 9 / 16);
-  position: relative;
+  --frame-h: min(calc(100cqw * 9 / 16), 46svh);
   display: grid;
-  grid-template-rows: 1fr auto;
-  gap: 10px;
-  padding: 14px;
-  background: #0c0d0f;
   container-type: inline-size;
 }
 
 .frame {
   position: relative;
-  justify-self: center;
-  width: 100%;
+  justify-self: start;
+  width: calc(var(--frame-h) * 16 / 9);
   height: var(--frame-h);
   overflow: hidden;
-  border-radius: 8px;
+  border-radius: 14px;
   background: #050506;
-  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.08);
+  box-shadow:
+    0 0 0 1px rgb(244 241 234 / 0.09),
+    0 40px 100px -40px rgb(0 0 0 / 0.95),
+    0 0 80px -30px rgb(95 224 176 / 0.3);
   transition: width 0.7s var(--ease-land);
 }
 
@@ -354,7 +393,6 @@
   animation: cutIn 0.6s var(--ease-land);
 }
 
-/* A frame of white on every cut. */
 .flash {
   position: absolute;
   inset: 0;
@@ -364,69 +402,55 @@
   animation: flash 0.35s ease-out;
 }
 
-.guides {
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(to right, transparent calc(33.33% - 0.5px), rgb(244 241 234 / 0.08) 33.33%, transparent calc(33.33% + 0.5px)),
-    linear-gradient(to right, transparent calc(66.66% - 0.5px), rgb(244 241 234 / 0.08) 66.66%, transparent calc(66.66% + 0.5px)),
-    linear-gradient(to bottom, transparent calc(33.33% - 0.5px), rgb(244 241 234 / 0.08) 33.33%, transparent calc(33.33% + 0.5px)),
-    linear-gradient(to bottom, transparent calc(66.66% - 0.5px), rgb(244 241 234 / 0.08) 66.66%, transparent calc(66.66% + 0.5px));
-  pointer-events: none;
+.caption {
+  animation: rise 0.5s var(--ease-land);
 }
 
-.formats {
-  display: flex;
-  justify-content: center;
+.caseTitle {
+  background: linear-gradient(100deg, var(--mint-text-dark), #eafff6 50%, var(--soft-mint));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-family: var(--font-accent-stack);
+  font-size: clamp(2rem, 1.3rem + 1.8vw, 2.875rem);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+}
+
+.caseBody {
+  max-width: 48ch;
+  margin-top: 6px;
+  color: rgb(244 241 234 / 0.62);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.promptRow {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 20px;
+  padding-top: 16px;
+  border-top: 1px solid rgb(244 241 234 / 0.08);
+}
+
+.prompt {
+  display: grid;
   gap: 4px;
+  min-height: calc(3 * 1.5em + 1.2em);
+  color: rgb(244 241 234 / 0.82);
+  font-size: 0.8125rem;
+  line-height: 1.5;
 }
 
-.formats span {
-  padding: 3px 9px;
-  border-radius: 6px;
-  color: rgb(244 241 234 / 0.45);
-  font-family: var(--font-mono-stack);
-  font-size: 10.5px;
-  transition:
-    background-color 0.3s ease,
-    color 0.3s ease;
-}
-
-.stage[data-format="16:9"] .formats [data-format="16:9"],
-.stage[data-format="9:16"] .formats [data-format="9:16"],
-.stage[data-format="1:1"] .formats [data-format="1:1"] {
-  background: rgb(95 224 176 / 0.14);
-  color: var(--soft-mint);
-}
-
-/* Side panel: the preset's prompt and the way to try it. */
-.panel {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  min-width: 0;
-  padding: 14px;
-  border-left: 1px solid rgb(244 241 234 / 0.06);
-  background: #141518;
-}
-
-.panelLabel {
+.promptLabel {
   color: rgb(244 241 234 / 0.4);
   font-family: var(--font-mono-stack);
-  font-size: 10px;
+  font-size: 0.625rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-}
-
-.bubble {
-  min-height: calc(5 * 1.5em + 20px);
-  padding: 10px 11px;
-  border-radius: 10px 10px 10px 3px;
-  background: #1e1f23;
-  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.06) inset;
-  color: rgb(244 241 234 / 0.9);
-  font-size: 11.5px;
-  line-height: 1.5;
 }
 
 .caret {
@@ -439,29 +463,21 @@
   animation: blink 1s steps(1) infinite;
 }
 
-.panelBody {
-  color: rgb(244 241 234 / 0.55);
-  font-size: 11.5px;
-  line-height: 1.5;
-}
-
 .try {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: 7px;
-  height: 36px;
-  margin-top: auto;
-  padding: 0 12px;
+  gap: 8px;
+  height: 42px;
+  padding: 0 14px 0 16px;
   border: 0;
-  border-radius: 10px;
+  border-radius: 12px;
   background: var(--soft-mint);
   box-shadow:
     0 1px 0 rgb(255 255 255 / 0.45) inset,
     0 8px 24px -10px rgb(95 224 176 / 0.8);
   color: var(--mint-ink);
   font: inherit;
-  font-size: 12.5px;
+  font-size: 0.875rem;
   font-weight: 620;
   white-space: nowrap;
   cursor: pointer;
@@ -485,202 +501,20 @@
   translate: 0 -2px;
 }
 
-/* ---------- Timeline ---------- */
-
-.timeline {
-  position: relative;
-  display: grid;
-  gap: 5px;
-  padding: 0 14px 14px;
-  background: #101114;
-}
-
-.ruler {
-  height: 18px;
-  margin-left: 30px;
-  background:
-    repeating-linear-gradient(to right, rgb(244 241 234 / 0.3) 0 1px, transparent 1px 16.666%) 0 100% / 100% 8px no-repeat,
-    repeating-linear-gradient(to right, rgb(244 241 234 / 0.14) 0 1px, transparent 1px 2.0833%) 0 100% / 100% 4px no-repeat;
-}
-
-.track {
-  display: grid;
-  grid-template-columns: 22px 1fr;
-  align-items: center;
-  gap: 8px;
-}
-
-.trackLabel {
-  color: rgb(244 241 234 / 0.4);
-  font-family: var(--font-mono-stack);
-  font-size: 10px;
-}
-
-/* The presets end to end, one per sixth of the reel. */
-.lane {
-  position: relative;
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  height: 30px;
-  border-radius: 5px;
-  background: rgb(244 241 234 / 0.025);
-}
-
-.clip {
-  position: relative;
-  min-width: 0;
-  padding: 0 0 0 6px;
-  border: 0;
-  border-radius: 5px;
-  background: var(--thumb) 0 0 / 34px 100%;
-  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.5) inset;
-  color: #fff;
-  font: inherit;
-  text-align: left;
-  opacity: 0.55;
-  cursor: pointer;
-  transition:
-    opacity 0.3s ease,
-    box-shadow 0.3s ease;
-}
-
-/* The thumbnails' frame lines. */
-.clip::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: repeating-linear-gradient(to right, transparent 0 33px, rgb(0 0 0 / 0.55) 33px 34px);
-}
-
-.clip:hover {
-  opacity: 0.85;
-}
-
-.clip[data-on] {
-  opacity: 1;
-  box-shadow:
-    0 0 0 1.5px var(--soft-mint) inset,
-    0 0 16px -4px rgb(95 224 176 / 0.7);
-}
-
-.clipLabel {
-  position: relative;
-  display: block;
-  overflow: hidden;
-  font-size: 9.5px;
-  font-weight: 600;
-  line-height: 30px;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  text-shadow: 0 1px 3px rgb(0 0 0 / 0.8);
-}
-
-.key {
-  position: absolute;
-  top: 50%;
-  right: 0;
-  z-index: 1;
-  width: 7px;
-  height: 7px;
-  margin: -3.5px -3.5px 0 0;
-  border-radius: 1px;
-  background: var(--soft-mint);
-  box-shadow: 0 0 6px var(--soft-mint);
-  rotate: 45deg;
-}
-
-.clip:last-child .key {
-  display: none;
-}
-
-/* Each clip in the colours of its preview. */
-.clip[data-kind="launch"] {
-  --thumb: linear-gradient(180deg, #34405a, #b98a6a 70%, #1b2422 70%);
-}
-
-.clip[data-kind="ugc"] {
-  --thumb: linear-gradient(180deg, #3c3129, #6b5240 62%, #2a2420 62%);
-}
-
-.clip[data-kind="explainer"] {
-  --thumb: linear-gradient(160deg, #101315, #1d3a32);
-}
-
-.clip[data-kind="montage"] {
-  --thumb: linear-gradient(180deg, #2c4a6a, #e2a874 72%, #3b2a1c 72%);
-}
-
-.clip[data-kind="demo"] {
-  --thumb: linear-gradient(180deg, #1b1d22, #2e3a5c);
-}
-
-.clip[data-kind="podcast"] {
-  --thumb: linear-gradient(160deg, #142018, #245a44);
-}
-
-.audio {
-  display: block;
-  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.25) inset;
-  background: rgb(95 224 176 / 0.06);
-  color: rgb(95 224 176 / 0.6);
-}
-
-.wave {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
-.wave path {
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1;
-  vector-effect: non-scaling-stroke;
-}
-
-.playheadLane {
-  position: absolute;
-  top: 0;
-  bottom: 14px;
-  left: calc(14px + 30px);
-  right: 14px;
-  pointer-events: none;
-}
-
-.playhead {
-  position: absolute;
-  top: 6px;
-  bottom: 0;
-  left: calc(var(--ph) * 100%);
-  width: 2px;
-  margin-left: -1px;
-  background: var(--soft-mint);
-  box-shadow: 0 0 10px rgb(95 224 176 / 0.7);
-}
-
-.playhead::before {
-  content: "";
-  position: absolute;
-  top: -2px;
-  left: 50%;
-  width: 10px;
-  height: 10px;
-  translate: -50% 0;
-  border-radius: 2px 2px 50% 50%;
-  background: var(--soft-mint);
-}
-
 .note {
-  max-width: 1320px;
-  margin: 12px auto 0;
-  padding: 0 var(--gutter);
+  margin-top: 14px;
   color: rgb(244 241 234 / 0.38);
   font-family: var(--font-mono-stack);
   font-size: 0.6875rem;
   letter-spacing: 0.1em;
   text-align: right;
   text-transform: uppercase;
+}
+
+@keyframes countdown {
+  to {
+    stroke-dashoffset: 0;
+  }
 }
 
 @keyframes cutIn {
@@ -699,178 +533,109 @@
 @keyframes rise {
   from {
     opacity: 0;
-    translate: 0 6px;
+    translate: 0 8px;
   }
 }
 
 @keyframes blink {
   50% {
-    opacity: 0;
+    opacity: 0.3;
   }
 }
 
 /* ---------- Smaller screens ---------- */
 
-@media (max-width: 960px) {
-  .stage {
+@media (max-width: 1080px) {
+  .promptRow {
     grid-template-columns: minmax(0, 1fr);
-    gap: 24px;
+    gap: 14px;
+  }
+
+  .try {
+    justify-self: start;
+  }
+}
+
+/* The wheel lies on its side under the viewer: its top half shows, with
+   the notch at the top and the names standing upright. */
+@media (max-width: 860px) {
+  .head {
+    display: grid;
+    gap: 14px;
+  }
+
+  .lead {
+    text-align: left;
+  }
+
+  .plain,
+  .accent {
+    display: inline;
   }
 
   .title {
     font-size: clamp(1.9rem, 1.2rem + 3vw, 2.75rem);
   }
 
-  .plain,
-  .accent {
-    display: inline;
-    white-space: normal;
-  }
-
-  /* The rail turns into one row along the top; the panel carries the
-     line. */
-  .rows {
-    display: grid;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
-    gap: 8px;
-    margin-top: 20px;
-    padding: 14px 0 0;
-  }
-
-  .rowRail {
-    top: -14px;
-    right: 0;
-    bottom: auto;
-    left: 0;
-    width: auto;
-    height: 1px;
-  }
-
-  .rowRail::before {
-    width: 100%;
-    transform-origin: left;
-    scale: 0 1;
-  }
-
-  .row[data-past] .rowRail::before {
-    scale: 1 1;
-  }
-
-  .row[data-on] .rowRail::before {
-    scale: var(--cp) 1;
-  }
-
-  .rowRail::after {
-    top: 0;
-    left: calc(var(--cp) * 100%);
-  }
-
-  .rowButton {
-    display: block;
-    padding: 0;
-  }
-
-  .rowIndex {
-    display: block;
-    padding-bottom: 4px;
-  }
-
-  .rowTitle {
-    display: block;
-    overflow: hidden;
-    font-size: 0.875rem;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-  }
-
-  .rowFormat,
-  .row[data-on] .rowBody {
-    display: none;
-  }
-}
-
-@media (max-width: 640px) {
-  .rows {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    row-gap: 22px;
-  }
-
-  .window {
-    font-size: 11px;
-  }
-
-  .body {
+  /* Viewer, then the wheel, then what it reads. */
+  .stage {
     grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+
+  .output {
+    display: contents;
   }
 
   .viewer {
-    padding: 10px 10px 8px;
+    order: 0;
   }
 
-  .panel {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: end;
-    gap: 10px;
-    padding: 10px;
-    border-left: 0;
-    border-top: 1px solid rgb(244 241 234 / 0.06);
+  .caption {
+    order: 2;
   }
 
-  .panelLabel,
-  .panelBody {
-    display: none;
+  .promptRow {
+    order: 3;
   }
 
-  .bubble {
-    display: -webkit-box;
-    height: calc(3 * 1.5em + 8px);
-    min-height: 0;
+  .dialWrap {
+    order: 1;
+    aspect-ratio: 2 / 0.86;
+    align-items: start;
     overflow: hidden;
-    padding: 8px 9px 0;
-    font-size: 10.5px;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;
-    line-clamp: 3;
+    -webkit-mask-image: linear-gradient(to bottom, #000 60%, transparent);
+    mask-image: linear-gradient(to bottom, #000 60%, transparent);
   }
 
-  .try {
-    height: 34px;
-    font-size: 12px;
+  .dial {
+    --d: min(520px, 100%);
+    margin-top: 6px;
   }
 
-  .timeline {
-    padding: 0 10px 10px;
+  .name {
+    transform: rotate(var(--a)) translateX(33cqw) rotate(calc(-1 * var(--a))) translateX(-50%);
+    font-size: clamp(12px, 3.6cqw, 14px);
   }
 
-  .playheadLane {
-    left: calc(10px + 30px);
-    right: 10px;
-    bottom: 10px;
-  }
-
-  .lane {
-    height: 24px;
-  }
-
-  .clipLabel {
+  .hub {
     display: none;
   }
 
-  .chrome {
-    height: 32px;
+  .notch::after {
+    display: none;
   }
 
-  .fileMuted {
-    display: none;
+  .caseTitle {
+    font-size: clamp(1.75rem, 1.2rem + 3vw, 2.25rem);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .feed[data-on],
   .flash,
-  .caret,
-  .row[data-on] .rowBody {
+  .caption,
+  .caret {
     animation: none;
   }
 
