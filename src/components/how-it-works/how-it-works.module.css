@@ -1,0 +1,996 @@
+/*
+ * "How it works". Progress arrives as custom properties from ScrollStage:
+ * --s1/--s2/--s3 per step, --asm for the timeline's assembly and --ph for
+ * the playhead. Their defaults (1) are the finished cut, which is what
+ * shows without JS or with reduced motion.
+ */
+.section {
+  --p: 1;
+  --s1: 1;
+  --s2: 1;
+  --s3: 1;
+  --asm: 1;
+  --ph: 1;
+  position: relative;
+  isolation: isolate;
+  background:
+    radial-gradient(50% 30% at 70% 40%, rgb(95 224 176 / 0.06), transparent 70%),
+    var(--night);
+  color: var(--paper);
+}
+
+/* Grain, as on the hero, so the two frames read as one film. */
+.section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+  opacity: 0.06;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+/* The hero's playhead runs on down into this section. */
+.leadIn {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 2px;
+  height: clamp(64px, 12vh, 120px);
+  margin-left: -1px;
+  background: linear-gradient(to bottom, var(--soft-mint), rgb(95 224 176 / 0));
+  box-shadow: 0 0 16px rgb(95 224 176 / 0.5);
+}
+
+.section[data-live] {
+  height: 420svh;
+}
+
+.stage {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.45fr);
+  align-items: center;
+  gap: clamp(32px, 5vw, 80px);
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: clamp(120px, 16vh, 160px) var(--gutter) var(--section-pad);
+}
+
+.section[data-live] .stage {
+  position: sticky;
+  top: 0;
+  min-height: 100svh;
+  padding-block: calc(14px + 56px + 24px) 32px;
+}
+
+/* ---------- Copy and steps ---------- */
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: rgb(244 241 234 / 0.62);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.eyebrowMark {
+  width: 18px;
+  height: 1px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+}
+
+.title {
+  margin-top: 18px;
+  font-size: clamp(2.1rem, 1.1rem + 2.2vw, 3.4rem);
+  font-weight: 560;
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+
+.plain,
+.accent {
+  display: block;
+  white-space: nowrap;
+}
+
+.accent {
+  padding-bottom: 0.06em;
+  background: linear-gradient(100deg, var(--mint-text-dark), #eafff6 50%, var(--soft-mint));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-family: var(--font-accent-stack);
+  font-size: 1.1em;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.steps {
+  position: relative;
+  display: grid;
+  gap: 4px;
+  margin: clamp(28px, 5vh, 48px) 0 0;
+  padding: 0 0 0 28px;
+  list-style: none;
+}
+
+/* A rail that fills as the section plays, with the mint point at its tip. */
+.rail {
+  position: absolute;
+  top: 10px;
+  bottom: 10px;
+  left: 4px;
+  width: 1px;
+  background: rgb(244 241 234 / 0.12);
+}
+
+.railFill {
+  position: absolute;
+  inset: 0;
+  background: var(--soft-mint);
+  box-shadow: 0 0 10px rgb(95 224 176 / 0.6);
+  transform-origin: top;
+  scale: 1 var(--p);
+}
+
+.railFill::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -5px;
+  width: 9px;
+  height: 9px;
+  margin-left: -4.5px;
+  border-radius: 50%;
+  background: var(--soft-mint);
+  box-shadow: 0 0 14px var(--soft-mint);
+  scale: 1 calc(1 / max(var(--p), 0.001));
+  transform-origin: bottom;
+}
+
+.step {
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  column-gap: 8px;
+  padding: 14px 0;
+  opacity: 0.38;
+  transition: opacity 0.5s ease;
+}
+
+.stepIndex {
+  grid-row: span 2;
+  padding-top: 5px;
+  color: var(--soft-mint);
+  font-family: var(--font-mono-stack);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+}
+
+.stepTitle {
+  font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.625rem);
+  font-weight: 560;
+  letter-spacing: -0.03em;
+}
+
+.stepBody {
+  grid-column: 2;
+  max-width: 36ch;
+  color: rgb(244 241 234 / 0.62);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+/* Without the script every step reads in full. */
+.section:not([data-step]) .step {
+  opacity: 1;
+}
+
+.section:not([data-step]) .stepBody,
+.section[data-step="0"] .step[data-i="0"] .stepBody,
+.section[data-step="1"] .step[data-i="1"] .stepBody,
+.section[data-step="2"] .step[data-i="2"] .stepBody {
+  margin-top: 6px;
+}
+
+.section[data-step="0"] .step[data-i="0"],
+.section[data-step="1"] .step[data-i="1"],
+.section[data-step="2"] .step[data-i="2"] {
+  opacity: 1;
+}
+
+/* Only the current step opens its body while the section plays. */
+.section[data-live] .stepBody {
+  overflow: hidden;
+  max-height: 0;
+  transition:
+    max-height 0.5s var(--ease-land),
+    margin 0.5s var(--ease-land);
+}
+
+.section[data-step="0"] .step[data-i="0"] .stepBody,
+.section[data-step="1"] .step[data-i="1"] .stepBody,
+.section[data-step="2"] .step[data-i="2"] .stepBody {
+  max-height: 8em;
+}
+
+/* ---------- The editor window ---------- */
+
+.demo {
+  position: relative;
+  min-width: 0;
+}
+
+/* A soft mint light under the window. */
+.demo::before {
+  content: "";
+  position: absolute;
+  inset: 12% 8% -6%;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(95 224 176 / 0.18), transparent);
+}
+
+.window {
+  overflow: hidden;
+  border-radius: var(--radius-window);
+  background: #121316;
+  box-shadow:
+    0 0 0 1px rgb(244 241 234 / 0.09),
+    0 1px 0 rgb(244 241 234 / 0.07) inset,
+    0 40px 100px -40px rgb(0 0 0 / 0.95);
+  font-size: 12px;
+}
+
+.chrome {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  height: 36px;
+  padding: 0 14px;
+  border-bottom: 1px solid rgb(244 241 234 / 0.06);
+  background: #18191d;
+}
+
+.dots {
+  display: flex;
+  gap: 6px;
+}
+
+.dots i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgb(244 241 234 / 0.14);
+}
+
+.file {
+  color: rgb(244 241 234 / 0.85);
+  font-weight: 560;
+}
+
+.fileMuted {
+  color: rgb(244 241 234 / 0.4);
+  font-weight: 450;
+}
+
+.timecode {
+  justify-self: end;
+  color: var(--mint-text-dark);
+  font-family: var(--font-mono-stack);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(190px, 30%, 250px);
+  border-bottom: 1px solid rgb(244 241 234 / 0.06);
+}
+
+/* Viewer */
+.viewer {
+  position: relative;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  gap: 10px;
+  padding: 14px;
+  background: #0c0d0f;
+}
+
+/* Formats: the frame keeps the viewer's 16:9 height and changes its width,
+   so the change animates. */
+.viewer {
+  --frame-h: calc(100cqw * 9 / 16);
+  container-type: inline-size;
+}
+
+.frame {
+  position: relative;
+  justify-self: center;
+  width: 100%;
+  height: var(--frame-h);
+  overflow: hidden;
+  border-radius: 8px;
+  background: #050506;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.08);
+  transition: width 0.7s var(--ease-land);
+}
+
+.section[data-format="9:16"] .frame {
+  width: calc(var(--frame-h) * 9 / 16);
+}
+
+.section[data-format="1:1"] .frame {
+  width: var(--frame-h);
+}
+
+.scene {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.12s linear;
+}
+
+.scene[data-scene="1"] {
+  opacity: min(1, var(--ph) * 40);
+}
+
+.scene[data-scene="2"] {
+  opacity: clamp(0, (var(--ph) - 0.333) * 40, 1);
+}
+
+.scene[data-scene="3"] {
+  opacity: clamp(0, (var(--ph) - 0.667) * 40, 1);
+}
+
+/* Illustrative footage, drawn in CSS. The camera pushes in on each shot. */
+.sceneArt {
+  position: absolute;
+  inset: -6%;
+  scale: calc(1 + var(--ph) * 0.08);
+}
+
+.scene[data-scene="1"] .sceneArt {
+  background:
+    radial-gradient(circle at 62% 62%, #ffe2b0 0 5%, rgb(255 200 140 / 0.55) 6%, transparent 22%),
+    linear-gradient(to top, #0f1414 0 26%, transparent 26.5%),
+    radial-gradient(120% 60% at 30% 100%, #1b2422 0 40%, transparent 41%),
+    linear-gradient(180deg, #1d2a3d 0%, #4b4a5c 45%, #b98a6a 72%, #e3b384 80%);
+}
+
+.scene[data-scene="2"] .sceneArt {
+  background:
+    repeating-linear-gradient(100deg, transparent 0 46px, rgb(95 224 176 / 0.07) 46px 48px),
+    radial-gradient(circle at 50% 55%, rgb(95 224 176 / 0.22), transparent 45%),
+    linear-gradient(160deg, #0d1513, #18221f 50%, #0c0f0e);
+}
+
+/* A phone in shot two. */
+.scene[data-scene="2"] .sceneArt::after {
+  content: "";
+  position: absolute;
+  top: 22%;
+  left: 50%;
+  width: 18%;
+  aspect-ratio: 9 / 18;
+  translate: -50% 0;
+  border-radius: 12% / 6%;
+  background:
+    linear-gradient(180deg, rgb(95 224 176 / 0.5) 0 14%, transparent 14%),
+    repeating-linear-gradient(180deg, transparent 0 18%, rgb(244 241 234 / 0.12) 18% 24%),
+    #0b0b0d;
+  box-shadow:
+    0 0 0 3px #2b2d33,
+    0 20px 40px rgb(0 0 0 / 0.6);
+  rotate: -8deg;
+}
+
+.scene[data-scene="3"] .sceneArt {
+  background:
+    radial-gradient(70% 50% at 50% 100%, rgb(95 224 176 / 0.12), transparent 70%),
+    radial-gradient(circle at 18% 30%, rgb(255 210 150 / 0.55) 0 2%, transparent 6%),
+    radial-gradient(circle at 76% 24%, rgb(95 224 176 / 0.35) 0 2.5%, transparent 7%),
+    radial-gradient(circle at 60% 70%, rgb(150 180 255 / 0.3) 0 3%, transparent 9%),
+    radial-gradient(circle at 30% 76%, rgb(255 170 140 / 0.3) 0 2%, transparent 7%),
+    linear-gradient(to top, #0b0b0d 0 18%, transparent 18%),
+    repeating-linear-gradient(to right, #12141a 0 9%, #181b22 9% 10%, #0f1116 10% 17%),
+    linear-gradient(180deg, #141821, #0b0b0d);
+}
+
+.sceneTitle {
+  position: absolute;
+  left: 7%;
+  top: 9%;
+  color: #fff;
+  font-size: clamp(16px, 4.6cqw, 34px);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  text-shadow: 0 2px 20px rgb(0 0 0 / 0.5);
+}
+
+.section[data-format="9:16"] .sceneTitle {
+  font-size: clamp(12px, 2.6cqw, 18px);
+}
+
+.point {
+  display: inline-block;
+  width: 0.2em;
+  height: 0.2em;
+  margin-left: 0.06em;
+  border-radius: 50%;
+  background: var(--soft-mint);
+  box-shadow: 0 0 10px var(--soft-mint);
+}
+
+.sceneCaption {
+  position: absolute;
+  left: 50%;
+  bottom: 8%;
+  translate: -50% 0;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: rgb(0 0 0 / 0.65);
+  color: #fff;
+  font-size: clamp(9px, 1.7cqw, 13px);
+  font-weight: 560;
+  white-space: nowrap;
+}
+
+/* Before the cut plays, the viewer waits. */
+.empty {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background:
+    repeating-linear-gradient(45deg, rgb(244 241 234 / 0.02) 0 10px, transparent 10px 20px),
+    #0a0a0c;
+  color: rgb(244 241 234 / 0.45);
+  font-size: 12px;
+  opacity: calc(1 - min(1, var(--ph) * 40));
+}
+
+.emptyWait,
+.emptyBuild {
+  grid-area: 1 / 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: opacity 0.3s ease;
+}
+
+.emptyBuild {
+  opacity: 0;
+  color: var(--mint-text-dark);
+}
+
+.section[data-step="1"] .emptyWait {
+  opacity: 0;
+}
+
+.section[data-step="1"] .emptyBuild {
+  opacity: 1;
+}
+
+.spinner {
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid rgb(95 224 176 / 0.25);
+  border-top-color: var(--soft-mint);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+/* Rule-of-thirds guides. */
+.guides {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to right, transparent calc(33.33% - 0.5px), rgb(244 241 234 / 0.1) 33.33%, transparent calc(33.33% + 0.5px)),
+    linear-gradient(to right, transparent calc(66.66% - 0.5px), rgb(244 241 234 / 0.1) 66.66%, transparent calc(66.66% + 0.5px)),
+    linear-gradient(to bottom, transparent calc(33.33% - 0.5px), rgb(244 241 234 / 0.1) 33.33%, transparent calc(33.33% + 0.5px)),
+    linear-gradient(to bottom, transparent calc(66.66% - 0.5px), rgb(244 241 234 / 0.1) 66.66%, transparent calc(66.66% + 0.5px));
+  pointer-events: none;
+}
+
+.formats {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+}
+
+.formats span {
+  padding: 3px 9px;
+  border-radius: 6px;
+  color: rgb(244 241 234 / 0.45);
+  font-family: var(--font-mono-stack);
+  font-size: 10.5px;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+.section[data-format="16:9"] .formats [data-format="16:9"],
+.section[data-format="9:16"] .formats [data-format="9:16"],
+.section[data-format="1:1"] .formats [data-format="1:1"] {
+  background: rgb(95 224 176 / 0.14);
+  color: var(--soft-mint);
+}
+
+/* Side panel: the prompt, Keyfly's notes and the export. */
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  padding: 14px;
+  border-left: 1px solid rgb(244 241 234 / 0.06);
+  background: #141518;
+}
+
+.panelLabel {
+  color: rgb(244 241 234 / 0.4);
+  font-family: var(--font-mono-stack);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.bubble {
+  padding: 10px 11px;
+  border-radius: 10px 10px 10px 3px;
+  background: #1e1f23;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.06) inset;
+  color: rgb(244 241 234 / 0.9);
+  font-size: 11.5px;
+  line-height: 1.5;
+}
+
+.caret {
+  display: inline-block;
+  width: 1.5px;
+  height: 1.05em;
+  margin-left: 1px;
+  vertical-align: -0.15em;
+  background: var(--soft-mint);
+  animation: blink 1s steps(1) infinite;
+}
+
+.section[data-step="1"] .caret,
+.section[data-step="2"] .caret,
+.section:not([data-step]) .caret {
+  display: none;
+}
+
+.plan {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.plan li {
+  --on: clamp(0, (var(--s2) - var(--k)) * 12, 1);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: rgb(244 241 234 / calc(0.25 + var(--on) * 0.6));
+  font-size: 11.5px;
+  opacity: clamp(0, (var(--s2) - var(--k) + 0.12) * 8, 1);
+  translate: 0 calc((1 - var(--on)) * 4px);
+}
+
+.tick {
+  position: relative;
+  flex: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px rgb(95 224 176 / calc(0.25 + var(--on) * 0.75)) inset;
+  background: rgb(95 224 176 / calc(var(--on) * 0.18));
+}
+
+.tick::after {
+  content: "";
+  position: absolute;
+  left: 4.5px;
+  top: 3px;
+  width: 3.5px;
+  height: 6px;
+  border: solid var(--soft-mint);
+  border-width: 0 1.5px 1.5px 0;
+  rotate: 45deg;
+  scale: var(--on);
+}
+
+.export {
+  display: grid;
+  gap: 6px;
+  margin-top: auto;
+  opacity: clamp(0.35, var(--s3) * 6, 1);
+}
+
+.exportLabel {
+  display: flex;
+  justify-content: space-between;
+  color: rgb(244 241 234 / 0.6);
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.section[data-ready] .exportLabel {
+  color: var(--soft-mint);
+}
+
+.exportBar {
+  height: 4px;
+  overflow: hidden;
+  border-radius: 4px;
+  background: rgb(244 241 234 / 0.08);
+}
+
+.exportBar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--soft-mint);
+  box-shadow: 0 0 10px var(--soft-mint);
+  transform-origin: left;
+  scale: var(--s3) 1;
+}
+
+/* ---------- Timeline ---------- */
+
+.timeline {
+  position: relative;
+  display: grid;
+  gap: 5px;
+  padding: 0 14px 14px;
+  background: #101114;
+}
+
+.ruler {
+  height: 18px;
+  margin-left: 30px;
+  background:
+    repeating-linear-gradient(to right, rgb(244 241 234 / 0.3) 0 1px, transparent 1px 8.333%) 0 100% / 100% 8px no-repeat,
+    repeating-linear-gradient(to right, rgb(244 241 234 / 0.14) 0 1px, transparent 1px 2.0833%) 0 100% / 100% 4px no-repeat;
+}
+
+.track {
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  align-items: center;
+  gap: 8px;
+}
+
+.trackLabel {
+  color: rgb(244 241 234 / 0.4);
+  font-family: var(--font-mono-stack);
+  font-size: 10px;
+}
+
+.lane {
+  position: relative;
+  height: 26px;
+  border-radius: 5px;
+  background: rgb(244 241 234 / 0.025);
+}
+
+.track[data-kind="title"] .lane {
+  height: 18px;
+}
+
+.track[data-kind="audio"] .lane {
+  height: 30px;
+}
+
+/* Clips drop onto the timeline one by one during assembly. */
+.clip {
+  --on: clamp(0, (var(--asm) - var(--k)) * 10, 1);
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: 5px;
+  opacity: var(--on);
+  translate: 0 calc((1 - var(--on)) * -26px);
+  scale: calc(0.9 + var(--on) * 0.1);
+}
+
+.track[data-kind="title"] .clip {
+  display: grid;
+  align-items: center;
+  padding-left: 6px;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.22) inset;
+  background: rgb(244 241 234 / 0.08);
+  color: rgb(244 241 234 / 0.6);
+  font-size: 9.5px;
+  font-weight: 600;
+}
+
+.track[data-kind="video"] .clip {
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.5) inset;
+  background-size: 34px 100%;
+}
+
+.clip[data-scene="1"] {
+  background-image: linear-gradient(180deg, #34405a, #b98a6a 70%, #1b2422 70%);
+}
+
+.clip[data-scene="2"] {
+  background-image: linear-gradient(160deg, #18221f, #2a3d37 50%, #13201c);
+}
+
+.clip[data-scene="3"] {
+  background-image: linear-gradient(180deg, #1d2230, #262b36 60%, #0b0b0d 60%);
+}
+
+/* The thumbnails' frame lines over each video clip. */
+.track[data-kind="video"] .clip::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: repeating-linear-gradient(to right, transparent 0 33px, rgb(0 0 0 / 0.55) 33px 34px);
+}
+
+.key {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: 7px;
+  height: 7px;
+  margin: -3.5px -3.5px 0 0;
+  border-radius: 1px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 6px var(--soft-mint);
+  rotate: 45deg;
+}
+
+.track[data-kind="audio"] .clip {
+  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.25) inset;
+  background: rgb(95 224 176 / 0.06);
+  color: rgb(95 224 176 / 0.6);
+}
+
+.wave {
+  width: 100%;
+  height: 100%;
+}
+
+.wave path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.beat {
+  position: absolute;
+  top: -3px;
+  width: 1px;
+  height: 4px;
+  background: var(--soft-mint);
+}
+
+/* The playhead: it parks at the start until the timeline is built, then
+   plays the cut. */
+.playheadLane {
+  position: absolute;
+  top: 0;
+  bottom: 14px;
+  left: calc(14px + 30px);
+  right: 14px;
+  pointer-events: none;
+}
+
+.playhead {
+  position: absolute;
+  top: 6px;
+  bottom: 0;
+  left: calc(var(--ph) * 100%);
+  width: 2px;
+  margin-left: -1px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 10px rgb(95 224 176 / 0.7);
+  opacity: calc(0.3 + min(1, var(--asm) * 3) * 0.7);
+}
+
+.playhead::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  translate: -50% 0;
+  border-radius: 2px 2px 50% 50%;
+  background: var(--soft-mint);
+}
+
+.note {
+  margin-top: 12px;
+  color: rgb(244 241 234 / 0.38);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes spin {
+  to {
+    rotate: 360deg;
+  }
+}
+
+/* ---------- Smaller screens ---------- */
+
+@media (max-width: 960px) {
+  .stage {
+    grid-template-columns: minmax(0, 1fr);
+    align-content: center;
+    gap: 24px;
+  }
+
+  .section[data-live] .stage {
+    padding-top: calc(14px + 54px + 12px);
+  }
+
+  .title {
+    font-size: clamp(1.9rem, 1.2rem + 3vw, 2.75rem);
+  }
+
+  .plain,
+  .accent {
+    display: inline;
+    white-space: normal;
+  }
+
+  /* The steps become one row of three; only the current one is described. */
+  .steps {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin-top: 20px;
+    padding: 14px 0 0;
+  }
+
+  .rail {
+    top: 0;
+    right: 0;
+    bottom: auto;
+    left: 0;
+    width: auto;
+    height: 1px;
+  }
+
+  .railFill {
+    transform-origin: left;
+    scale: var(--p) 1;
+  }
+
+  .railFill::after {
+    top: -4px;
+    right: -5px;
+    bottom: auto;
+    left: auto;
+    margin: 0;
+    scale: calc(1 / max(var(--p), 0.001)) 1;
+    transform-origin: right;
+  }
+
+  .step {
+    display: block;
+    padding: 0;
+  }
+
+  .stepIndex {
+    display: block;
+    padding: 0 0 4px;
+  }
+
+  .stepTitle {
+    font-size: 1rem;
+  }
+
+  .section[data-live] .stepBody {
+    display: none;
+  }
+
+  .section:not([data-live]) .stepBody {
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .window {
+    font-size: 11px;
+  }
+
+  .body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .viewer {
+    padding: 10px 10px 8px;
+  }
+
+  /* On phones the panel keeps only the prompt and the export. */
+  .panel {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 92px;
+    align-items: end;
+    gap: 10px;
+    padding: 10px;
+    border-left: 0;
+    border-top: 1px solid rgb(244 241 234 / 0.06);
+  }
+
+  .panelLabel,
+  .plan {
+    display: none;
+  }
+
+  .bubble {
+    display: -webkit-box;
+    overflow: hidden;
+    padding: 8px 9px;
+    font-size: 10.5px;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+  }
+
+  .timeline {
+    padding: 0 10px 10px;
+  }
+
+  .playheadLane {
+    left: calc(10px + 30px);
+    right: 10px;
+    bottom: 10px;
+  }
+
+  .lane {
+    height: 20px;
+  }
+
+  .track[data-kind="audio"] .lane {
+    height: 22px;
+  }
+
+  .chrome {
+    height: 32px;
+  }
+
+  .fileMuted {
+    display: none;
+  }
+}
+
+@media (max-height: 720px) and (max-width: 960px) {
+  .eyebrow {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .caret,
+  .spinner {
+    animation: none;
+  }
+}

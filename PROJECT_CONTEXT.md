@@ -1,6 +1,6 @@
 # Keyfly Marketing Website — Project Context
 
-Last updated: 2026-10-30
+Last updated: 2026-10-31
 
 The durable handoff for anyone (people or coding agents) working on the Keyfly website. Update it whenever a lasting decision changes. The step-by-step build order lives in `PLAN.md`.
 
@@ -125,7 +125,7 @@ The root layout renders the skip link, `SiteHeader` and `<main id="main">`. Page
 
 ## Homepage (step by step, from 2026-10-30)
 
-`src/app/page.jsx` renders the Hero only. All copy lives in `src/content/home.js`. Lines marked `PLACEHOLDER` wait for the confirmed product description, so the page is `noindex` until then.
+`src/app/page.jsx` renders Hero → HowItWorks (`#product`). All copy lives in `src/content/home.js`. Lines marked `PLACEHOLDER` wait for the confirmed product description, so the page is `noindex` until then.
 
 - **Hero** (`src/components/hero/`): one full screen. It has the eyebrow, a two-line h1 (the second line is in the serif italic accent with a mint shimmer), a lead line and the prompt box.
   - **Words** arrive one by one out of a blur.
@@ -142,6 +142,18 @@ The root layout renders the skip link, `SiteHeader` and `<main id="main">`. Page
     - The tracks slide under a fixed mint playhead. Some clips are lit and breathe, and keyframe diamonds sit at the ends of video clips.
     - The floor turns slightly with the pointer.
   - **Also on the hero:** a pointer light (`PointerField`, fine pointers only) and film grain.
+- **How it works** (`src/components/how-it-works/`, added 2026-10-31): three steps beside an illustrative Keyfly editor window, captioned "Illustrative interface".
+  - **Continuity:** the hero's playhead runs on down into the section (`.leadIn`), and the hero's backdrop fades to Night at its foot.
+  - **Steps:** Describe it, Keyfly edits, Export anywhere, on a rail that fills with the mint point at its tip. Only the current step shows its body. On narrow screens they become one row of three.
+  - **Scroll progress:** `ScrollStage` (client) pins the section (`data-live`, 420svh, sticky 100svh stage). It writes to the DOM:
+    - `--p`, `--s1`, `--s2`, `--s3` (one per step), `--asm` (assembly) and `--ph` (playhead);
+    - `data-step`, `data-format` and `data-ready`;
+    - the typed prompt, the timecode and the export percentage.
+  - **Step 1:** the Launch Video preset prompt types itself into the side panel, and the viewer waits.
+  - **Step 2:** title, video and audio clips drop onto the timeline (`--k` per clip). Then the playhead plays the cut: the viewer cuts between three CSS-drawn shots at 1/3 and 2/3, and Keyfly's notes tick off.
+  - **Step 3:** the frame tries 16:9, 9:16 and 1:1 (its width animates at a fixed height, using `cqw` of the viewer), and the export bar fills to "Ready".
+  - **Fallback:** without JS or with reduced motion there is no pin, and the CSS defaults (all progress at 1) show the finished cut.
+  - **Copy:** in `howItWorks` (content file), PLACEHOLDER.
 - **Gotchas:**
   - **Grid overflow:** grid containers that hold the scrolling chip row need `grid-template-columns: minmax(0, 1fr)`. Without it the row's `max-content` width widens the page on mobile.
   - **No large blur:** never put a large `filter: blur()` in a 3D, animated stage.

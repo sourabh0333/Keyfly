@@ -1,4 +1,5 @@
 import { Hero } from "@/components/hero/hero";
+import { HowItWorks } from "@/components/how-it-works/how-it-works";
 import { siteConfig } from "@/config/site";
 
 // Kept out of search until the product details are confirmed (see the
@@ -11,5 +12,10 @@ export const metadata = {
 };
 
 export default function Home() {
-  return <Hero />;
+  return (
+    <>
+      <Hero />
+      <HowItWorks />
+    </>
+  );
 }

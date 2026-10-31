@@ -31,6 +31,16 @@
   animation: breathe 9s ease-in-out infinite alternate;
 }
 
+/* The last stretch fades to plain Night, where "How it works" picks up
+   the playhead. */
+.backdrop::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 120px;
+  background: linear-gradient(to bottom, rgb(11 11 13 / 0), var(--night));
+}
+
 /* Film grain over everything. */
 .grain {
   position: absolute;

@@ -43,3 +43,35 @@ export const prompt = {
     { label: "Claude", href: null },
   ],
 };
+
+// "How it works": three steps, played out in an illustrative editor window
+// as the section scrolls. PLACEHOLDER throughout until the product
+// description is confirmed.
+export const howItWorks = {
+  eyebrow: "How it works",
+  title: [{ text: "One sentence in." }, { text: "A finished cut out.", accent: true }],
+  steps: [
+    { title: "Describe it", body: "Type the video you have in mind, or drop in your footage. A sentence is enough to start." },
+    { title: "Keyfly edits", body: "Keyfly builds the timeline: picks the shots, cuts them to the music and sets the titles and captions." },
+    { title: "Export anywhere", body: "Choose landscape, vertical or square, check the cut, and export when it looks right." },
+  ],
+  // What the illustrative editor shows.
+  demo: {
+    file: "Launch Video",
+    prompt: presetPrompt("Launch Video"),
+    // Keyfly's notes in the side panel, ticked off as the playhead passes.
+    plan: ["Found 6 shots", "Cut on the beat", "Added title cards", "Wrote captions"],
+    // The title and caption on the viewer, one per shot.
+    shots: [
+      { title: "Launch day", caption: "Meet the new app" },
+      { title: "Built for speed", caption: "Everything in one place" },
+      { title: "Try it today", caption: "Available now" },
+    ],
+    formats: ["16:9", "9:16", "1:1"],
+    note: "Illustrative interface",
+  },
+};
+
+function presetPrompt(label) {
+  return prompt.presets.find((preset) => preset.label === label).prompt;
+}
