@@ -19,11 +19,12 @@ function measure() {
 }
 
 /**
- * The page as an edit: a small timeline floating at the foot of the screen
- * with one clip per section (sized by its length), a mint playhead at the
- * scroll position and a running timecode. The clip under the playhead is
- * named on the left, and clicking a clip scrubs to it. It comes in once
- * the hero is left behind.
+ * The page as an edit: a slim timeline standing in the right-hand margin,
+ * with one clip per section (sized by its length) and a mint playhead at
+ * the scroll position. It stays out of the way of the content: hovering
+ * or focusing it names the clips and shows the section under the playhead
+ * with a running timecode, and clicking a clip scrubs to it. It comes in
+ * once the hero is left behind, on screens wide enough to have a margin.
  */
 export function Scrubber() {
   const [clips, setClips] = useState([]);
@@ -85,14 +86,6 @@ export function Scrubber() {
 
   return (
     <nav className={styles.scrubber} data-shown={shown ? "" : undefined} aria-label="Page timeline" inert={!shown}>
-      <span className={styles.now}>
-        <i className={styles.rec} aria-hidden="true" />
-        <span className={styles.nowIndex}>{pad(current + 1)}</span>
-        <span key={now.label} className={styles.nowLabel}>
-          {now.label}
-        </span>
-      </span>
-
       <div ref={trackRef} className={styles.track}>
         {clips.map((clip, i) => (
           <button
@@ -108,12 +101,16 @@ export function Scrubber() {
             <span className={styles.clipLabel}>{clip.label}</span>
           </button>
         ))}
-        <span className={styles.head} aria-hidden="true" />
+        <span className={styles.head} aria-hidden="true">
+          <span className={styles.tag}>
+            <span className={styles.tagIndex}>{pad(current + 1)}</span>
+            {now.label}
+            <span ref={codeRef} className={styles.code}>
+              00:00:00:00
+            </span>
+          </span>
+        </span>
       </div>
-
-      <span ref={codeRef} className={styles.code} aria-hidden="true">
-        00:00:00:00
-      </span>
     </nav>
   );
 }

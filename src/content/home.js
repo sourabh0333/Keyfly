@@ -82,6 +82,7 @@ export const useCases = {
   lead: "Start from a preset or describe your own. Six of the videos people make most:",
   cta: "Try this prompt",
   dialLabel: "Preset",
+  hint: { live: "Scroll or drag to turn", still: "Drag or click to turn" },
   promptLabel: "Prompt",
   note: "Illustrative previews",
   // PLACEHOLDER: one line per preset until the product copy is confirmed.

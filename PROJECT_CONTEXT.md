@@ -139,10 +139,11 @@ The root layout renders the skip link, `SiteHeader` and `<main id="main">`. Page
     - Eyebrows that can be landed on carry `data-landing`; the thread sets `data-landed` on them and they light in answer.
     - It draws with the scroll: its glowing head rides 62% down the screen. With reduced motion it is drawn whole and every point has landed.
   - The thread stays in margins and gaps; never route it across copy.
-  - **`Scrubber`** (added 2026-10-31, "the page is an edit"): a glass timeline fixed at the foot of the screen once the hero is left behind.
-    - One clip per `[data-section]` (Intro, How it works, Use cases, Download), sized by its length and filled with its section's light, with film-frame lines.
-    - A mint playhead at the scroll position, a running timecode (the page plays as 48s), and the clip under it named on the left.
-    - It is navigation (`<nav aria-label="Page timeline">`): clicking a clip scrubs to it. On phones the clip names and the timecode hide.
+  - **`Scrubber`** (added 2026-10-31, "the page is an edit"; moved the same day to the right-hand margin because, at the foot of the screen, it covered content): a slim vertical timeline fixed in the right margin once the hero is left behind. It is hidden at 1024px and below, where there is no margin.
+    - One clip per `[data-section]` (Intro, How it works, Use cases, Download), sized by its length, filled with its section's light, with film-frame lines.
+    - A mint playhead bar at the scroll position.
+    - Hovering or focusing names the clips and shows a tag with the section under the playhead and a running timecode (the page plays as 48s).
+    - It is navigation (`<nav aria-label="Page timeline">`): clicking a clip scrubs to it.
   - **Heading wipe** (`wipe.module.css`): each section's h2 is revealed by a mint playhead sweeping across it as it scrolls in. A view timeline animates the registered `--wp` (0 → 1), which drives both the `clip-path` and the line, so it scrubs both ways. Pseudo-elements can't take their own view timeline, which is why it runs through `--wp`. Without scroll-driven animation support, or with reduced motion, the heading just shows.
 
 - **Hero** (`src/components/hero/`): one full screen. It has the eyebrow, a two-line h1 (the second line is in the serif italic accent with a mint shimmer), a lead line and the prompt box.
@@ -181,14 +182,16 @@ The root layout renders the skip link, `SiteHeader` and `<main id="main">`. Page
   - **`PresetDial`** (client), left: a round dial.
     - It has ticks, a knurled inner ring and a hub showing "02/06" and the format.
     - The six names sit along the radius around the rim. A fixed mint notch with a wedge of light reads the one up, and a mint line runs from the notch to the viewer.
-    - A mint arc around the hub counts down to the next turn.
     - The wheel position `pos` is a float tweened in JS (ease-out). Names are placed by `--a`, and the ticks and knurl turn by `--turn`.
-  - **Turning the wheel:**
-    - Drag it round (the pointer is only captured after a 4° turn, so clicks still reach the names), click a name, or use the arrow keys, Home/End or 1–6. The dial is a `role="slider"`.
-    - It turns on by itself every 6s while on screen and not held (hover, focus or drag). With reduced motion it never turns by itself and moves are instant.
-    - `touch-action: pan-y` keeps vertical swipes scrolling the page.
+  - **Turning the wheel, by scroll (changed 2026-10-31 at the team's request; it used to turn on a timer):**
+    - The track (`data-live`) is 100svh plus 55svh per preset. The stage pins (sticky, 100svh), and the scroll turns the wheel one preset per stretch.
+    - `detent()` makes the wheel rest on each preset for the middle half of its stretch and turn between them.
+    - Dragging the wheel, clicking a name, the arrow keys, Home/End and 1–6 scroll the page to match (`undetent()` is the inverse). The dial is a `role="slider"`.
+    - The pointer is only captured after a 4° turn, so clicks still reach the names. `touch-action: pan-y` keeps vertical swipes scrolling.
+    - A mint arc around the hub shows how far through the six the wheel has turned. A hint under it reads "Scroll or drag to turn".
+    - **Fallback:** it pins only where the stage fits the screen (content + 96px ≤ the window's height; re-checked by a `ResizeObserver` and on resize) and motion is allowed. Otherwise the wheel turns by drag, click and keys with a JS ease-out, and the hint reads "Drag or click to turn".
   - **Right:** the preset up, at its format. The frame keeps a 16:9 height, capped at 46svh, and takes the preset's width from the left edge, so the change animates. Below it are the title (serif italic mint), its line, its real prompt from `prompt.presets` typing in, and the mint "Try this prompt" button.
-  - **Short screens:** the dial is capped at 64svh.
+  - **Short screens:** the dial is capped at 64svh. Below 780px of height (wider than 860px) the frame caps at 38svh and the caption and prompt tighten, so the stage still pins on a 1366×553 laptop.
   - **Narrow screens (≤860px):** the order becomes viewer, wheel, then caption. The wheel lies on its side with only its top showing, the notch at the top and the names upright (46° apart). The hub hides.
   - **"Try this prompt":** dispatches `keyfly:prompt` with the preset's label. `PromptBox` listens, scrolls back to the hero and types that preset in.
   - **`Preview`:** a CSS-drawn loop at the use case's format, sized in `cqw`/`cqh` of its screen. `bleed` fills its parent edge to edge with no backing or corner marks, and stands 9:16 in the middle.

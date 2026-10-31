@@ -1,8 +1,8 @@
 /*
  * "Use cases": the presets on a jog wheel (left) and the one at its notch
- * playing (right). PresetDial sets --turn and --base on the dial,
- * data-format, data-auto and data-paused on .stage, and data-on on the
- * name and feed up.
+ * playing (right). PresetDial sets data-live on .track while the scroll
+ * turns the wheel (the stage pins), --turn and --base on the dial,
+ * data-format on .stage, and data-on on the name and feed up.
  */
 .section {
   position: relative;
@@ -110,6 +110,24 @@
 
 /* ---------- Stage ---------- */
 
+/* While live, the stage pins for one stretch of scroll per preset. */
+.track {
+  position: relative;
+}
+
+.track[data-live] {
+  height: calc(100svh + (var(--count) - 1) * 55svh);
+}
+
+.track[data-live] .pin {
+  position: sticky;
+  top: 0;
+  display: grid;
+  align-items: center;
+  height: 100svh;
+  padding-top: 48px;
+}
+
 .stage {
   display: grid;
   grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
@@ -207,19 +225,33 @@
   stroke-width: 0.5;
 }
 
-/* Counts down to the next turn, starting at the notch. */
-.countdown {
+/* How far through the six the wheel has turned, from the notch. */
+.progress {
   fill: none;
   stroke: var(--soft-mint);
   stroke-width: 1.2;
   stroke-dasharray: 1 1;
-  stroke-dashoffset: 1;
   rotate: var(--base);
   filter: drop-shadow(0 0 2px var(--soft-mint));
 }
 
-.stage[data-auto] .countdown {
-  animation: countdown 6s linear forwards;
+.hint {
+  margin-top: 18px;
+  color: rgb(244 241 234 / 0.4);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.14em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.hint [data-when="live"],
+.track[data-live] .hint [data-when="still"] {
+  display: none;
+}
+
+.track[data-live] .hint [data-when="live"] {
+  display: inline;
 }
 
 .knurl {
@@ -511,12 +543,6 @@
   text-transform: uppercase;
 }
 
-@keyframes countdown {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
 @keyframes cutIn {
   from {
     opacity: 0.4;
@@ -622,12 +648,46 @@
     display: none;
   }
 
-  .notch::after {
+  .notch::after,
+  .hint {
     display: none;
   }
 
   .caseTitle {
     font-size: clamp(1.75rem, 1.2rem + 3vw, 2.25rem);
+  }
+}
+
+/* Short laptop screens: a tighter stage, so it can still pin. */
+@media (max-height: 780px) and (min-width: 861px) {
+  .viewer {
+    --frame-h: min(calc(100cqw * 9 / 16), 38svh);
+  }
+
+  .output {
+    gap: 12px;
+  }
+
+  .caseTitle {
+    font-size: clamp(1.625rem, 1.2rem + 1.2vw, 2.125rem);
+  }
+
+  .caseBody {
+    margin-top: 2px;
+    font-size: 0.875rem;
+  }
+
+  .promptRow {
+    padding-top: 12px;
+  }
+
+  .prompt {
+    min-height: calc(2 * 1.5em + 1.2em);
+    font-size: 0.75rem;
+  }
+
+  .hint {
+    margin-top: 10px;
   }
 }
 

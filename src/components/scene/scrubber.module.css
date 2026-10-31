@@ -1,34 +1,17 @@
 /*
- * The page timeline: a glass bar at the foot of the screen. Scrubber sets
- * --pos (0–1) on the track, aria-current on the clip under the playhead and
- * data-shown once the hero is left behind.
+ * The page timeline: a slim vertical rail in the right-hand margin, so it
+ * never sits over the content. Scrubber sets --pos (0–1) on the track,
+ * aria-current on the clip under the playhead and data-shown once the
+ * hero is left behind. Names and the timecode show on hover and focus.
  */
 .scrubber {
   position: fixed;
-  bottom: 18px;
-  left: 50%;
+  top: 50%;
+  right: max(10px, calc((var(--gutter) - 8px) / 2));
   z-index: 40;
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 14px;
-  width: min(620px, calc(100% - 32px));
-  height: 48px;
-  padding: 0 16px 0 14px;
-  border-radius: var(--radius-round, 999px);
-  background: rgb(18 19 22 / 0.72);
-  box-shadow:
-    0 0 0 1px rgb(244 241 234 / 0.08),
-    0 1px 0 rgb(244 241 234 / 0.06) inset,
-    0 20px 50px -20px rgb(0 0 0 / 0.9);
-  -webkit-backdrop-filter: blur(14px) saturate(1.4);
-  backdrop-filter: blur(14px) saturate(1.4);
-  color: var(--paper);
-  font-family: var(--font-mono-stack);
-  font-size: 0.6875rem;
-  letter-spacing: 0.08em;
+  height: min(46vh, 380px);
   opacity: 0;
-  translate: -50% 140%;
+  translate: 16px -50%;
   transition:
     opacity 0.4s ease,
     translate 0.6s var(--ease-land);
@@ -36,67 +19,33 @@
 
 .scrubber[data-shown] {
   opacity: 1;
-  translate: -50% 0;
+  translate: 0 -50%;
 }
-
-/* What's under the playhead. */
-.now {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-width: 0;
-  text-transform: uppercase;
-}
-
-.rec {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--soft-mint);
-  box-shadow: 0 0 10px var(--soft-mint);
-  animation: blink 1.4s steps(1) infinite;
-}
-
-.nowIndex {
-  color: var(--soft-mint);
-}
-
-.nowLabel {
-  min-width: 13ch;
-  color: rgb(244 241 234 / 0.85);
-  white-space: nowrap;
-  animation: roll 0.45s var(--ease-land);
-}
-
-/* ---------- Track ---------- */
 
 .track {
   --pos: 0;
   position: relative;
   display: flex;
+  flex-direction: column;
   gap: 3px;
-  height: 24px;
+  width: 8px;
+  height: 100%;
 }
 
 .clip {
   position: relative;
   flex-basis: 0;
-  min-width: 0;
-  padding: 0 7px;
-  overflow: hidden;
+  min-height: 0;
+  width: 100%;
+  padding: 0;
   border: 0;
-  border-radius: 5px;
+  border-radius: 3px;
   background: var(--clip);
-  color: rgb(244 241 234 / 0.9);
-  font: inherit;
-  font-size: 0.5625rem;
-  letter-spacing: 0.06em;
-  text-align: left;
-  opacity: 0.45;
+  opacity: 0.4;
   cursor: pointer;
   transition:
     opacity 0.3s ease,
-    filter 0.3s ease;
+    width 0.3s var(--ease-land);
 }
 
 /* Film frames along every clip. */
@@ -104,18 +53,8 @@
   content: "";
   position: absolute;
   inset: 0;
-  background: repeating-linear-gradient(90deg, transparent 0 9px, rgb(0 0 0 / 0.22) 9px 10px);
-  pointer-events: none;
-}
-
-.clip:hover,
-.clip:focus-visible {
-  opacity: 0.8;
-}
-
-.clip:focus-visible {
-  outline: 1.5px solid var(--soft-mint);
-  outline-offset: 2px;
+  border-radius: inherit;
+  background: repeating-linear-gradient(180deg, transparent 0 9px, rgb(0 0 0 / 0.3) 9px 10px);
 }
 
 .clip[aria-current] {
@@ -123,42 +62,70 @@
   box-shadow: 0 0 0 1px rgb(95 224 176 / 0.55) inset;
 }
 
+.clip:hover,
+.clip:focus-visible {
+  opacity: 0.85;
+}
+
+.clip:focus-visible {
+  outline: 1.5px solid var(--soft-mint);
+  outline-offset: 2px;
+}
+
+/* Names to the left of the rail, on hover and focus only. */
 .clipLabel {
-  position: relative;
-  display: block;
-  overflow: hidden;
-  line-height: 24px;
+  position: absolute;
+  top: 50%;
+  right: calc(100% + 12px);
+  padding: 3px 7px;
+  border-radius: 6px;
+  background: rgb(18 19 22 / 0.86);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.08);
+  color: rgb(244 241 234 / 0.85);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.08em;
   white-space: nowrap;
-  text-overflow: ellipsis;
-  text-shadow: 0 1px 3px rgb(0 0 0 / 0.6);
   text-transform: uppercase;
+  opacity: 0;
+  translate: 6px -50%;
+  pointer-events: none;
+  transition:
+    opacity 0.25s ease,
+    translate 0.3s var(--ease-land);
+}
+
+.scrubber:hover .clipLabel,
+.scrubber:focus-within .clipLabel {
+  opacity: 1;
+  translate: 0 -50%;
 }
 
 /* Each clip in its section's light (see SceneLight). */
 .clip[data-key="intro"] {
-  --clip: linear-gradient(180deg, #1c3a30, #12261f);
+  --clip: linear-gradient(90deg, #1c3a30, #12261f);
 }
 
 .clip[data-key="how-it-works"] {
-  --clip: linear-gradient(90deg, #343a64, #6b5466 55%, #b98a6a);
+  --clip: linear-gradient(180deg, #343a64, #6b5466 55%, #b98a6a);
 }
 
 .clip[data-key="use-cases"] {
-  --clip: linear-gradient(90deg, #4b4a5c 0 16.6%, #5a4436 0 33.3%, #24414d 0 50%, #2c4a6a 0 66.6%, #3a4a78 0 83.3%, #1f4a3a 0);
+  --clip: linear-gradient(180deg, #4b4a5c 0 16.6%, #5a4436 0 33.3%, #24414d 0 50%, #2c4a6a 0 66.6%, #3a4a78 0 83.3%, #1f4a3a 0);
 }
 
 .clip[data-key="download"] {
-  --clip: linear-gradient(90deg, #12805b, #2fae82);
+  --clip: linear-gradient(180deg, #12805b, #2fae82);
 }
 
-/* The playhead. */
+/* The playhead: a mint bar across the rail. */
 .head {
   position: absolute;
-  top: -7px;
-  bottom: -7px;
-  left: calc(var(--pos) * 100%);
-  width: 2px;
-  margin-left: -1px;
+  top: calc(var(--pos) * 100%);
+  left: -6px;
+  right: -6px;
+  height: 2px;
+  margin-top: -1px;
   border-radius: 2px;
   background: var(--soft-mint);
   box-shadow: 0 0 10px var(--soft-mint);
@@ -168,14 +135,56 @@
 .head::before {
   content: "";
   position: absolute;
-  top: -1px;
-  left: 50%;
-  width: 8px;
-  height: 8px;
-  border-radius: 2px;
+  top: 50%;
+  right: -4px;
+  width: 7px;
+  height: 7px;
+  border-radius: 1.5px;
   background: var(--soft-mint);
-  translate: -50% 0;
+  translate: 0 -50%;
   rotate: 45deg;
+}
+
+/* Where the playhead is, on hover and focus. */
+.tag {
+  position: absolute;
+  top: 50%;
+  right: calc(100% + 10px);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 9px;
+  border-radius: 7px;
+  background: rgb(18 19 22 / 0.9);
+  box-shadow:
+    0 0 0 1px rgb(95 224 176 / 0.35),
+    0 10px 30px -10px rgb(0 0 0 / 0.9);
+  color: var(--paper);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+  text-transform: uppercase;
+  opacity: 0;
+  translate: 6px -50%;
+  transition:
+    opacity 0.25s ease,
+    translate 0.3s var(--ease-land);
+}
+
+.scrubber:hover .tag,
+.scrubber:focus-within .tag {
+  opacity: 1;
+  translate: 0 -50%;
+}
+
+/* While naming the clips, the tag would cover them: it steps aside. */
+.scrubber:hover .tag {
+  right: calc(100% + 120px);
+}
+
+.tagIndex {
+  color: var(--soft-mint);
 }
 
 .code {
@@ -183,48 +192,18 @@
   font-variant-numeric: tabular-nums;
 }
 
-@keyframes roll {
-  from {
-    opacity: 0;
-    translate: 0 6px;
-  }
-}
-
-@keyframes blink {
-  50% {
-    opacity: 0.3;
-  }
-}
-
-@media (max-width: 640px) {
+/* No margin to stand in on smaller screens. */
+@media (max-width: 1024px) {
   .scrubber {
-    gap: 10px;
-    bottom: 12px;
-    height: 44px;
-    padding: 0 12px;
-  }
-
-  .nowLabel {
-    min-width: 0;
-    max-width: 11ch;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .clipLabel,
-  .code {
     display: none;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .scrubber,
-  .clip {
+  .clip,
+  .clipLabel,
+  .tag {
     transition: none;
-  }
-
-  .rec,
-  .nowLabel {
-    animation: none;
   }
 }
