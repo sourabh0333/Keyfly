@@ -241,20 +241,15 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
   - **The self-running demo:** until a switch is touched, each decision in turn tries its other options and returns, every 1.7s, while on screen and not hovered or focused. Reduced motion is read with `useSyncExternalStore`.
   - **Narrow screens:** below 900px the inspector moves under the viewer, with its rows in 2 columns, then 1.
   - **Copy:** `yourCall`, PLACEHOLDER until the team confirms which decisions Keyfly exposes.
-- **One edit, every format** (`src/components/every-format/`, added 2026-10-31): "One edit. *Every screen.*" Heading laid out like Use cases; captioned "Illustrative interface". Dropped before it, as not unique or well structured enough: an export window (crop plus list) and four screens in a row.
-  - **`Reframe`** (client): **one frame that morphs between the formats as the page scrolls**, on a design canvas, beside the formats on a rail.
-    - **Pinning:** the track (`data-live`, 100svh plus 60svh per format) pins the stage, and the scroll moves `pos` through 16:9 → 9:16 → 1:1 → 4:5. `detent()` rests on each format for the middle half of its stretch.
-    - **The frame:** its size is interpolated between the two formats either side of `pos`, fitted to the canvas (90% wide, 80% tall), with a mint edge.
-    - **Inside it:** the 16:9 cut stays centred on its subject (the sun, 66% across) as far as the edges allow, with a dashed tracking reticle; the captions re-flow, sized from the frame.
-    - **Design-tool details:**
-      - a dot-grid canvas;
-      - dashed outlines of all four shapes (the one in play mint);
-      - corner handles;
-      - measurement lines along the top and right with live pixel counts (1920 → 1080 …, interpolated);
-      - the chrome readout shows "W × H" while morphing and the ratio at rest.
-    - **The rail (left):** the four formats like How it works' steps (big mono ratio, "01 · Widescreen", use and size); the rail fills to `--p`. Clicking a format scrolls to its stop.
-    - **Fallback:** where the stage can't pin (content + 96px > the window's height) or with reduced motion, it moves on every 2.8s with an eased tween (reduced motion: waits for a click and jumps).
-  - **Below 960px:** the formats become one row of ratios above the window; it still pins on phones.
+- **One edit, every format** (`src/components/every-format/`, added 2026-10-31): "One edit. *Every screen.*" Heading laid out like Use cases; captioned "Illustrative interface". Dropped before it: an export window, four screens in a row, and a scroll-driven reframe. The team then picked the 3D carousel from three new UIs.
+  - **`Carousel`** (client): the formats as frames on a curved 3D carousel (`perspective` on `.ring`).
+    - **The frames:** each one is the same cut at its own shape. Each slide is placed by `--d`, its signed distance from the front (a float while turning): `translateX(d × --gap)`, pushed back by `--dist` and turned by `rotateY(d × −38°)`. It fades past one step away.
+    - **The front frame** is lit mint and playing; the others pause. Inside every frame, the 16:9 cut is centred on its subject (66% across, clamped to the edges) and the captions re-flow (`cqw`/`cqh`). A ratio chip sits in the corner, and a pool of mint light sits on the floor.
+    - **Beneath:** prev and next arrows around the front frame's ratio (big mono, mint gradient), "01 Widescreen", and size and use. Then dots, the front one a bar that fills while it waits, then the hint "Drag, or use the arrows".
+  - **Turning:** by drag (the pointer is captured after 6px, then it settles on the nearest frame), the arrows, the ← → keys, clicking a side frame or a dot, and by itself every 3.2s while on screen and not held. Turns ease over 850ms, around the ring the short way.
+  - **Reduced motion:** read with `useSyncExternalStore`; it never turns by itself and turns are instant.
+  - **Sizing:** frames are as tall as `--h` allows but never wider than the screen (`min(--h, (100vw − gutters) / ratio)`), so 16:9 fits on phones.
+  - **Gotcha:** don't name a custom property `--a`. The prompt box registers `--a` as an `<angle>`, which turned a distance into "0deg" and silently invalidated the whole transform.
   - **Copy:** `everyFormat` (formats with pixel sizes), PLACEHOLDER until the team confirms Keyfly's export options.
 - **Use cases** (`src/components/use-cases/`, added 2026-10-31, redesigned four times the same day): the six prompt-box presets on a **jog wheel**, the dial editors spin to move through footage. Captioned "Illustrative previews". It is not pinned, so it fits any height. Earlier versions were dropped:
   - a pinned reel (broke on short laptop screens);

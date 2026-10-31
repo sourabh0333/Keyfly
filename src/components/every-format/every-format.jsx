@@ -1,12 +1,12 @@
 import { everyFormat } from "@/content/home";
 import wipe from "@/components/scene/wipe.module.css";
 import { PauseOffscreen } from "@/components/pause-offscreen";
-import { Reframe } from "./reframe";
+import { Carousel } from "./carousel";
 import styles from "./every-format.module.css";
 
 /**
- * "One edit, every format": one frame that morphs between the formats as
- * the page scrolls, on a design canvas (see Reframe).
+ * "One edit, every format": the same cut in every shape, on a curved 3D
+ * carousel (see Carousel).
  */
 export function EveryFormat() {
   const { eyebrow, title, lead, note, ...exportWindow } = everyFormat;
@@ -33,7 +33,7 @@ export function EveryFormat() {
           <p className={styles.lead}>{lead}</p>
         </div>
 
-        <Reframe {...exportWindow} />
+        <Carousel {...exportWindow} />
 
         <p className={styles.footnote}>{note}</p>
       </div>

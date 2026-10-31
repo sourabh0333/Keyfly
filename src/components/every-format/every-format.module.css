@@ -1,10 +1,8 @@
 /*
- * "One edit, every format": Reframe, one frame on a design canvas that
- * morphs between the formats as the page scrolls (the stage pins while
- * .track has data-live), beside the formats on a rail. The window matches
- * "You make the calls". Reframe sets the frame's size, the source's offset
- * and the measurements inline, --p (0–1) on the list, and data-on on the
- * format in play (row and outline).
+ * "One edit, every format": the formats on a curved 3D carousel. Carousel
+ * sets --d (each frame's signed distance from the front, a float while it
+ * turns), --dist (its absolute value) and --r (its ratio) on every slide,
+ * data-on on the front one, and data-auto while it turns by itself.
  */
 .section {
   position: relative;
@@ -80,301 +78,114 @@
   text-align: right;
 }
 
-/* ---------- Pinning ---------- */
+/* ---------- The carousel ---------- */
 
-.track {
-  position: relative;
-}
-
-.track[data-live] {
-  height: calc(100svh + (var(--count) - 1) * 60svh);
-}
-
-.track[data-live] .pin {
-  position: sticky;
-  top: 0;
-  height: 100svh;
-  padding-top: clamp(64px, 10vh, 84px);
-}
-
-.stage {
+.carousel {
+  --h: min(clamp(250px, 34vw, 430px), 50svh);
+  --gap: calc(var(--h) * 1.25);
   display: grid;
-  grid-template-columns: minmax(0, 0.62fr) minmax(0, 1.38fr);
-  align-items: center;
-  gap: clamp(28px, 4vw, 64px);
+  justify-items: center;
+  gap: 18px;
+  outline: none;
 }
 
-/* ---------- The formats, on a rail ---------- */
+.carousel:focus-visible .slide[data-on] .screen {
+  box-shadow:
+    0 0 0 2px var(--soft-mint),
+    0 0 0 6px rgb(95 224 176 / 0.25);
+}
 
-.list {
-  --p: 0;
+.ring {
   position: relative;
-  display: grid;
-  gap: 4px;
-  margin: 0;
-  padding: 0 0 0 28px;
-  list-style: none;
+  width: 100%;
+  height: calc(var(--h) + 70px);
+  overflow-x: clip;
+  perspective: 1400px;
+  perspective-origin: 50% 40%;
+  cursor: grab;
+  touch-action: pan-y;
+  user-select: none;
 }
 
-.rail {
-  position: absolute;
-  top: 14px;
-  bottom: 52px;
-  left: 4px;
-  width: 1px;
-  background: rgb(244 241 234 / 0.12);
+.carousel[data-dragging] .ring {
+  cursor: grabbing;
 }
 
-.railFill {
-  position: absolute;
-  inset: 0;
-  background: var(--soft-mint);
-  box-shadow: 0 0 10px rgb(95 224 176 / 0.6);
-  transform-origin: top;
-  scale: 1 var(--p);
-}
-
-.railFill::after {
-  content: "";
+/* A pool of light on the floor under the front frame. */
+.floor {
   position: absolute;
   left: 50%;
-  bottom: -5px;
-  width: 9px;
-  height: 9px;
-  margin-left: -4.5px;
-  border-radius: 50%;
-  background: var(--soft-mint);
-  box-shadow: 0 0 14px var(--soft-mint);
-  scale: 1 calc(1 / max(var(--p), 0.001));
-  transform-origin: bottom;
+  bottom: 0;
+  width: min(80%, calc(var(--h) * 2.2));
+  height: 70px;
+  translate: -50% 0;
+  background: radial-gradient(50% 50% at 50% 50%, rgb(95 224 176 / 0.22), transparent 70%);
+  pointer-events: none;
 }
 
-.itemButton {
-  display: grid;
-  grid-template-columns: calc(clamp(1.25rem, 0.9rem + 1vw, 1.75rem) * 2.7) minmax(0, 1fr);
-  align-items: center;
-  gap: 16px;
-  width: 100%;
-  padding: 12px 0;
+/* Each frame: placed by its distance from the front, turned away and
+   pushed back the further it is. */
+.slide {
+  position: absolute;
+  top: calc(var(--h) / 2 + 10px);
+  left: 50%;
+  /* As tall as the carousel allows, but never wider than the screen. */
+  height: min(var(--h), calc((100vw - 2 * var(--gutter) - 8px) / var(--r)));
+  aspect-ratio: var(--r);
+  padding: 0;
   border: 0;
   background: none;
-  color: inherit;
-  font: inherit;
-  text-align: left;
-  opacity: 0.38;
+  transform: translate(-50%, -50%) translateX(calc(var(--d) * var(--gap))) translateZ(calc(var(--dist) * -240px)) rotateY(calc(var(--d) * -38deg));
   cursor: pointer;
-  transition: opacity 0.4s ease;
+  will-change: transform, opacity;
 }
 
-.itemButton:hover {
-  opacity: 0.7;
+.slide[data-on] {
+  cursor: inherit;
 }
 
-.item[data-on] .itemButton {
-  opacity: 1;
-}
-
-.itemButton:focus-visible {
-  outline: 2px solid var(--soft-mint);
-  outline-offset: 4px;
-  border-radius: 6px;
-}
-
-.itemRatio {
-  font-family: var(--font-mono-stack);
-  font-size: clamp(1.25rem, 0.9rem + 1vw, 1.75rem);
-  font-weight: 600;
-  letter-spacing: -0.04em;
-}
-
-.item[data-on] .itemRatio {
-  color: var(--soft-mint);
-  text-shadow: 0 0 18px rgb(95 224 176 / 0.45);
-}
-
-.itemText {
-  display: grid;
-  gap: 2px;
-  min-width: 0;
-}
-
-.itemName {
-  font-size: clamp(1rem, 0.9rem + 0.3vw, 1.125rem);
-  font-weight: 560;
-  letter-spacing: -0.02em;
-}
-
-.itemUse {
-  overflow: hidden;
-  color: rgb(244 241 234 / 0.55);
-  font-size: 0.8125rem;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-
-.hint {
-  margin-top: 18px;
-  color: rgb(244 241 234 / 0.38);
-  font-family: var(--font-mono-stack);
-  font-size: 0.625rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-
-/* ---------- The window and its canvas ---------- */
-
-.window {
-  min-width: 0;
-  overflow: hidden;
-  border-radius: var(--radius-window);
-  background: #121316;
-  box-shadow:
-    0 0 0 1px rgb(244 241 234 / 0.09),
-    0 1px 0 rgb(244 241 234 / 0.07) inset,
-    0 40px 100px -40px rgb(0 0 0 / 0.95),
-    0 0 90px -40px rgb(95 224 176 / 0.3);
-  font-size: 12px;
-}
-
-.chrome {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  align-items: center;
-  height: 36px;
-  padding: 0 14px;
-  border-bottom: 1px solid rgb(244 241 234 / 0.06);
-  background: #18191d;
-}
-
-.dots {
-  display: flex;
-  gap: 6px;
-}
-
-.dots i {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: rgb(244 241 234 / 0.14);
-}
-
-.file {
-  color: rgb(244 241 234 / 0.85);
-  font-weight: 560;
-}
-
-.fileMuted {
-  color: rgb(244 241 234 / 0.4);
-  font-weight: 450;
-}
-
-.readout {
-  justify-self: end;
-  padding: 2px 8px;
-  border-radius: 6px;
-  background: rgb(95 224 176 / 0.12);
-  color: var(--soft-mint);
-  font-family: var(--font-mono-stack);
-  font-size: 11px;
-  font-variant-numeric: tabular-nums;
-}
-
-.readout[data-morphing] {
-  background: none;
-  color: var(--mint-text-dark);
-}
-
-/* A design canvas: a fine dot grid. */
-.canvas {
-  position: relative;
-  height: clamp(300px, 58svh, 560px);
-  overflow: hidden;
-  background:
-    radial-gradient(circle at 1px 1px, rgb(244 241 234 / 0.09) 1px, transparent 0) 0 0 / 18px 18px,
-    radial-gradient(60% 60% at 50% 50%, rgb(95 224 176 / 0.06), transparent 70%),
-    #0c0d0f;
-}
-
-/* Outlines of every shape, centred; the one in play lights. */
-.ghost {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  translate: -50% -50%;
-  border: 1px dashed rgb(244 241 234 / 0.14);
-  border-radius: 10px;
-  transition: border-color 0.4s ease;
-}
-
-.ghost[data-on] {
-  border-color: rgb(95 224 176 / 0.5);
-}
-
-/* The frame: sized from the scroll; the cut inside is clipped. */
-.frame {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  translate: -50% -50%;
-}
-
-.clip {
+/* The frame: the 16:9 cut framed around its subject (66% across), with
+   the captions re-flowed to its shape. */
+.screen {
   position: absolute;
   inset: 0;
   overflow: hidden;
-  border-radius: 10px;
+  border-radius: 14px;
   background: #050506;
   box-shadow:
+    0 0 0 1px rgb(244 241 234 / 0.12),
+    0 30px 70px -30px rgb(0 0 0 / 0.95);
+  container-type: size;
+  transition: box-shadow 0.4s ease;
+}
+
+.slide[data-on] .screen {
+  box-shadow:
     0 0 0 1.5px var(--soft-mint),
-    0 0 50px -12px rgb(95 224 176 / 0.55),
-    0 30px 80px -30px rgb(0 0 0 / 0.9);
+    0 0 60px -14px rgb(95 224 176 / 0.6),
+    0 40px 90px -30px rgb(0 0 0 / 0.95);
 }
 
 .source {
+  --sw: calc(100cqh * 16 / 9);
   position: absolute;
   top: 0;
   bottom: 0;
-}
-
-.subject {
-  position: absolute;
-  top: 56%;
-  width: 40px;
-  height: 40px;
-  translate: -50% -50%;
-}
-
-.subject::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border: 1.5px dashed rgb(95 224 176 / 0.85);
-  border-radius: 50%;
-  animation: spin 8s linear infinite;
-}
-
-.subject i {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 6px;
-  height: 6px;
-  margin: -3px 0 0 -3px;
-  border-radius: 50%;
-  background: var(--soft-mint);
-  box-shadow: 0 0 8px var(--soft-mint);
+  left: clamp(calc(100cqw - var(--sw)), calc(50cqw - var(--sw) * 0.66), 0px);
+  width: var(--sw);
 }
 
 .captions {
   position: absolute;
-  left: 7%;
-  right: 7%;
+  left: 8%;
+  right: 8%;
   bottom: 9%;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 0 0.3em;
   color: #fff;
+  font-size: min(7cqw, 5.6cqh);
   font-weight: 760;
   letter-spacing: -0.01em;
   line-height: 1.2;
@@ -391,106 +202,157 @@
   text-shadow: none;
 }
 
-/* Corner handles, as on a design tool's selection. */
-.handle {
+.chip {
   position: absolute;
-  z-index: 1;
-  width: 9px;
-  height: 9px;
-  border: 1.5px solid var(--soft-mint);
-  border-radius: 2px;
-  background: #0c0d0f;
+  top: 10px;
+  left: 10px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgb(11 11 13 / 0.75);
+  color: rgb(244 241 234 / 0.85);
+  font-family: var(--font-mono-stack);
+  font-size: 11px;
+  font-weight: 600;
 }
 
-.handle[data-c="tl"] {
-  top: -4px;
-  left: -4px;
+.slide[data-on] .chip {
+  color: var(--soft-mint);
+  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.5);
 }
 
-.handle[data-c="tr"] {
-  top: -4px;
-  right: -4px;
+/* ---------- Beneath: the front frame's details ---------- */
+
+.caption {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(16px, 4vw, 48px);
+  width: min(560px, 100%);
 }
 
-.handle[data-c="bl"] {
-  bottom: -4px;
-  left: -4px;
+.spec {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  text-align: center;
+  animation: rise 0.45s var(--ease-land);
 }
 
-.handle[data-c="br"] {
-  right: -4px;
-  bottom: -4px;
+.specRatio {
+  background: linear-gradient(100deg, var(--mint-text-dark), #eafff6 50%, var(--soft-mint));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-family: var(--font-mono-stack);
+  font-size: clamp(2rem, 1.4rem + 2vw, 3rem);
+  font-weight: 600;
+  letter-spacing: -0.05em;
+  line-height: 1;
 }
 
-/* Measurement lines along the top and the right, with live counts. */
-.measureX,
-.measureY {
-  position: absolute;
+.specName {
+  font-size: 1.0625rem;
+  font-weight: 560;
+  letter-spacing: -0.02em;
+}
+
+.specName span {
+  margin-right: 6px;
+  color: var(--soft-mint);
+  font-family: var(--font-mono-stack);
+  font-size: 0.75rem;
+}
+
+.specMeta {
+  color: rgb(244 241 234 / 0.55);
+  font-family: var(--font-mono-stack);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+}
+
+.arrow {
   display: grid;
   place-items: center;
-  color: var(--mint-text-dark);
-  font-family: var(--font-mono-stack);
-  font-size: 10.5px;
-  font-variant-numeric: tabular-nums;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: rgb(244 241 234 / 0.05);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.12) inset;
+  color: var(--paper);
+  cursor: pointer;
+  transition:
+    background-color 0.25s ease,
+    box-shadow 0.25s ease;
 }
 
-.measureX {
-  top: -22px;
-  left: 0;
-  right: 0;
-  height: 9px;
-  border-inline: 1px solid rgb(95 224 176 / 0.6);
-  background: linear-gradient(rgb(95 224 176 / 0.6), rgb(95 224 176 / 0.6)) 0 50% / 100% 1px no-repeat;
+.arrow:hover {
+  background: rgb(95 224 176 / 0.12);
+  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.5) inset;
 }
 
-.measureY {
-  top: 0;
-  bottom: 0;
-  right: -22px;
-  width: 9px;
-  border-block: 1px solid rgb(95 224 176 / 0.6);
-  background: linear-gradient(rgb(95 224 176 / 0.6), rgb(95 224 176 / 0.6)) 50% 0 / 1px 100% no-repeat;
+.arrow:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 3px;
 }
 
-.measureX b,
-.measureY b {
-  padding: 1px 6px;
-  border-radius: 4px;
-  background: #0c0d0f;
-  font-weight: 500;
+/* Dots: the front one is a bar that fills while it waits to turn. */
+.dots {
+  display: flex;
+  gap: 8px;
 }
 
-.measureY b {
-  rotate: 90deg;
+.dot {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
 }
 
-.tracked {
-  position: absolute;
-  bottom: 14px;
-  left: 14px;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 9px;
-  border-radius: 7px;
-  background: rgb(11 11 13 / 0.78);
-  color: rgb(244 241 234 / 0.8);
-  font-family: var(--font-mono-stack);
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.tracked i {
+.dot i {
+  position: relative;
   width: 6px;
   height: 6px;
-  border-radius: 50%;
-  background: var(--soft-mint);
-  box-shadow: 0 0 8px var(--soft-mint);
+  overflow: hidden;
+  border-radius: 6px;
+  background: rgb(244 241 234 / 0.25);
+  transition: width 0.35s var(--ease-land);
 }
 
-.stage[data-paused] .subject::before {
-  animation-play-state: paused;
+.dot[aria-pressed="true"] i {
+  width: 28px;
+  background: rgb(95 224 176 / 0.25);
+}
+
+.dot[aria-pressed="true"] i::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--soft-mint);
+  transform-origin: left;
+  scale: 1 1;
+}
+
+.carousel[data-auto] .dot[aria-pressed="true"] i::after {
+  animation: fill 3.2s linear both;
+}
+
+.dot:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.hint {
+  color: rgb(244 241 234 / 0.35);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
 .footnote {
@@ -503,47 +365,20 @@
   text-transform: uppercase;
 }
 
-@keyframes spin {
-  to {
-    rotate: 360deg;
+@keyframes fill {
+  from {
+    scale: 0 1;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    translate: 0 8px;
   }
 }
 
 /* ---------- Smaller screens ---------- */
-
-/* The formats become one row above the window. */
-@media (max-width: 960px) {
-  .stage {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 18px;
-  }
-
-  .list {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 8px;
-    padding: 0;
-  }
-
-  .rail,
-  .hint,
-  .itemUse {
-    display: none;
-  }
-
-  .itemButton {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 2px;
-    padding: 0;
-  }
-
-  .itemName {
-    font-size: 0.8125rem;
-  }
-
-  .canvas {
-    height: clamp(280px, 52svh, 460px);
-  }
-}
 
 @media (max-width: 860px) {
   .head {
@@ -566,22 +401,29 @@
 }
 
 @media (max-width: 560px) {
-  .itemName {
-    display: none;
+  .carousel {
+    --h: 280px;
+    --gap: calc(var(--h) * 0.95);
   }
 
-  .tracked {
+  .arrow {
+    width: 38px;
+    height: 38px;
+  }
+
+  .hint {
     display: none;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .subject::before {
+  .spec,
+  .carousel[data-auto] .dot[aria-pressed="true"] i::after {
     animation: none;
   }
 
-  .ghost,
-  .itemButton {
+  .screen,
+  .dot i {
     transition: none;
   }
 }
