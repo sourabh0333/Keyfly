@@ -105,6 +105,15 @@ export const download = {
   eyebrow: "Download",
   title: [{ text: "Land Keyfly" }, { text: "on your desktop.", accent: true }],
   lead: "Keyfly runs on macOS, Windows and Linux. Or open it in your browser, with nothing to install.",
+  // The installer window: its title, panel labels and the install's
+  // three stages on the timeline (they run with the flight).
+  window: {
+    title: "Install",
+    platformLabel: "Platform",
+    stepLabel: "Step",
+    trackLabel: "I1",
+    stages: ["Download", "Install", "Open"],
+  },
   detected: "Your system",
   soon: "Coming soon",
   browser: { label: "Open in your browser", href: siteConfig.appUrl },

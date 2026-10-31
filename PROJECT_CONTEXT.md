@@ -170,16 +170,21 @@ The root layout renders the skip link, `SiteHeader` and `<main id="main">`. Page
     - Product demo: a cursor click, then a zoom.
     - Podcast: a speaker, a waveform and a quote.
   - **Copy:** in `useCases` (content file), PLACEHOLDER.
-- **Download** (`src/components/download/`, added 2026-10-31): the closing call to action, centred: "Land Keyfly *on your desktop.*"
-  - **`Installer`** (client) animates the install moment from the brand kit's DMG art ("Drag Keyfly to Applications to install"):
-    - A copy of the unaltered app icon (`/brand/app-icon-macos.svg`) lifts off and flies one loop of a flight path, like the symbol's gesture, leaving a mint trail. It lands on the platform with a glow and a ring, and the icon appears in place.
-    - It runs on an SVG SMIL timeline (4.8s loop) that is paused off screen. With reduced motion the icon shows already in place.
-    - Destinations are generic shapes, never an operating system's own artwork: an Applications folder (macOS), a desktop monitor (Windows), an app grid (Linux).
-  - **Platform:** the visitor's system is detected (`useSyncExternalStore`) and marked "Your system". Tabs switch platform. Phones get "On a phone? Keyfly runs in the browser."
+- **Download** (`src/components/download/`, added 2026-10-31, restyled the same day to match the sections above): "Land Keyfly *on your desktop.*"
+  - **Heading:** laid out as in Use cases.
+  - **Installer window:** built like How it works (`#121316`, radius 26). It has:
+    - chrome ("Install · Keyfly", with "→ {target}" on the right);
+    - a viewer with the install flight;
+    - a side panel with PLATFORM tick rows ("Your system" tag), a STEP bubble and the buttons;
+    - a timeline, I1, whose playhead runs with the flight (same 4.8s loop) and lights Download (0–14%), Install (14–62%) and Open (62–100%).
+  - **The flight** (SVG SMIL, paused off screen): a copy of the unaltered app icon (`/brand/app-icon-macos.svg`) flies one loop of a flight path, like the symbol's gesture, and lands on the platform with a glow and a ring. It is based on the brand kit's DMG art ("Drag Keyfly to Applications to install"). With reduced motion it is shown finished.
+  - **Destinations:** generic shapes, never an operating system's own artwork: an Applications folder (macOS), a desktop monitor (Windows), an app grid (Linux).
+  - **Platform:** detected with `useSyncExternalStore`. Phones get "On a phone? Keyfly runs in the browser."
   - **Buttons:** each platform's `href` in `download.platforms` is `null` until its build is published.
     - With an `href`, the primary button is "Download for {platform}" and "Open in your browser" is secondary.
-    - Without one, "Open in your browser" (`app.keyfly.si`) is primary, beside a "{platform} · Coming soon" chip.
-  - **Copy:** the Windows and Linux steps are PLACEHOLDER. The macOS step and the "Keyfly.si is a Cevrynt Inc. product" line come from the brand kit's installer art.
+    - Without one, "Open in your browser" (`app.keyfly.si`) is primary, above a "{platform} · Coming soon" chip.
+  - **Narrow screens:** the panel moves under the viewer, and the platforms become a row of three.
+  - **Copy:** the Windows and Linux steps are PLACEHOLDER. The macOS step and the footnote ("Keyfly.si is a Cevrynt Inc. product") come from the installer art.
 - **Gotchas:**
   - **Grid overflow:** grid containers that hold the scrolling chip row need `grid-template-columns: minmax(0, 1fr)`. Without it the row's `max-content` width widens the page on mobile.
   - **No large blur:** never put a large `filter: blur()` in a 3D, animated stage.

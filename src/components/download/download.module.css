@@ -1,15 +1,17 @@
 /*
- * "Download": a centred close to the page. The installer stage borrows the
- * DMG window from the brand kit: Night with a mint glow in the middle.
+ * "Download", in the editor language of the sections above: the same
+ * heading as Use cases, then an installer window built like How it works
+ * (chrome, viewer, side panel, timeline). The viewer plays the install
+ * flight; the timeline's playhead runs with it.
  */
 .section {
   position: relative;
   isolation: isolate;
   padding: var(--section-pad) var(--gutter);
-  overflow: hidden;
-  background: var(--night);
+  background:
+    radial-gradient(50% 40% at 40% 70%, rgb(95 224 176 / 0.05), transparent 70%),
+    var(--night);
   color: var(--paper);
-  text-align: center;
 }
 
 /* Film grain, as everywhere on the page. */
@@ -24,25 +26,19 @@
   pointer-events: none;
 }
 
-/* A horizon of mint light behind the installer. */
-.section::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  bottom: -30%;
-  z-index: -2;
-  width: min(1400px, 140vw);
-  aspect-ratio: 2;
-  translate: -50% 0;
-  border-radius: 50%;
-  background: radial-gradient(closest-side, rgb(95 224 176 / 0.12), transparent);
+.inner {
+  max-width: 1320px;
+  margin: 0 auto;
 }
 
-.inner {
-  display: grid;
-  justify-items: center;
-  max-width: 1120px;
-  margin: 0 auto;
+/* ---------- Heading (as in Use cases) ---------- */
+
+.head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+  margin-bottom: clamp(32px, 5vw, 56px);
 }
 
 .eyebrow {
@@ -64,11 +60,11 @@
 }
 
 .title {
-  margin-top: 18px;
-  font-size: clamp(2.4rem, 1.2rem + 3.6vw, 4.75rem);
+  margin-top: 16px;
+  font-size: clamp(2.1rem, 1.1rem + 2.2vw, 3.4rem);
   font-weight: 560;
-  letter-spacing: -0.05em;
-  line-height: 0.98;
+  letter-spacing: -0.045em;
+  line-height: 1;
 }
 
 .plain,
@@ -90,86 +86,103 @@
 }
 
 .lead {
-  max-width: 46ch;
-  margin-top: 20px;
+  max-width: 34ch;
   color: rgb(244 241 234 / 0.62);
-  font-size: var(--text-lead);
+  font-size: 0.9375rem;
   line-height: 1.5;
+  text-align: right;
 }
 
-/* ---------- Installer ---------- */
+/* ---------- The installer window (as in How it works) ---------- */
 
-.installer {
-  display: grid;
-  justify-items: center;
-  width: 100%;
-  margin-top: clamp(36px, 5vw, 56px);
-  padding: clamp(14px, 2vw, 22px) clamp(14px, 2vw, 22px) clamp(24px, 3vw, 36px);
-  border-radius: 28px;
-  background:
-    radial-gradient(45% 55% at 50% 50%, rgb(95 224 176 / 0.1), transparent 75%),
-    linear-gradient(180deg, #17181c, #0e0f11);
+.window {
+  position: relative;
+  overflow: hidden;
+  border-radius: 26px;
+  background: #121316;
   box-shadow:
     0 0 0 1px rgb(244 241 234 / 0.08),
     0 1px 0 rgb(244 241 234 / 0.06) inset,
-    0 50px 120px -40px rgb(0 0 0 / 0.95);
+    0 40px 120px -40px rgb(0 0 0 / 0.95);
 }
 
-/* Platform switch. */
-.tabs {
-  display: inline-flex;
-  gap: 4px;
-  padding: 4px;
-  border-radius: 14px;
-  background: rgb(0 0 0 / 0.35);
-  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.07) inset;
-}
-
-.tab {
-  display: inline-flex;
+.chrome {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  gap: 8px;
-  height: 38px;
+  height: 40px;
   padding: 0 16px;
-  border: 0;
-  border-radius: 10px;
-  background: transparent;
-  color: rgb(244 241 234 / 0.6);
-  font: inherit;
-  font-size: 0.875rem;
+  border-bottom: 1px solid rgb(244 241 234 / 0.06);
+  background: #18191d;
+  font-size: 0.75rem;
+}
+
+.dots {
+  display: flex;
+  gap: 6px;
+}
+
+.dots i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgb(244 241 234 / 0.14);
+}
+
+.file {
+  color: rgb(244 241 234 / 0.85);
   font-weight: 560;
-  cursor: pointer;
-  transition:
-    background-color 0.3s ease,
-    color 0.3s ease;
 }
 
-.tab:hover {
-  color: var(--paper);
+.fileMuted {
+  color: rgb(244 241 234 / 0.4);
+  font-weight: 450;
 }
 
-.tab[aria-pressed="true"] {
-  background: rgb(244 241 234 / 0.09);
-  box-shadow: 0 1px 0 rgb(244 241 234 / 0.08) inset;
-  color: var(--paper);
-}
-
-.detected {
-  padding: 2px 6px;
-  border-radius: 5px;
-  background: rgb(95 224 176 / 0.14);
-  color: var(--soft-mint);
+.target {
+  justify-self: end;
+  color: var(--mint-text-dark);
   font-family: var(--font-mono-stack);
-  font-size: 0.625rem;
-  letter-spacing: 0.04em;
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
-/* The stage: SVG, so the flight scales with it. */
+.body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(260px, 26%, 320px);
+  border-bottom: 1px solid rgb(244 241 234 / 0.06);
+}
+
+/* Viewer: the install flight, on the DMG art's Night with a mint glow. */
+.viewer {
+  position: relative;
+  display: grid;
+  place-items: center;
+  padding: clamp(20px, 3vw, 40px) clamp(12px, 2vw, 28px);
+  background:
+    radial-gradient(45% 60% at 50% 50%, rgb(95 224 176 / 0.09), transparent 75%),
+    #0c0d0f;
+}
+
+/* Rule-of-thirds guides, as on the other viewers. */
+.viewer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(to right, transparent calc(33.33% - 0.5px), rgb(244 241 234 / 0.05) 33.33%, transparent calc(33.33% + 0.5px)),
+    linear-gradient(to right, transparent calc(66.66% - 0.5px), rgb(244 241 234 / 0.05) 66.66%, transparent calc(66.66% + 0.5px)),
+    linear-gradient(to bottom, transparent calc(33.33% - 0.5px), rgb(244 241 234 / 0.05) 33.33%, transparent calc(33.33% + 0.5px)),
+    linear-gradient(to bottom, transparent calc(66.66% - 0.5px), rgb(244 241 234 / 0.05) 66.66%, transparent calc(66.66% + 0.5px));
+}
+
 .stage {
+  position: relative;
   width: 100%;
-  max-width: 960px;
+  max-width: 900px;
   height: auto;
-  margin-top: clamp(8px, 2vw, 20px);
   overflow: visible;
 }
 
@@ -256,37 +269,135 @@
   stroke-linecap: round;
 }
 
+/* Side panel: platform, step, actions (as How it works' prompt panel). */
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+  padding: 18px;
+  border-left: 1px solid rgb(244 241 234 / 0.06);
+  background: #141518;
+}
+
+.panelLabel {
+  color: rgb(244 241 234 / 0.4);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.panelLabel:not(:first-child) {
+  margin-top: 8px;
+}
+
+.platforms {
+  display: grid;
+  gap: 4px;
+}
+
+.platform {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 40px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: rgb(244 241 234 / 0.62);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 560;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+.platform:hover {
+  background: rgb(244 241 234 / 0.04);
+  color: var(--paper);
+}
+
+.platform[aria-pressed="true"] {
+  background: #1e1f23;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.06) inset;
+  color: var(--paper);
+}
+
+/* The same tick as Keyfly's notes in How it works. */
+.tick {
+  position: relative;
+  flex: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.25) inset;
+}
+
+.platform[aria-pressed="true"] .tick {
+  background: rgb(95 224 176 / 0.18);
+  box-shadow: 0 0 0 1px var(--soft-mint) inset;
+}
+
+.platform[aria-pressed="true"] .tick::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 3.5px;
+  width: 4px;
+  height: 7px;
+  border: solid var(--soft-mint);
+  border-width: 0 1.5px 1.5px 0;
+  rotate: 45deg;
+}
+
+.detected {
+  margin-left: auto;
+  padding: 2px 6px;
+  border-radius: 5px;
+  background: rgb(95 224 176 / 0.14);
+  color: var(--soft-mint);
+  font-family: var(--font-mono-stack);
+  font-size: 0.5625rem;
+  letter-spacing: 0.04em;
+}
+
 .step {
-  min-height: 1.5em;
-  margin-top: 6px;
-  color: rgb(244 241 234 / 0.8);
-  font-size: 1rem;
+  padding: 10px 12px;
+  border-radius: 10px 10px 10px 3px;
+  background: #1e1f23;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.06) inset;
+  color: rgb(244 241 234 / 0.9);
+  font-size: 0.8125rem;
+  line-height: 1.5;
 }
 
 .actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  margin-top: 22px;
+  display: grid;
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 12px;
 }
 
+/* Buttons as "Try this prompt" in Use cases. */
 .primary,
-.secondary {
+.secondary,
+.soon {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  height: 50px;
-  padding: 0 20px 0 22px;
-  border-radius: 14px;
-  font-size: 0.9375rem;
+  justify-content: center;
+  gap: 8px;
+  height: 42px;
+  padding: 0 14px;
+  border-radius: 12px;
+  font-size: 0.875rem;
   font-weight: 620;
   text-decoration: none;
-  transition:
-    box-shadow 0.3s ease,
-    translate 0.3s var(--ease-land),
-    background-color 0.3s ease;
+  white-space: nowrap;
 }
 
 .primary {
@@ -295,12 +406,13 @@
   background: var(--soft-mint);
   box-shadow:
     0 1px 0 rgb(255 255 255 / 0.45) inset,
-    0 0 0 1px rgb(95 224 176 / 0.4),
-    0 12px 34px -12px rgb(95 224 176 / 0.8);
+    0 8px 24px -10px rgb(95 224 176 / 0.8);
   color: var(--mint-ink);
+  transition:
+    box-shadow 0.3s ease,
+    translate 0.3s var(--ease-land);
 }
 
-/* A sheen crosses the button on hover, as on the header's. */
 .primary::after {
   content: "";
   position: absolute;
@@ -313,8 +425,7 @@
 .primary:hover {
   box-shadow:
     0 1px 0 rgb(255 255 255 / 0.45) inset,
-    0 0 0 1px rgb(95 224 176 / 0.6),
-    0 14px 44px -10px rgb(95 224 176 / 0.95);
+    0 10px 34px -8px rgb(95 224 176 / 0.9);
   translate: 0 -1px;
 }
 
@@ -324,7 +435,7 @@
 
 .secondary {
   background: rgb(244 241 234 / 0.06);
-  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.12) inset;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.1) inset;
   color: var(--paper);
 }
 
@@ -333,15 +444,8 @@
 }
 
 .soon {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  height: 50px;
-  padding: 0 18px;
-  border-radius: 14px;
-  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.1) inset;
-  color: rgb(244 241 234 / 0.6);
-  font-size: 0.875rem;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.08) inset;
+  color: rgb(244 241 234 / 0.55);
   font-weight: 520;
 }
 
@@ -353,10 +457,160 @@
   animation: pulse 2s ease-in-out infinite;
 }
 
+/* ---------- Timeline: the install's three stages ---------- */
+
+.timeline {
+  display: grid;
+  gap: 6px;
+  padding: 0 18px 16px;
+  background: #101114;
+}
+
+.ruler {
+  height: 18px;
+  margin-left: 32px;
+  background:
+    repeating-linear-gradient(to right, rgb(244 241 234 / 0.3) 0 1px, transparent 1px 8.333%) 0 100% / 100% 8px no-repeat,
+    repeating-linear-gradient(to right, rgb(244 241 234 / 0.14) 0 1px, transparent 1px 2.0833%) 0 100% / 100% 4px no-repeat;
+}
+
+.track {
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  align-items: center;
+  gap: 10px;
+}
+
+.trackLabel {
+  color: rgb(244 241 234 / 0.4);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+}
+
+.lane {
+  position: relative;
+  display: grid;
+  grid-template-columns: 14fr 48fr 38fr;
+  gap: 3px;
+  height: 28px;
+}
+
+/* Each stage lights while the playhead is in it (same 4.8s as the flight:
+   lift 0–14%, flight 14–62%, landed 62–100%). */
+.clip {
+  display: block;
+  align-content: center;
+  line-height: 28px;
+  padding: 0 10px;
+  overflow: hidden;
+  border-radius: 6px;
+  background: rgb(244 241 234 / 0.05);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.1) inset;
+  color: rgb(244 241 234 / 0.5);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  animation: 4.8s steps(1) infinite;
+}
+
+.clip[data-i="0"] {
+  animation-name: litFirst;
+}
+
+.clip[data-i="1"] {
+  animation-name: litSecond;
+}
+
+.clip[data-i="2"] {
+  animation-name: litThird;
+}
+
+.playhead {
+  position: absolute;
+  top: -26px;
+  bottom: -4px;
+  left: 0;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 10px rgb(95 224 176 / 0.7);
+  animation: playhead 4.8s linear infinite;
+}
+
+.playhead::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  translate: -50% 0;
+  border-radius: 2px 2px 50% 50%;
+  background: var(--soft-mint);
+}
+
+/* With reduced motion the install is shown finished. */
+.playhead[data-still] {
+  left: 100%;
+  animation: none;
+}
+
+.window[data-paused] .clip,
+.window[data-paused] .playhead {
+  animation-play-state: paused;
+}
+
+/* ---------- Footnote ---------- */
+
 .note {
-  margin-top: 28px;
+  margin-top: 14px;
   color: rgb(244 241 234 / 0.38);
-  font-size: 0.8125rem;
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+@keyframes playhead {
+  to {
+    left: 100%;
+  }
+}
+
+@keyframes litFirst {
+  0% {
+    background: rgb(95 224 176 / 0.16);
+    box-shadow: 0 0 0 1px rgb(95 224 176 / 0.7) inset;
+    color: var(--soft-mint);
+  }
+  14% {
+    background: rgb(244 241 234 / 0.05);
+    box-shadow: 0 0 0 1px rgb(244 241 234 / 0.1) inset;
+    color: rgb(244 241 234 / 0.5);
+  }
+}
+
+@keyframes litSecond {
+  14% {
+    background: rgb(95 224 176 / 0.16);
+    box-shadow: 0 0 0 1px rgb(95 224 176 / 0.7) inset;
+    color: var(--soft-mint);
+  }
+  62% {
+    background: rgb(244 241 234 / 0.05);
+    box-shadow: 0 0 0 1px rgb(244 241 234 / 0.1) inset;
+    color: rgb(244 241 234 / 0.5);
+  }
+}
+
+@keyframes litThird {
+  62% {
+    background: rgb(95 224 176 / 0.16);
+    box-shadow: 0 0 0 1px rgb(95 224 176 / 0.7) inset;
+    color: var(--soft-mint);
+  }
 }
 
 @keyframes pulse {
@@ -366,16 +620,67 @@
   }
 }
 
-@media (max-width: 560px) {
-  .installer {
-    border-radius: 22px;
+/* ---------- Smaller screens ---------- */
+
+@media (max-width: 900px) {
+  .head {
+    display: grid;
+    gap: 14px;
   }
 
-  .tab {
-    padding: 0 11px;
+  .lead {
+    text-align: left;
   }
 
+  .plain,
+  .accent {
+    display: inline;
+  }
+
+  .title {
+    font-size: clamp(1.9rem, 1.2rem + 3vw, 2.75rem);
+  }
+
+  /* Viewer on top, the panel beneath it. */
+  .window {
+    border-radius: 20px;
+  }
+
+  .body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .panel {
+    border-top: 1px solid rgb(244 241 234 / 0.06);
+    border-left: 0;
+  }
+
+  .platforms {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .platform {
+    justify-content: center;
+    padding: 0 6px;
+  }
+
+  .platform .tick,
   .detected {
+    display: none;
+  }
+
+  .platform[aria-pressed="true"] {
+    color: var(--soft-mint);
+  }
+}
+
+@media (max-width: 560px) {
+  .chrome {
+    height: 34px;
+    padding: 0 12px;
+  }
+
+  .fileMuted {
     display: none;
   }
 
@@ -383,21 +688,26 @@
     font-size: 22px;
   }
 
-  .actions {
-    display: grid;
-    width: 100%;
+  .timeline {
+    padding: 0 12px 12px;
   }
 
-  .primary,
-  .secondary,
-  .soon {
-    justify-content: center;
+  .clip {
+    padding: 0 6px;
+    font-size: 0.625rem;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .soon i {
+  .soon i,
+  .clip {
     animation: none;
+  }
+
+  .clip[data-i="2"] {
+    background: rgb(95 224 176 / 0.16);
+    box-shadow: 0 0 0 1px rgb(95 224 176 / 0.7) inset;
+    color: var(--soft-mint);
   }
 
   .primary::after {
