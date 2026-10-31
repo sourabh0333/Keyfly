@@ -1,8 +1,10 @@
 /*
- * "One edit, every format": four screens, one cut, inside the same window
- * language as "You make the calls" (chrome, the screens, the timeline).
- * FourScreens sets --cols (the columns in proportion to the ratios) and
- * aria-pressed on the format in focus.
+ * "One edit, every format": Reframe, one frame on a design canvas that
+ * morphs between the formats as the page scrolls (the stage pins while
+ * .track has data-live), beside the formats on a rail. The window matches
+ * "You make the calls". Reframe sets the frame's size, the source's offset
+ * and the measurements inline, --p (0–1) on the list, and data-on on the
+ * format in play (row and outline).
  */
 .section {
   position: relative;
@@ -78,10 +80,151 @@
   text-align: right;
 }
 
-/* ---------- The window ---------- */
+/* ---------- Pinning ---------- */
+
+.track {
+  position: relative;
+}
+
+.track[data-live] {
+  height: calc(100svh + (var(--count) - 1) * 60svh);
+}
+
+.track[data-live] .pin {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  padding-top: clamp(64px, 10vh, 84px);
+}
+
+.stage {
+  display: grid;
+  grid-template-columns: minmax(0, 0.62fr) minmax(0, 1.38fr);
+  align-items: center;
+  gap: clamp(28px, 4vw, 64px);
+}
+
+/* ---------- The formats, on a rail ---------- */
+
+.list {
+  --p: 0;
+  position: relative;
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0 0 0 28px;
+  list-style: none;
+}
+
+.rail {
+  position: absolute;
+  top: 14px;
+  bottom: 52px;
+  left: 4px;
+  width: 1px;
+  background: rgb(244 241 234 / 0.12);
+}
+
+.railFill {
+  position: absolute;
+  inset: 0;
+  background: var(--soft-mint);
+  box-shadow: 0 0 10px rgb(95 224 176 / 0.6);
+  transform-origin: top;
+  scale: 1 var(--p);
+}
+
+.railFill::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -5px;
+  width: 9px;
+  height: 9px;
+  margin-left: -4.5px;
+  border-radius: 50%;
+  background: var(--soft-mint);
+  box-shadow: 0 0 14px var(--soft-mint);
+  scale: 1 calc(1 / max(var(--p), 0.001));
+  transform-origin: bottom;
+}
+
+.itemButton {
+  display: grid;
+  grid-template-columns: calc(clamp(1.25rem, 0.9rem + 1vw, 1.75rem) * 2.7) minmax(0, 1fr);
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  padding: 12px 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  opacity: 0.38;
+  cursor: pointer;
+  transition: opacity 0.4s ease;
+}
+
+.itemButton:hover {
+  opacity: 0.7;
+}
+
+.item[data-on] .itemButton {
+  opacity: 1;
+}
+
+.itemButton:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 4px;
+  border-radius: 6px;
+}
+
+.itemRatio {
+  font-family: var(--font-mono-stack);
+  font-size: clamp(1.25rem, 0.9rem + 1vw, 1.75rem);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+}
+
+.item[data-on] .itemRatio {
+  color: var(--soft-mint);
+  text-shadow: 0 0 18px rgb(95 224 176 / 0.45);
+}
+
+.itemText {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.itemName {
+  font-size: clamp(1rem, 0.9rem + 0.3vw, 1.125rem);
+  font-weight: 560;
+  letter-spacing: -0.02em;
+}
+
+.itemUse {
+  overflow: hidden;
+  color: rgb(244 241 234 / 0.55);
+  font-size: 0.8125rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.hint {
+  margin-top: 18px;
+  color: rgb(244 241 234 / 0.38);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* ---------- The window and its canvas ---------- */
 
 .window {
-  --pad: 14px;
+  min-width: 0;
   overflow: hidden;
   border-radius: var(--radius-window);
   background: #121316;
@@ -98,7 +241,7 @@
   grid-template-columns: 1fr auto 1fr;
   align-items: center;
   height: 36px;
-  padding: 0 var(--pad);
+  padding: 0 14px;
   border-bottom: 1px solid rgb(244 241 234 / 0.06);
   background: #18191d;
 }
@@ -125,67 +268,101 @@
   font-weight: 450;
 }
 
-.count {
+.readout {
   justify-self: end;
-  color: var(--mint-text-dark);
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: rgb(95 224 176 / 0.12);
+  color: var(--soft-mint);
   font-family: var(--font-mono-stack);
   font-size: 11px;
+  font-variant-numeric: tabular-nums;
 }
 
-/* ---------- Four screens, one row ---------- */
-
-/* Columns in proportion to the ratios (--cols, from the component), so
-   every screen comes out the same height with its bottom aligned. */
-.screens {
-  display: grid;
-  grid-template-columns: var(--cols);
-  align-items: end;
-  gap: clamp(12px, 1.6vw, 22px);
-  padding: clamp(18px, 2.4vw, 32px) var(--pad) clamp(16px, 2vw, 24px);
-  border-bottom: 1px solid rgb(244 241 234 / 0.06);
-  background: #0c0d0f;
-}
-
-.format {
-  display: grid;
-  gap: 14px;
-  min-width: 0;
-  padding: 0;
-  border: 0;
+.readout[data-morphing] {
   background: none;
-  color: inherit;
-  font: inherit;
-  text-align: left;
-  cursor: pointer;
+  color: var(--mint-text-dark);
 }
 
-.format:focus-visible {
-  outline: 2px solid var(--soft-mint);
-  outline-offset: 6px;
-  border-radius: 10px;
-}
-
-/* A screen at its ratio, framing the 16:9 source around the subject
-   (the sun, at 66% across) as far as the edges allow. */
-.screen {
+/* A design canvas: a fine dot grid. */
+.canvas {
   position: relative;
-  display: block;
-  aspect-ratio: var(--r);
+  height: clamp(300px, 58svh, 560px);
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 1px 1px, rgb(244 241 234 / 0.09) 1px, transparent 0) 0 0 / 18px 18px,
+    radial-gradient(60% 60% at 50% 50%, rgb(95 224 176 / 0.06), transparent 70%),
+    #0c0d0f;
+}
+
+/* Outlines of every shape, centred; the one in play lights. */
+.ghost {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+  border: 1px dashed rgb(244 241 234 / 0.14);
+  border-radius: 10px;
+  transition: border-color 0.4s ease;
+}
+
+.ghost[data-on] {
+  border-color: rgb(95 224 176 / 0.5);
+}
+
+/* The frame: sized from the scroll; the cut inside is clipped. */
+.frame {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  translate: -50% -50%;
+}
+
+.clip {
+  position: absolute;
+  inset: 0;
   overflow: hidden;
   border-radius: 10px;
   background: #050506;
-  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.1);
-  container-type: size;
-  transition: box-shadow 0.35s ease;
+  box-shadow:
+    0 0 0 1.5px var(--soft-mint),
+    0 0 50px -12px rgb(95 224 176 / 0.55),
+    0 30px 80px -30px rgb(0 0 0 / 0.9);
 }
 
 .source {
-  --sw: calc(100cqh * 16 / 9);
   position: absolute;
   top: 0;
   bottom: 0;
-  left: clamp(calc(100cqw - var(--sw)), calc(50cqw - var(--sw) * 0.66), 0px);
-  width: var(--sw);
+}
+
+.subject {
+  position: absolute;
+  top: 56%;
+  width: 40px;
+  height: 40px;
+  translate: -50% -50%;
+}
+
+.subject::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1.5px dashed rgb(95 224 176 / 0.85);
+  border-radius: 50%;
+  animation: spin 8s linear infinite;
+}
+
+.subject i {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  border-radius: 50%;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
 }
 
 .captions {
@@ -198,7 +375,6 @@
   justify-content: center;
   gap: 0 0.3em;
   color: #fff;
-  font-size: clamp(8px, min(8cqw, 6cqh), 20px);
   font-weight: 760;
   letter-spacing: -0.01em;
   line-height: 1.2;
@@ -215,235 +391,110 @@
   text-shadow: none;
 }
 
-.corners {
+/* Corner handles, as on a design tool's selection. */
+.handle {
   position: absolute;
-  inset: 6px;
-  --c: var(--soft-mint);
-  background:
-    linear-gradient(var(--c), var(--c)) 0 0 / 12px 2px no-repeat,
-    linear-gradient(var(--c), var(--c)) 0 0 / 2px 12px no-repeat,
-    linear-gradient(var(--c), var(--c)) 100% 0 / 12px 2px no-repeat,
-    linear-gradient(var(--c), var(--c)) 100% 0 / 2px 12px no-repeat,
-    linear-gradient(var(--c), var(--c)) 0 100% / 12px 2px no-repeat,
-    linear-gradient(var(--c), var(--c)) 0 100% / 2px 12px no-repeat,
-    linear-gradient(var(--c), var(--c)) 100% 100% / 12px 2px no-repeat,
-    linear-gradient(var(--c), var(--c)) 100% 100% / 2px 12px no-repeat;
-  opacity: 0;
-  transition: opacity 0.35s ease;
+  z-index: 1;
+  width: 9px;
+  height: 9px;
+  border: 1.5px solid var(--soft-mint);
+  border-radius: 2px;
+  background: #0c0d0f;
 }
 
-.format[aria-pressed="true"] .screen {
-  box-shadow:
-    0 0 0 1.5px var(--soft-mint),
-    0 0 40px -10px rgb(95 224 176 / 0.6);
+.handle[data-c="tl"] {
+  top: -4px;
+  left: -4px;
 }
 
-.format[aria-pressed="true"] .corners {
-  opacity: 1;
+.handle[data-c="tr"] {
+  top: -4px;
+  right: -4px;
 }
 
-/* The details, in the same column as the screen. */
-.spec {
-  display: grid;
-  gap: 3px;
-  padding-top: 12px;
-  border-top: 1px solid rgb(244 241 234 / 0.1);
-  transition: border-color 0.35s ease;
+.handle[data-c="bl"] {
+  bottom: -4px;
+  left: -4px;
 }
 
-.format[aria-pressed="true"] .spec {
-  border-color: var(--soft-mint);
+.handle[data-c="br"] {
+  right: -4px;
+  bottom: -4px;
 }
 
-.specTop {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.ratio {
-  color: var(--paper);
-  font-family: var(--font-mono-stack);
-  font-size: clamp(1rem, 0.8rem + 0.5vw, 1.25rem);
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  transition: color 0.35s ease;
-}
-
-.format[aria-pressed="true"] .ratio {
-  color: var(--soft-mint);
-}
-
-.specIndex {
-  color: rgb(244 241 234 / 0.3);
-  font-family: var(--font-mono-stack);
-  font-size: 10px;
-}
-
-.name {
-  color: rgb(244 241 234 / 0.9);
-  font-size: 12.5px;
-  font-weight: 560;
-}
-
-.size,
-.use {
-  overflow: hidden;
-  color: rgb(244 241 234 / 0.45);
-  font-size: 11px;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-
-.size {
-  font-family: var(--font-mono-stack);
-  font-size: 10.5px;
-}
-
-.ready {
-  margin-top: 4px;
-  color: var(--soft-mint);
-  font-family: var(--font-mono-stack);
-  font-size: 9.5px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-/* ---------- Timeline: the one edit ---------- */
-
-.timeline {
-  position: relative;
-  display: grid;
-  gap: 5px;
-  padding: 28px var(--pad) var(--pad);
-  overflow-x: clip;
-  background: #101114;
-}
-
-.timelineLabel {
+/* Measurement lines along the top and the right, with live counts. */
+.measureX,
+.measureY {
   position: absolute;
-  top: 8px;
-  left: calc(var(--pad) + 30px);
-  color: rgb(244 241 234 / 0.45);
-  font-family: var(--font-mono-stack);
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.ruler {
-  height: 12px;
-  margin-left: 30px;
-  background:
-    repeating-linear-gradient(to right, rgb(244 241 234 / 0.3) 0 1px, transparent 1px 8.333%) 0 100% / 100% 8px no-repeat,
-    repeating-linear-gradient(to right, rgb(244 241 234 / 0.14) 0 1px, transparent 1px 2.0833%) 0 100% / 100% 4px no-repeat;
-}
-
-.lane {
-  display: grid;
-  grid-template-columns: 22px minmax(0, 1fr);
-  align-items: center;
-  gap: 8px;
-}
-
-.laneLabel {
-  color: rgb(244 241 234 / 0.4);
-  font-family: var(--font-mono-stack);
-  font-size: 10px;
-}
-
-.laneBody {
-  position: relative;
-  height: 22px;
-  border-radius: 5px;
-  background: rgb(244 241 234 / 0.025);
-}
-
-.clip,
-.caption {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  border-radius: 5px;
-}
-
-.clip {
-  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.55) inset;
-}
-
-.clip[data-n="0"] {
-  background: #4f6b8c;
-}
-
-.clip[data-n="1"] {
-  background: #8a5a78;
-}
-
-.clip[data-n="2"] {
-  background: #6aa3b3;
-}
-
-.caption {
-  top: 5px;
-  bottom: 5px;
-  background: rgb(244 241 234 / 0.18);
-}
-
-/* The outputs: four from the one cut, the one in focus lit. */
-.outs {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 4px;
-  background: none;
-}
-
-.outs i {
   display: grid;
   place-items: center;
-  border-radius: 5px;
-  background: rgb(95 224 176 / 0.06);
-  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.25) inset;
-  color: rgb(95 224 176 / 0.7);
+  color: var(--mint-text-dark);
+  font-family: var(--font-mono-stack);
+  font-size: 10.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.measureX {
+  top: -22px;
+  left: 0;
+  right: 0;
+  height: 9px;
+  border-inline: 1px solid rgb(95 224 176 / 0.6);
+  background: linear-gradient(rgb(95 224 176 / 0.6), rgb(95 224 176 / 0.6)) 0 50% / 100% 1px no-repeat;
+}
+
+.measureY {
+  top: 0;
+  bottom: 0;
+  right: -22px;
+  width: 9px;
+  border-block: 1px solid rgb(95 224 176 / 0.6);
+  background: linear-gradient(rgb(95 224 176 / 0.6), rgb(95 224 176 / 0.6)) 50% 0 / 1px 100% no-repeat;
+}
+
+.measureX b,
+.measureY b {
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: #0c0d0f;
+  font-weight: 500;
+}
+
+.measureY b {
+  rotate: 90deg;
+}
+
+.tracked {
+  position: absolute;
+  bottom: 14px;
+  left: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 9px;
+  border-radius: 7px;
+  background: rgb(11 11 13 / 0.78);
+  color: rgb(244 241 234 / 0.8);
   font-family: var(--font-mono-stack);
   font-size: 10px;
-  font-style: normal;
-  transition:
-    background-color 0.3s ease,
-    color 0.3s ease;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
-.outs i[data-on] {
+.tracked i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
   background: var(--soft-mint);
-  color: var(--mint-ink);
+  box-shadow: 0 0 8px var(--soft-mint);
 }
 
-.rail {
-  position: absolute;
-  top: 26px;
-  bottom: var(--pad);
-  left: calc(var(--pad) + 30px);
-  right: var(--pad);
-  pointer-events: none;
-  animation: play 9s linear infinite;
-}
-
-.window[data-paused] .rail {
+.stage[data-paused] .subject::before {
   animation-play-state: paused;
 }
 
-.playhead {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  width: 2px;
-  background: var(--soft-mint);
-  box-shadow: 0 0 10px rgb(95 224 176 / 0.7);
-}
-
 .footnote {
-  margin-top: 12px;
+  margin-top: 14px;
   color: rgb(244 241 234 / 0.38);
   font-family: var(--font-mono-stack);
   font-size: 0.6875rem;
@@ -452,34 +503,45 @@
   text-transform: uppercase;
 }
 
-@keyframes play {
+@keyframes spin {
   to {
-    translate: 100% 0;
+    rotate: 360deg;
   }
 }
 
 /* ---------- Smaller screens ---------- */
 
-/* Two by two: each screen keeps its shape at one height, centred over its
-   details. */
-@media (max-width: 900px) {
-  .screens {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    align-items: start;
-    row-gap: 28px;
+/* The formats become one row above the window. */
+@media (max-width: 960px) {
+  .stage {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
   }
 
-  /* Every screen sits in a slot of one height, on its bottom, so the
-     details line up across each row. */
-  .format {
-    --slot: clamp(150px, 34vw, 240px);
-    grid-template-rows: var(--slot) auto;
+  .list {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    padding: 0;
   }
 
-  .screen {
-    align-self: end;
-    justify-self: center;
-    width: min(100%, calc(var(--slot) * var(--r)));
+  .rail,
+  .hint,
+  .itemUse {
+    display: none;
+  }
+
+  .itemButton {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px;
+    padding: 0;
+  }
+
+  .itemName {
+    font-size: 0.8125rem;
+  }
+
+  .canvas {
+    height: clamp(280px, 52svh, 460px);
   }
 }
 
@@ -504,29 +566,22 @@
 }
 
 @media (max-width: 560px) {
-  .window {
-    --pad: 10px;
-    font-size: 11px;
-  }
-
-  .count {
+  .itemName {
     display: none;
   }
 
-  .use {
-    white-space: normal;
+  .tracked {
+    display: none;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .rail {
+  .subject::before {
     animation: none;
   }
 
-  .screen,
-  .corners,
-  .spec,
-  .ratio {
+  .ghost,
+  .itemButton {
     transition: none;
   }
 }

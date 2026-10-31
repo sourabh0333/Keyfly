@@ -1,12 +1,12 @@
 import { everyFormat } from "@/content/home";
 import wipe from "@/components/scene/wipe.module.css";
 import { PauseOffscreen } from "@/components/pause-offscreen";
-import { FourScreens } from "./four-screens";
+import { Reframe } from "./reframe";
 import styles from "./every-format.module.css";
 
 /**
- * "One edit, every format": the Keyfly editor's export, one cut reframed
- * for each shape it needs (see ExportWindow).
+ * "One edit, every format": one frame that morphs between the formats as
+ * the page scrolls, on a design canvas (see Reframe).
  */
 export function EveryFormat() {
   const { eyebrow, title, lead, note, ...exportWindow } = everyFormat;
@@ -33,7 +33,7 @@ export function EveryFormat() {
           <p className={styles.lead}>{lead}</p>
         </div>
 
-        <FourScreens {...exportWindow} />
+        <Reframe {...exportWindow} />
 
         <p className={styles.footnote}>{note}</p>
       </div>

@@ -241,16 +241,21 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
   - **The self-running demo:** until a switch is touched, each decision in turn tries its other options and returns, every 1.7s, while on screen and not hovered or focused. Reduced motion is read with `useSyncExternalStore`.
   - **Narrow screens:** below 900px the inspector moves under the viewer, with its rows in 2 columns, then 1.
   - **Copy:** `yourCall`, PLACEHOLDER until the team confirms which decisions Keyfly exposes.
-- **One edit, every format** (`src/components/every-format/`, added 2026-10-31): "One edit. *Every screen.*" Heading laid out like Use cases; captioned "Illustrative interface". An earlier "export window" (a crop over one viewer, beside an export list) was dropped as not well aligned; the team picked "Four screens, one cut" from three options.
-  - **`FourScreens`** (client), inside the same window language as You make the calls:
-    - **Chrome:** "Launch Video · Export", and "4 formats · 1 cut".
-    - **The four screens in one row** (16:9, 9:16, 1:1, 4:5). The grid's columns are in proportion to their ratios (`--cols`), so every screen is the same height with its bottom aligned.
-    - **Each screen** frames the same 16:9 cut around its subject (the source is `100cqh × 16/9` wide, offset to centre 66% across, clamped to the edges), plays in sync, and re-wraps the captions to fit (`cqw`/`cqh`).
-    - **Under each screen, in the same column:** a hairline, the ratio (mono), index, name, size, use and "✓ Ready".
-    - **Timeline:** "One timeline": the ruler, V1 clips, C1 captions and an OUT lane of four chips (the format in focus filled mint), with the playhead on a rail.
-  - **Focus:** one format at a time is in focus, with a mint ring, corner marks, a mint hairline and ratio. It moves on every 2.6s while on screen and not hovered or focused; pointing at or clicking a screen focuses it.
-  - **Below 900px:** two by two. Every screen sits on the bottom of a slot of one height, so the details line up across each row.
-  - **Copy:** `everyFormat`; the format list is PLACEHOLDER until the team confirms Keyfly's export options.
+- **One edit, every format** (`src/components/every-format/`, added 2026-10-31): "One edit. *Every screen.*" Heading laid out like Use cases; captioned "Illustrative interface". Dropped before it, as not unique or well structured enough: an export window (crop plus list) and four screens in a row.
+  - **`Reframe`** (client): **one frame that morphs between the formats as the page scrolls**, on a design canvas, beside the formats on a rail.
+    - **Pinning:** the track (`data-live`, 100svh plus 60svh per format) pins the stage, and the scroll moves `pos` through 16:9 → 9:16 → 1:1 → 4:5. `detent()` rests on each format for the middle half of its stretch.
+    - **The frame:** its size is interpolated between the two formats either side of `pos`, fitted to the canvas (90% wide, 80% tall), with a mint edge.
+    - **Inside it:** the 16:9 cut stays centred on its subject (the sun, 66% across) as far as the edges allow, with a dashed tracking reticle; the captions re-flow, sized from the frame.
+    - **Design-tool details:**
+      - a dot-grid canvas;
+      - dashed outlines of all four shapes (the one in play mint);
+      - corner handles;
+      - measurement lines along the top and right with live pixel counts (1920 → 1080 …, interpolated);
+      - the chrome readout shows "W × H" while morphing and the ratio at rest.
+    - **The rail (left):** the four formats like How it works' steps (big mono ratio, "01 · Widescreen", use and size); the rail fills to `--p`. Clicking a format scrolls to its stop.
+    - **Fallback:** where the stage can't pin (content + 96px > the window's height) or with reduced motion, it moves on every 2.8s with an eased tween (reduced motion: waits for a click and jumps).
+  - **Below 960px:** the formats become one row of ratios above the window; it still pins on phones.
+  - **Copy:** `everyFormat` (formats with pixel sizes), PLACEHOLDER until the team confirms Keyfly's export options.
 - **Use cases** (`src/components/use-cases/`, added 2026-10-31, redesigned four times the same day): the six prompt-box presets on a **jog wheel**, the dial editors spin to move through footage. Captioned "Illustrative previews". It is not pinned, so it fits any height. Earlier versions were dropped:
   - a pinned reel (broke on short laptop screens);
   - a boxed multicam switcher with a tile grid (the team asked for no grid or box shapes);
