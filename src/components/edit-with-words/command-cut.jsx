@@ -162,19 +162,23 @@ export function CommandCut({ edits, barLabel }) {
             Your ask
           </p>
           <div className={styles.askBody}>
-            <span className={styles.flow} aria-hidden="true" />
-            <div className={styles.pill} aria-live="polite">
-              <span className={styles.spark} aria-hidden="true">
-                ✦
-              </span>
-              <span className={styles.askText}>
-                <span className={styles.visuallyHidden}>{barLabel}: </span>
-                {edit.ask.slice(0, typed)}
-                <i className={styles.caret} aria-hidden="true" />
-              </span>
+            {/* The pill on the connector from Before to After. */}
+            <div className={styles.connector}>
+              <span className={styles.flow} aria-hidden="true" />
+              <div className={styles.pill} aria-live="polite">
+                <span className={styles.spark} aria-hidden="true">
+                  ✦
+                </span>
+                <span className={styles.askText}>
+                  <span className={styles.visuallyHidden}>{barLabel}: </span>
+                  {edit.ask.slice(0, typed)}
+                  <i className={styles.caret} aria-hidden="true" />
+                </span>
+              </div>
             </div>
             <p key={`${active}-${applied}`} className={styles.reply} data-on={applied ? "" : undefined}>
-              {applied ? edit.reply : "Editing…"}
+              <i aria-hidden="true" />
+              <span>{applied ? edit.reply : "Editing…"}</span>
             </p>
           </div>
         </div>

@@ -225,6 +225,7 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
   - **Layout** (tidied 2026-10-31; a list-plus-slider restructure was tried and reverted at the team's request):
     - The three columns share one set of rows through `subgrid` (labels "Before · Your ask · After", pictures, facts, shot bars), so everything lines up across, and the prompt is centred against the pictures.
     - The pictures are `aspect-ratio: 16 / 9` boxes; a size container there would stop the subgrid from sharing rows.
+    - **The centre:** the ask column's body is a `1fr auto 1fr` grid, so the pill sits exactly on the pictures' middle and the reply hangs below it (a tick and a fixed two-line height, aligned to the pill's text). A `.connector` around the pill draws one straight line through its centre across both column gaps (`--cg`), from Before's edge to an arrowhead at After's edge, with the light running behind the pill.
     - The six tabs form an even bar as wide as the comparison (three per row below 1180px; scrolling sideways below 900px).
     - The shot layout is computed in a pure function, so render doesn't reassign variables (React lint).
   - **Copy:** `editWithWords` in the content file, all PLACEHOLDER until the team confirms which follow-up edits are real.
