@@ -125,7 +125,7 @@ The root layout renders the skip link, `SiteHeader` and `<main id="main">`. Page
 
 ## Homepage (step by step, from 2026-10-30)
 
-`src/app/page.jsx` renders Hero → HowItWorks (`#product`). All copy lives in `src/content/home.js`. Lines marked `PLACEHOLDER` wait for the confirmed product description, so the page is `noindex` until then.
+`src/app/page.jsx` renders Hero → HowItWorks (`#product`) → UseCases (`#use-cases`). All copy lives in `src/content/home.js`. Lines marked `PLACEHOLDER` wait for the confirmed product description, so the page is `noindex` until then.
 
 - **Hero** (`src/components/hero/`): one full screen. It has the eyebrow, a two-line h1 (the second line is in the serif italic accent with a mint shimmer), a lead line and the prompt box.
   - **Words** arrive one by one out of a blur.
@@ -154,6 +154,20 @@ The root layout renders the skip link, `SiteHeader` and `<main id="main">`. Page
   - **Step 3:** the frame tries 16:9, 9:16 and 1:1 (its width animates at a fixed height, using `cqw` of the viewer), and the export bar fills to "Ready".
   - **Fallback:** without JS or with reduced motion there is no pin, and the CSS defaults (all progress at 1) show the finished cut.
   - **Copy:** in `howItWorks` (content file), PLACEHOLDER.
+- **Use cases** (`src/components/use-cases/`, added 2026-10-31): the six prompt-box presets as clips on a reel, captioned "Illustrative previews".
+  - **Pinned reel:** `ReelStage` (client) pins the section (`data-live`, 100svh + 6 × 70svh). The scroll slides the track (`translate3d`) so each card comes to rest under a fixed mint playhead, which carries a timecode tag. The playhead sits behind the cards.
+  - **The active card:** the card under the playhead is `data-active` (lifted, with a mint edge) and the rest are `data-paused`, which pauses their previews.
+  - **Ruler and counter:** a ruler of six buttons jumps to a card (`--p` fills it), and a slate-style counter reads 01 / 06. Tabbing into an off-screen card scrolls it under the playhead.
+  - **`Preview`:** a CSS-drawn loop at the use case's format, sized in `cqw`/`cqh` of its screen:
+    - Launch: title cards on the beat.
+    - UGC: a selfie with word-by-word captions.
+    - Explainer: a diagram that builds.
+    - Montage: fast cuts with a speed ramp.
+    - Product demo: a cursor click, then a zoom.
+    - Podcast: a speaker, a waveform and a quote.
+  - **"Try this prompt":** dispatches `keyfly:prompt` with the preset's label. `PromptBox` listens, scrolls back to the hero and types that preset in.
+  - **Fallback:** without JS or with reduced motion there is no pin. The reel is a row that scrolls sideways with scroll snapping, and the previews hold still.
+  - **Copy:** in `useCases` (content file), PLACEHOLDER.
 - **Gotchas:**
   - **Grid overflow:** grid containers that hold the scrolling chip row need `grid-template-columns: minmax(0, 1fr)`. Without it the row's `max-content` width widens the page on mobile.
   - **No large blur:** never put a large `filter: blur()` in a 3D, animated stage.

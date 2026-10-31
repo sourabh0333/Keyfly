@@ -124,6 +124,23 @@ export function PromptBox({ label, placeholder, action, accept, modes, presets, 
 
   useEffect(() => () => clearInterval(typer.current), []);
 
+  // Other sections can hand a preset to the box ("Try this prompt"): the
+  // page scrolls back up to it and the prompt types itself in.
+  const typeOutRef = useRef(null);
+  useEffect(() => {
+    typeOutRef.current = typeOut;
+  });
+  useEffect(() => {
+    const onPrompt = (event) => {
+      const preset = presets.find((p) => p.label === event.detail?.label);
+      if (!preset) return;
+      field.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      setTimeout(() => typeOutRef.current?.(preset), 700);
+    };
+    window.addEventListener("keyfly:prompt", onPrompt);
+    return () => window.removeEventListener("keyfly:prompt", onPrompt);
+  }, [presets]);
+
   function addFiles(list) {
     const added = Array.from(list || []).map((file) => ({ id: `${file.name}-${file.size}-${file.lastModified}`, name: file.name }));
     setFiles((current) => [...current, ...added.filter((file) => !current.some((c) => c.id === file.id))]);

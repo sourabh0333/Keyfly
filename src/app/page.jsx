@@ -1,5 +1,6 @@
 import { Hero } from "@/components/hero/hero";
 import { HowItWorks } from "@/components/how-it-works/how-it-works";
+import { UseCases } from "@/components/use-cases/use-cases";
 import { siteConfig } from "@/config/site";
 
 // Kept out of search until the product details are confirmed (see the
@@ -16,6 +17,7 @@ export default function Home() {
     <>
       <Hero />
       <HowItWorks />
+      <UseCases />
     </>
   );
 }

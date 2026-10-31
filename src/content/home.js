@@ -72,6 +72,26 @@ export const howItWorks = {
   },
 };
 
+// "Use cases": one clip per preset in the prompt box, on a reel that slides
+// under the playhead. Each opens with a small illustrative preview, and
+// "Try this prompt" hands its preset back to the hero's prompt box.
+// PLACEHOLDER until the product description is confirmed.
+export const useCases = {
+  eyebrow: "Use cases",
+  title: [{ text: "Made for" }, { text: "every kind of video.", accent: true }],
+  lead: "Start from a preset or describe your own. Six of the videos people make most:",
+  cta: "Try this prompt",
+  note: "Illustrative previews",
+  items: [
+    { label: "Launch Video", kind: "launch", format: "16:9", body: "Title cards, quick cuts on the beat and a clear call to action at the end." },
+    { label: "UGC", kind: "ugc", format: "9:16", body: "Selfie-style ads with a hook in the first two seconds and punchy captions." },
+    { label: "Explainer", kind: "explainer", format: "16:9", body: "Walk people through how something works, with simple callouts and a calm voiceover." },
+    { label: "Montage", kind: "montage", format: "16:9", body: "The best moments from your footage, cut to the music with smooth speed ramps." },
+    { label: "Product Demo", kind: "demo", format: "16:9", body: "Screen recordings with a zoom on every click, short captions and the pauses trimmed." },
+    { label: "Podcast", kind: "podcast", format: "9:16", body: "Long episodes turned into vertical clips with the strongest quotes and captions." },
+  ],
+};
+
 function presetPrompt(label) {
   return prompt.presets.find((preset) => preset.label === label).prompt;
 }
