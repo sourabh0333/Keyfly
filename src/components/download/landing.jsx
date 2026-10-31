@@ -181,7 +181,7 @@ export function Landing({ stages, status, hint, platformLabel, platforms, detect
   }, [live]);
 
   return (
-    <div ref={trackRef} className={styles.track} data-live={live ? "" : undefined} data-phase={phase}>
+    <div ref={trackRef} className={styles.track} data-live={live ? "" : undefined} data-thread-stops={`${LIFT},${LAND}`} data-phase={phase}>
       <div ref={pinRef} className={styles.pin}>
         <div className={styles.stage}>
           {/* The readout: where the install is, and how far. */}

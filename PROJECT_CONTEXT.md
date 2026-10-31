@@ -154,14 +154,25 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
     - How it works: dusk (violet-blue and peach, from its viewer's shots).
     - Use cases: the colours of the feed on air. `Switcher` sets `html[data-feed]`, and the colours cross-fade through registered `@property` colours.
     - Download: mint, where the thread lands.
-  - **`FlightThread`:** one mint line in page coordinates (SVG over the page, `pointer-events: none`), laid out from the sections and re-measured with a `ResizeObserver`.
-    - It picks up the hero's playhead at the top of How it works, swings out to the left margin and runs down it.
-    - Two keyframe diamonds light where the pinned How it works changes step.
-    - It lands as a point on the Use cases eyebrow, flies one loop of the brand's flight path across the gap, and lands on the Download eyebrow.
-    - It then runs on down the margin to the footer, turns at the panel's corner onto its top edge (the ruler) and runs along it to the playhead (`[data-thread-end]`, `[data-thread-stop]`). That run gets its own stretch of scroll (up to 260px), and the SVG's height extends to the footer's bottom.
-    - The footer has `data-thread` while the line is on its way, and `data-arrived` once it reaches the playhead. Scrolling back up resets it, so it replays.
-    - Eyebrows that can be landed on carry `data-landing`; the thread sets `data-landed` on them and they light in answer.
-    - It draws with the scroll: its glowing head rides 62% down the screen. With reduced motion it is drawn whole and every point has landed.
+  - **`FlightThread`** (reworked 2026-10-31: "the line is just moving along one side… lackluster"): one line of light in page coordinates (SVG over the page, `pointer-events: none`), laid out from the sections and re-measured with a `ResizeObserver` on the page and the footer. It speaks the logo intro's language.
+    - **Route:**
+      1. It picks up the hero's playhead and swings out to the left margin.
+      2. It runs down past How it works.
+      3. A **swerve** out into the page (up to 340px) brings it back down onto the Use cases eyebrow.
+      4. It flies one loop of the brand's flight path across the next gap and lands on the Download eyebrow.
+      5. It runs on to the footer, turns at the panel's corner onto its top edge (the ruler) and runs along it to the playhead (`[data-thread-end]`, `[data-thread-stop]`). That last run gets its own stretch of scroll (up to 260px).
+    - **The comet:** the head rides 62% down the screen. A white-hot core leads a burning mint tail (three windows of the path, at 210, 110 and 34px, set by `stroke-dasharray` and `stroke-dashoffset`), which cools behind into the thin finished line (`.base`).
+    - **Speed:** the tail stretches (up to 2.6×), brightens and the head grows with the scroll speed, measured from the line's own progress and smoothed.
+    - **Sparks:** the head sheds sparks while it moves, on a fixed `<canvas>`, falling under gravity and carried with the page. There are bursts at keyframes, at each landing and at the footer's playhead.
+    - **Flowing light:** pulses of light (`.pulses`, a dashed copy masked to what is drawn) keep travelling along the finished line.
+    - **Keyframe diamonds** light (with a burst) wherever a pinned section changes. Each pinned track lists its stops as fractions of its scroll in `data-thread-stops`, and diamonds are only placed on the vertical runs:
+      - How it works: `0.333,0.667`;
+      - the jog wheel: one per preset;
+      - Download: lift-off and landing.
+    - **Landings:** at each eyebrow (`data-landing`) the line lands as a point with a bloom, a ring and a reach to the eyebrow's mark; the eyebrow lights in answer (`data-landed`).
+    - **Footer:** it has `data-thread` while the line is on its way and `data-arrived` once the line reaches the playhead. Scrolling back up resets it, so it replays.
+    - **Performance:** one rAF loop runs only while the line moves or sparks live.
+    - **Reduced motion:** the line is drawn whole and still, with no pulses or sparks, and everything has landed.
   - The thread stays in margins and gaps; never route it across copy.
   - **`Scrubber`** (added 2026-10-31, "the page is an edit"; moved the same day to the right-hand margin because, at the foot of the screen, it covered content): a slim vertical timeline fixed in the right margin once the hero is left behind. It is hidden at 1024px and below, where there is no margin.
     - One clip per `[data-section]` (Intro, How it works, Use cases, Download), sized by its length, filled with its section's light, with film-frame lines.

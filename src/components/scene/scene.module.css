@@ -137,12 +137,67 @@
   stroke-width: 1;
 }
 
-.line {
+/* What is drawn: the line, cooled. */
+.base {
   fill: none;
-  stroke: var(--soft-mint);
-  stroke-width: 1.5;
+  stroke: rgb(95 224 176 / 0.7);
+  stroke-width: 1.25;
   stroke-linecap: round;
-  filter: drop-shadow(0 0 4px rgb(95 224 176 / 0.55));
+  filter: drop-shadow(0 0 3px rgb(95 224 176 / 0.4));
+}
+
+/* Pulses of light flowing on along what is drawn. */
+.pulses {
+  fill: none;
+  stroke: #eafff6;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 3 240;
+  filter: drop-shadow(0 0 4px var(--soft-mint));
+  animation: flow 3.6s linear infinite;
+}
+
+/* The comet's tail, cooling from a white-hot core to burning mint to the
+   line (as in the logo's intro). Lengths and offsets come from JS. */
+.glowTrail,
+.hotTrail,
+.coreTrail {
+  fill: none;
+  stroke-linecap: round;
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.glowTrail {
+  stroke: rgb(95 224 176 / 0.35);
+  stroke-width: 7;
+}
+
+.hotTrail {
+  stroke: var(--soft-mint);
+  stroke-width: 2.6;
+  filter: drop-shadow(0 0 5px var(--soft-mint));
+}
+
+.coreTrail {
+  stroke: #f4fffa;
+  stroke-width: 1.8;
+}
+
+/* The sparks the head sheds, drawn on screen. */
+.sparks {
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+}
+
+@keyframes flow {
+  to {
+    stroke-dashoffset: -243;
+  }
 }
 
 .head {
@@ -155,7 +210,7 @@
 }
 
 .headCore {
-  fill: #eafff6;
+  fill: #ffffff;
   filter: drop-shadow(0 0 6px var(--soft-mint));
 }
 
@@ -239,8 +294,14 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .layer {
+  .layer,
+  .pulses {
     animation: none;
+  }
+
+  .pulses,
+  .sparks {
+    display: none;
   }
 
   .landing[data-landed] .ring,

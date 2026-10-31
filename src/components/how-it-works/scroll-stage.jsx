@@ -91,7 +91,7 @@ export function ScrollStage({ className, id, labelledBy, label, prompt, children
   }, [prompt]);
 
   return (
-    <section ref={ref} id={id} className={className} aria-labelledby={labelledBy} data-section={label} data-format="16:9" data-ready="">
+    <section ref={ref} id={id} className={className} aria-labelledby={labelledBy} data-section={label} data-thread-stops="0.333,0.667" data-format="16:9" data-ready="">
       {children}
     </section>
   );

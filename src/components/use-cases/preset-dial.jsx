@@ -234,7 +234,13 @@ export function PresetDial({ items, cta, dialLabel, promptLabel, hint }) {
   const tryIt = () => window.dispatchEvent(new CustomEvent("keyfly:prompt", { detail: { label: item.label } }));
 
   return (
-    <div ref={trackRef} className={styles.track} data-live={live ? "" : undefined} style={{ "--count": items.length }}>
+    <div
+      ref={trackRef}
+      className={styles.track}
+      data-live={live ? "" : undefined}
+      data-thread-stops={items.slice(1).map((_, i) => ((i + 1) / last).toFixed(3)).join(",")}
+      style={{ "--count": items.length }}
+    >
       <div ref={stageRef} className={styles.pin}>
         <div className={styles.stage} data-format={item.format} onKeyDown={onKeyDown}>
           <div className={styles.dialWrap}>
