@@ -1,4 +1,5 @@
 import { useCases } from "@/content/home";
+import wipe from "@/components/scene/wipe.module.css";
 import { Switcher } from "./switcher";
 import styles from "./use-cases.module.css";
 
@@ -18,7 +19,7 @@ export function UseCases() {
               <span className={styles.eyebrowMark} aria-hidden="true" />
               {eyebrow}
             </p>
-            <h2 id="cases-title" className={styles.title}>
+            <h2 id="cases-title" className={`${styles.title} ${wipe.wipe}`}>
               {title.map((line, i) => (
                 <span key={i} className={line.accent ? styles.accent : styles.plain}>
                   {line.text}

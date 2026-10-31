@@ -139,6 +139,11 @@ The root layout renders the skip link, `SiteHeader` and `<main id="main">`. Page
     - Eyebrows that can be landed on carry `data-landing`; the thread sets `data-landed` on them and they light in answer.
     - It draws with the scroll: its glowing head rides 62% down the screen. With reduced motion it is drawn whole and every point has landed.
   - The thread stays in margins and gaps; never route it across copy.
+  - **`Scrubber`** (added 2026-10-31, "the page is an edit"): a glass timeline fixed at the foot of the screen once the hero is left behind.
+    - One clip per `[data-section]` (Intro, How it works, Use cases, Download), sized by its length and filled with its section's light, with film-frame lines.
+    - A mint playhead at the scroll position, a running timecode (the page plays as 48s), and the clip under it named on the left.
+    - It is navigation (`<nav aria-label="Page timeline">`): clicking a clip scrubs to it. On phones the clip names and the timecode hide.
+  - **Heading wipe** (`wipe.module.css`): each section's h2 is revealed by a mint playhead sweeping across it as it scrolls in. A view timeline animates the registered `--wp` (0 → 1), which drives both the `clip-path` and the line, so it scrubs both ways. Pseudo-elements can't take their own view timeline, which is why it runs through `--wp`. Without scroll-driven animation support, or with reduced motion, the heading just shows.
 
 - **Hero** (`src/components/hero/`): one full screen. It has the eyebrow, a two-line h1 (the second line is in the serif italic accent with a mint shimmer), a lead line and the prompt box.
   - **Words** arrive one by one out of a blur.

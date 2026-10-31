@@ -1,0 +1,48 @@
+/*
+ * A heading revealed the way a cut is: a mint playhead sweeps across it as
+ * it scrolls into view and the words are there behind it. Scroll-driven
+ * (a view timeline animates --wp from 0 to 1), so it scrubs both ways;
+ * where that or motion is not available the heading simply shows.
+ */
+@property --wp {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .wipe {
+      position: relative;
+      clip-path: inset(-25% calc((1 - var(--wp)) * 106% - 6%) -25% -4%);
+      animation: reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 30% cover 42%;
+    }
+
+    .wipe::after {
+      content: "";
+      position: absolute;
+      top: -8%;
+      bottom: -8%;
+      left: calc(var(--wp) * (100% - 2px));
+      width: 2px;
+      border-radius: 2px;
+      background: var(--soft-mint);
+      box-shadow:
+        0 0 12px var(--soft-mint),
+        0 0 30px rgb(95 224 176 / 0.5);
+      opacity: clamp(0, calc((1 - var(--wp)) * 8), 1);
+      pointer-events: none;
+    }
+  }
+}
+
+@keyframes reveal {
+  from {
+    --wp: 0;
+  }
+  to {
+    --wp: 1;
+  }
+}

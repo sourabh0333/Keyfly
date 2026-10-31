@@ -1,4 +1,5 @@
 import { howItWorks } from "@/content/home";
+import wipe from "@/components/scene/wipe.module.css";
 import { ScrollStage } from "./scroll-stage";
 import styles from "./how-it-works.module.css";
 
@@ -62,7 +63,7 @@ export function HowItWorks() {
             <span className={styles.eyebrowMark} aria-hidden="true" />
             {eyebrow}
           </p>
-          <h2 id="how-title" className={styles.title}>
+          <h2 id="how-title" className={`${styles.title} ${wipe.wipe}`}>
             <Title lines={title} />
           </h2>
 

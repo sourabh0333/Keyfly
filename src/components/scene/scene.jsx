@@ -3,11 +3,13 @@
 import { useRef } from "react";
 import { FlightThread } from "./flight-thread";
 import { SceneLight } from "./scene-light";
+import { Scrubber } from "./scrubber";
 import styles from "./scene.module.css";
 
 /**
- * Holds the homepage's sections in one scene: the light behind them and the
- * flight thread that runs through them (see SceneLight and FlightThread).
+ * Holds the homepage's sections in one scene: the light behind them, the
+ * flight thread that runs through them and the page timeline at the foot
+ * of the screen (see SceneLight, FlightThread and Scrubber).
  */
 export function Scene({ children }) {
   const pageRef = useRef(null);
@@ -17,6 +19,7 @@ export function Scene({ children }) {
       <SceneLight />
       {children}
       <FlightThread pageRef={pageRef} />
+      <Scrubber />
     </div>
   );
 }

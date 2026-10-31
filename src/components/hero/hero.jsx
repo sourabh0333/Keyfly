@@ -13,7 +13,7 @@ export function Hero() {
   let word = 0;
 
   return (
-    <section className={styles.hero} aria-labelledby="hero-title" data-section="Home">
+    <section className={styles.hero} aria-labelledby="hero-title" data-section="Intro">
       <div className={styles.backdrop} aria-hidden="true">
         <div className={styles.aurora} />
         <TimelineFloor />
