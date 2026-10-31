@@ -1,5 +1,6 @@
 import { download } from "@/content/home";
 import wipe from "@/components/scene/wipe.module.css";
+import motion from "@/components/scene/motion.module.css";
 import { Landing } from "./landing";
 import styles from "./download.module.css";
 
@@ -12,6 +13,7 @@ export function Download() {
 
   return (
     <section id="download" className={styles.section} aria-labelledby="download-title" data-section="Download">
+      <span className={motion.beam} aria-hidden="true" />
       <div className={styles.inner}>
         <div className={styles.head}>
           <div>
@@ -28,7 +30,7 @@ export function Download() {
               ))}
             </h2>
           </div>
-          <p className={styles.lead}>{lead}</p>
+          <p className={`${styles.lead} ${motion.reveal}`}>{lead}</p>
         </div>
 
         <Landing {...landing} />

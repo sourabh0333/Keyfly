@@ -42,7 +42,7 @@ export function SiteFooter() {
   return (
     <footer className={styles.footer}>
       <div className={styles.inner}>
-        <div className={styles.panel}>
+        <div className={styles.panel} data-spotlight>
           <span className={styles.comet} aria-hidden="true" />
           <div className={styles.reel} aria-hidden="true">
             <span className={styles.playhead} />

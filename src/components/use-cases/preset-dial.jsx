@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { Preview } from "./preview";
+import motion from "@/components/scene/motion.module.css";
 import styles from "./use-cases.module.css";
 
 const TICKS = Array.from({ length: 90 }, (_, i) => i * 4);
@@ -241,11 +242,12 @@ export function PresetDial({ items, cta, dialLabel, promptLabel, hint }) {
       style={{ "--count": items.length }}
     >
       <div ref={stageRef} className={styles.pin}>
-        <div className={styles.stage} data-format={item.format} onKeyDown={onKeyDown}>
+        <div className={`${styles.stage} ${motion.reveal}`} data-format={item.format} onKeyDown={onKeyDown}>
           <div className={styles.dialWrap}>
             <div
               ref={dialRef}
               className={styles.dial}
+              data-spotlight
               role="slider"
               tabIndex={0}
               aria-label={dialLabel}
@@ -319,7 +321,7 @@ export function PresetDial({ items, cta, dialLabel, promptLabel, hint }) {
 
           <div className={styles.output}>
             <div className={styles.viewer} aria-hidden="true">
-              <div className={styles.frame}>
+              <div className={styles.frame} data-spotlight>
                 {items.map((it, i) => (
                   <div key={it.label} className={styles.feed} data-on={i === active ? "" : undefined} data-paused={i === active ? undefined : ""}>
                     <Preview kind={it.kind} format={it.format} bleed />

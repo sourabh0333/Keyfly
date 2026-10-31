@@ -1,7 +1,6 @@
 /*
  * The homepage as one scene: a light behind every section that changes
- * with the section on screen (live on the GPU, see LightField, with CSS
- * layers as the fallback). Sections leave their own backgrounds
+ * with the section on screen. Sections leave their own backgrounds
  * transparent so the light shows.
  */
 .page {
@@ -26,7 +25,6 @@
   position: absolute;
   inset: -12%;
   opacity: var(--w);
-  will-change: opacity, transform;
 }
 
 /* How it works: dusk, from the shots in its viewer. */
@@ -35,7 +33,6 @@
     radial-gradient(34% 40% at 72% 40%, rgb(91 92 150 / 0.2), transparent 70%),
     radial-gradient(30% 32% at 80% 66%, rgb(227 179 132 / 0.12), transparent 70%),
     radial-gradient(30% 40% at 18% 70%, rgb(95 224 176 / 0.06), transparent 70%);
-  animation: driftA 26s ease-in-out infinite alternate;
 }
 
 /* Use cases: the colours of the feed on air (html[data-feed]). */
@@ -59,7 +56,6 @@
   transition:
     --feed-a 1.4s ease,
     --feed-b 1.4s ease;
-  animation: driftB 30s ease-in-out infinite alternate;
 }
 
 :global(html[data-feed="ugc"]) .layer[data-scene="cases"] {
@@ -92,34 +88,6 @@
   background:
     radial-gradient(40% 36% at 30% 30%, rgb(95 224 176 / 0.11), transparent 70%),
     radial-gradient(44% 40% at 72% 70%, rgb(18 128 91 / 0.16), transparent 70%);
-  animation: driftA 24s ease-in-out infinite alternate-reverse;
-}
-
-@keyframes driftA {
-  to {
-    transform: translate(-4%, 3%) scale(1.06);
-  }
-}
-
-@keyframes driftB {
-  to {
-    transform: translate(4%, -3%) scale(1.05);
-  }
-}
-
-/* ---------- Generated light (WebGL) ---------- */
-
-/* The live light field over the CSS layers, which step aside when it
-   runs (data-gl). Drawn at reduced resolution and scaled up. */
-.field {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-}
-
-.light[data-gl] .layer {
-  display: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { LightField } from "./light-field";
 import styles from "./scene.module.css";
 
 // Section id → the light layer it brings up.
@@ -13,10 +12,9 @@ const SCENES = [
 
 /**
  * The page's light, behind every section: the night is never flat black.
- * LightField draws it live on the GPU; these CSS layers are its fallback
- * (no WebGL), each section bringing up its own light as it fills the
- * screen: dusk for "How it works", the colours of the feed on air for "Use
- * cases" and the mint of the landing for "Download" (weights as --w).
+ * Each section brings up one soft glow of its own as it fills the screen:
+ * dusk for "How it works", the colours of the preset on air for "Use
+ * cases" and mint for "Download" (weights as --w).
  *
  * It also cues the footer: data-await while the page is above it, and
  * data-arrived once it is well into view, which plays its arrival.
@@ -61,7 +59,6 @@ export function SceneLight() {
       <div className={styles.layer} data-scene="how" />
       <div className={styles.layer} data-scene="cases" />
       <div className={styles.layer} data-scene="land" />
-      <LightField />
     </div>
   );
 }

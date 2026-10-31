@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import motion from "@/components/scene/motion.module.css";
 import styles from "./download.module.css";
 
 const ICON = "/brand/app-icon-macos.svg";
@@ -183,7 +184,7 @@ export function Landing({ stages, status, hint, platformLabel, platforms, detect
   return (
     <div ref={trackRef} className={styles.track} data-live={live ? "" : undefined} data-phase={phase}>
       <div ref={pinRef} className={styles.pin}>
-        <div className={styles.stage}>
+        <div className={`${styles.stage} ${motion.reveal}`}>
           {/* The readout: where the install is, and how far. */}
           <div className={styles.readout}>
             <p className={styles.status} aria-live="polite">

@@ -1,5 +1,6 @@
 import { howItWorks } from "@/content/home";
 import wipe from "@/components/scene/wipe.module.css";
+import motion from "@/components/scene/motion.module.css";
 import { ScrollStage } from "./scroll-stage";
 import styles from "./how-it-works.module.css";
 
@@ -57,6 +58,7 @@ export function HowItWorks() {
 
   return (
     <ScrollStage className={styles.section} id="product" labelledBy="how-title" label="How it works" prompt={demo.prompt}>
+      <span className={motion.beam} aria-hidden="true" />
       <div className={styles.stage}>
         <div className={styles.copy}>
           <p className={styles.eyebrow}>
@@ -81,8 +83,8 @@ export function HowItWorks() {
           </ol>
         </div>
 
-        <figure className={styles.demo}>
-          <div className={styles.window} aria-hidden="true">
+        <figure className={`${styles.demo} ${motion.reveal}`}>
+          <div className={styles.window} aria-hidden="true" data-spotlight>
             <div className={styles.chrome}>
               <span className={styles.dots}>
                 <i />
