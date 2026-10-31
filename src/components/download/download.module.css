@@ -1,0 +1,406 @@
+/*
+ * "Download": a centred close to the page. The installer stage borrows the
+ * DMG window from the brand kit: Night with a mint glow in the middle.
+ */
+.section {
+  position: relative;
+  isolation: isolate;
+  padding: var(--section-pad) var(--gutter);
+  overflow: hidden;
+  background: var(--night);
+  color: var(--paper);
+  text-align: center;
+}
+
+/* Film grain, as everywhere on the page. */
+.section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+  opacity: 0.06;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}
+
+/* A horizon of mint light behind the installer. */
+.section::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -30%;
+  z-index: -2;
+  width: min(1400px, 140vw);
+  aspect-ratio: 2;
+  translate: -50% 0;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(95 224 176 / 0.12), transparent);
+}
+
+.inner {
+  display: grid;
+  justify-items: center;
+  max-width: 1120px;
+  margin: 0 auto;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: rgb(244 241 234 / 0.62);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.eyebrowMark {
+  width: 18px;
+  height: 1px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+}
+
+.title {
+  margin-top: 18px;
+  font-size: clamp(2.4rem, 1.2rem + 3.6vw, 4.75rem);
+  font-weight: 560;
+  letter-spacing: -0.05em;
+  line-height: 0.98;
+}
+
+.plain,
+.accent {
+  display: block;
+}
+
+.accent {
+  padding-bottom: 0.06em;
+  background: linear-gradient(100deg, var(--mint-text-dark), #eafff6 50%, var(--soft-mint));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-family: var(--font-accent-stack);
+  font-size: 1.1em;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.lead {
+  max-width: 46ch;
+  margin-top: 20px;
+  color: rgb(244 241 234 / 0.62);
+  font-size: var(--text-lead);
+  line-height: 1.5;
+}
+
+/* ---------- Installer ---------- */
+
+.installer {
+  display: grid;
+  justify-items: center;
+  width: 100%;
+  margin-top: clamp(36px, 5vw, 56px);
+  padding: clamp(14px, 2vw, 22px) clamp(14px, 2vw, 22px) clamp(24px, 3vw, 36px);
+  border-radius: 28px;
+  background:
+    radial-gradient(45% 55% at 50% 50%, rgb(95 224 176 / 0.1), transparent 75%),
+    linear-gradient(180deg, #17181c, #0e0f11);
+  box-shadow:
+    0 0 0 1px rgb(244 241 234 / 0.08),
+    0 1px 0 rgb(244 241 234 / 0.06) inset,
+    0 50px 120px -40px rgb(0 0 0 / 0.95);
+}
+
+/* Platform switch. */
+.tabs {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 14px;
+  background: rgb(0 0 0 / 0.35);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.07) inset;
+}
+
+.tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: rgb(244 241 234 / 0.6);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 560;
+  cursor: pointer;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+.tab:hover {
+  color: var(--paper);
+}
+
+.tab[aria-pressed="true"] {
+  background: rgb(244 241 234 / 0.09);
+  box-shadow: 0 1px 0 rgb(244 241 234 / 0.08) inset;
+  color: var(--paper);
+}
+
+.detected {
+  padding: 2px 6px;
+  border-radius: 5px;
+  background: rgb(95 224 176 / 0.14);
+  color: var(--soft-mint);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.04em;
+}
+
+/* The stage: SVG, so the flight scales with it. */
+.stage {
+  width: 100%;
+  max-width: 960px;
+  height: auto;
+  margin-top: clamp(8px, 2vw, 20px);
+  overflow: visible;
+}
+
+.guide {
+  fill: none;
+  stroke: rgb(244 241 234 / 0.14);
+  stroke-width: 2;
+  stroke-dasharray: 0.006 0.008;
+  stroke-linecap: round;
+}
+
+.trail {
+  fill: none;
+  stroke: var(--soft-mint);
+  stroke-width: 3;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 6px rgb(95 224 176 / 0.7));
+}
+
+.ring {
+  fill: none;
+  stroke: var(--soft-mint);
+  stroke-width: 2;
+}
+
+.label {
+  fill: rgb(244 241 234 / 0.55);
+  font-family: var(--font-mono-stack);
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-anchor: middle;
+  text-transform: uppercase;
+}
+
+/* Destinations: neutral slate shapes; mint only where Keyfly lands. */
+.destFrame {
+  fill: #1c1e23;
+  stroke: rgb(244 241 234 / 0.14);
+  stroke-width: 1.5;
+}
+
+.destScreen {
+  fill: #101215;
+}
+
+.destBar {
+  fill: #23262c;
+}
+
+.destSlot {
+  fill: rgb(244 241 234 / 0.2);
+}
+
+.destStand {
+  fill: #23262c;
+}
+
+.destApp {
+  fill: #1c1e23;
+  stroke: rgb(244 241 234 / 0.1);
+  stroke-width: 1.5;
+}
+
+.destEmpty {
+  fill: none;
+  stroke: rgb(95 224 176 / 0.6);
+  stroke-width: 1.5;
+  stroke-dasharray: 5 5;
+}
+
+.destFolderBack {
+  fill: #252a33;
+}
+
+.destFolder {
+  fill: #2e3440;
+  stroke: rgb(244 241 234 / 0.12);
+  stroke-width: 1.5;
+}
+
+.destMark {
+  stroke: rgb(244 241 234 / 0.18);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.step {
+  min-height: 1.5em;
+  margin-top: 6px;
+  color: rgb(244 241 234 / 0.8);
+  font-size: 1rem;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.primary,
+.secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 50px;
+  padding: 0 20px 0 22px;
+  border-radius: 14px;
+  font-size: 0.9375rem;
+  font-weight: 620;
+  text-decoration: none;
+  transition:
+    box-shadow 0.3s ease,
+    translate 0.3s var(--ease-land),
+    background-color 0.3s ease;
+}
+
+.primary {
+  position: relative;
+  overflow: hidden;
+  background: var(--soft-mint);
+  box-shadow:
+    0 1px 0 rgb(255 255 255 / 0.45) inset,
+    0 0 0 1px rgb(95 224 176 / 0.4),
+    0 12px 34px -12px rgb(95 224 176 / 0.8);
+  color: var(--mint-ink);
+}
+
+/* A sheen crosses the button on hover, as on the header's. */
+.primary::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 30%, rgb(255 255 255 / 0.55) 50%, transparent 70%);
+  translate: -110% 0;
+  transition: translate 0.7s var(--ease-land);
+}
+
+.primary:hover {
+  box-shadow:
+    0 1px 0 rgb(255 255 255 / 0.45) inset,
+    0 0 0 1px rgb(95 224 176 / 0.6),
+    0 14px 44px -10px rgb(95 224 176 / 0.95);
+  translate: 0 -1px;
+}
+
+.primary:hover::after {
+  translate: 110% 0;
+}
+
+.secondary {
+  background: rgb(244 241 234 / 0.06);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.12) inset;
+  color: var(--paper);
+}
+
+.secondary:hover {
+  background: rgb(244 241 234 / 0.1);
+}
+
+.soon {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 50px;
+  padding: 0 18px;
+  border-radius: 14px;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.1) inset;
+  color: rgb(244 241 234 / 0.6);
+  font-size: 0.875rem;
+  font-weight: 520;
+}
+
+.soon i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1.5px solid var(--soft-mint);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.note {
+  margin-top: 28px;
+  color: rgb(244 241 234 / 0.38);
+  font-size: 0.8125rem;
+}
+
+@keyframes pulse {
+  50% {
+    background: var(--soft-mint);
+    box-shadow: 0 0 8px var(--soft-mint);
+  }
+}
+
+@media (max-width: 560px) {
+  .installer {
+    border-radius: 22px;
+  }
+
+  .tab {
+    padding: 0 11px;
+  }
+
+  .detected {
+    display: none;
+  }
+
+  .label {
+    font-size: 22px;
+  }
+
+  .actions {
+    display: grid;
+    width: 100%;
+  }
+
+  .primary,
+  .secondary,
+  .soon {
+    justify-content: center;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .soon i {
+    animation: none;
+  }
+
+  .primary::after {
+    display: none;
+  }
+}

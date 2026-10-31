@@ -97,3 +97,22 @@ export const useCases = {
 function presetPrompt(label) {
   return prompt.presets.find((preset) => preset.label === label).prompt;
 }
+
+// "Download": the install moment from the brand kit's DMG art, animated.
+// Set each platform's `href` once its build is published; until then its
+// button reads "Coming soon". The browser link is real.
+export const download = {
+  eyebrow: "Download",
+  title: [{ text: "Land Keyfly" }, { text: "on your desktop.", accent: true }],
+  lead: "Keyfly runs on macOS, Windows and Linux. Or open it in your browser, with nothing to install.",
+  detected: "Your system",
+  soon: "Coming soon",
+  browser: { label: "Open in your browser", href: siteConfig.appUrl },
+  phone: "On a phone? Keyfly runs in the browser.",
+  note: "Keyfly.si is a Cevrynt Inc. product",
+  platforms: [
+    { id: "macos", label: "macOS", target: "Applications", step: "Drag Keyfly to Applications to install.", href: null },
+    { id: "windows", label: "Windows", target: "Desktop", step: "Run the installer and Keyfly is ready.", href: null }, // PLACEHOLDER step
+    { id: "linux", label: "Linux", target: "Apps", step: "Install it and open Keyfly from your apps.", href: null }, // PLACEHOLDER step
+  ],
+};
