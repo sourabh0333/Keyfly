@@ -1,12 +1,13 @@
 import { yourCall } from "@/content/home";
 import wipe from "@/components/scene/wipe.module.css";
 import { PauseOffscreen } from "@/components/pause-offscreen";
-import { EditSentence } from "./edit-sentence";
+import { Inspector } from "./inspector";
 import styles from "./your-call.module.css";
 
 /**
- * "You make the calls": Keyfly's edit explained in one sentence whose
- * choices are switches, beside a monitor of the result (see EditSentence).
+ * "You make the calls": the Keyfly editor with its inspector open, every
+ * decision listed with its reason and a switch, and marked on the
+ * timeline (see Inspector).
  */
 export function YourCall() {
   const { eyebrow, title, lead, note, ...timeline } = yourCall;
@@ -33,7 +34,7 @@ export function YourCall() {
           <p className={styles.lead}>{lead}</p>
         </div>
 
-        <EditSentence {...timeline} />
+        <Inspector {...timeline} />
 
         <p className={styles.footnote}>{note}</p>
       </div>

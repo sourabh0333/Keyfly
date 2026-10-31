@@ -1,9 +1,9 @@
 /*
- * "You make the calls": Keyfly's edit as one sentence whose choices are
- * switches, beside a monitor of the result. EditSentence sets data-active
- * on .stage to the decision in focus (take, cuts, title, duck), which
- * lights its part of the monitor ([data-for]); data-on and data-changed on
- * the phrases. No panels: type, the picture and hairlines.
+ * "You make the calls": the Keyfly editor with its inspector open, in the
+ * same window language as "How it works" (chrome, viewer, side panel,
+ * timeline). Inspector sets data-active on .window to the decision in
+ * focus (take, cuts, title, duck), which lights its part of the viewer
+ * ([data-for]); data-on and data-changed on the decisions and markers.
  */
 .section {
   position: relative;
@@ -79,211 +79,86 @@
   text-align: right;
 }
 
-/* ---------- Stage: sentence | monitor ---------- */
+/* ---------- The window ---------- */
 
-.stage {
-  display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
-  align-items: center;
-  gap: clamp(32px, 5vw, 80px);
-}
-
-.words {
-  display: grid;
-  gap: clamp(24px, 3vw, 36px);
-  min-width: 0;
-}
-
-/* ---------- The sentence ---------- */
-
-.sentence {
-  color: rgb(244 241 234 / 0.42);
-  font-size: clamp(1.625rem, 1rem + 1.7vw, 2.625rem);
-  font-weight: 520;
-  letter-spacing: -0.035em;
-  line-height: 1.32;
-  text-wrap: pretty;
-}
-
-/* A choice: the phrase itself is the switch. */
-.phrase {
-  position: relative;
-  display: inline-flex;
-  align-items: baseline;
-  gap: 0.18em;
-  margin: 0 0.04em;
-  padding: 0 0.12em;
-  border: 0;
-  border-radius: 0.28em;
-  background: none;
-  color: var(--paper);
-  font: inherit;
-  letter-spacing: inherit;
-  line-height: inherit;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-/* A dotted underline that turns solid mint in focus. */
-.phrase::after {
-  content: "";
-  position: absolute;
-  left: 0.12em;
-  right: 0.12em;
-  bottom: 0.06em;
-  height: 2px;
-  background: radial-gradient(circle, rgb(244 241 234 / 0.45) 1px, transparent 1.5px) 0 0 / 6px 2px repeat-x;
-  transition: background 0.3s ease;
-}
-
-.phrase:hover,
-.phrase[data-on] {
-  background: rgb(95 224 176 / 0.08);
-}
-
-.phrase[data-on]::after {
-  background: var(--soft-mint);
-  box-shadow: 0 0 10px var(--soft-mint);
-}
-
-.phrase:focus-visible {
-  outline: 2px solid var(--soft-mint);
-  outline-offset: 2px;
-}
-
-.phraseValue {
-  display: inline-block;
-  animation: flip 0.45s var(--ease-land);
-}
-
-/* Changed from Keyfly's pick: the serif accent, in mint. */
-.phrase[data-changed] .phraseValue {
-  background: linear-gradient(100deg, var(--mint-text-dark), #eafff6 50%, var(--soft-mint));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  font-family: var(--font-accent-stack);
-  font-style: italic;
-  font-weight: 400;
-  letter-spacing: -0.01em;
-}
-
-.phraseIcon {
-  width: 0.42em;
-  height: 0.42em;
-  align-self: center;
-  fill: none;
-  stroke: rgb(244 241 234 / 0.4);
-  stroke-width: 1.6;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  transition: stroke 0.3s ease;
-}
-
-.phrase[data-on] .phraseIcon {
-  stroke: var(--soft-mint);
-}
-
-/* ---------- Why, and the way back ---------- */
-
-.why {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
-  align-items: start;
-  gap: 18px;
-  padding-top: 20px;
-  border-top: 1px solid rgb(244 241 234 / 0.1);
-}
-
-.whyIndex {
-  color: var(--soft-mint);
-  font-family: var(--font-mono-stack);
-  font-size: 0.8125rem;
-  letter-spacing: 0.04em;
-}
-
-.whyIndex span {
-  color: rgb(244 241 234 / 0.3);
-}
-
-.whyText {
-  display: grid;
-  gap: 4px;
-  min-height: calc(2 * 1.5em + 1.2em);
-  color: rgb(244 241 234 / 0.72);
-  font-size: 0.9375rem;
-  line-height: 1.5;
-  animation: rise 0.4s var(--ease-land);
-}
-
-.whyLabel {
-  color: rgb(244 241 234 / 0.4);
-  font-family: var(--font-mono-stack);
-  font-size: 0.6875rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.foot {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  min-height: 32px;
-}
-
-.hint {
-  color: rgb(244 241 234 / 0.35);
-  font-family: var(--font-mono-stack);
-  font-size: 0.6875rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.reset {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 6px 0;
-  border: 0;
-  background: none;
-  color: var(--soft-mint);
-  font: inherit;
-  font-size: 0.875rem;
-  font-weight: 540;
-  cursor: pointer;
-  opacity: 0;
-  translate: 0 4px;
-  pointer-events: none;
-  transition:
-    opacity 0.3s ease,
-    translate 0.3s var(--ease-land);
-}
-
-.reset[data-on] {
-  opacity: 1;
-  translate: 0 0;
-  pointer-events: auto;
-}
-
-.reset:focus-visible {
-  outline: 2px solid var(--soft-mint);
-  outline-offset: 3px;
-  border-radius: 4px;
-}
-
-/* ---------- The monitor ---------- */
-
-.monitor {
-  position: relative;
-  aspect-ratio: 16 / 10;
+.window {
+  --pad: 14px;
   overflow: hidden;
-  border-radius: 20px;
-  background: #050506;
+  border-radius: var(--radius-window);
+  background: #121316;
   box-shadow:
     0 0 0 1px rgb(244 241 234 / 0.09),
-    0 50px 120px -40px rgb(0 0 0 / 0.95),
-    0 0 90px -30px rgb(95 224 176 / 0.35);
+    0 1px 0 rgb(244 241 234 / 0.07) inset,
+    0 40px 100px -40px rgb(0 0 0 / 0.95),
+    0 0 90px -40px rgb(95 224 176 / 0.3);
+  font-size: 12px;
+}
+
+.chrome {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  height: 36px;
+  padding: 0 var(--pad);
+  border-bottom: 1px solid rgb(244 241 234 / 0.06);
+  background: #18191d;
+}
+
+.dots {
+  display: flex;
+  gap: 6px;
+}
+
+.dots i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgb(244 241 234 / 0.14);
+}
+
+.file {
+  color: rgb(244 241 234 / 0.85);
+  font-weight: 560;
+}
+
+.fileMuted {
+  color: rgb(244 241 234 / 0.4);
+  font-weight: 450;
+}
+
+.count {
+  justify-self: end;
+  color: rgb(244 241 234 / 0.5);
+  font-family: var(--font-mono-stack);
+  font-size: 11px;
+}
+
+.count[data-changed] {
+  color: var(--mint-text-dark);
+}
+
+.body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) clamp(290px, 30%, 360px);
+  border-bottom: 1px solid rgb(244 241 234 / 0.06);
+}
+
+/* ---------- Viewer ---------- */
+
+.viewer {
+  display: grid;
+  align-items: center;
+  padding: var(--pad);
+  background: #0c0d0f;
+}
+
+.frame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #050506;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.08);
 }
 
 .shot {
@@ -297,27 +172,25 @@
   opacity: 1;
 }
 
-/* Parts of the monitor, lit when their decision is in focus. */
-.monitor [data-for] {
+.frame [data-for] {
   transition:
     box-shadow 0.35s ease,
-    color 0.35s ease,
-    opacity 0.35s ease;
+    border-color 0.35s ease;
 }
 
 .take {
   position: absolute;
-  top: 16px;
-  left: 16px;
+  top: 12px;
+  left: 12px;
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  padding: 5px 10px;
-  border-radius: 8px;
+  padding: 4px 9px;
+  border-radius: 7px;
   background: rgb(11 11 13 / 0.7);
   color: rgb(244 241 234 / 0.85);
   font-family: var(--font-mono-stack);
-  font-size: 0.6875rem;
+  font-size: 10.5px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   animation: rise 0.4s var(--ease-land);
@@ -331,25 +204,24 @@
   box-shadow: 0 0 8px #ff5a5a;
 }
 
-.stage[data-active="take"] .take {
+.window[data-active="take"] .take {
   box-shadow: 0 0 0 1.5px var(--soft-mint);
 }
 
-/* The chapter title as a lower third, with its hold in seconds. */
 .lower {
   position: absolute;
-  left: 7%;
-  bottom: 22%;
+  left: 6%;
+  bottom: 12%;
   display: grid;
-  gap: 8px;
-  padding: 10px 14px 10px 12px;
+  gap: 7px;
+  padding: 8px 14px 8px 12px;
   border-left: 2px solid rgb(244 241 234 / 0.8);
   background: linear-gradient(90deg, rgb(11 11 13 / 0.7), transparent);
 }
 
 .lowerTitle {
   color: #fff;
-  font-size: clamp(1rem, 0.7rem + 0.9vw, 1.5rem);
+  font-size: clamp(0.9rem, 0.6rem + 0.8vw, 1.375rem);
   font-weight: 640;
   letter-spacing: -0.02em;
 }
@@ -361,7 +233,7 @@
 }
 
 .hold i {
-  width: 22px;
+  width: 20px;
   height: 3px;
   border-radius: 3px;
   background: rgb(244 241 234 / 0.2);
@@ -376,25 +248,24 @@
   margin-left: 6px;
   color: rgb(244 241 234 / 0.7);
   font-family: var(--font-mono-stack);
-  font-size: 0.625rem;
+  font-size: 10px;
   font-weight: 500;
 }
 
-.stage[data-active="title"] .lower {
+.window[data-active="title"] .lower {
   border-color: var(--soft-mint);
 }
 
-.stage[data-active="title"] .hold i[data-on] {
+.window[data-active="title"] .hold i[data-on] {
   background: var(--soft-mint);
   box-shadow: 0 0 6px var(--soft-mint);
 }
 
-/* Music and voice levels. */
 .meters {
   position: absolute;
-  top: 16px;
-  right: 16px;
-  bottom: 56px;
+  top: 12px;
+  right: 12px;
+  bottom: 12px;
   display: flex;
   gap: 6px;
 }
@@ -433,69 +304,454 @@
 .meter b {
   color: rgb(244 241 234 / 0.6);
   font-family: var(--font-mono-stack);
-  font-size: 0.5625rem;
+  font-size: 9px;
   font-weight: 500;
 }
 
-.stage[data-active="duck"] .meter:not([data-voice]) i {
+.window[data-active="duck"] .meter:not([data-voice]) i {
   box-shadow: 0 0 0 1.5px var(--soft-mint);
 }
 
-/* The cut marks along the foot, with the playhead crossing them. */
-.cutline {
-  position: absolute;
-  left: 16px;
-  right: 16px;
-  bottom: 16px;
-  height: 22px;
-  border-radius: 6px;
-  background: rgb(11 11 13 / 0.55);
-  overflow: hidden;
+/* ---------- Inspector ---------- */
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border-left: 1px solid rgb(244 241 234 / 0.06);
+  background: #141518;
 }
 
-.cutline i {
+.panelHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px var(--pad);
+  border-bottom: 1px solid rgb(244 241 234 / 0.06);
+  color: rgb(244 241 234 / 0.75);
+  font-family: var(--font-mono-stack);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.panelHead span {
+  color: rgb(244 241 234 / 0.4);
+  letter-spacing: 0.06em;
+  text-transform: none;
+}
+
+.decisions {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.decision {
+  position: relative;
+  display: grid;
+  gap: 9px;
+  padding: 12px var(--pad);
+  border-bottom: 1px solid rgb(244 241 234 / 0.06);
+  transition: background-color 0.3s ease;
+}
+
+/* The decision in focus: a mint edge and a lift. */
+.decision::before {
+  content: "";
   position: absolute;
-  top: 5px;
-  bottom: 5px;
+  top: 10px;
+  bottom: 10px;
+  left: 0;
   width: 2px;
-  margin-left: -1px;
   border-radius: 2px;
-  background: rgb(244 241 234 / 0.75);
-  animation: rise 0.4s var(--ease-land);
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
-.stage[data-active="cuts"] .cutline {
-  box-shadow: 0 0 0 1.5px var(--soft-mint);
+.decision[data-on] {
+  background: rgb(95 224 176 / 0.05);
 }
 
-.stage[data-active="cuts"] .cutline i {
+.decision[data-on]::before {
+  opacity: 1;
+}
+
+.decisionHead {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.decisionIndex {
+  color: rgb(244 241 234 / 0.35);
+  font-family: var(--font-mono-stack);
+  font-size: 10.5px;
+}
+
+.decision[data-on] .decisionIndex {
+  color: var(--soft-mint);
+}
+
+.decisionLabel {
+  overflow: hidden;
+  color: rgb(244 241 234 / 0.9);
+  font-size: 12.5px;
+  font-weight: 560;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.decisionState {
+  color: rgb(244 241 234 / 0.38);
+  font-family: var(--font-mono-stack);
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.decision[data-changed] .decisionState {
+  color: var(--soft-mint);
+}
+
+/* A segmented switch, as in the app. */
+.switch {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 2px;
+  padding: 3px;
+  border-radius: 9px;
+  background: #0c0d0f;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.06) inset;
+}
+
+.switch button {
+  position: relative;
+  overflow: hidden;
+  padding: 6px 4px;
+  border: 0;
+  border-radius: 7px;
+  background: none;
+  color: rgb(244 241 234 / 0.55);
+  font: inherit;
+  font-size: 11.5px;
+  font-weight: 540;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease;
+}
+
+.switch button:hover {
+  color: var(--paper);
+}
+
+.switch button[aria-pressed="true"] {
+  background: #23252b;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.1) inset;
+  color: var(--paper);
+}
+
+.decision[data-changed] .switch button[aria-pressed="true"] {
+  background: var(--soft-mint);
+  box-shadow: none;
+  color: var(--mint-ink);
+}
+
+/* Keyfly's pick carries a small mint point. */
+.switch button[data-pick]::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  right: 5px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
   background: var(--soft-mint);
 }
 
-.cutHead {
-  position: absolute;
-  inset: 0;
-  animation: play 6s linear infinite;
+.switch button:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 1px;
 }
 
-.cutHead::before {
-  content: "";
+.reason {
+  display: grid;
+  gap: 2px;
+  color: rgb(244 241 234 / 0.65);
+  font-size: 11.5px;
+  line-height: 1.5;
+  animation: rise 0.35s var(--ease-land);
+}
+
+.reason span {
+  color: rgb(244 241 234 / 0.38);
+  font-family: var(--font-mono-stack);
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.reset {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin: auto var(--pad) var(--pad);
+  padding: 9px 0 0;
+  border: 0;
+  background: none;
+  color: var(--soft-mint);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 560;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+
+.reset:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.reset:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ---------- Timeline ---------- */
+
+.timeline {
+  position: relative;
+  display: grid;
+  gap: 5px;
+  padding: 30px var(--pad) var(--pad);
+  background: #101114;
+}
+
+/* Lanes start after the track labels (22px + 8px). */
+.markers,
+.rail {
+  position: absolute;
+  left: calc(var(--pad) + 30px);
+  right: var(--pad);
+}
+
+.markers {
+  top: 8px;
+  height: 16px;
+}
+
+.marker {
+  position: absolute;
+  top: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  translate: -5px 0;
+  color: rgb(244 241 234 / 0.4);
+  font-family: var(--font-mono-stack);
+  font-size: 10px;
+  transition: color 0.3s ease;
+}
+
+.marker i {
+  width: 8px;
+  height: 8px;
+  border-radius: 1.5px;
+  background: #101114;
+  box-shadow: 0 0 0 1.5px rgb(244 241 234 / 0.4);
+  rotate: 45deg;
+  transition:
+    background-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.marker[data-on] {
+  color: var(--paper);
+}
+
+.marker[data-on] i {
+  background: var(--soft-mint);
+  box-shadow:
+    0 0 0 1.5px var(--soft-mint),
+    0 0 10px var(--soft-mint);
+}
+
+.marker[data-changed] {
+  color: var(--soft-mint);
+}
+
+.ruler {
+  height: 12px;
+  margin-left: 30px;
+  background:
+    repeating-linear-gradient(to right, rgb(244 241 234 / 0.3) 0 1px, transparent 1px 8.333%) 0 100% / 100% 8px no-repeat,
+    repeating-linear-gradient(to right, rgb(244 241 234 / 0.14) 0 1px, transparent 1px 2.0833%) 0 100% / 100% 4px no-repeat;
+}
+
+.track {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+}
+
+.trackLabel {
+  color: rgb(244 241 234 / 0.4);
+  font-family: var(--font-mono-stack);
+  font-size: 10px;
+}
+
+.lane {
+  position: relative;
+  height: 24px;
+  border-radius: 5px;
+  background: rgb(244 241 234 / 0.025);
+}
+
+.clip,
+.titleClip,
+.voice {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: 5px;
+  transition:
+    left 0.6s var(--ease-land),
+    width 0.6s var(--ease-land),
+    box-shadow 0.3s ease;
+}
+
+.clip {
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.55) inset;
+  animation: drop 0.5s var(--ease-land);
+}
+
+.clip[data-n="0"] {
+  background: #4f6b8c;
+}
+
+.clip[data-n="1"] {
+  background: #8a5a78;
+}
+
+.clip[data-n="2"] {
+  background: #6aa3b3;
+}
+
+.clip[data-n="take0"] {
+  background: #5a5f6a;
+}
+
+.clip[data-n="take1"] {
+  background: #9a7a5a;
+}
+
+.clip[data-n="take2"] {
+  background: #c98a5a;
+}
+
+.clip[data-on] {
+  box-shadow:
+    0 0 0 1px rgb(0 0 0 / 0.55) inset,
+    0 0 0 1.5px var(--soft-mint);
+}
+
+.titleClip {
+  display: grid;
+  align-items: center;
+  overflow: hidden;
+  padding-left: 7px;
+  background: rgb(244 241 234 / 0.08);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.22) inset;
+  color: rgb(244 241 234 / 0.7);
+  font-size: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.titleClip[data-on] {
+  box-shadow: 0 0 0 1.5px var(--soft-mint) inset;
+  color: var(--paper);
+}
+
+.music {
+  background: rgb(95 224 176 / 0.05);
+  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.18) inset;
+}
+
+.music[data-on] {
+  box-shadow: 0 0 0 1.5px var(--soft-mint) inset;
+}
+
+.level {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.level path {
+  fill: none;
+  stroke: var(--soft-mint);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+  transition: d 0.6s var(--ease-land);
+}
+
+.voice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4px;
+  background: rgb(244 241 234 / 0.04);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.14) inset;
+}
+
+.voice i {
+  width: 2px;
+  height: calc(var(--h) * 80%);
+  border-radius: 2px;
+  background: rgb(244 241 234 / 0.5);
+}
+
+/* The playhead on a rail that slides by its own width. */
+.rail {
+  top: 26px;
+  bottom: var(--pad);
+  overflow: visible;
+  pointer-events: none;
+  animation: play 9s linear infinite;
+}
+
+.timeline {
+  overflow-x: clip;
+}
+
+.window[data-paused] .rail,
+.window[data-paused] .meter[data-voice] i::after {
+  animation-play-state: paused;
+}
+
+.playhead {
   position: absolute;
   top: 0;
   bottom: 0;
   left: 0;
   width: 2px;
   background: var(--soft-mint);
-  box-shadow: 0 0 8px var(--soft-mint);
-}
-
-.stage[data-paused] .cutHead,
-.stage[data-paused] .meter[data-voice] i::after {
-  animation-play-state: paused;
+  box-shadow: 0 0 10px rgb(95 224 176 / 0.7);
 }
 
 .footnote {
-  margin-top: 22px;
+  margin-top: 12px;
   color: rgb(244 241 234 / 0.38);
   font-family: var(--font-mono-stack);
   font-size: 0.6875rem;
@@ -504,18 +760,17 @@
   text-transform: uppercase;
 }
 
-@keyframes flip {
-  from {
-    opacity: 0;
-    translate: 0 0.35em;
-    filter: blur(4px);
-  }
-}
-
 @keyframes rise {
   from {
     opacity: 0;
     translate: 0 6px;
+  }
+}
+
+@keyframes drop {
+  from {
+    opacity: 0;
+    translate: 0 -6px;
   }
 }
 
@@ -536,9 +791,23 @@
 
 /* ---------- Smaller screens ---------- */
 
-@media (max-width: 1000px) {
-  .stage {
+@media (max-width: 900px) {
+  .body {
     grid-template-columns: minmax(0, 1fr);
+  }
+
+  .panel {
+    border-left: 0;
+    border-top: 1px solid rgb(244 241 234 / 0.06);
+  }
+
+  .decisions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .decision:nth-child(odd) {
+    border-right: 1px solid rgb(244 241 234 / 0.06);
   }
 }
 
@@ -563,49 +832,47 @@
 }
 
 @media (max-width: 560px) {
-  .take,
-  .meters {
-    top: 10px;
+  .window {
+    --pad: 10px;
+    font-size: 11px;
   }
 
-  .take {
-    left: 10px;
+  .decisions {
+    grid-template-columns: minmax(0, 1fr);
   }
 
-  .meters {
-    right: 10px;
-    bottom: 44px;
+  .decision:nth-child(odd) {
+    border-right: 0;
   }
 
-  .cutline {
-    left: 10px;
-    right: 10px;
-    bottom: 10px;
-    height: 18px;
-  }
-
-  .lower {
-    bottom: 26%;
-  }
-
-  .hint {
+  .count {
     display: none;
+  }
+
+  .titleClip {
+    font-size: 0;
+  }
+
+  .lane {
+    height: 18px;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .phraseValue,
-  .whyText,
   .take,
-  .cutline i,
-  .cutHead,
+  .reason,
+  .clip,
+  .rail,
   .meter[data-voice] i::after {
     animation: none;
   }
 
   .shot,
-  .meter i::after,
-  .reset {
+  .clip,
+  .titleClip,
+  .voice,
+  .level path,
+  .meter i::after {
     transition: none;
   }
 }
