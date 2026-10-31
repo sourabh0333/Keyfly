@@ -29,12 +29,11 @@ function Arrow() {
  * copyright. Its top edge is a timeline ruler with the mint playhead at the
  * end of the reel.
  *
- * The page's flight thread finishes here: it turns onto the ruler and runs
- * to the playhead (data-thread-end, data-thread-stop). While it is on its
- * way the footer has data-thread, and its contents wait, dimmed; when it
- * arrives (data-arrived) the playhead pulses, a comet of light runs round
- * the panel and the contents rise in. Without the thread, everything just
- * shows.
+ * The page's focus frame finishes here, on the call to action (data-focus).
+ * While the frame is on the page the footer has data-await and its
+ * contents wait, dimmed; as the footer comes well into view (data-arrived)
+ * the playhead pulses, a comet of light runs round the panel and the
+ * contents rise in. Without the frame, everything just shows.
  */
 export function SiteFooter() {
   const { cta, about, platforms, columns, company, domain, top } = footer;
@@ -43,13 +42,13 @@ export function SiteFooter() {
   return (
     <footer className={styles.footer}>
       <div className={styles.inner}>
-        <div className={styles.panel} data-thread-end>
+        <div className={styles.panel}>
           <span className={styles.comet} aria-hidden="true" />
           <div className={styles.reel} aria-hidden="true">
-            <span className={styles.playhead} data-thread-stop />
+            <span className={styles.playhead} />
           </div>
 
-          <div className={styles.cta} style={{ "--i": 0 }}>
+          <div className={styles.cta} style={{ "--i": 0 }} data-focus="Next">
             <p className={styles.ctaTitle}>
               {cta.title.map((line, i) => (
                 <span key={i} className={line.accent ? styles.accent : styles.plain}>

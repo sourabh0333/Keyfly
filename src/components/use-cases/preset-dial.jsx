@@ -238,7 +238,6 @@ export function PresetDial({ items, cta, dialLabel, promptLabel, hint }) {
       ref={trackRef}
       className={styles.track}
       data-live={live ? "" : undefined}
-      data-thread-stops={items.slice(1).map((_, i) => ((i + 1) / last).toFixed(3)).join(",")}
       style={{ "--count": items.length }}
     >
       <div ref={stageRef} className={styles.pin}>
@@ -320,7 +319,7 @@ export function PresetDial({ items, cta, dialLabel, promptLabel, hint }) {
 
           <div className={styles.output}>
             <div className={styles.viewer} aria-hidden="true">
-              <div className={styles.frame}>
+              <div className={styles.frame} data-focus="Preview">
                 {items.map((it, i) => (
                   <div key={it.label} className={styles.feed} data-on={i === active ? "" : undefined} data-paused={i === active ? undefined : ""}>
                     <Preview kind={it.kind} format={it.format} bleed />

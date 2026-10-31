@@ -5,8 +5,7 @@ import styles from "./download.module.css";
 
 /**
  * "Download": the closing call to action. The scroll flies Keyfly onto the
- * visitor's desktop, where the thread through the page lands too (see
- * Landing).
+ * visitor's desktop (see Landing).
  */
 export function Download() {
   const { eyebrow, title, lead, note, ...landing } = download;
@@ -16,7 +15,7 @@ export function Download() {
       <div className={styles.inner}>
         <div className={styles.head}>
           <div>
-            <p className={styles.eyebrow} data-landing>
+            <p className={styles.eyebrow}>
               <span className={styles.eyebrowMark} aria-hidden="true" />
               {eyebrow}
             </p>

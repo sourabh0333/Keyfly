@@ -187,7 +187,7 @@ export function PromptBox({ label, placeholder, action, accept, modes, presets, 
 
   return (
     <div className={styles.wrap}>
-      <form className={styles.box} onSubmit={submit} data-ready={ready ? "" : undefined} data-sending={sending ? "" : undefined}>
+      <form className={styles.box} data-focus="Prompt" onSubmit={submit} data-ready={ready ? "" : undefined} data-sending={sending ? "" : undefined}>
         <span className={styles.ring} aria-hidden="true" />
 
         {files.length > 0 ? (

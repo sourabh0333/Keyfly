@@ -181,7 +181,7 @@ export function Landing({ stages, status, hint, platformLabel, platforms, detect
   }, [live]);
 
   return (
-    <div ref={trackRef} className={styles.track} data-live={live ? "" : undefined} data-thread-stops={`${LIFT},${LAND}`} data-phase={phase}>
+    <div ref={trackRef} className={styles.track} data-live={live ? "" : undefined} data-phase={phase}>
       <div ref={pinRef} className={styles.pin}>
         <div className={styles.stage}>
           {/* The readout: where the install is, and how far. */}
@@ -204,7 +204,7 @@ export function Landing({ stages, status, hint, platformLabel, platforms, detect
             </span>
           </div>
 
-          <svg className={styles.flight} viewBox="40 20 880 290" role="img" aria-label={`Keyfly flying to ${active.target} on ${active.label}`}>
+          <svg className={styles.flight} data-focus="Landing" viewBox="40 20 880 290" role="img" aria-label={`Keyfly flying to ${active.target} on ${active.label}`}>
             <defs>
               <radialGradient id="land-glow" cx="0.5" cy="0.5" r="0.5">
                 <stop offset="0" stopColor="#5fe0b0" stopOpacity="0.55" />

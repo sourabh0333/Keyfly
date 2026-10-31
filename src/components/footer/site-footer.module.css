@@ -1,9 +1,9 @@
 /*
  * The site footer: one night panel holding the closing call to action,
  * the brand and link columns, and the bottom bar. Its top edge is a
- * timeline ruler with the mint playhead at the end, where the page's
- * flight thread finishes: data-thread on the footer while it is on its
- * way, data-arrived once it reaches the playhead.
+ * timeline ruler with the mint playhead at the end. The page's focus frame
+ * finishes here: data-await on the footer while it is on the page,
+ * data-arrived once the footer is well into view.
  */
 .footer {
   position: relative;
@@ -79,9 +79,9 @@
   rotate: 45deg;
 }
 
-/* ---------- The thread's arrival ---------- */
+/* ---------- The focus frame's arrival ---------- */
 
-/* While the line is on its way, the contents wait, dimmed and low. */
+/* While the frame is on its way, the contents wait, dimmed and low. */
 .cta,
 .brand,
 .column,
@@ -92,7 +92,7 @@
     filter 0.7s ease calc(var(--i, 0) * 90ms + 250ms);
 }
 
-.footer[data-thread]:not([data-arrived]) :is(.cta, .brand, .column, .bottom) {
+.footer[data-await]:not([data-arrived]) :is(.cta, .brand, .column, .bottom) {
   opacity: 0.22;
   translate: 0 18px;
   filter: blur(2px);
@@ -100,7 +100,7 @@
   transition-delay: 0s;
 }
 
-/* The panel's light comes up as the line arrives. */
+/* The panel's light comes up as the frame arrives. */
 .panel {
   transition: box-shadow 0.8s ease;
 }
@@ -142,7 +142,7 @@
   animation: sweep 1.8s cubic-bezier(0.45, 0, 0.25, 1) forwards;
 }
 
-/* The playhead takes the line in: a pulse goes out from its foot. */
+/* The playhead answers: a pulse goes out from its foot. */
 .playhead::before {
   content: "";
   position: absolute;
@@ -160,11 +160,11 @@
   animation: pulse 1s ease-out;
 }
 
-.footer[data-thread] .playhead {
+.footer[data-await] .playhead {
   transition: box-shadow 0.5s ease;
 }
 
-.footer[data-thread]:not([data-arrived]) .playhead {
+.footer[data-await]:not([data-arrived]) .playhead {
   box-shadow: none;
   opacity: 0.45;
 }

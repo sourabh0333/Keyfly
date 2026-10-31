@@ -133,14 +133,14 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
   - Brand: the logo (30px, intro on scroll), the site description (PLACEHOLDER, from `siteConfig`) and a "macOS · Windows" pill.
   - Three link columns: Product (How it works, Use cases, Download); Use cases (the six presets); Keyfly (Open Keyfly, Sign in, Keyfly for macOS, Keyfly for Windows).
 - **Bottom bar:** "© {year} Cevrynt Inc.", keyfly.si and Back to top.
-- **The thread's arrival** (added 2026-10-31 at the team's request: "the line should extend to the footer and trigger an animation there"):
-  - While `data-thread` is on and the line hasn't arrived, the contents wait at 22% opacity, 18px low and lightly blurred.
+- **The arrival** (added 2026-10-31; first triggered by the flight thread, now by the focus frame):
+  - While `data-await` is on and `data-arrived` isn't, the contents wait at 22% opacity, 18px low and lightly blurred.
   - On `data-arrived`:
     - the playhead sends out a pulse ring;
     - a conic comet of mint light (`@property --sweep`) runs once round the panel's edge;
     - the panel's mint edge and glow come up;
     - the CTA, brand, three columns and bottom bar rise in, staggered by `--i`.
-  - Without JS the footer simply shows. With reduced motion the line arrives at once and nothing animates.
+  - Without JS the footer simply shows. With reduced motion nothing animates.
 - **No inventions:** no social links, no legal pages and no newsletter until they exist.
 - **Narrow screens:** the brand sits above the columns. On phones the columns become two, and the CTA buttons share the row.
 - **Logo fix (same day):** the logo's glowing-trail layer (`.glowLayer`) is drawn only while light runs: during the intro (`data-state="running"`) or a hover relight (`data-lit`). At rest its filter region left a faint mark beside the symbol at larger sizes. The logo's shapes and colours are unchanged.
@@ -153,27 +153,18 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
   - **`SceneLight`:** a fixed light behind every section, so sections leave their own backgrounds transparent (the hero's backdrop fades out at its foot with a mask). Each section brings up its own layer as it fills the screen (`--w`), and the layers drift slowly:
     - How it works: dusk (violet-blue and peach, from its viewer's shots).
     - Use cases: the colours of the feed on air. `Switcher` sets `html[data-feed]`, and the colours cross-fade through registered `@property` colours.
-    - Download: mint, where the thread lands.
-  - **`FlightThread`** (reworked 2026-10-31: "the line is just moving along one side… lackluster"): one line of light in page coordinates (SVG over the page, `pointer-events: none`), laid out from the sections and re-measured with a `ResizeObserver` on the page and the footer. It speaks the logo intro's language.
-    - **Route:**
-      1. It picks up the hero's playhead and swings out to the left margin.
-      2. It runs down past How it works.
-      3. A **swerve** out into the page (up to 340px) brings it back down onto the Use cases eyebrow.
-      4. It flies one loop of the brand's flight path across the next gap and lands on the Download eyebrow.
-      5. It runs on to the footer, turns at the panel's corner onto its top edge (the ruler) and runs along it to the playhead (`[data-thread-end]`, `[data-thread-stop]`). That last run gets its own stretch of scroll (up to 260px).
-    - **The comet:** the head rides 62% down the screen. A white-hot core leads a burning mint tail (three windows of the path, at 210, 110 and 34px, set by `stroke-dasharray` and `stroke-dashoffset`), which cools behind into the thin finished line (`.base`).
-    - **Speed:** the tail stretches (up to 2.6×), brightens and the head grows with the scroll speed, measured from the line's own progress and smoothed.
-    - **Sparks:** the head sheds sparks while it moves, on a fixed `<canvas>`, falling under gravity and carried with the page. There are bursts at keyframes, at each landing and at the footer's playhead.
-    - **Flowing light:** pulses of light (`.pulses`, a dashed copy masked to what is drawn) keep travelling along the finished line.
-    - **Keyframe diamonds** light (with a burst) wherever a pinned section changes. Each pinned track lists its stops as fractions of its scroll in `data-thread-stops`, and diamonds are only placed on the vertical runs:
-      - How it works: `0.333,0.667`;
-      - the jog wheel: one per preset;
-      - Download: lift-off and landing.
-    - **Landings:** at each eyebrow (`data-landing`) the line lands as a point with a bloom, a ring and a reach to the eyebrow's mark; the eyebrow lights in answer (`data-landed`).
-    - **Footer:** it has `data-thread` while the line is on its way and `data-arrived` once the line reaches the playhead. Scrolling back up resets it, so it replays.
-    - **Performance:** one rAF loop runs only while the line moves or sparks live.
-    - **Reduced motion:** the line is drawn whole and still, with no pulses or sparks, and everything has landed.
-  - The thread stays in margins and gaps; never route it across copy.
+    - Download: mint, for the landing.
+  - **`FocusFrame`** (replaced the flight thread on 2026-10-31; the team found the line effect lackluster and asked for something that matches better): the camera's autofocus frame, four mint corner brackets fixed on screen that travel with the scroll and lock onto the one thing that matters in each section. Each target is marked `data-focus="Label"`:
+    - the hero's prompt box (`Prompt`);
+    - How it works' editor (`Editor`);
+    - the Use cases preview on air (`Preview`; the frame follows it as it changes format);
+    - the Download flight (`Landing`);
+    - the footer's call to action (`Next`).
+    - **Choosing a target:** the target is whichever fills the middle 80% of the screen best (a 0.45 share, with stickiness for the current one). Otherwise the frame fades out.
+    - **On a new target:** the frame lets go (soft white brackets and a reticle, the tag reading "AF · Focusing"), glides and resizes over 650ms, then snaps tight. A mint flash runs round the box, the tag reads "AF · Locked · {label}" and the target pulls into focus (`data-focused`: a brief blur-to-sharp).
+    - **Performance:** one rAF loop runs while the frame travels or its target moves, and rests after a second still.
+    - **Footer:** it has `data-await` while the frame is on the page, and `data-arrived` once its top is above 55% of the screen.
+    - **Reduced motion:** the frame jumps straight to each target with no flash and no focus pull.
   - **`Scrubber`** (added 2026-10-31, "the page is an edit"; moved the same day to the right-hand margin because, at the foot of the screen, it covered content): a slim vertical timeline fixed in the right margin once the hero is left behind. It is hidden at 1024px and below, where there is no margin.
     - One clip per `[data-section]` (Intro, How it works, Use cases, Download), sized by its length, filled with its section's light, with film-frame lines.
     - A mint playhead bar at the scroll position.
@@ -197,7 +188,7 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
     - The floor turns slightly with the pointer.
   - **Also on the hero:** a pointer light (`PointerField`, fine pointers only) and film grain.
 - **How it works** (`src/components/how-it-works/`, added 2026-10-31): three steps beside an illustrative Keyfly editor window, captioned "Illustrative interface".
-  - **Continuity:** the flight thread (see Scene) picks up the hero's playhead at the top of the section.
+  - **Continuity:** the hero's backdrop fades into the page's light, and the focus frame (see Scene) travels on from the prompt box to this section's editor.
   - **Steps:** Describe it, Keyfly edits, Export anywhere, on a rail that fills with the mint point at its tip. Only the current step shows its body. On narrow screens they become one row of three.
   - **Scroll progress:** `ScrollStage` (client) pins the section (`data-live`, 420svh, sticky 100svh stage). It writes to the DOM:
     - `--p`, `--s1`, `--s2`, `--s3` (one per step), `--asm` (assembly) and `--ph` (playhead);
@@ -237,7 +228,7 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
     - Product demo: a cursor click, then a zoom.
     - Podcast: a speaker, a waveform and a quote.
   - **Copy:** in `useCases` (content file), PLACEHOLDER.
-- **Download** (`src/components/download/`, added 2026-10-31, redesigned twice the same day): "Land Keyfly *on your desktop.*" A **landing played by the scroll**, the page's finale, where the flight thread lands too. The installer-window version was dropped because the team wanted each section to be its own, yet match.
+- **Download** (`src/components/download/`, added 2026-10-31, redesigned twice the same day): "Land Keyfly *on your desktop.*" A **landing played by the scroll**, the page's finale. The installer-window version was dropped because the team wanted each section to be its own, yet match.
   - **Heading:** laid out like Use cases (eyebrow and h2 left, lead right).
   - **`Landing`** (client): the track (`data-live`, 260svh) pins a 100svh stage. The scroll then plays the flight:
     - Lift-off (first 12%): the icon rises off the source.

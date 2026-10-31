@@ -15,7 +15,7 @@ export function UseCases() {
       <div className={styles.inner}>
         <div className={styles.head}>
           <div>
-            <p className={styles.eyebrow} data-landing>
+            <p className={styles.eyebrow}>
               <span className={styles.eyebrowMark} aria-hidden="true" />
               {eyebrow}
             </p>

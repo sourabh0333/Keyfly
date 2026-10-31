@@ -32,8 +32,7 @@
   animation: breathe 9s ease-in-out infinite alternate;
 }
 
-/* The last stretch fades into the page's light (see Scene), where the
-   flight thread picks up the playhead. */
+/* The last stretch fades into the page's light (see Scene). */
 
 /* Film grain over everything. */
 .grain {
