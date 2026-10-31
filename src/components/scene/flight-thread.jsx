@@ -11,8 +11,10 @@ const f = (n) => n.toFixed(1);
 // Builds the line in page coordinates from the sections as laid out now.
 // It picks up the hero's playhead, swings out to the left margin, runs down
 // past "How it works" (keyframes where its steps change), lands on the
-// "Use cases" eyebrow, then flies one loop of the brand's flight path across
-// the gap and lands on "Download".
+// "Use cases" eyebrow, flies one loop of the brand's flight path across the
+// gap and lands on "Download", then runs on down the margin to the footer,
+// turns onto the panel's top edge (its ruler) and runs along it to the
+// playhead at the end of the reel.
 function measure(page, path) {
   const top0 = page.getBoundingClientRect().top + scrollY;
   const y = (el) => el.getBoundingClientRect().top + scrollY - top0;
@@ -56,6 +58,28 @@ function measure(page, path) {
     [`V${f(g0)}`, g0],
     [loop, g1],
   ];
+
+  // The footer: down to the panel's corner, onto its top edge and along it
+  // to the playhead. The run along the edge gets its own stretch of scroll
+  // (as much as the page has left, up to 260px), so it plays rather than
+  // snapping.
+  const panel = document.querySelector("[data-thread-end]");
+  const stop = panel?.querySelector("[data-thread-stop]");
+  let end = null;
+  if (panel && stop) {
+    const pr = panel.getBoundingClientRect();
+    const pTop = y(panel);
+    const stopX = stop.getBoundingClientRect().left + 1;
+    const maxHead = document.documentElement.scrollHeight - top0 - (1 - HEAD) * vh;
+    const run = Math.max(60, Math.min(260, maxHead - pTop - 24));
+    const corner = Math.min(40, Math.max(12, pr.left - tx + 24));
+    segs.push(
+      [`V${f(pTop - corner)}`, pTop - corner],
+      [`C${f(tx)} ${f(pTop - corner * 0.3)} ${f(tx + corner * 0.4)} ${f(pTop)} ${f(Math.max(pr.left + 12, tx + corner))} ${f(pTop)}`, pTop],
+      [`H${f(stopX)}`, pTop + run],
+    );
+    end = { panel, bottom: pr.bottom + scrollY - top0 };
+  }
   const start = `M${f(w / 2)} ${f(a)}`;
   const keys = [[a, 0]];
   let d = start;
@@ -72,7 +96,8 @@ function measure(page, path) {
   return {
     top0,
     w,
-    h: page.offsetHeight,
+    h: Math.max(page.offsetHeight, end ? Math.ceil(end.bottom) : 0),
+    footer: end?.panel.closest("footer") ?? null,
     d,
     keys,
     total: keys.at(-1)[1],
@@ -118,6 +143,8 @@ export function FlightThread({ pageRef }) {
     const schedule = () => (frame ||= requestAnimationFrame(run));
     const observer = new ResizeObserver(schedule);
     observer.observe(page);
+    const footer = document.querySelector("footer");
+    if (footer) observer.observe(footer);
     document.fonts?.ready.then(schedule);
     return () => {
       observer.disconnect();
@@ -134,7 +161,11 @@ export function FlightThread({ pageRef }) {
     const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
     const points = [...svg.querySelectorAll("[data-at]")];
     const marks = ["use-cases", "download"].map((id) => document.getElementById(id)?.querySelector("[data-landing]"));
+    const footer = geo.footer;
     let frame = 0;
+
+    // The footer waits for the line, then plays its arrival (see SiteFooter).
+    footer?.setAttribute("data-thread", "");
 
     line.style.strokeDasharray = `${geo.total} ${geo.total + 1}`;
 
@@ -148,6 +179,7 @@ export function FlightThread({ pageRef }) {
         const p = line.getPointAtLength(len);
         head.setAttribute("transform", `translate(${f(p.x)} ${f(p.y)})`);
       }
+      footer?.toggleAttribute("data-arrived", len >= geo.total - 0.5);
       for (const point of points) {
         const on = len >= Number(point.dataset.at) - 0.5;
         if (on !== point.hasAttribute("data-landed")) {
@@ -165,6 +197,8 @@ export function FlightThread({ pageRef }) {
     return () => {
       cancelAnimationFrame(frame);
       removeEventListener("scroll", schedule);
+      footer?.removeAttribute("data-thread");
+      footer?.removeAttribute("data-arrived");
     };
   }, [geo]);
 
@@ -194,11 +228,11 @@ export function FlightThread({ pageRef }) {
       ))}
 
       {geo?.landings.map((l, i) => (
-        <g key={`l${i}`} className={styles.landing} data-at={l.len} data-mark={i} data-final={i === geo.landings.length - 1 ? "" : undefined}>
+        <g key={`l${i}`} className={styles.landing} data-at={l.len} data-mark={i}>
           <path d={`M${f(l.tx + 7)} ${f(l.y)}H${f(l.x - 3)}`} className={styles.reach} pathLength="1" />
           <circle cx={l.tx} cy={l.y} r="60" fill="url(#thread-bloom)" className={styles.bloom} />
           <circle cx={l.tx} cy={l.y} r="14" className={styles.ring} />
-          <circle cx={l.tx} cy={l.y} r={i === geo.landings.length - 1 ? 6 : 4.5} className={styles.point} />
+          <circle cx={l.tx} cy={l.y} r="4.5" className={styles.point} />
         </g>
       ))}
 

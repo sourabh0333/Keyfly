@@ -133,6 +133,14 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
   - Brand: the logo (30px, intro on scroll), the site description (PLACEHOLDER, from `siteConfig`) and a "macOS · Windows" pill.
   - Three link columns: Product (How it works, Use cases, Download); Use cases (the six presets); Keyfly (Open Keyfly, Sign in, Keyfly for macOS, Keyfly for Windows).
 - **Bottom bar:** "© {year} Cevrynt Inc.", keyfly.si and Back to top.
+- **The thread's arrival** (added 2026-10-31 at the team's request: "the line should extend to the footer and trigger an animation there"):
+  - While `data-thread` is on and the line hasn't arrived, the contents wait at 22% opacity, 18px low and lightly blurred.
+  - On `data-arrived`:
+    - the playhead sends out a pulse ring;
+    - a conic comet of mint light (`@property --sweep`) runs once round the panel's edge;
+    - the panel's mint edge and glow come up;
+    - the CTA, brand, three columns and bottom bar rise in, staggered by `--i`.
+  - Without JS the footer simply shows. With reduced motion the line arrives at once and nothing animates.
 - **No inventions:** no social links, no legal pages and no newsletter until they exist.
 - **Narrow screens:** the brand sits above the columns. On phones the columns become two, and the CTA buttons share the row.
 - **Logo fix (same day):** the logo's glowing-trail layer (`.glowLayer`) is drawn only while light runs: during the intro (`data-state="running"`) or a hover relight (`data-lit`). At rest its filter region left a faint mark beside the symbol at larger sizes. The logo's shapes and colours are unchanged.
@@ -149,7 +157,9 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
   - **`FlightThread`:** one mint line in page coordinates (SVG over the page, `pointer-events: none`), laid out from the sections and re-measured with a `ResizeObserver`.
     - It picks up the hero's playhead at the top of How it works, swings out to the left margin and runs down it.
     - Two keyframe diamonds light where the pinned How it works changes step.
-    - It lands as a point on the Use cases eyebrow, flies one loop of the brand's flight path across the gap, and lands on the Download eyebrow (a ring keeps pulsing there).
+    - It lands as a point on the Use cases eyebrow, flies one loop of the brand's flight path across the gap, and lands on the Download eyebrow.
+    - It then runs on down the margin to the footer, turns at the panel's corner onto its top edge (the ruler) and runs along it to the playhead (`[data-thread-end]`, `[data-thread-stop]`). That run gets its own stretch of scroll (up to 260px), and the SVG's height extends to the footer's bottom.
+    - The footer has `data-thread` while the line is on its way, and `data-arrived` once it reaches the playhead. Scrolling back up resets it, so it replays.
     - Eyebrows that can be landed on carry `data-landing`; the thread sets `data-landed` on them and they light in answer.
     - It draws with the scroll: its glowing head rides 62% down the screen. With reduced motion it is drawn whole and every point has landed.
   - The thread stays in margins and gaps; never route it across copy.

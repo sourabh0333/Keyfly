@@ -26,8 +26,15 @@ function Arrow() {
 /**
  * The site footer: a closing call to action, then the brand (logo, line,
  * platforms) beside three columns of links, and a bottom bar with the
- * copyright. Its top edge is a timeline ruler whose mint playhead has
- * reached the end, the page's last frame.
+ * copyright. Its top edge is a timeline ruler with the mint playhead at the
+ * end of the reel.
+ *
+ * The page's flight thread finishes here: it turns onto the ruler and runs
+ * to the playhead (data-thread-end, data-thread-stop). While it is on its
+ * way the footer has data-thread, and its contents wait, dimmed; when it
+ * arrives (data-arrived) the playhead pulses, a comet of light runs round
+ * the panel and the contents rise in. Without the thread, everything just
+ * shows.
  */
 export function SiteFooter() {
   const { cta, about, platforms, columns, company, domain, top } = footer;
@@ -36,12 +43,13 @@ export function SiteFooter() {
   return (
     <footer className={styles.footer}>
       <div className={styles.inner}>
-        <div className={styles.panel}>
+        <div className={styles.panel} data-thread-end>
+          <span className={styles.comet} aria-hidden="true" />
           <div className={styles.reel} aria-hidden="true">
-            <span className={styles.playhead} />
+            <span className={styles.playhead} data-thread-stop />
           </div>
 
-          <div className={styles.cta}>
+          <div className={styles.cta} style={{ "--i": 0 }}>
             <p className={styles.ctaTitle}>
               {cta.title.map((line, i) => (
                 <span key={i} className={line.accent ? styles.accent : styles.plain}>
@@ -62,7 +70,7 @@ export function SiteFooter() {
           </div>
 
           <div className={styles.main}>
-            <div className={styles.brand}>
+            <div className={styles.brand} style={{ "--i": 1 }}>
               <Logo height={30} play="view" />
               <p className={styles.about}>{about}</p>
               <p className={styles.platforms}>
@@ -72,8 +80,8 @@ export function SiteFooter() {
             </div>
 
             <nav className={styles.columns} aria-label="Footer">
-              {columns.map((column) => (
-                <div key={column.title} className={styles.column}>
+              {columns.map((column, i) => (
+                <div key={column.title} className={styles.column} style={{ "--i": i + 2 }}>
                   <p className={styles.columnTitle}>{column.title}</p>
                   <ul>
                     {column.links.map((link) => (
@@ -87,7 +95,7 @@ export function SiteFooter() {
             </nav>
           </div>
 
-          <div className={styles.bottom}>
+          <div className={styles.bottom} style={{ "--i": 5 }}>
             <span>
               © {year} {company}
             </span>

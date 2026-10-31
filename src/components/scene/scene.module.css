@@ -208,10 +208,6 @@
   animation: ring 0.9s ease-out;
 }
 
-.landing[data-final][data-landed] .ring {
-  animation: ring 0.9s ease-out, ring 2.4s ease-out 1.6s infinite;
-}
-
 .reach {
   fill: none;
   stroke: var(--soft-mint);
@@ -248,7 +244,6 @@
   }
 
   .landing[data-landed] .ring,
-  .landing[data-final][data-landed] .ring,
   .keyframe[data-landed] rect {
     animation: none;
   }

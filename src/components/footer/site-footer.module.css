@@ -1,7 +1,9 @@
 /*
  * The site footer: one night panel holding the closing call to action,
  * the brand and link columns, and the bottom bar. Its top edge is a
- * timeline ruler with the mint playhead at the end.
+ * timeline ruler with the mint playhead at the end, where the page's
+ * flight thread finishes: data-thread on the footer while it is on its
+ * way, data-arrived once it reaches the playhead.
  */
 .footer {
   position: relative;
@@ -75,6 +77,139 @@
   background: var(--soft-mint);
   translate: -50% 0;
   rotate: 45deg;
+}
+
+/* ---------- The thread's arrival ---------- */
+
+/* While the line is on its way, the contents wait, dimmed and low. */
+.cta,
+.brand,
+.column,
+.bottom {
+  transition:
+    opacity 0.7s ease calc(var(--i, 0) * 90ms + 250ms),
+    translate 0.9s var(--ease-land) calc(var(--i, 0) * 90ms + 250ms),
+    filter 0.7s ease calc(var(--i, 0) * 90ms + 250ms);
+}
+
+.footer[data-thread]:not([data-arrived]) :is(.cta, .brand, .column, .bottom) {
+  opacity: 0.22;
+  translate: 0 18px;
+  filter: blur(2px);
+  transition-duration: 0.3s;
+  transition-delay: 0s;
+}
+
+/* The panel's light comes up as the line arrives. */
+.panel {
+  transition: box-shadow 0.8s ease;
+}
+
+.footer[data-arrived] .panel {
+  box-shadow:
+    0 0 0 1px rgb(95 224 176 / 0.22),
+    0 1px 0 rgb(244 241 234 / 0.05) inset,
+    0 40px 120px -40px rgb(0 0 0 / 0.9),
+    0 0 120px -50px rgb(95 224 176 / 0.6);
+}
+
+/* A comet of mint light runs once round the panel's edge on arrival. */
+@property --sweep {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.comet {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  padding: 1.5px;
+  border-radius: inherit;
+  background: conic-gradient(from var(--sweep), transparent 0deg, transparent 300deg, rgb(95 224 176 / 0.4) 340deg, #eafff6 358deg, transparent 360deg);
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask:
+    linear-gradient(#000 0 0) content-box exclude,
+    linear-gradient(#000 0 0);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.footer[data-arrived] .comet {
+  animation: sweep 1.8s cubic-bezier(0.45, 0, 0.25, 1) forwards;
+}
+
+/* The playhead takes the line in: a pulse goes out from its foot. */
+.playhead::before {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+  margin-left: -8px;
+  border: 1.5px solid var(--soft-mint);
+  border-radius: 50%;
+  opacity: 0;
+}
+
+.footer[data-arrived] .playhead::before {
+  animation: pulse 1s ease-out;
+}
+
+.footer[data-thread] .playhead {
+  transition: box-shadow 0.5s ease;
+}
+
+.footer[data-thread]:not([data-arrived]) .playhead {
+  box-shadow: none;
+  opacity: 0.45;
+}
+
+@keyframes sweep {
+  0% {
+    --sweep: 90deg;
+    opacity: 0;
+  }
+  12% {
+    opacity: 1;
+  }
+  85% {
+    opacity: 1;
+  }
+  100% {
+    --sweep: 450deg;
+    opacity: 0;
+  }
+}
+
+@keyframes pulse {
+  from {
+    scale: 0.4;
+    opacity: 1;
+  }
+  to {
+    scale: 3.2;
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cta,
+  .brand,
+  .column,
+  .bottom,
+  .panel {
+    transition: none;
+  }
+
+  .footer[data-arrived] .comet,
+  .footer[data-arrived] .playhead::before {
+    animation: none;
+  }
 }
 
 /* ---------- Call to action ---------- */
