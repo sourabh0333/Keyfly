@@ -61,14 +61,10 @@
     box-shadow 0.5s ease;
 }
 
-/* The flight thread has landed here (see FlightThread). */
-.eyebrow[data-landed] {
-  color: rgb(244 241 234 / 0.85);
-}
-
-.eyebrow[data-landed] .eyebrowMark {
-  width: 30px;
-  box-shadow: 0 0 12px var(--soft-mint);
+/* The flight thread lands on the lead (see FlightThread), which brightens
+   in answer. */
+.lead[data-landed] {
+  color: rgb(244 241 234 / 0.88);
 }
 
 .title {
@@ -103,6 +99,7 @@
   font-size: 0.9375rem;
   line-height: 1.5;
   text-align: right;
+  transition: color 0.5s ease;
 }
 
 /* ---------- The landing ---------- */

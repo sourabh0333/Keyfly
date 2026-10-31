@@ -9,12 +9,19 @@ const HEAD = 0.62;
 const f = (n) => n.toFixed(1);
 const clamp = (n, lo, hi) => Math.min(hi, Math.max(lo, n));
 
-// Builds the line in page coordinates from the sections as laid out now:
-// it picks up the hero's playhead and swings out to the left margin, runs
-// down past "How it works", swerves out into the page and back to land on
-// the "Use cases" eyebrow, flies one loop of the brand's flight path across
-// the next gap to land on "Download", then runs on to the footer, turns
-// onto the panel's top edge (its ruler) and runs along it to the playhead.
+// Builds the line in page coordinates from the sections as laid out now.
+// It weaves down the page through the open space in each section, never
+// across the copy:
+//   1. from the hero's playhead it drops into How it works and runs down
+//      the channel between the steps and the editor;
+//   2. it S-curves out to the left margin, lands on the "Use cases"
+//      eyebrow and runs down beside the jog wheel;
+//   3. it flies one loop of the brand's flight path across to the right
+//      margin, lands on Download's line and runs down beside the landing;
+//   4. it sweeps back across to the footer's corner, turns onto the panel's
+//      top edge (its ruler) and runs along it to the playhead.
+// Where a section has no side-by-side channel (narrow screens) that run
+// falls back to the left margin.
 function measure(page, path) {
   const top0 = page.getBoundingClientRect().top + scrollY;
   const y = (el) => el.getBoundingClientRect().top + scrollY - top0;
@@ -22,82 +29,99 @@ function measure(page, path) {
   const cases = document.getElementById("use-cases");
   const land = document.getElementById("download");
   const marks = [cases, land].map((s) => s?.querySelector("[data-landing]"));
-  if (!how || !cases || !land || marks.includes(null)) return null;
+  const howCopy = how?.querySelector("h2")?.parentElement;
+  const howDemo = how?.querySelector("figure");
+  if (!how || !cases || !land || marks.includes(null) || !howCopy || !howDemo) return null;
 
   const vh = innerHeight;
   const w = page.clientWidth;
-  const left = Math.min(...marks.map((m) => m.getBoundingClientRect().left));
-  const tx = Math.max(7, left - Math.min(26, left / 2));
-  const landings = marks.map((m) => {
-    const r = m.getBoundingClientRect();
-    return { x: r.left, y: y(m) + r.height / 2 };
-  });
+  const box = (el) => el.getBoundingClientRect();
 
-  // How it works: in, and the swing to the margin.
+  // The three lanes: the left margin, the right margin, and How it works'
+  // channel between its two columns.
+  const cases0 = box(marks[0]);
+  const lead = box(marks[1]);
+  const left = cases0.left;
+  // The content column's right edge (Download's column, inside its gutter).
+  const column = land.firstElementChild;
+  const right = box(column).right - parseFloat(getComputedStyle(column).paddingRight);
+  const lx = Math.max(7, left - Math.min(26, left / 2));
+  const rx = Math.min(w - 7, right + Math.min(26, (w - right) / 2));
+  const copy = box(howCopy);
+  const demo = box(howDemo);
+  const cx = demo.left - copy.right > 30 ? (copy.right + demo.left) / 2 : lx;
+
+  const landings = [
+    { px: lx, y: y(marks[0]) + cases0.height / 2, from: lx + 7, to: cases0.left - 3 },
+    { px: rx, y: y(marks[1]) + lead.height / 2, from: rx - 7, to: lead.right + 3 },
+  ];
+
+  // 1. How it works: in from the hero's playhead, into the channel.
   const a = y(how);
   const s = Math.min(240, vh * 0.26);
-  const swing = `C${f(w / 2)} ${f(a + s * 0.55)} ${f(tx)} ${f(a + s * 0.3)} ${f(tx)} ${f(a + s)}`;
+  const swing = `C${f(w / 2)} ${f(a + s * 0.55)} ${f(cx)} ${f(a + s * 0.3)} ${f(cx)} ${f(a + s)}`;
 
-  // The swerve: out into the page and back down onto the Use cases eyebrow.
+  // 2. Out of the channel and across to the left margin, onto the eyebrow.
   const y0 = Math.max(a + s + 40, y(how) + how.offsetHeight - 24);
   const g = landings[0].y - y0;
-  const reach = Math.min(w * 0.3, 340);
-  const swerve =
-    g > 90
-      ? `C${f(tx)} ${f(y0 + g * 0.3)} ${f(tx + reach)} ${f(y0 + g * 0.12)} ${f(tx + reach * 0.62)} ${f(y0 + g * 0.5)}` +
-        `C${f(tx + reach * 0.24)} ${f(y0 + g * 0.86)} ${f(tx)} ${f(y0 + g * 0.66)} ${f(tx)} ${f(landings[0].y)}`
+  const across =
+    Math.abs(cx - lx) > 4 && g > 60
+      ? `C${f(cx)} ${f(y0 + g * 0.5)} ${f(lx)} ${f(y0 + g * 0.35)} ${f(lx)} ${f(landings[0].y)}`
       : `V${f(landings[0].y)}`;
 
-  // The gap between Use cases and Download, for the loop.
+  // 3. The loop, from the left margin to the right one.
   const style = getComputedStyle(cases);
   const casesEnd = y(cases) + cases.offsetHeight - parseFloat(style.paddingBottom);
   const g0 = casesEnd + 16;
   const g1 = landings[1].y;
-  const span = Math.min(w - tx * 2, 900);
-  const X = (u) => f(tx + u * span);
+  const X = (u) => f(lx + u * (rx - lx));
   const Y = (v) => f(g0 + v * (g1 - g0));
   const loop =
-    `C${X(0)} ${Y(0.3)} ${X(0.25)} ${Y(0.55)} ${X(0.5)} ${Y(0.52)}` +
-    `C${X(0.75)} ${Y(0.49)} ${X(0.86)} ${Y(0.1)} ${X(0.68)} ${Y(0.07)}` +
-    `C${X(0.52)} ${Y(0.05)} ${X(0.49)} ${Y(0.4)} ${X(0.43)} ${Y(0.62)}` +
-    `C${X(0.38)} ${Y(0.8)} ${X(0)} ${Y(0.68)} ${X(0)} ${Y(1)}`;
+    `C${X(0)} ${Y(0.3)} ${X(0.2)} ${Y(0.55)} ${X(0.42)} ${Y(0.5)}` +
+    `C${X(0.62)} ${Y(0.45)} ${X(0.7)} ${Y(0.08)} ${X(0.55)} ${Y(0.07)}` +
+    `C${X(0.4)} ${Y(0.06)} ${X(0.38)} ${Y(0.45)} ${X(0.55)} ${Y(0.6)}` +
+    `C${X(0.72)} ${Y(0.75)} ${X(1)} ${Y(0.6)} ${X(1)} ${Y(1)}`;
 
   const segs = [
     [swing, a + s],
     [`V${f(y0)}`, y0],
-    [swerve, landings[0].y, "land0"],
+    [across, landings[0].y, "land0"],
     [`V${f(g0)}`, g0],
     [loop, g1, "land1"],
   ];
-  // The vertical runs, where keyframes can sit on the line.
+  // The straight runs, where keyframes can sit on the line.
   const runs = [
-    [a + s, y0],
-    [landings[0].y, g0],
+    [a + s, y0, cx],
+    [landings[0].y, g0, lx],
   ];
 
-  // The footer: down to the panel's corner, onto its top edge and along it
-  // to the playhead. The run along the edge gets its own stretch of scroll
-  // (as much as the page has left, up to 260px), so it plays, not snaps.
+  // 4. The footer: down the right margin, a sweep back across to the
+  // panel's corner, onto its top edge and along it to the playhead. The run
+  // along the edge gets its own stretch of scroll (as much as the page has
+  // left, up to 260px), so it plays, not snaps.
   const panel = document.querySelector("[data-thread-end]");
   const stop = panel?.querySelector("[data-thread-stop]");
   let end = null;
   if (panel && stop) {
-    const pr = panel.getBoundingClientRect();
+    const pr = box(panel);
     const pTop = y(panel);
-    const sr = stop.getBoundingClientRect();
-    const stopX = sr.left + 1;
+    const stopX = box(stop).left + 1;
     const maxHead = document.documentElement.scrollHeight - top0 - (1 - HEAD) * vh;
     const run = Math.max(60, Math.min(260, maxHead - pTop - 24));
-    const corner = Math.min(40, Math.max(12, pr.left - tx + 24));
+    const landEnd = y(land) + land.offsetHeight - parseFloat(getComputedStyle(land).paddingBottom);
+    const yA = Math.min(landEnd + 16, pTop - 60);
+    const gap = pTop - yA;
+    const into = Math.max(pr.left + 14, lx + 30);
     segs.push(
-      [`V${f(pTop - corner)}`, pTop - corner],
-      [`C${f(tx)} ${f(pTop - corner * 0.3)} ${f(tx + corner * 0.4)} ${f(pTop)} ${f(Math.max(pr.left + 12, tx + corner))} ${f(pTop)}`, pTop],
+      [`V${f(yA)}`, yA],
+      [`C${f(rx)} ${f(yA + gap * 0.55)} ${f(lx + (rx - lx) * 0.3)} ${f(pTop - gap * 0.6)} ${f(lx)} ${f(pTop - gap * 0.25)}`, pTop - gap * 0.25],
+      [`C${f(lx)} ${f(pTop - gap * 0.08)} ${f(lx + 6)} ${f(pTop)} ${f(into)} ${f(pTop)}`, pTop],
       [`H${f(stopX)}`, pTop + run],
     );
-    runs.push([g1, pTop - corner]);
+    runs.push([g1, yA, rx]);
     end = { panel, bottom: pr.bottom + scrollY - top0, stop: { x: stopX, y: pTop } };
   } else {
-    runs.push([g1, Infinity]);
+    runs.push([g1, Infinity, rx]);
   }
 
   const keys = [[a, 0]];
@@ -120,7 +144,8 @@ function measure(page, path) {
     const range = el.offsetHeight - vh;
     for (const stopAt of el.dataset.threadStops.split(",").map(Number)) {
       const fy = top + stopAt * range + HEAD * vh;
-      if (runs.some(([r0, r1]) => fy > r0 + 12 && fy < r1 - 12)) frames.push({ x: tx, y: fy, len: lengthAt(keys, fy) });
+      const lane = runs.find(([r0, r1]) => fy > r0 + 12 && fy < r1 - 12);
+      if (lane) frames.push({ x: lane[2], y: fy, len: lengthAt(keys, fy) });
     }
   }
 
@@ -148,7 +173,7 @@ function measure(page, path) {
     keys,
     total: keys.at(-1)[1],
     frames,
-    landings: landings.map((l, i) => ({ ...l, tx, len: at[`land${i}`] })),
+    landings: landings.map((l, i) => ({ ...l, len: at[`land${i}`] })),
   };
 }
 
@@ -428,11 +453,11 @@ export function FlightThread({ pageRef }) {
         ))}
 
         {geo?.landings.map((l, i) => (
-          <g key={`l${i}`} className={styles.landing} data-at={l.len} data-mark={i} data-x={l.tx} data-y={l.y}>
-            <path d={`M${f(l.tx + 7)} ${f(l.y)}H${f(l.x - 3)}`} className={styles.reach} pathLength="1" />
-            <circle cx={l.tx} cy={l.y} r="60" fill="url(#thread-bloom)" className={styles.bloom} />
-            <circle cx={l.tx} cy={l.y} r="14" className={styles.ring} />
-            <circle cx={l.tx} cy={l.y} r="4.5" className={styles.point} />
+          <g key={`l${i}`} className={styles.landing} data-at={l.len} data-mark={i} data-x={l.px} data-y={l.y}>
+            <path d={`M${f(l.from)} ${f(l.y)}H${f(l.to)}`} className={styles.reach} pathLength="1" />
+            <circle cx={l.px} cy={l.y} r="60" fill="url(#thread-bloom)" className={styles.bloom} />
+            <circle cx={l.px} cy={l.y} r="14" className={styles.ring} />
+            <circle cx={l.px} cy={l.y} r="4.5" className={styles.point} />
           </g>
         ))}
 

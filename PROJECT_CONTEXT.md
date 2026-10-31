@@ -155,12 +155,13 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
     - Use cases: the colours of the feed on air. `Switcher` sets `html[data-feed]`, and the colours cross-fade through registered `@property` colours.
     - Download: mint, where the thread lands.
   - **`FlightThread`** (reworked 2026-10-31: "the line is just moving along one side… lackluster"): one line of light in page coordinates (SVG over the page, `pointer-events: none`), laid out from the sections and re-measured with a `ResizeObserver` on the page and the footer. It speaks the logo intro's language.
-    - **Route:**
-      1. It picks up the hero's playhead and swings out to the left margin.
-      2. It runs down past How it works.
-      3. A **swerve** out into the page (up to 340px) brings it back down onto the Use cases eyebrow.
-      4. It flies one loop of the brand's flight path across the next gap and lands on the Download eyebrow.
-      5. It runs on to the footer, turns at the panel's corner onto its top edge (the ruler) and runs along it to the playhead (`[data-thread-end]`, `[data-thread-stop]`). That last run gets its own stretch of scroll (up to 260px).
+    - **Route** (re-routed 2026-10-31 at the team's request: it used to run only down the left margin). It weaves through three lanes, never across copy:
+      1. From the hero's playhead it drops into How it works and runs down the **channel between the steps and the editor** (the midpoint of the gap between the two columns).
+      2. It S-curves out to the **left margin**, lands on the Use cases eyebrow and runs down beside the jog wheel.
+      3. It flies one loop of the brand's flight path across to the **right margin**, lands on Download's lead (right-aligned; `data-landing` is on the lead, which brightens) and runs down beside the landing.
+      4. It **sweeps back across** the gap above the footer to the panel's left corner, turns onto its top edge (the ruler) and runs along it to the playhead (`[data-thread-end]`, `[data-thread-stop]`). That last run gets its own stretch of scroll (up to 260px).
+      - The margins sit halfway into the gutter (at most 26px out) from the content column. Where How it works has no side-by-side channel (narrow screens), that run falls back to the left margin.
+      - Keyframe diamonds sit on whichever lane their run is in.
     - **The comet:** the head rides 62% down the screen. A white-hot core leads a burning mint tail (three windows of the path, at 210, 110 and 34px, set by `stroke-dasharray` and `stroke-dashoffset`), which cools behind into the thin finished line (`.base`).
     - **Speed:** the tail stretches (up to 2.6×), brightens and the head grows with the scroll speed, measured from the line's own progress and smoothed.
     - **Sparks:** the head sheds sparks while it moves, on a fixed `<canvas>`, falling under gravity and carried with the page. There are bursts at keyframes, at each landing and at the footer's playhead.
@@ -169,7 +170,7 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
       - How it works: `0.333,0.667`;
       - the jog wheel: one per preset;
       - Download: lift-off and landing.
-    - **Landings:** at each eyebrow (`data-landing`) the line lands as a point with a bloom, a ring and a reach to the eyebrow's mark; the eyebrow lights in answer (`data-landed`).
+    - **Landings** (`data-landing`, on the Use cases eyebrow and on Download's lead): the line lands as a point with a bloom, a ring and a reach towards the text, which lights in answer (`data-landed`).
     - **Footer:** it has `data-thread` while the line is on its way and `data-arrived` once the line reaches the playhead. Scrolling back up resets it, so it replays.
     - **Performance:** one rAF loop runs only while the line moves or sparks live.
     - **Reduced motion:** the line is drawn whole and still, with no pulses or sparks, and everything has landed.
