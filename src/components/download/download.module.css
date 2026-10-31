@@ -37,7 +37,7 @@
   align-items: flex-end;
   justify-content: space-between;
   gap: 32px;
-  margin-bottom: clamp(32px, 5vw, 56px);
+  margin-bottom: clamp(4px, 1vw, 12px);
 }
 
 .eyebrow {
@@ -117,13 +117,18 @@
   height: 260svh;
 }
 
+/* Unpinned, the stage keeps its own distance from the heading. */
+.track:not([data-live]) {
+  margin-top: clamp(24px, 4vw, 48px);
+}
+
+/* The stage sits at the top of the pin, just clear of the header, so it
+   follows the heading without a gap. */
 .track[data-live] .pin {
   position: sticky;
   top: 0;
-  display: grid;
-  align-items: center;
   height: 100svh;
-  padding-top: 48px;
+  padding-top: clamp(64px, 10vh, 84px);
 }
 
 .stage {
@@ -315,19 +320,6 @@
 
 .destStand {
   fill: #23262c;
-}
-
-.destApp {
-  fill: #1c1e23;
-  stroke: rgb(244 241 234 / 0.1);
-  stroke-width: 1.5;
-}
-
-.destEmpty {
-  fill: none;
-  stroke: rgb(95 224 176 / 0.6);
-  stroke-width: 1.5;
-  stroke-dasharray: 5 5;
 }
 
 .destFolderBack {

@@ -24,7 +24,6 @@ function detect() {
   if (phone) return { id: null, phone: true };
   if (/Mac/i.test(platform)) return { id: "macos", phone: false };
   if (/Win/i.test(platform)) return { id: "windows", phone: false };
-  if (/Linux|X11/i.test(platform)) return { id: "linux", phone: false };
   return { id: null, phone: false };
 }
 
@@ -48,7 +47,8 @@ function Arrow({ up }) {
 }
 
 // Where the icon lands, drawn per platform around (770, 160). Generic
-// shapes: no operating system's own artwork.
+// shapes: no operating system's own artwork. Other systems (and Linux,
+// which Keyfly doesn't ship for) see macOS until they pick.
 function Destination({ id }) {
   if (id === "windows") {
     return (
@@ -60,20 +60,6 @@ function Destination({ id }) {
           <rect key={i} x={738 + i * 16} y="208" width="9" height="8" rx="2" className={styles.destSlot} />
         ))}
         <rect x="726" y="248" width="88" height="10" rx="2" className={styles.destStand} />
-      </g>
-    );
-  }
-  if (id === "linux") {
-    return (
-      <g className={styles.dest}>
-        {[-1, 0, 1].flatMap((row) =>
-          [-1, 0, 1].map((col) =>
-            row === 0 && col === 0 ? null : (
-              <rect key={`${row}${col}`} x={770 + col * 74 - 28} y={160 + row * 74 - 28} width="56" height="56" rx="14" className={styles.destApp} />
-            ),
-          ),
-        )}
-        <rect x="744" y="134" width="52" height="52" rx="13" className={styles.destEmpty} />
       </g>
     );
   }

@@ -106,7 +106,7 @@ function presetPrompt(label) {
 export const download = {
   eyebrow: "Download",
   title: [{ text: "Land Keyfly" }, { text: "on your desktop.", accent: true }],
-  lead: "Keyfly runs on macOS, Windows and Linux. Or open it in your browser, with nothing to install.",
+  lead: "Keyfly runs on macOS and Windows. Or open it in your browser, with nothing to install.",
   // The landing's readout: the install's three stages (they run with the
   // flight), its status in the air and on landing, and the scroll hint.
   stages: ["Download", "Install", "Open"],
@@ -121,6 +121,5 @@ export const download = {
   platforms: [
     { id: "macos", label: "macOS", target: "Applications", step: "Drag Keyfly to Applications to install.", href: null },
     { id: "windows", label: "Windows", target: "Desktop", step: "Run the installer and Keyfly is ready.", href: null }, // PLACEHOLDER step
-    { id: "linux", label: "Linux", target: "Apps", step: "Install it and open Keyfly from your apps.", href: null }, // PLACEHOLDER step
   ],
 };

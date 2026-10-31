@@ -6,7 +6,7 @@ The durable handoff for anyone (people or coding agents) working on the Keyfly w
 
 ## Product (what we know so far)
 
-- Keyfly is a desktop app for macOS, Windows and Linux, made by Cevrynt Inc.
+- Keyfly is a desktop app for macOS and Windows (the team confirmed on 2026-10-31 that there is no Linux build), made by Cevrynt Inc.
 - Its symbol, "Flight path", stands for the camera's flight and the moment a shot lands, so the product is about video.
 - Domain: probably `keyfly.si` (from the installer art). `siteConfig.url` falls back to it; set `NEXT_PUBLIC_SITE_URL` to override.
 - Still open: what Keyfly does in detail, the audience, the main conversion (download, waitlist, purchase), pricing, and real product screenshots. Do not write product claims until these are answered.
@@ -211,12 +211,13 @@ The root layout renders the skip link, `SiteHeader` and `<main id="main">`. Page
   - **Readout above:** "● Installing Keyfly → {target}" (then "Landed"), the stages 01 Download · 02 Install · 03 Open, and a big mono percentage.
   - **Below the flight:** platform tabs (plain text, mint underline, a "Your system" tag), the step, and the buttons.
   - **Platform:** detected with `useSyncExternalStore`. Phones get "On a phone? Keyfly runs in the browser."
-  - **Destinations:** generic shapes, never an operating system's own artwork: an Applications folder (macOS), a desktop monitor (Windows), an app grid (Linux).
+  - **Destinations:** generic shapes, never an operating system's own artwork: an Applications folder (macOS) and a desktop monitor (Windows). Other systems, Linux included, see macOS until they pick.
   - **Buttons:** each platform's `href` in `download.platforms` is `null` until its build is published.
     - With an `href`, the primary button is "Download for {platform}" and "Open in your browser" is secondary.
     - Without one, "Open in your browser" (`app.keyfly.si`) is primary, beside a "{platform} · Coming soon" chip.
   - **Fallback:** it pins only where the stage fits the screen (content + 96px ≤ the window's height) and motion is allowed; otherwise it shows landed. The server HTML shows it landed too.
-  - **Copy:** the Windows and Linux steps are PLACEHOLDER. The macOS step and the footnote ("Keyfly.si is a Cevrynt Inc. product") come from the installer art.
+  - **Pinned stages** (here and in Use cases) sit at the top of the pin (padding `clamp(64px, 10vh, 84px)`, clear of the header), not centred, so they follow their heading without a gap.
+  - **Copy:** the Windows step is PLACEHOLDER. The macOS step and the footnote ("Keyfly.si is a Cevrynt Inc. product") come from the installer art.
 - **Gotchas:**
   - **Grid overflow:** grid containers that hold the scrolling chip row need `grid-template-columns: minmax(0, 1fr)`. Without it the row's `max-content` width widens the page on mobile.
   - **No large blur:** never put a large `filter: blur()` in a 3D, animated stage.
