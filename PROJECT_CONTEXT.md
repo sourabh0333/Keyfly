@@ -125,7 +125,20 @@ The root layout renders the skip link, `SiteHeader` and `<main id="main">`. Page
 
 ## Homepage (step by step, from 2026-10-30)
 
-`src/app/page.jsx` renders Hero → HowItWorks (`#product`) → UseCases (`#use-cases`) → Download (`#download`). All copy lives in `src/content/home.js`. Lines marked `PLACEHOLDER` wait for the confirmed product description, so the page is `noindex` until then.
+`src/app/page.jsx` renders, inside `Scene`, Hero → HowItWorks (`#product`) → UseCases (`#use-cases`) → Download (`#download`). All copy lives in `src/content/home.js`. Lines marked `PLACEHOLDER` wait for the confirmed product description, so the page is `noindex` until then.
+
+- **Scene** (`src/components/scene/`, added 2026-10-31 at the team's request: the page was flat black and the sections felt disconnected). It ties the sections together as one scroll:
+  - **`SceneLight`:** a fixed light behind every section, so sections leave their own backgrounds transparent (the hero's backdrop fades out at its foot with a mask). Each section brings up its own layer as it fills the screen (`--w`), and the layers drift slowly:
+    - How it works: dusk (violet-blue and peach, from its viewer's shots).
+    - Use cases: the colours of the feed on air. `Switcher` sets `html[data-feed]`, and the colours cross-fade through registered `@property` colours.
+    - Download: mint, where the thread lands.
+  - **`FlightThread`:** one mint line in page coordinates (SVG over the page, `pointer-events: none`), laid out from the sections and re-measured with a `ResizeObserver`.
+    - It picks up the hero's playhead at the top of How it works, swings out to the left margin and runs down it.
+    - Two keyframe diamonds light where the pinned How it works changes step.
+    - It lands as a point on the Use cases eyebrow, flies one loop of the brand's flight path across the gap, and lands on the Download eyebrow (a ring keeps pulsing there).
+    - Eyebrows that can be landed on carry `data-landing`; the thread sets `data-landed` on them and they light in answer.
+    - It draws with the scroll: its glowing head rides 62% down the screen. With reduced motion it is drawn whole and every point has landed.
+  - The thread stays in margins and gaps; never route it across copy.
 
 - **Hero** (`src/components/hero/`): one full screen. It has the eyebrow, a two-line h1 (the second line is in the serif italic accent with a mint shimmer), a lead line and the prompt box.
   - **Words** arrive one by one out of a blur.
@@ -143,7 +156,7 @@ The root layout renders the skip link, `SiteHeader` and `<main id="main">`. Page
     - The floor turns slightly with the pointer.
   - **Also on the hero:** a pointer light (`PointerField`, fine pointers only) and film grain.
 - **How it works** (`src/components/how-it-works/`, added 2026-10-31): three steps beside an illustrative Keyfly editor window, captioned "Illustrative interface".
-  - **Continuity:** the hero's playhead runs on down into the section (`.leadIn`), and the hero's backdrop fades to Night at its foot.
+  - **Continuity:** the flight thread (see Scene) picks up the hero's playhead at the top of the section.
   - **Steps:** Describe it, Keyfly edits, Export anywhere, on a rail that fills with the mint point at its tip. Only the current step shows its body. On narrow screens they become one row of three.
   - **Scroll progress:** `ScrollStage` (client) pins the section (`data-live`, 420svh, sticky 100svh stage). It writes to the DOM:
     - `--p`, `--s1`, `--s2`, `--s3` (one per step), `--asm` (assembly) and `--ph` (playhead);

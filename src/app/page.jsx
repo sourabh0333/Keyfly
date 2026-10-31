@@ -1,5 +1,6 @@
 import { Download } from "@/components/download/download";
 import { Hero } from "@/components/hero/hero";
+import { Scene } from "@/components/scene/scene";
 import { HowItWorks } from "@/components/how-it-works/how-it-works";
 import { UseCases } from "@/components/use-cases/use-cases";
 import { siteConfig } from "@/config/site";
@@ -15,11 +16,11 @@ export const metadata = {
 
 export default function Home() {
   return (
-    <>
+    <Scene>
       <Hero />
       <HowItWorks />
       <UseCases />
       <Download />
-    </>
+    </Scene>
   );
 }

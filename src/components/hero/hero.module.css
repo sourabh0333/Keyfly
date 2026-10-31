@@ -7,7 +7,6 @@
   min-height: 100svh;
   padding: calc(14px + 56px + clamp(36px, 8vh, 96px)) var(--gutter) clamp(220px, 36vh, 360px);
   overflow: hidden;
-  background: var(--night);
   text-align: center;
 }
 
@@ -16,6 +15,8 @@
   inset: 0;
   z-index: -1;
   pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 160px), transparent);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 160px), transparent);
 }
 
 /* Light: a cool wash from above and a mint horizon where the timeline
@@ -31,15 +32,8 @@
   animation: breathe 9s ease-in-out infinite alternate;
 }
 
-/* The last stretch fades to plain Night, where "How it works" picks up
-   the playhead. */
-.backdrop::after {
-  content: "";
-  position: absolute;
-  inset: auto 0 0;
-  height: 120px;
-  background: linear-gradient(to bottom, rgb(11 11 13 / 0), var(--night));
-}
+/* The last stretch fades into the page's light (see Scene), where the
+   flight thread picks up the playhead. */
 
 /* Film grain over everything. */
 .grain {

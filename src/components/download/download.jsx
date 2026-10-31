@@ -17,7 +17,7 @@ export function Download() {
       <div className={styles.inner}>
         <div className={styles.head}>
           <div>
-            <p className={styles.eyebrow}>
+            <p className={styles.eyebrow} data-landing>
               <span className={styles.eyebrowMark} aria-hidden="true" />
               {eyebrow}
             </p>

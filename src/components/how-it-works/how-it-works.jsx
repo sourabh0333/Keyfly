@@ -56,8 +56,6 @@ export function HowItWorks() {
 
   return (
     <ScrollStage className={styles.section} id="product" labelledBy="how-title" label="How it works" prompt={demo.prompt}>
-      <div className={styles.leadIn} aria-hidden="true" />
-
       <div className={styles.stage}>
         <div className={styles.copy}>
           <p className={styles.eyebrow}>

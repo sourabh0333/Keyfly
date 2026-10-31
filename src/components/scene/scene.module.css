@@ -1,0 +1,260 @@
+/*
+ * The homepage as one scene: a light behind every section that changes
+ * with the section on screen, and the flight thread drawn over the
+ * margins. Sections leave their own backgrounds transparent so both show.
+ */
+.page {
+  position: relative;
+}
+
+/* ---------- Light ---------- */
+
+.light {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  background:
+    radial-gradient(80% 60% at 50% 120%, rgb(95 224 176 / 0.035), transparent 70%),
+    var(--night);
+  pointer-events: none;
+}
+
+.layer {
+  --w: 0;
+  position: absolute;
+  inset: -12%;
+  opacity: var(--w);
+  will-change: opacity, transform;
+}
+
+/* How it works: dusk, from the shots in its viewer. */
+.layer[data-scene="how"] {
+  background:
+    radial-gradient(34% 40% at 72% 40%, rgb(91 92 150 / 0.2), transparent 70%),
+    radial-gradient(30% 32% at 80% 66%, rgb(227 179 132 / 0.12), transparent 70%),
+    radial-gradient(30% 40% at 18% 70%, rgb(95 224 176 / 0.06), transparent 70%);
+  animation: driftA 26s ease-in-out infinite alternate;
+}
+
+/* Use cases: the colours of the feed on air (html[data-feed]). */
+@property --feed-a {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgb(75 74 120 / 0.22);
+}
+
+@property --feed-b {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: rgb(227 179 132 / 0.14);
+}
+
+.layer[data-scene="cases"] {
+  background:
+    radial-gradient(36% 42% at 68% 48%, var(--feed-a), transparent 70%),
+    radial-gradient(28% 34% at 84% 74%, var(--feed-b), transparent 70%),
+    radial-gradient(26% 36% at 14% 40%, rgb(95 224 176 / 0.05), transparent 70%);
+  transition:
+    --feed-a 1.4s ease,
+    --feed-b 1.4s ease;
+  animation: driftB 30s ease-in-out infinite alternate;
+}
+
+:global(html[data-feed="ugc"]) .layer[data-scene="cases"] {
+  --feed-a: rgb(120 88 64 / 0.24);
+  --feed-b: rgb(255 214 160 / 0.1);
+}
+
+:global(html[data-feed="explainer"]) .layer[data-scene="cases"] {
+  --feed-a: rgb(60 90 110 / 0.2);
+  --feed-b: rgb(95 224 176 / 0.12);
+}
+
+:global(html[data-feed="montage"]) .layer[data-scene="cases"] {
+  --feed-a: rgb(44 74 106 / 0.26);
+  --feed-b: rgb(176 96 122 / 0.16);
+}
+
+:global(html[data-feed="demo"]) .layer[data-scene="cases"] {
+  --feed-a: rgb(70 90 150 / 0.2);
+  --feed-b: rgb(142 197 214 / 0.1);
+}
+
+:global(html[data-feed="podcast"]) .layer[data-scene="cases"] {
+  --feed-a: rgb(40 90 70 / 0.24);
+  --feed-b: rgb(95 224 176 / 0.12);
+}
+
+/* Download: back to mint, where the thread lands. */
+.layer[data-scene="land"] {
+  background:
+    radial-gradient(40% 36% at 30% 30%, rgb(95 224 176 / 0.11), transparent 70%),
+    radial-gradient(44% 40% at 72% 70%, rgb(18 128 91 / 0.16), transparent 70%);
+  animation: driftA 24s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes driftA {
+  to {
+    transform: translate(-4%, 3%) scale(1.06);
+  }
+}
+
+@keyframes driftB {
+  to {
+    transform: translate(4%, -3%) scale(1.05);
+  }
+}
+
+/* ---------- Thread ---------- */
+
+.thread {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  overflow: visible;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.thread[data-ready] {
+  opacity: 1;
+}
+
+.thread path,
+.thread circle,
+.thread rect {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+/* The way ahead, barely there. */
+.track {
+  fill: none;
+  stroke: rgb(244 241 234 / 0.05);
+  stroke-width: 1;
+}
+
+.line {
+  fill: none;
+  stroke: var(--soft-mint);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 4px rgb(95 224 176 / 0.55));
+}
+
+.head {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.head[data-on] {
+  opacity: 1;
+}
+
+.headCore {
+  fill: #eafff6;
+  filter: drop-shadow(0 0 6px var(--soft-mint));
+}
+
+/* Keyframes where the steps of "How it works" change. */
+.keyframe rect {
+  fill: var(--night);
+  stroke: rgb(244 241 234 / 0.25);
+  stroke-width: 1;
+  transition:
+    fill 0.3s ease,
+    stroke 0.3s ease;
+}
+
+.keyframe[data-landed] rect {
+  fill: var(--soft-mint);
+  stroke: var(--soft-mint);
+  animation: pop 0.5s var(--ease-land);
+}
+
+/* Landings: the point settles, a ring goes out and the line reaches the
+   eyebrow. */
+.point {
+  fill: var(--soft-mint);
+  scale: 0;
+  transition: scale 0.35s var(--ease-land);
+  filter: drop-shadow(0 0 6px var(--soft-mint));
+}
+
+.landing[data-landed] .point {
+  scale: 1;
+}
+
+.bloom {
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.landing[data-landed] .bloom {
+  opacity: 0.5;
+}
+
+.ring {
+  fill: none;
+  stroke: var(--soft-mint);
+  stroke-width: 1.2;
+  opacity: 0;
+}
+
+.landing[data-landed] .ring {
+  animation: ring 0.9s ease-out;
+}
+
+.landing[data-final][data-landed] .ring {
+  animation: ring 0.9s ease-out, ring 2.4s ease-out 1.6s infinite;
+}
+
+.reach {
+  fill: none;
+  stroke: var(--soft-mint);
+  stroke-width: 1;
+  stroke-dasharray: 1 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 0.5s ease 0.15s;
+}
+
+.landing[data-landed] .reach {
+  stroke-dashoffset: 0;
+}
+
+@keyframes ring {
+  from {
+    scale: 0.4;
+    opacity: 0.9;
+  }
+  to {
+    scale: 2.6;
+    opacity: 0;
+  }
+}
+
+@keyframes pop {
+  50% {
+    scale: 1.6;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .layer {
+    animation: none;
+  }
+
+  .landing[data-landed] .ring,
+  .landing[data-final][data-landed] .ring,
+  .keyframe[data-landed] rect {
+    animation: none;
+  }
+
+  .point,
+  .reach {
+    transition: none;
+  }
+}

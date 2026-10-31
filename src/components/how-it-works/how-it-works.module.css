@@ -13,9 +13,6 @@
   --ph: 1;
   position: relative;
   isolation: isolate;
-  background:
-    radial-gradient(50% 30% at 70% 40%, rgb(95 224 176 / 0.06), transparent 70%),
-    var(--night);
   color: var(--paper);
 }
 
@@ -29,18 +26,6 @@
   opacity: 0.06;
   mix-blend-mode: overlay;
   pointer-events: none;
-}
-
-/* The hero's playhead runs on down into this section. */
-.leadIn {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  width: 2px;
-  height: clamp(64px, 12vh, 120px);
-  margin-left: -1px;
-  background: linear-gradient(to bottom, var(--soft-mint), rgb(95 224 176 / 0));
-  box-shadow: 0 0 16px rgb(95 224 176 / 0.5);
 }
 
 .section[data-live] {

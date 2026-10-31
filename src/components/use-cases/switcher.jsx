@@ -47,6 +47,13 @@ export function Switcher({ items, cta, hint }) {
     return () => observer.disconnect();
   }, []);
 
+  // The page's light takes its colours from the feed on air (see SceneLight).
+  useEffect(() => {
+    document.documentElement.dataset.feed = items[active].kind;
+  }, [active, items]);
+
+  useEffect(() => () => delete document.documentElement.dataset.feed, []);
+
   // Auto-cut to the next use case.
   useEffect(() => {
     if (!auto) return;

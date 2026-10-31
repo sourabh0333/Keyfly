@@ -8,9 +8,6 @@
   position: relative;
   isolation: isolate;
   padding: var(--section-pad) var(--gutter);
-  background:
-    radial-gradient(50% 40% at 40% 70%, rgb(95 224 176 / 0.05), transparent 70%),
-    var(--night);
   color: var(--paper);
 }
 
@@ -57,6 +54,19 @@
   height: 1px;
   background: var(--soft-mint);
   box-shadow: 0 0 8px var(--soft-mint);
+  transition:
+    width 0.5s var(--ease-land),
+    box-shadow 0.5s ease;
+}
+
+/* The flight thread has landed here (see FlightThread). */
+.eyebrow[data-landed] {
+  color: rgb(244 241 234 / 0.85);
+}
+
+.eyebrow[data-landed] .eyebrowMark {
+  width: 30px;
+  box-shadow: 0 0 12px var(--soft-mint);
 }
 
 .title {
