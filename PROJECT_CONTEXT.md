@@ -123,23 +123,18 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
   - A light slides under the hovered or focused link (`--lx`, `--lw`).
   - At 860px and below the links fold into a menu panel behind a two-line button, which closes on Escape. Below 420px only the menu button remains.
 
-## Footer (added 2026-10-31)
+## Footer (added 2026-10-31, rebuilt the same day)
 
-`src/components/footer/`, with its copy in `src/content/footer.js`. The page plays as a film, so the footer is its **end credits**.
+`src/components/footer/`, with its copy in `src/content/footer.js`. The first version, "end credits", didn't read as a footer and was dropped. This one is a conventional footer in the site's style: one night panel (`#101114`, radius 26) in the 1320px column.
 
-- **End card:**
-  - "— That's a wrap —", then "Your next video / *starts with a sentence.*" (with the heading wipe).
-  - `PromptBar` (client) is the hero's prompt box in miniature, not a second form. Clicking it dispatches `keyfly:prompt` with no preset; `PromptBox` then scrolls up and takes focus, so the page ends where it began.
-- **Credits:**
-  - The site's links, set like film credits: mono roles right-aligned, names left, either side of a mint spine with a keyframe diamond per credit.
-  - They list only what exists: Product → How it works, the six presets, macOS · Windows, Open Keyfly · Sign in, and "A product of Cevrynt Inc.".
-  - They roll up into place on a view timeline.
-  - On narrow screens the spine moves to the left and each role sits above its names.
-- **Final frame:**
-  - An end-of-reel ruler. Its playhead runs to "00:00:48:00 · End of reel" on the footer's named view timeline (`--foot`, entry 50%→100%), so it reaches the end exactly as the page does.
-  - The unaltered lockup at 64px with the intro on scroll (`play="view"`).
-  - "© {year} Cevrynt Inc. · keyfly.si · Back to top".
+- **Top edge:** a timeline ruler, with the mint playhead parked at the end of the reel.
+- **Call to action:** "Your next video / *starts with a sentence.*" with the mint "Open Keyfly" (the app) and the ghost "Download" (`/#download`).
+- **Main row:**
+  - Brand: the logo (30px, intro on scroll), the site description (PLACEHOLDER, from `siteConfig`) and a "macOS · Windows" pill.
+  - Three link columns: Product (How it works, Use cases, Download); Use cases (the six presets); Keyfly (Open Keyfly, Sign in, Keyfly for macOS, Keyfly for Windows).
+- **Bottom bar:** "© {year} Cevrynt Inc.", keyfly.si and Back to top.
 - **No inventions:** no social links, no legal pages and no newsletter until they exist.
+- **Narrow screens:** the brand sits above the columns. On phones the columns become two, and the CTA buttons share the row.
 - **Logo fix (same day):** the logo's glowing-trail layer (`.glowLayer`) is drawn only while light runs: during the intro (`data-state="running"`) or a hover relight (`data-lit`). At rest its filter region left a faint mark beside the symbol at larger sizes. The logo's shapes and colours are unchanged.
 
 ## Homepage (step by step, from 2026-10-30)
