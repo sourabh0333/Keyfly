@@ -36,7 +36,8 @@ const LENGTH = { shorter: "0:30", pauses: "0:36" };
 const WORDS = ["Your", "story,", "cut", "in", "seconds"];
 
 /**
- * The first cut, changed by words: a command bar under the picture where
+ * The first cut, changed by words: the picture and its timeline on the
+ * left, and on the right an "Ask Keyfly" panel with a command bar where
  * each ask ("Make it shorter", "Cut the pauses", …) types itself in and
  * lands as a visible change, to the timeline (clips shrink, pauses close,
  * cuts double), the picture (a warm grade, captions, a vertical reframe)
@@ -102,61 +103,66 @@ export function CommandCut({ edits, barLabel }) {
       onFocus={() => setHeld(true)}
       onBlur={(event) => !event.currentTarget.contains(event.relatedTarget) && setHeld(false)}
     >
-      <div className={styles.viewer} aria-hidden="true">
-        <div className={styles.frame}>
-          <Preview kind="montage" format="16:9" bleed />
-          <span className={styles.grade} />
-          <p className={styles.captions}>
-            {WORDS.map((word, i) => (
-              <span key={word} style={{ "--i": i }}>
-                {word}
-              </span>
-            ))}
-          </p>
-        </div>
-      </div>
-
-      <div className={styles.meta} aria-hidden="true">
-        <span>
-          Launch video
-          <span className={styles.metaMuted}> · first cut</span>
-        </span>
-        <span className={styles.length}>{LENGTH[shown] ?? "0:42"}</span>
-        <span className={styles.format}>{shown === "vertical" ? "9:16" : "16:9"}</span>
-      </div>
-
-      <div className={styles.timeline} aria-hidden="true">
-        <div className={styles.track}>
-          <span className={styles.trackLabel}>V1</span>
-          <div className={styles.lane}>
-            {clips.map((clip, i) => (
-              <span key={i}>
-                <i className={styles.clip} data-n={i % 3} style={{ left: `${clip.x}%`, width: `${clip.width}%` }} />
-                {BASE[i].g ? <i className={styles.pause} style={{ left: `${clip.x + clip.width}%`, width: `${clip.gap}%` }} /> : null}
-              </span>
-            ))}
-            <span className={styles.rail}>
-              <i className={styles.playhead} />
-            </span>
+      <div className={styles.picture}>
+        <div className={styles.viewer} aria-hidden="true">
+          <div className={styles.frame}>
+            <Preview kind="montage" format="16:9" bleed />
+            <span className={styles.grade} />
+            <p className={styles.captions}>
+              {WORDS.map((word, i) => (
+                <span key={word} style={{ "--i": i }}>
+                  {word}
+                </span>
+              ))}
+            </p>
           </div>
         </div>
-        <div className={styles.track} data-kind="captions">
-          <span className={styles.trackLabel}>C1</span>
-          <div className={styles.lane}>
-            {clips.map((clip, i) => (
-              <i key={i} className={styles.caption} style={{ left: `${clip.x + 1}%`, width: `${Math.max(0, clip.width - 2)}%`, "--i": i }} />
-            ))}
-          </div>
+
+        <div className={styles.meta} aria-hidden="true">
+          <span>
+            Launch video
+            <span className={styles.metaMuted}> · first cut</span>
+          </span>
+          <span className={styles.length}>{LENGTH[shown] ?? "0:42"}</span>
+          <span className={styles.format}>{shown === "vertical" ? "9:16" : "16:9"}</span>
         </div>
-        <div className={styles.track} data-kind="grade">
-          <span className={styles.trackLabel}>FX</span>
-          <div className={styles.lane}>
-            <i className={styles.gradeBar} />
+
+        <div className={styles.timeline} aria-hidden="true">
+          <div className={styles.track}>
+            <span className={styles.trackLabel}>V1</span>
+            <div className={styles.lane}>
+              {clips.map((clip, i) => (
+                <span key={i}>
+                  <i className={styles.clip} data-n={i % 3} style={{ left: `${clip.x}%`, width: `${clip.width}%` }} />
+                  {BASE[i].g ? <i className={styles.pause} style={{ left: `${clip.x + clip.width}%`, width: `${clip.gap}%` }} /> : null}
+                </span>
+              ))}
+              <span className={styles.rail}>
+                <i className={styles.playhead} />
+              </span>
+            </div>
+          </div>
+          <div className={styles.track} data-kind="captions">
+            <span className={styles.trackLabel}>C1</span>
+            <div className={styles.lane}>
+              {clips.map((clip, i) => (
+                <i key={i} className={styles.caption} style={{ left: `${clip.x + 1}%`, width: `${Math.max(0, clip.width - 2)}%`, "--i": i }} />
+              ))}
+            </div>
+          </div>
+          <div className={styles.track} data-kind="grade">
+            <span className={styles.trackLabel}>FX</span>
+            <div className={styles.lane}>
+              <i className={styles.gradeBar} />
+            </div>
           </div>
         </div>
       </div>
 
       <div className={styles.command}>
+        <p className={styles.commandLabel} aria-hidden="true">
+          Ask Keyfly
+        </p>
         <div className={styles.bar} aria-live="polite">
           <span className={styles.spark} aria-hidden="true">
             ✦
@@ -181,6 +187,9 @@ export function CommandCut({ edits, barLabel }) {
         <div className={styles.chips} role="group" aria-label={barLabel}>
           {edits.map((e, i) => (
             <button key={e.id} type="button" className={styles.chip} aria-pressed={i === active} onClick={() => ask(i)}>
+              <span className={styles.chipIndex} aria-hidden="true">
+                {String(i + 1).padStart(2, "0")}
+              </span>
               {e.ask}
             </button>
           ))}

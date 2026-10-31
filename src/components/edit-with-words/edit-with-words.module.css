@@ -82,27 +82,34 @@
 
 /* ---------- Stage ---------- */
 
-/* Everything lines up to the picture's 16:9 width; the picture keeps a
-   fixed height (capped by the screen) and narrows to 9:16 when reframed. */
+/* Two columns on wide screens: the picture and its timeline, and the Ask
+   Keyfly panel. The picture keeps a 16:9 height from its column's width
+   and narrows to 9:16, centred, when reframed. */
 .stage {
-  --h: min(calc(min(920px, 100vw - 2 * var(--gutter)) * 9 / 16), 40svh);
   display: grid;
-  justify-items: center;
-  gap: 14px;
-  width: min(100%, calc(var(--h) * 16 / 9));
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(24px, 3.5vw, 48px);
+  max-width: 1320px;
   margin: 0 auto;
 }
 
+.picture {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+  container-type: inline-size;
+}
+
 .viewer {
+  --h: calc(100cqw * 9 / 16);
   display: grid;
   justify-items: center;
-  width: 100%;
 }
 
 .frame {
   position: relative;
   width: 100%;
-  max-width: 100%;
   height: var(--h);
   overflow: hidden;
   border-radius: 18px;
@@ -116,12 +123,6 @@
 
 .stage[data-edit="vertical"] .frame {
   width: calc(var(--h) * 9 / 16);
-}
-
-@media (max-width: 640px) {
-  .stage {
-    --h: calc((100vw - 2 * var(--gutter)) * 9 / 16);
-  }
 }
 
 /* A warm grade over the picture. */
@@ -367,14 +368,26 @@
   box-shadow: 0 0 10px var(--soft-mint);
 }
 
-/* ---------- Command bar ---------- */
+/* ---------- Ask Keyfly panel ---------- */
 
 .command {
   display: grid;
-  justify-items: center;
-  gap: 12px;
-  width: 100%;
-  margin-top: 6px;
+  gap: 14px;
+  min-width: 0;
+  padding: clamp(16px, 2vw, 22px);
+  border-radius: 18px;
+  background: #121316;
+  box-shadow:
+    0 0 0 1px rgb(244 241 234 / 0.08),
+    0 40px 100px -40px rgb(0 0 0 / 0.9);
+}
+
+.commandLabel {
+  color: rgb(244 241 234 / 0.45);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
 .bar {
@@ -382,15 +395,13 @@
   grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
   gap: 12px;
-  width: min(620px, 100%);
   height: 54px;
   padding: 0 8px 0 16px;
-  border-radius: 16px;
-  background: #141518;
+  border-radius: 14px;
+  background: #18191d;
   box-shadow:
     0 0 0 1px rgb(95 224 176 / 0.35),
-    0 20px 60px -20px rgb(0 0 0 / 0.9),
-    0 0 50px -16px rgb(95 224 176 / 0.45);
+    0 0 40px -16px rgb(95 224 176 / 0.45);
 }
 
 .spark {
@@ -435,10 +446,10 @@
 }
 
 .reply {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   gap: 8px;
-  min-height: 1.5em;
+  min-height: 1.6em;
   color: rgb(244 241 234 / 0.5);
   font-family: var(--font-mono-stack);
   font-size: 0.75rem;
@@ -447,6 +458,7 @@
 }
 
 .reply i {
+  flex: none;
   width: 14px;
   height: 14px;
   border-radius: 50%;
@@ -464,40 +476,65 @@
   box-shadow: 0 0 8px rgb(95 224 176 / 0.6);
 }
 
+/* The asks: a list of rows on wide screens, chips on narrow ones. */
 .chips {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 8px;
-  max-width: 720px;
+  display: grid;
+  gap: 4px;
+  padding-top: 12px;
+  border-top: 1px solid rgb(244 241 234 / 0.07);
 }
 
 .chip {
-  padding: 8px 14px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 12px;
   border: 0;
-  border-radius: 999px;
-  background: rgb(244 241 234 / 0.05);
-  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.1) inset;
-  color: rgb(244 241 234 / 0.75);
+  border-radius: 10px;
+  background: none;
+  color: rgb(244 241 234 / 0.7);
   font: inherit;
-  font-size: 0.8125rem;
+  font-size: 0.9375rem;
   font-weight: 540;
+  text-align: left;
   cursor: pointer;
   transition:
     background-color 0.25s ease,
-    box-shadow 0.25s ease,
     color 0.25s ease;
 }
 
+.chipIndex {
+  color: rgb(244 241 234 / 0.35);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+}
+
 .chip:hover {
-  background: rgb(244 241 234 / 0.09);
+  background: rgb(244 241 234 / 0.05);
   color: var(--paper);
 }
 
 .chip[aria-pressed="true"] {
-  background: rgb(95 224 176 / 0.12);
-  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.55) inset;
+  background: rgb(95 224 176 / 0.1);
+  color: var(--paper);
+}
+
+.chip[aria-pressed="true"] .chipIndex {
   color: var(--soft-mint);
+}
+
+/* A mint marker on the ask in play. */
+.chip[aria-pressed="true"]::before {
+  content: "";
+  position: absolute;
+  top: 10px;
+  bottom: 10px;
+  left: 0;
+  width: 2px;
+  border-radius: 2px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
 }
 
 .chip:focus-visible {
@@ -545,6 +582,37 @@
 
 /* ---------- Smaller screens ---------- */
 
+/* One column: the picture, then the panel, the asks as chips. */
+@media (max-width: 900px) {
+  .stage {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .chip {
+    padding: 7px 12px;
+    border-radius: 999px;
+    background: rgb(244 241 234 / 0.05);
+    box-shadow: 0 0 0 1px rgb(244 241 234 / 0.1) inset;
+    font-size: 0.8125rem;
+  }
+
+  .chip[aria-pressed="true"] {
+    box-shadow: 0 0 0 1px rgb(95 224 176 / 0.55) inset;
+    color: var(--soft-mint);
+  }
+
+  .chip[aria-pressed="true"]::before,
+  .chipIndex {
+    display: none;
+  }
+}
+
 @media (max-width: 640px) {
   .plain,
   .accent {
@@ -561,11 +629,6 @@
 
   .ask {
     font-size: 0.9375rem;
-  }
-
-  .chip {
-    padding: 7px 12px;
-    font-size: 0.75rem;
   }
 }
 

@@ -209,8 +209,10 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
   - **Step 3:** the frame tries 16:9, 9:16 and 1:1 (its width animates at a fixed height, using `cqw` of the viewer), and the export bar fills to "Ready".
   - **Fallback:** without JS or with reduced motion there is no pin, and the CSS defaults (all progress at 1) show the finished cut.
   - **Copy:** in `howItWorks` (content file), PLACEHOLDER.
-- **Edit with words** (`src/components/edit-with-words/`, added 2026-10-31; the first of the new sections in `PLAN.md`): "Change anything *by saying it.*" The core differentiator, refining the first cut by asking. It is centred (heading, then a stage), unlike the side-by-side sections around it, and captioned "Illustrative interface".
-  - **`CommandCut`** (client): the picture (a `Preview`, montage) over its running time, format and timeline (V1 clips with hatched pauses, C1 captions, FX grade). Beneath is a command bar where each ask types itself in, Keyfly's reply under it, and six asks as chips.
+- **Edit with words** (`src/components/edit-with-words/`, added 2026-10-31; the first of the new sections in `PLAN.md`): "Change anything *by saying it.*" The core differentiator, refining the first cut by asking. The heading is centred; the stage spans the full column. It is captioned "Illustrative interface".
+  - **`CommandCut`** (client), two columns on wide screens (one below 900px):
+    - **Left:** the picture (a `Preview`, montage) over its running time, format and timeline (V1 clips with hatched pauses, C1 captions, FX grade).
+    - **Right:** an "Ask Keyfly" panel: a command bar where each ask types itself in, Keyfly's reply, and the six asks as a list of rows (wrapping chips on narrow screens).
   - **Each ask lands as a visible change** (`data-edit` on `.stage`):
     - **shorter:** clips shrink and 0:42 becomes 0:30;
     - **pauses:** the hatched gaps close (0:36);
@@ -219,7 +221,7 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
     - **vertical:** the picture narrows to 9:16 at the same height;
     - **pace:** every clip is cut in two.
   - **Playback:** it moves on every 4.2s while on screen and not hovered or focused, and the chips choose directly. With reduced motion it waits for a click and changes without easing.
-  - **Layout:** the stage takes the picture's 16:9 width (height capped at 40svh) so everything lines up. The playhead rides a rail that slides by its own width, and the lane clips sideways (`overflow-x: clip`).
+  - **Layout:** the picture's height comes from its column's width (`cqw`, 16:9) and narrows to 9:16, centred, when reframed. An earlier version sized the whole stage from the screen's height and looked like a phone layout on short laptops. The playhead rides a rail that slides by its own width, and the lane clips sideways (`overflow-x: clip`).
   - **Copy:** `editWithWords` in the content file, all PLACEHOLDER until the team confirms which follow-up edits are real.
   - **Flight thread:** it crosses from How it works' channel to the left margin in the gap before this section and runs down beside it.
 - **Use cases** (`src/components/use-cases/`, added 2026-10-31, redesigned four times the same day): the six prompt-box presets on a **jog wheel**, the dial editors spin to move through footage. Captioned "Illustrative previews". It is not pinned, so it fits any height. Earlier versions were dropped:
