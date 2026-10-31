@@ -131,7 +131,7 @@ export const everyFormat = {
   ready: "Ready",
   rendering: "Reframing",
   queued: "Queued",
-  allReady: "files from one edit",
+  allReady: "formats · 1 cut",
   timeline: "One timeline",
   note: "Illustrative interface",
   formats: [

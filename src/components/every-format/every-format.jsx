@@ -1,7 +1,7 @@
 import { everyFormat } from "@/content/home";
 import wipe from "@/components/scene/wipe.module.css";
 import { PauseOffscreen } from "@/components/pause-offscreen";
-import { ExportWindow } from "./export-window";
+import { FourScreens } from "./four-screens";
 import styles from "./every-format.module.css";
 
 /**
@@ -33,7 +33,7 @@ export function EveryFormat() {
           <p className={styles.lead}>{lead}</p>
         </div>
 
-        <ExportWindow {...exportWindow} />
+        <FourScreens {...exportWindow} />
 
         <p className={styles.footnote}>{note}</p>
       </div>

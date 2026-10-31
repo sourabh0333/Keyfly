@@ -241,14 +241,15 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
   - **The self-running demo:** until a switch is touched, each decision in turn tries its other options and returns, every 1.7s, while on screen and not hovered or focused. Reduced motion is read with `useSyncExternalStore`.
   - **Narrow screens:** below 900px the inspector moves under the viewer, with its rows in 2 columns, then 1.
   - **Copy:** `yourCall`, PLACEHOLDER until the team confirms which decisions Keyfly exposes.
-- **One edit, every format** (`src/components/every-format/`, added 2026-10-31; the team picked the "Export window" structure from three options): "One edit. *Every screen.*" Heading laid out like Use cases; captioned "Illustrative interface".
-  - **`ExportWindow`** (client): the Keyfly editor's export, in the same window language and values as How it works and You make the calls.
+- **One edit, every format** (`src/components/every-format/`, added 2026-10-31): "One edit. *Every screen.*" Heading laid out like Use cases; captioned "Illustrative interface". An earlier "export window" (a crop over one viewer, beside an export list) was dropped as not well aligned; the team picked "Four screens, one cut" from three options.
+  - **`FourScreens`** (client), inside the same window language as You make the calls:
     - **Chrome:** "Launch Video · Export", and "4 formats · 1 cut".
-    - **Viewer:** the 16:9 source with the crop for the format in play: everything outside it dimmed (a wide `box-shadow`), mint corner marks, and the captions inside it re-wrapping to its width (`cqw`). The crop slides and resizes between formats (`left`/`width`, one box), centred on the subject (the sun, at 66%) as far as the edges allow. A dashed reticle marks the subject ("● Subject tracked"), and a tag reads "9:16 · 1080 × 1920".
-    - **Export panel:** "Export · One cut, four formats". Each row shows its index, the format's shape drawn to its ratio, ratio and name, use and size, and a state (Queued, Reframing with its foot filling over 2.8s, then mint "✓ Ready"). Below: "N/4 files from one edit".
-    - **Timeline:** "One timeline": the ruler, V1 clips, C1 captions and an FR lane naming the reframe in play, with the playhead on a rail.
-  - **Playback:** rows choose the format. It moves on every 2.8s while on screen and not hovered or focused. With reduced motion it waits for a click and the crop jumps.
-  - **Narrow screens:** below 900px the panel moves under the viewer (rows in 2 columns, then 1).
+    - **The four screens in one row** (16:9, 9:16, 1:1, 4:5). The grid's columns are in proportion to their ratios (`--cols`), so every screen is the same height with its bottom aligned.
+    - **Each screen** frames the same 16:9 cut around its subject (the source is `100cqh × 16/9` wide, offset to centre 66% across, clamped to the edges), plays in sync, and re-wraps the captions to fit (`cqw`/`cqh`).
+    - **Under each screen, in the same column:** a hairline, the ratio (mono), index, name, size, use and "✓ Ready".
+    - **Timeline:** "One timeline": the ruler, V1 clips, C1 captions and an OUT lane of four chips (the format in focus filled mint), with the playhead on a rail.
+  - **Focus:** one format at a time is in focus, with a mint ring, corner marks, a mint hairline and ratio. It moves on every 2.6s while on screen and not hovered or focused; pointing at or clicking a screen focuses it.
+  - **Below 900px:** two by two. Every screen sits on the bottom of a slot of one height, so the details line up across each row.
   - **Copy:** `everyFormat`; the format list is PLACEHOLDER until the team confirms Keyfly's export options.
 - **Use cases** (`src/components/use-cases/`, added 2026-10-31, redesigned four times the same day): the six prompt-box presets on a **jog wheel**, the dial editors spin to move through footage. Captioned "Illustrative previews". It is not pinned, so it fits any height. Earlier versions were dropped:
   - a pinned reel (broke on short laptop screens);

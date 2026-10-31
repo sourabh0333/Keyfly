@@ -1,10 +1,8 @@
 /*
- * "One edit, every format": the Keyfly editor's export, in the same window
- * language as "How it works" and "You make the calls" (chrome, viewer,
- * side panel, timeline). ExportWindow sets the crop on the frame (--l, --w,
- * shares of the 16:9 source; --s the subject), aria-pressed and data-state
- * (queued, rendering, ready) on the format rows, and data-auto while it
- * moves on by itself.
+ * "One edit, every format": four screens, one cut, inside the same window
+ * language as "You make the calls" (chrome, the screens, the timeline).
+ * FourScreens sets --cols (the columns in proportion to the ratios) and
+ * aria-pressed on the format in focus.
  */
 .section {
   position: relative;
@@ -134,43 +132,87 @@
   font-size: 11px;
 }
 
-.body {
+/* ---------- Four screens, one row ---------- */
+
+/* Columns in proportion to the ratios (--cols, from the component), so
+   every screen comes out the same height with its bottom aligned. */
+.screens {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) clamp(290px, 30%, 360px);
+  grid-template-columns: var(--cols);
+  align-items: end;
+  gap: clamp(12px, 1.6vw, 22px);
+  padding: clamp(18px, 2.4vw, 32px) var(--pad) clamp(16px, 2vw, 24px);
   border-bottom: 1px solid rgb(244 241 234 / 0.06);
-}
-
-/* ---------- Viewer: the source, cropped to the format in play ---------- */
-
-.viewer {
-  display: grid;
-  align-items: center;
-  padding: var(--pad);
   background: #0c0d0f;
 }
 
-.frame {
-  position: relative;
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
-  border-radius: 8px;
-  background: #050506;
-  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.08);
+.format {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
 }
 
-/* The crop: what's outside it is dimmed (a wide shadow), its corners are
-   marked in mint, and it slides and resizes between formats. */
-.crop {
+.format:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 6px;
+  border-radius: 10px;
+}
+
+/* A screen at its ratio, framing the 16:9 source around the subject
+   (the sun, at 66% across) as far as the edges allow. */
+.screen {
+  position: relative;
+  display: block;
+  aspect-ratio: var(--r);
+  overflow: hidden;
+  border-radius: 10px;
+  background: #050506;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.1);
+  container-type: size;
+  transition: box-shadow 0.35s ease;
+}
+
+.source {
+  --sw: calc(100cqh * 16 / 9);
   position: absolute;
   top: 0;
   bottom: 0;
-  left: var(--l);
-  width: var(--w);
-  box-shadow: 0 0 0 200vmax rgb(5 5 6 / 0.66);
-  container-type: inline-size;
-  transition:
-    left 0.75s var(--ease-land),
-    width 0.75s var(--ease-land);
+  left: clamp(calc(100cqw - var(--sw)), calc(50cqw - var(--sw) * 0.66), 0px);
+  width: var(--sw);
+}
+
+.captions {
+  position: absolute;
+  left: 7%;
+  right: 7%;
+  bottom: 9%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 0.3em;
+  color: #fff;
+  font-size: clamp(8px, min(8cqw, 6cqh), 20px);
+  font-weight: 760;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  text-align: center;
+  text-shadow: 0 2px 8px rgb(0 0 0 / 0.7);
+  text-transform: uppercase;
+}
+
+.captions span:nth-child(3) {
+  padding: 0 0.15em;
+  border-radius: 3px;
+  background: var(--soft-mint);
+  color: var(--mint-ink);
+  text-shadow: none;
 }
 
 .corners {
@@ -178,250 +220,75 @@
   inset: 6px;
   --c: var(--soft-mint);
   background:
-    linear-gradient(var(--c), var(--c)) 0 0 / 16px 2px no-repeat,
-    linear-gradient(var(--c), var(--c)) 0 0 / 2px 16px no-repeat,
-    linear-gradient(var(--c), var(--c)) 100% 0 / 16px 2px no-repeat,
-    linear-gradient(var(--c), var(--c)) 100% 0 / 2px 16px no-repeat,
-    linear-gradient(var(--c), var(--c)) 0 100% / 16px 2px no-repeat,
-    linear-gradient(var(--c), var(--c)) 0 100% / 2px 16px no-repeat,
-    linear-gradient(var(--c), var(--c)) 100% 100% / 16px 2px no-repeat,
-    linear-gradient(var(--c), var(--c)) 100% 100% / 2px 16px no-repeat;
-  filter: drop-shadow(0 0 4px rgb(95 224 176 / 0.7));
-}
-
-/* Captions stay inside the crop and re-wrap to its width. */
-.captions {
-  position: absolute;
-  left: 8%;
-  right: 8%;
-  bottom: 10%;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0 0.3em;
-  color: #fff;
-  font-size: clamp(10px, 5.6cqw, 24px);
-  font-weight: 760;
-  letter-spacing: -0.01em;
-  line-height: 1.2;
-  text-align: center;
-  text-shadow: 0 2px 10px rgb(0 0 0 / 0.7);
-  text-transform: uppercase;
-}
-
-.captions span:nth-child(3) {
-  padding: 0 0.15em;
-  border-radius: 4px;
-  background: var(--soft-mint);
-  color: var(--mint-ink);
-  text-shadow: none;
-}
-
-/* The subject, tracked: a reticle that stays put while the crop moves. */
-.subject {
-  position: absolute;
-  top: 56%;
-  left: var(--s);
-  width: 44px;
-  height: 44px;
-  translate: -50% -50%;
-}
-
-.subject::before,
-.subject::after,
-.subject i {
-  content: "";
-  position: absolute;
-}
-
-.subject::before {
-  inset: 0;
-  border: 1.5px dashed rgb(95 224 176 / 0.8);
-  border-radius: 50%;
-  animation: spin 8s linear infinite;
-}
-
-.subject i {
-  top: 50%;
-  left: 50%;
-  width: 6px;
-  height: 6px;
-  margin: -3px 0 0 -3px;
-  border-radius: 50%;
-  background: var(--soft-mint);
-  box-shadow: 0 0 8px var(--soft-mint);
-}
-
-.tag,
-.track {
-  position: absolute;
-  top: 12px;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 9px;
-  border-radius: 7px;
-  background: rgb(11 11 13 / 0.78);
-  color: rgb(244 241 234 / 0.8);
-  font-family: var(--font-mono-stack);
-  font-size: 10.5px;
-  letter-spacing: 0.08em;
-}
-
-.tag {
-  left: 12px;
-}
-
-.tag b {
-  color: var(--soft-mint);
-  font-weight: 600;
-}
-
-.track {
-  right: 12px;
-  text-transform: uppercase;
-}
-
-.track i {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--soft-mint);
-  box-shadow: 0 0 8px var(--soft-mint);
-  animation: blink 1.4s steps(1) infinite;
-}
-
-/* ---------- Export panel ---------- */
-
-.panel {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  border-left: 1px solid rgb(244 241 234 / 0.06);
-  background: #141518;
-}
-
-.panelHead {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 10px;
-  padding: 12px var(--pad);
-  border-bottom: 1px solid rgb(244 241 234 / 0.06);
-  color: rgb(244 241 234 / 0.75);
-  font-family: var(--font-mono-stack);
-  font-size: 10px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.panelHead span {
-  color: rgb(244 241 234 / 0.4);
-  letter-spacing: 0.06em;
-  text-transform: none;
-}
-
-.formats {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.row {
-  position: relative;
-  display: grid;
-  grid-template-columns: auto 28px minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-  padding: 13px var(--pad);
-  border: 0;
-  border-bottom: 1px solid rgb(244 241 234 / 0.06);
-  background: none;
-  color: inherit;
-  font: inherit;
-  text-align: left;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.row:hover {
-  background: rgb(244 241 234 / 0.03);
-}
-
-.row[aria-pressed="true"] {
-  background: rgb(95 224 176 / 0.05);
-}
-
-/* The format in play: a mint edge. */
-.row::before {
-  content: "";
-  position: absolute;
-  top: 10px;
-  bottom: 10px;
-  left: 0;
-  width: 2px;
-  border-radius: 2px;
-  background: var(--soft-mint);
-  box-shadow: 0 0 8px var(--soft-mint);
+    linear-gradient(var(--c), var(--c)) 0 0 / 12px 2px no-repeat,
+    linear-gradient(var(--c), var(--c)) 0 0 / 2px 12px no-repeat,
+    linear-gradient(var(--c), var(--c)) 100% 0 / 12px 2px no-repeat,
+    linear-gradient(var(--c), var(--c)) 100% 0 / 2px 12px no-repeat,
+    linear-gradient(var(--c), var(--c)) 0 100% / 12px 2px no-repeat,
+    linear-gradient(var(--c), var(--c)) 0 100% / 2px 12px no-repeat,
+    linear-gradient(var(--c), var(--c)) 100% 100% / 12px 2px no-repeat,
+    linear-gradient(var(--c), var(--c)) 100% 100% / 2px 12px no-repeat;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.35s ease;
 }
 
-.row[aria-pressed="true"]::before {
+.format[aria-pressed="true"] .screen {
+  box-shadow:
+    0 0 0 1.5px var(--soft-mint),
+    0 0 40px -10px rgb(95 224 176 / 0.6);
+}
+
+.format[aria-pressed="true"] .corners {
   opacity: 1;
 }
 
-.row:focus-visible {
-  outline: 2px solid var(--soft-mint);
-  outline-offset: -2px;
+/* The details, in the same column as the screen. */
+.spec {
+  display: grid;
+  gap: 3px;
+  padding-top: 12px;
+  border-top: 1px solid rgb(244 241 234 / 0.1);
+  transition: border-color 0.35s ease;
 }
 
-.rowIndex {
-  color: rgb(244 241 234 / 0.35);
+.format[aria-pressed="true"] .spec {
+  border-color: var(--soft-mint);
+}
+
+.specTop {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.ratio {
+  color: var(--paper);
   font-family: var(--font-mono-stack);
-  font-size: 10.5px;
+  font-size: clamp(1rem, 0.8rem + 0.5vw, 1.25rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  transition: color 0.35s ease;
 }
 
-.row[aria-pressed="true"] .rowIndex {
+.format[aria-pressed="true"] .ratio {
   color: var(--soft-mint);
 }
 
-/* The format's shape, drawn to its ratio. */
-.shape {
-  justify-self: center;
-  width: min(26px, calc(18px * var(--r)));
-  aspect-ratio: var(--r);
-  max-height: 26px;
-  border: 1.5px solid rgb(244 241 234 / 0.4);
-  border-radius: 3px;
-  transition: border-color 0.3s ease;
+.specIndex {
+  color: rgb(244 241 234 / 0.3);
+  font-family: var(--font-mono-stack);
+  font-size: 10px;
 }
 
-.row[aria-pressed="true"] .shape {
-  border-color: var(--soft-mint);
-  box-shadow: 0 0 8px rgb(95 224 176 / 0.5);
-}
-
-.rowText {
-  display: grid;
-  gap: 2px;
-  min-width: 0;
-}
-
-.rowName {
+.name {
   color: rgb(244 241 234 / 0.9);
   font-size: 12.5px;
   font-weight: 560;
 }
 
-.rowName b {
-  margin-right: 4px;
-  font-family: var(--font-mono-stack);
-  font-weight: 600;
-}
-
-.rowUse {
+.size,
+.use {
   overflow: hidden;
   color: rgb(244 241 234 / 0.45);
   font-size: 11px;
@@ -429,54 +296,18 @@
   text-overflow: ellipsis;
 }
 
-.rowState {
-  color: rgb(244 241 234 / 0.38);
+.size {
+  font-family: var(--font-mono-stack);
+  font-size: 10.5px;
+}
+
+.ready {
+  margin-top: 4px;
+  color: var(--soft-mint);
   font-family: var(--font-mono-stack);
   font-size: 9.5px;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-}
-
-.row[data-state="ready"] .rowState {
-  color: var(--soft-mint);
-}
-
-.row[data-state="ready"] .rowState::before {
-  content: "✓ ";
-}
-
-.row[data-state="rendering"] .rowState {
-  color: var(--paper);
-}
-
-/* Reframing fills the row's foot, then it's ready. */
-.rowFill {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -1px;
-  height: 1px;
-  background: var(--soft-mint);
-  box-shadow: 0 0 8px var(--soft-mint);
-  transform-origin: left;
-  scale: 0 1;
-}
-
-.row[data-state="rendering"] .rowFill {
-  animation: fill 2.8s linear forwards;
-}
-
-.panelFoot {
-  margin: auto var(--pad) var(--pad);
-  padding-top: 12px;
-  color: rgb(244 241 234 / 0.5);
-  font-family: var(--font-mono-stack);
-  font-size: 10.5px;
-  letter-spacing: 0.06em;
-}
-
-.readyCount {
-  color: var(--soft-mint);
 }
 
 /* ---------- Timeline: the one edit ---------- */
@@ -530,8 +361,7 @@
 }
 
 .clip,
-.caption,
-.reframe {
+.caption {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -560,18 +390,32 @@
   background: rgb(244 241 234 / 0.18);
 }
 
-.reframe {
-  left: 0;
-  right: 0;
+/* The outputs: four from the one cut, the one in focus lit. */
+.outs {
   display: grid;
-  align-items: center;
-  padding-left: 8px;
-  background: rgb(95 224 176 / 0.08);
-  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.45) inset;
-  color: var(--soft-mint);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 4px;
+  background: none;
+}
+
+.outs i {
+  display: grid;
+  place-items: center;
+  border-radius: 5px;
+  background: rgb(95 224 176 / 0.06);
+  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.25) inset;
+  color: rgb(95 224 176 / 0.7);
   font-family: var(--font-mono-stack);
   font-size: 10px;
-  letter-spacing: 0.06em;
+  font-style: normal;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+.outs i[data-on] {
+  background: var(--soft-mint);
+  color: var(--mint-ink);
 }
 
 .rail {
@@ -584,8 +428,7 @@
   animation: play 9s linear infinite;
 }
 
-.window[data-paused] .rail,
-.window[data-paused] .subject::before {
+.window[data-paused] .rail {
   animation-play-state: paused;
 }
 
@@ -609,49 +452,34 @@
   text-transform: uppercase;
 }
 
-@keyframes fill {
-  to {
-    scale: 1 1;
-  }
-}
-
 @keyframes play {
   to {
     translate: 100% 0;
   }
 }
 
-@keyframes spin {
-  to {
-    rotate: 360deg;
-  }
-}
-
-@keyframes blink {
-  50% {
-    opacity: 0.3;
-  }
-}
-
 /* ---------- Smaller screens ---------- */
 
+/* Two by two: each screen keeps its shape at one height, centred over its
+   details. */
 @media (max-width: 900px) {
-  .body {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .panel {
-    border-left: 0;
-    border-top: 1px solid rgb(244 241 234 / 0.06);
-  }
-
-  .formats {
-    display: grid;
+  .screens {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+    row-gap: 28px;
   }
 
-  .formats li:nth-child(odd) .row {
-    border-right: 1px solid rgb(244 241 234 / 0.06);
+  /* Every screen sits in a slot of one height, on its bottom, so the
+     details line up across each row. */
+  .format {
+    --slot: clamp(150px, 34vw, 240px);
+    grid-template-rows: var(--slot) auto;
+  }
+
+  .screen {
+    align-self: end;
+    justify-self: center;
+    width: min(100%, calc(var(--slot) * var(--r)));
   }
 }
 
@@ -681,34 +509,24 @@
     font-size: 11px;
   }
 
-  .formats {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .formats li:nth-child(odd) .row {
-    border-right: 0;
-  }
-
-  .count,
-  .track {
+  .count {
     display: none;
   }
 
-  .subject {
-    width: 32px;
-    height: 32px;
+  .use {
+    white-space: normal;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .crop {
-    transition: none;
+  .rail {
+    animation: none;
   }
 
-  .subject::before,
-  .track i,
-  .rail,
-  .row[data-state="rendering"] .rowFill {
-    animation: none;
+  .screen,
+  .corners,
+  .spec,
+  .ratio {
+    transition: none;
   }
 }
