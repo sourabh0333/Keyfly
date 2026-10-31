@@ -80,33 +80,33 @@ None of them let you **describe a whole video and get an edited cut back**, then
 
 Everything else below that names a feature must be **confirmed by the team before it is built**. We never invent features, customers, metrics or pricing.
 
-### Proposed homepage, top to bottom
+### What the market says (research, 2026-10-31)
 
-Existing sections are marked. New ones are numbered in the suggested build order.
+- **Chat-based editing** has arrived (ChatCut, NemoVideo, Riverside), but it mostly replaces the timeline with a prompt box. The gap is **iterating by talking while keeping a real timeline**.
+- **Creators accept AI for mechanical work** (captions, reframing, trimming) and **protect creative control**, so the message is: AI does the busywork, you make the calls.
+- **Recurring pains:** caption accuracy, re-cutting 16:9 to 9:16, staying on brand, black-box results and confusing credit pricing.
 
-| Order | Section | Purpose | Content we need |
+### The homepage, decided (the team asked us to choose: "do as you want, but better than competitors")
+
+Copy for anything not yet confirmed is marked PLACEHOLDER in `src/content/home.js` and its visuals are captioned "Illustrative".
+
+| # | Section | Status | Why it's there |
 |---|---|---|---|
-| (existing) | **Hero** | The promise and the prompt box | — |
-| **N1** | **Proof strip** | Instant credibility under the hero | Real numbers or logos, or else "Works with ChatGPT · Claude · macOS · Windows" |
-| (existing) | **How it works** | Three steps: describe, Keyfly edits, export | Confirmed copy |
-| **N2** | **"Edit with words"** | The differentiator: refine a cut by talking to it ("make it shorter", "warmer colour", "cut the pauses"), with the timeline changing live | Which follow-up edits are real |
-| **N3** | **"Why Keyfly" feature grid** | 4–6 headline features that competitors lack | The real feature list |
-| **N4** | **"One edit, every format"** | One cut reframing itself to 16:9, 9:16 and 1:1, with captions following | Whether auto-reframe is real; the real format list |
-| (existing) | **Use cases** (jog wheel) | Six presets | Confirmed one-liners |
-| **N5** | **"Make it in ChatGPT · Claude"** | Keyfly inside the assistants people already use: a chat that returns a finished video | How the integration works (plugin, MCP, app?) and its links |
-| **N6** | **Before → after** | Raw footage against the finished cut, with a drag slider | Real (or approved illustrative) footage |
-| **N7** | **Keyfly vs the old way** | Calm comparison: manual editing, generic AI tools and Keyfly, by category (time to first cut, formats, effort), never naming rivals | The claims the team is comfortable making |
-| **N8** | **Desktop + browser** (could merge into Download) | Why the desktop app: speed, local footage, offline? | What is actually true |
-| (existing) | **Download** | Get the app | Download links, Windows step |
-| **N9** | **Pricing** | Plans, if there are any | Plans and prices, or skip |
-| **N10** | **FAQ** | Answer objections: formats, export, privacy, ownership, pricing | Real answers |
-| (existing) | **Footer** | — | Social and legal links when they exist |
+| 1 | Hero | ✅ | The promise and the prompt box |
+| 2 | How it works | ✅ | Describe → Keyfly edits → Export |
+| 3 | **Edit with words** (`#edit`) | ✅ built 2026-10-31 | The core differentiator: refine the cut by asking, with the timeline following |
+| 4 | **You make the calls** | next | Against black-box generators: every AI decision lands on a real timeline you can adjust |
+| 5 | **One edit, every format** | planned | The 16:9 → 9:16 → 1:1 pain: one cut reframes, captions follow |
+| 6 | Use cases | ✅ | Six presets on the jog wheel |
+| 7 | **On brand, every time** | planned (to confirm) | Brand consistency: your fonts, colours and logo applied to every cut |
+| 8 | **Works where you work** | planned | ChatGPT · Claude, desktop and browser |
+| 9 | Download | ✅ | Get the app |
+| 10 | **FAQ** | planned | Formats, export, privacy, ownership, pricing |
+| 11 | Footer | ✅ | |
 
-### Suggested build order
+Proof (logos, numbers, reviews), before/after footage and pricing are added once real material exists.
 
-N2 Edit with words → N3 Why Keyfly → N4 One edit, every format → N5 ChatGPT · Claude → N10 FAQ → N1 Proof strip → N6 Before/after → N7 Comparison → N9 Pricing (if any) → N8 (or fold into Download).
-
-### Questions for the team before building
+### Questions for the team (to swap placeholders for facts)
 
 1. What can Keyfly do after the first cut? (Follow-up prompts? Which kinds of change?)
 2. What are the 4–6 features you're proudest of, especially ones Descript, CapCut, Runway or OpusClip don't have?

@@ -14,8 +14,9 @@ const clamp = (n, lo, hi) => Math.min(hi, Math.max(lo, n));
 // across the copy:
 //   1. from the hero's playhead it drops into How it works and runs down
 //      the channel between the steps and the editor;
-//   2. it S-curves out to the left margin, lands on the "Use cases"
-//      eyebrow and runs down beside the jog wheel;
+//   2. it S-curves out to the left margin before "Edit with words", runs
+//      down beside it, lands on the "Use cases" eyebrow and runs down
+//      beside the jog wheel;
 //   3. it flies one loop of the brand's flight path across to the right
 //      margin, lands on Download's line and runs down beside the landing;
 //   4. it sweeps back across to the footer's corner, turns onto the panel's
@@ -61,13 +62,15 @@ function measure(page, path) {
   const s = Math.min(240, vh * 0.26);
   const swing = `C${f(w / 2)} ${f(a + s * 0.55)} ${f(cx)} ${f(a + s * 0.3)} ${f(cx)} ${f(a + s)}`;
 
-  // 2. Out of the channel and across to the left margin, onto the eyebrow.
+  // 2. Out of the channel and across to the left margin: in the gap after
+  // How it works (before the next section's heading), then down the margin
+  // past any section in between, onto the Use cases eyebrow.
   const y0 = Math.max(a + s + 40, y(how) + how.offsetHeight - 24);
-  const g = landings[0].y - y0;
+  const next = how.nextElementSibling;
+  const yS = next && next !== cases ? Math.max(y0 + 80, y(next) + parseFloat(getComputedStyle(next).paddingTop) * 0.7) : landings[0].y;
+  const g = yS - y0;
   const across =
-    Math.abs(cx - lx) > 4 && g > 60
-      ? `C${f(cx)} ${f(y0 + g * 0.5)} ${f(lx)} ${f(y0 + g * 0.35)} ${f(lx)} ${f(landings[0].y)}`
-      : `V${f(landings[0].y)}`;
+    Math.abs(cx - lx) > 4 && g > 60 ? `C${f(cx)} ${f(y0 + g * 0.5)} ${f(lx)} ${f(y0 + g * 0.35)} ${f(lx)} ${f(yS)}` : `V${f(yS)}`;
 
   // 3. The loop, from the left margin to the right one.
   const style = getComputedStyle(cases);
@@ -85,7 +88,8 @@ function measure(page, path) {
   const segs = [
     [swing, a + s],
     [`V${f(y0)}`, y0],
-    [across, landings[0].y, "land0"],
+    [across, yS],
+    [`V${f(landings[0].y)}`, landings[0].y, "land0"],
     [`V${f(g0)}`, g0],
     [loop, g1, "land1"],
   ];

@@ -1,4 +1,5 @@
 import { Download } from "@/components/download/download";
+import { EditWithWords } from "@/components/edit-with-words/edit-with-words";
 import { Hero } from "@/components/hero/hero";
 import { Scene } from "@/components/scene/scene";
 import { HowItWorks } from "@/components/how-it-works/how-it-works";
@@ -19,6 +20,7 @@ export default function Home() {
     <Scene>
       <Hero />
       <HowItWorks />
+      <EditWithWords />
       <UseCases />
       <Download />
     </Scene>

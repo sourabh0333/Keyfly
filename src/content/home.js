@@ -76,6 +76,25 @@ export const howItWorks = {
 // multicam switcher. The one on air plays on the program monitor, and
 // "Try this prompt" hands its preset back to the hero's prompt box.
 // PLACEHOLDER until the product description is confirmed.
+// "Edit with words": the first cut is a starting point; you change it by
+// saying what you want. Every line here is PLACEHOLDER (illustrative)
+// until the team confirms which follow-up edits Keyfly makes.
+export const editWithWords = {
+  eyebrow: "Edit with words",
+  title: [{ text: "Change anything" }, { text: "by saying it.", accent: true }],
+  lead: "Your first cut is a starting point. Tell Keyfly what to change, the way you'd brief an editor, and the timeline follows.",
+  barLabel: "Ask Keyfly to change the cut",
+  note: "Illustrative interface",
+  edits: [
+    { id: "shorter", ask: "Make it shorter", reply: "Trimmed to 0:30 · kept the strongest takes" },
+    { id: "pauses", ask: "Cut the pauses", reply: "Removed 4 pauses · 6 seconds tighter" },
+    { id: "captions", ask: "Add captions", reply: "Captions on · word by word" },
+    { id: "warm", ask: "Warmer colours", reply: "Graded warm · across every shot" },
+    { id: "vertical", ask: "Make it vertical", reply: "Reframed to 9:16 · subject kept in frame" },
+    { id: "pace", ask: "Faster pace", reply: "Recut on the beat · 8 cuts became 15" },
+  ],
+};
+
 export const useCases = {
   eyebrow: "Use cases",
   title: [{ text: "Made for" }, { text: "every kind of video.", accent: true }],

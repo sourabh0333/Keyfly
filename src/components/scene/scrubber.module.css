@@ -110,6 +110,10 @@
   --clip: linear-gradient(180deg, #343a64, #6b5466 55%, #b98a6a);
 }
 
+.clip[data-key="edit-with-words"] {
+  --clip: linear-gradient(180deg, #2c4a6a, #3a2b52 50%, #5fe0b0);
+}
+
 .clip[data-key="use-cases"] {
   --clip: linear-gradient(180deg, #4b4a5c 0 16.6%, #5a4436 0 33.3%, #24414d 0 50%, #2c4a6a 0 66.6%, #3a4a78 0 83.3%, #1f4a3a 0);
 }
