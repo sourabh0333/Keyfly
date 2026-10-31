@@ -1,6 +1,6 @@
 import { useCases } from "@/content/home";
 import wipe from "@/components/scene/wipe.module.css";
-import motion from "@/components/scene/motion.module.css";
+import cuts from "@/components/scene/cuts.module.css";
 import { PresetDial } from "./preset-dial";
 import styles from "./use-cases.module.css";
 
@@ -12,8 +12,11 @@ export function UseCases() {
   const { eyebrow, title, lead, note, ...dial } = useCases;
 
   return (
-    <section id="use-cases" className={styles.section} aria-labelledby="cases-title" data-section="Use cases">
-      <span className={motion.beam} aria-hidden="true" />
+    <section id="use-cases" className={`${styles.section} ${cuts.iris} ${cuts.pushOut}`} aria-labelledby="cases-title" data-section="Use cases">
+      <span className={cuts.irisRing} aria-hidden="true" />
+      <span className={`${cuts.chip} ${cuts.irisChip}`} aria-hidden="true">
+        Transition · Iris
+      </span>
       <div className={styles.inner}>
         <div className={styles.head}>
           <div>
@@ -30,7 +33,7 @@ export function UseCases() {
               ))}
             </h2>
           </div>
-          <p className={`${styles.lead} ${motion.reveal}`}>{lead}</p>
+          <p className={styles.lead}>{lead}</p>
         </div>
 
         <PresetDial {...dial} />

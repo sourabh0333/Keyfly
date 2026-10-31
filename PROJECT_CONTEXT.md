@@ -150,12 +150,16 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
 `src/app/page.jsx` renders, inside `Scene`, Hero → HowItWorks (`#product`) → UseCases (`#use-cases`) → Download (`#download`). All copy lives in `src/content/home.js`. Lines marked `PLACEHOLDER` wait for the confirmed product description, so the page is `noindex` until then.
 
 - **Scene** (`src/components/scene/`, added 2026-10-31 at the team's request: the page was flat black and the sections felt disconnected). It ties the sections together as one scroll:
-  - **Clean motion** (2026-10-31: the team found the WebGL "generated light" too heavy and asked for clean, modern effects. A flight-thread line and a camera focus frame were tried and dropped before it). Shared styles live in `src/components/scene/motion.module.css`:
-    - **Beam:** a hairline along the top of How it works, Use cases and Download, with a point of mint light that glides across it once as the section arrives. It is scrubbed by a view timeline through the registered `--beam` and `--beam-glow`. The glow is clamped inside the line's ends, because `clip-path` doesn't stop it widening the page.
-    - **Reveal** (`.reveal`): content rises 32px and fades in on a view timeline. It is on How it works' editor, the Use cases and Download leads, and their pinned stages.
-    - **Spotlight edges** (`Spotlight`, client, fine pointers only): a fine mint edge light follows the pointer on every `[data-spotlight]` element, the How it works editor, the Use cases preview, the jog wheel and the footer panel, through `--sx`, `--sy` and `--so` (strength, within 220px). It is drawn by `::after` with a border mask.
-    - **No grain** on the sections or the footer any more (the hero keeps its own).
-    - Without scroll-driven animation support, or with reduced motion, the beams and reveals simply show.
+  - **Edits between sections** (2026-10-31, the team's pick from three proposals; tried before it and dropped: a flight-thread line, a camera focus frame, WebGL "generated light" and "clean motion" beams, reveals and spotlight edges). Each section change plays as a real edit transition, scrubbed by the scroll (view timelines, so it runs both ways), in `src/components/scene/cuts.module.css`:
+    - **Hero → How it works, wipe:** the section's `clip-path` opens left to right behind a mint playhead line (`--cut`).
+    - **How it works → Use cases, iris:** a circle with a mint ring opens from the middle of the screen (`--ir`, centred at 45vh of the section, over entry 35%→100%).
+    - **Use cases → Download, push:** Use cases leaves left (exit range) as Download comes in from the right, with a mint seam on its leading edge.
+    - **Download → footer, cross-dissolve.**
+    - **Chips:** a small chip names each transition while it plays ("Transition · Wipe" and so on; `--tp` drives their visibility).
+    - **Two transitions on one section:** Use cases and Download each run two animations (in and out), so they have combined rules.
+    - `.page` has `overflow-x: clip`, so a push never widens the page.
+    - Without scroll-driven animation support, or with reduced motion, sections simply follow on.
+    - No grain on the sections or the footer (the hero keeps its own).
   - **`SceneLight`:** the fixed light root behind every section (sections leave their own backgrounds transparent; the hero's backdrop fades out at its foot with a mask). It holds one soft, still glow per section, brought up as its section fills the screen (`--w`):
     - How it works: dusk.
     - Use cases: the colours of the feed on air, cross-faded through registered `@property` colours.
@@ -184,7 +188,7 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
     - The floor turns slightly with the pointer.
   - **Also on the hero:** a pointer light (`PointerField`, fine pointers only) and film grain.
 - **How it works** (`src/components/how-it-works/`, added 2026-10-31): three steps beside an illustrative Keyfly editor window, captioned "Illustrative interface".
-  - **Continuity:** the hero's backdrop fades into the page's light, and the section's beam marks its arrival (see Scene).
+  - **Continuity:** the section wipes in over the hero behind a playhead line (see Scene).
   - **Steps:** Describe it, Keyfly edits, Export anywhere, on a rail that fills with the mint point at its tip. Only the current step shows its body. On narrow screens they become one row of three.
   - **Scroll progress:** `ScrollStage` (client) pins the section (`data-live`, 420svh, sticky 100svh stage). It writes to the DOM:
     - `--p`, `--s1`, `--s2`, `--s3` (one per step), `--asm` (assembly) and `--ph` (playhead);

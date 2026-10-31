@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Logo } from "@/components/logo";
+import cuts from "@/components/scene/cuts.module.css";
 import { footer } from "@/content/footer";
 import styles from "./site-footer.module.css";
 
@@ -40,9 +41,12 @@ export function SiteFooter() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className={styles.footer}>
+    <footer className={`${styles.footer} ${cuts.dissolveIn}`}>
+      <span className={`${cuts.chip} ${cuts.dissolveChip}`} aria-hidden="true">
+        Transition · Cross dissolve
+      </span>
       <div className={styles.inner}>
-        <div className={styles.panel} data-spotlight>
+        <div className={styles.panel}>
           <span className={styles.comet} aria-hidden="true" />
           <div className={styles.reel} aria-hidden="true">
             <span className={styles.playhead} />
