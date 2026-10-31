@@ -125,7 +125,8 @@ export function PromptBox({ label, placeholder, action, accept, modes, presets, 
   useEffect(() => () => clearInterval(typer.current), []);
 
   // Other sections can hand a preset to the box ("Try this prompt"): the
-  // page scrolls back up to it and the prompt types itself in.
+  // page scrolls back up to it and the prompt types itself in. Without a
+  // preset (the footer's prompt bar) it just scrolls up and takes focus.
   const typeOutRef = useRef(null);
   useEffect(() => {
     typeOutRef.current = typeOut;
@@ -133,9 +134,9 @@ export function PromptBox({ label, placeholder, action, accept, modes, presets, 
   useEffect(() => {
     const onPrompt = (event) => {
       const preset = presets.find((p) => p.label === event.detail?.label);
-      if (!preset) return;
       field.current?.scrollIntoView({ behavior: "smooth", block: "center" });
-      setTimeout(() => typeOutRef.current?.(preset), 700);
+      if (preset) setTimeout(() => typeOutRef.current?.(preset), 700);
+      else setTimeout(() => field.current?.focus({ preventScroll: true }), 700);
     };
     window.addEventListener("keyfly:prompt", onPrompt);
     return () => window.removeEventListener("keyfly:prompt", onPrompt);

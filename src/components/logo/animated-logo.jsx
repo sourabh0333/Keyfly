@@ -334,6 +334,10 @@ export function AnimatedLogo({ height = 32, play = "load", label = "Keyfly", cla
       if (svg.dataset.state !== "done") return;
       if (relighting.some((a) => a.playState === "running")) return;
       relighting = relight(parts);
+      svg.dataset.lit = "";
+      Promise.all(relighting.map((a) => a.finished))
+        .then(() => delete svg.dataset.lit)
+        .catch(() => {});
     };
     if (canHover) target.addEventListener("pointerenter", onEnter);
 
@@ -444,7 +448,7 @@ export function AnimatedLogo({ height = 32, play = "load", label = "Keyfly", cla
       {/* Light over the symbol: cooling trail, burning tail, white-hot core,
           shockwave, sparks and the comet itself. */}
       <g transform={`translate(0 ${SYMBOL_OFFSET_Y})`}>
-        <g filter={`url(#${id}-glow)`}>
+        <g filter={`url(#${id}-glow)`} className={styles.glowLayer}>
           <path
             ref={hotRef}
             className={styles.hot}

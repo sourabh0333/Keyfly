@@ -102,6 +102,13 @@
   pointer-events: none;
 }
 
+/* The glowing trail's layer is only drawn while light is running (the
+   intro, or a hover relight): at rest its filter region can leave a faint
+   mark beside the symbol at larger sizes. */
+.logo:not([data-state="running"]):not([data-lit]) .glowLayer {
+  display: none;
+}
+
 .spark {
   fill: var(--color-glow);
 }

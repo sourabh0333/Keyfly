@@ -1,3 +1,4 @@
+import { SiteFooter } from "@/components/footer/site-footer";
 import { SiteHeader } from "@/components/header/site-header";
 import { siteConfig } from "@/config/site";
 import { instrumentSerif, inter, syne } from "./fonts";
@@ -34,6 +35,7 @@ export default function RootLayout({ children }) {
         </a>
         <SiteHeader />
         <main id="main">{children}</main>
+        <SiteFooter />
       </body>
     </html>
   );

@@ -114,7 +114,7 @@ The team's decision: **the website logo uses the brand kit's lockup shapes and c
 
 ## Header (rebuilt 2026-10-30)
 
-The root layout renders the skip link, `SiteHeader` and `<main id="main">`. Pages render a fragment or `<div>`, never their own `<main>`. There is no footer until it is designed again. Navigation labels and targets live only in `src/content/navigation.js`. The menu is a placeholder (Product, Use cases, Download) until those sections exist.
+The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `SiteFooter`. Pages render a fragment or `<div>`, never their own `<main>`. Navigation labels and targets live only in `src/content/navigation.js`. The menu is a placeholder (Product, Use cases, Download) until those sections exist.
 
 - **`SiteHeader`** (`src/components/header/site-header.jsx`, a client component):
   - Layout: the logo, centred links, then "Sign in" and the mint "Open Keyfly" button. Both buttons go to the app.
@@ -122,6 +122,25 @@ The root layout renders the skip link, `SiteHeader` and `<main id="main">`. Page
   - It slides away while scrolling down past 240px (`data-hidden`) and comes back on the way up.
   - A light slides under the hovered or focused link (`--lx`, `--lw`).
   - At 860px and below the links fold into a menu panel behind a two-line button, which closes on Escape. Below 420px only the menu button remains.
+
+## Footer (added 2026-10-31)
+
+`src/components/footer/`, with its copy in `src/content/footer.js`. The page plays as a film, so the footer is its **end credits**.
+
+- **End card:**
+  - "— That's a wrap —", then "Your next video / *starts with a sentence.*" (with the heading wipe).
+  - `PromptBar` (client) is the hero's prompt box in miniature, not a second form. Clicking it dispatches `keyfly:prompt` with no preset; `PromptBox` then scrolls up and takes focus, so the page ends where it began.
+- **Credits:**
+  - The site's links, set like film credits: mono roles right-aligned, names left, either side of a mint spine with a keyframe diamond per credit.
+  - They list only what exists: Product → How it works, the six presets, macOS · Windows, Open Keyfly · Sign in, and "A product of Cevrynt Inc.".
+  - They roll up into place on a view timeline.
+  - On narrow screens the spine moves to the left and each role sits above its names.
+- **Final frame:**
+  - An end-of-reel ruler. Its playhead runs to "00:00:48:00 · End of reel" on the footer's named view timeline (`--foot`, entry 50%→100%), so it reaches the end exactly as the page does.
+  - The unaltered lockup at 64px with the intro on scroll (`play="view"`).
+  - "© {year} Cevrynt Inc. · keyfly.si · Back to top".
+- **No inventions:** no social links, no legal pages and no newsletter until they exist.
+- **Logo fix (same day):** the logo's glowing-trail layer (`.glowLayer`) is drawn only while light runs: during the intro (`data-state="running"`) or a hover relight (`data-lit`). At rest its filter region left a faint mark beside the symbol at larger sizes. The logo's shapes and colours are unchanged.
 
 ## Homepage (step by step, from 2026-10-30)
 
