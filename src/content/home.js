@@ -125,23 +125,17 @@ export const everyFormat = {
   title: [{ text: "One edit." }, { text: "Every screen.", accent: true }],
   lead: "Make the cut once. Keyfly reframes it for every shape it needs, keeps your subject in frame and moves the captions with it.",
   note: "Illustrative interface",
-  // The reframe window (PLACEHOLDER until the team confirms Keyfly's export options).
-  file: "Launch Video",
-  mode: "Reframe",
-  panel: "Formats",
-  source: "Source",
-  output: "Output",
-  tracked: "Subject tracked",
-  settings: [
-    { label: "Keep in frame", value: "Subject" },
-    { label: "Captions", value: "Follow" },
-  ],
+  // PLACEHOLDER until the team confirms Keyfly's export options.
+  formatLabel: "Format",
+  madeFor: "Made for",
+  keeps: { label: "Keyfly keeps", items: ["Your subject in frame", "Captions on screen", "The same cut and timing"] },
+  bar: "Formats",
   captions: ["Your", "story,", "cut", "in", "seconds"],
   formats: [
-    { id: "wide", ratio: "16:9", w: 16, h: 9, px: [1920, 1080], name: "Widescreen", use: "YouTube, websites" },
-    { id: "vertical", ratio: "9:16", w: 9, h: 16, px: [1080, 1920], name: "Vertical", use: "Reels, Shorts, TikTok" },
-    { id: "square", ratio: "1:1", w: 1, h: 1, px: [1080, 1080], name: "Square", use: "Feeds" },
-    { id: "portrait", ratio: "4:5", w: 4, h: 5, px: [1080, 1350], name: "Portrait", use: "Feed ads" },
+    { id: "wide", ratio: "16:9", w: 16, h: 9, px: [1920, 1080], name: "Widescreen", for: ["YouTube", "Websites", "Presentations"] },
+    { id: "vertical", ratio: "9:16", w: 9, h: 16, px: [1080, 1920], name: "Vertical", for: ["Reels", "Shorts", "TikTok"] },
+    { id: "square", ratio: "1:1", w: 1, h: 1, px: [1080, 1080], name: "Square", for: ["Feed posts", "LinkedIn", "Carousels"] },
+    { id: "portrait", ratio: "4:5", w: 4, h: 5, px: [1080, 1350], name: "Portrait", for: ["Feed ads", "Instagram posts"] },
   ],
 };
 

@@ -1,12 +1,12 @@
 import { everyFormat } from "@/content/home";
 import wipe from "@/components/scene/wipe.module.css";
 import { PauseOffscreen } from "@/components/pause-offscreen";
-import { Reframe } from "./reframe";
+import { Morph } from "./morph";
 import styles from "./every-format.module.css";
 
 /**
- * "One edit, every format": the same cut reframed for every shape, in the
- * Keyfly editor (see Reframe).
+ * "One edit, every format": one frame that morphs through every shape
+ * (see Morph).
  */
 export function EveryFormat() {
   const { eyebrow, title, lead, note, ...editor } = everyFormat;
@@ -33,7 +33,7 @@ export function EveryFormat() {
           <p className={styles.lead}>{lead}</p>
         </div>
 
-        <Reframe {...editor} />
+        <Morph {...editor} />
 
         <p className={styles.footnote}>{note}</p>
       </div>

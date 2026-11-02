@@ -241,14 +241,14 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
   - **The self-running demo:** until a switch is touched, each decision in turn tries its other options and returns, every 1.7s, while on screen and not hovered or focused. Reduced motion is read with `useSyncExternalStore`.
   - **Narrow screens:** below 900px the inspector moves under the viewer, with its rows in 2 columns, then 1.
   - **Copy:** `yourCall`, PLACEHOLDER until the team confirms which decisions Keyfly exposes.
-- **One edit, every format** (`src/components/every-format/`, added 2026-10-31, rebuilt 2026-11-02): "One edit. *Every screen.*" Heading laid out like Use cases; captioned "Illustrative interface". Dropped before it: an export window, four screens in a row, a scroll-driven reframe and a 3D carousel. The team then picked the reframe window, in the same window language as You make the calls.
-  - **`Reframe`** (client): the Keyfly editor reframing one cut. Chrome "Launch Video · Keyfly", with "Reframe · {ratio}" in mint.
-    - **Formats panel** (left): four rows (a shape glyph, name, ratio, use), the one up with a mint edge, and the settings "Keep in frame: Subject" and "Captions: Follow". Below 900px it becomes a row of four; on phones only the glyphs and ratios.
-    - **Source** (middle): a CSS-drawn 16:9 shot (dusk through a window, a presenter who walks across), with a tracking box on the subject and the mint crop for the format (thirds, a ratio tag, the rest dimmed). The crop follows the subject, kept inside the picture.
-    - **Output** (right): the same shot at the format's true shape, fitted to the column (`min(100cqw, 100cqh × r)`), with captions that re-flow, and its pixel size and use beneath.
-    - **Timeline:** V1 clips, RF (the crop's path over time, with a keyframe diamond at each move; "Full frame" at 16:9) and C1 caption words, with the playhead.
-  - **One clock:** the subject (in both pictures), the crop, the output's picture and the playhead are Web Animations sharing one start time (8s loop), rebuilt when the format changes, paused off screen. They use container units (`cqw`, `cqh`), so the scene is a container.
-  - **Turning:** it moves to the next format every 4s (the row fills along its foot) while on screen and not held, until a format is clicked. Reduced motion holds everything still, mid-walk.
+- **One edit, every format** (`src/components/every-format/`, added 2026-10-31, rebuilt 2026-11-02): "One edit. *Every screen.*" Heading laid out like Use cases; captioned "Illustrative interface". Dropped before it: an export window, four screens in a row, a scroll-driven reframe, a 3D carousel and a reframe editor window (too like You make the calls). The team then picked "one frame that morphs".
+  - **`Morph`** (client), no window: three columns over a bar of tabs.
+    - **Left:** "Format 02 / 04", then the ratio in large mono type with the mint gradient, its name in the serif italic, and its pixel size.
+    - **Middle, the stage** (`--h` tall, a size container): faint dashed guides of every shape, and one frameless picture with a mint edge, crop marks and a ratio tag, whose width and height ease (0.8s) to the format's shape (`min(100cqw, 100cqh × r)`). Inside, the CSS-drawn 16:9 shot (dusk through a window, a presenter) stays centred on the subject (`left: clamp(...)` in container units) and the captions re-flow.
+    - **Right:** "Made for" (the format's platforms, in large type) and "Keyfly keeps" (three mint-checked lines).
+    - **Beneath:** four equal tabs (index, shape glyph, ratio, name) styled as Edit with words' tabs; the one up fills along its foot while it waits.
+  - **Turning:** the next format every 4.2s while on screen and not held, until a tab is clicked. Reduced motion: no auto-turn, changes at once.
+  - **Narrow screens:** the ratio and name sit in a row above the stage, the tabs show only glyph and ratio, and the lists go beneath.
   - **Copy:** `everyFormat`, PLACEHOLDER until the team confirms Keyfly's export options.
 - **Use cases** (`src/components/use-cases/`, added 2026-10-31, redesigned four times the same day): the six prompt-box presets on a **jog wheel**, the dial editors spin to move through footage. Captioned "Illustrative previews". It is not pinned, so it fits any height. Earlier versions were dropped:
   - a pinned reel (broke on short laptop screens);
