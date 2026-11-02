@@ -1,12 +1,12 @@
 import { onBrand } from "@/content/home";
 import wipe from "@/components/scene/wipe.module.css";
 import { PauseOffscreen } from "@/components/pause-offscreen";
-import { BrandCut } from "./brand-cut";
+import { BrandReel } from "./brand-reel";
 import styles from "./on-brand.module.css";
 
 /**
- * "On brand, every time": the plain cut, the brand kit and the same cut
- * on brand, side by side (see BrandCut).
+ * "On brand, every time": one brand kit applied across a reel of
+ * different videos (see BrandReel).
  */
 export function OnBrand() {
   const { eyebrow, title, lead, note, ...kit } = onBrand;
@@ -33,7 +33,7 @@ export function OnBrand() {
           <p className={styles.lead}>{lead}</p>
         </div>
 
-        <BrandCut {...kit} />
+        <BrandReel {...kit} />
 
         <p className={styles.footnote}>{note}</p>
       </div>

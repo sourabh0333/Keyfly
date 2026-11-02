@@ -1,10 +1,9 @@
 /*
- * "On brand, every time": plain cut | brand kit | on brand, on one set of
- * rows (labels, pictures, facts) that the three columns share through
- * subgrid, as in Edit with words. BrandCut sets data-logo, data-lower,
- * data-font and data-colours on the branded .frame for each kit item that
- * is on, aria-pressed on the kit items, and data-latest on the one just
- * applied.
+ * "On brand, every time": the brand kit as a bar of four cells over a reel
+ * of different videos. BrandReel sets data-logo, data-colours, data-font
+ * and data-title on .reel for each kit item that is on, aria-pressed and
+ * data-latest on the cells, and --delay on each tile so it changes as the
+ * scan line reaches it.
  */
 .section {
   position: relative;
@@ -83,30 +82,17 @@
 
 
 
-/* ---------- Three columns, shared rows ---------- */
+/* ---------- The kit bar ---------- */
 
-.compare {
-  --cg: clamp(28px, 3.4vw, 52px);
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) clamp(240px, 22vw, 300px) minmax(0, 1fr);
-  grid-template-rows: auto auto auto;
-  column-gap: var(--cg);
-  row-gap: 14px;
+.brand {
+  --h: clamp(210px, 22vw, 300px);
 }
 
-.side,
-.kitCol {
-  display: grid;
-  grid-row: span 3;
-  grid-template-rows: subgrid;
-  min-width: 0;
-  margin: 0;
-}
-
-.label {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
+.kitHead {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
   color: rgb(244 241 234 / 0.45);
   font-family: var(--font-mono-stack);
   font-size: 0.6875rem;
@@ -114,278 +100,28 @@
   text-transform: uppercase;
 }
 
-.kitCol .label {
-  justify-content: center;
-}
-
-.side[data-brand] .label {
-  justify-content: flex-end;
-  color: var(--soft-mint);
-}
-
-.side[data-brand] .label::before {
-  content: "";
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--soft-mint);
-  box-shadow: 0 0 8px var(--soft-mint);
-}
-
-/* ---------- The pictures ---------- */
-
-.screen {
-  display: block;
-  aspect-ratio: 16 / 9;
-}
-
-.frame {
-  position: relative;
-  display: block;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  border-radius: 16px;
-  background: #050506;
-  box-shadow:
-    0 0 0 1px rgb(244 241 234 / 0.09),
-    0 30px 80px -36px rgb(0 0 0 / 0.95);
-  container-type: inline-size;
-}
-
-.side:not([data-brand]) .frame {
-  opacity: 0.74;
-}
-
-.side[data-brand] .frame {
-  box-shadow:
-    0 0 0 1px rgb(95 224 176 / 0.45),
-    0 30px 80px -36px rgb(0 0 0 / 0.95),
-    0 0 70px -24px rgb(95 224 176 / 0.45);
-}
-
-/* Colours: the brand's grade over the picture. */
-.grade {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(150deg, rgb(95 224 176 / 0.16), rgb(123 108 240 / 0.26) 60%, rgb(123 108 240 / 0.1));
-  opacity: 0;
-  transition: opacity 0.6s ease;
-}
-
-.frame[data-colours] .grade {
-  opacity: 1;
-}
-
-/* Title style: plain, or the brand's lower third. */
-.lower {
-  position: absolute;
-  top: 8%;
-  left: 4%;
-  display: grid;
-  gap: 0.3cqw;
-  padding: 1.1cqw 2.2cqw;
-  border-left: 0.5cqw solid transparent;
-  background: rgb(11 11 13 / 0.55);
-  transition:
-    border-color 0.4s ease,
-    background-color 0.4s ease;
-}
-
-.lower b {
-  color: #fff;
-  font-size: 3.3cqw;
-  font-weight: 450;
-  letter-spacing: 0;
-  transition: font-weight 0.3s ease;
-}
-
-.lower span {
-  color: rgb(244 241 234 / 0.7);
-  font-size: 2cqw;
-}
-
-.frame[data-lower] .lower {
-  border-color: #7b6cf0;
-  background: linear-gradient(90deg, rgb(11 11 13 / 0.8), rgb(11 11 13 / 0));
-}
-
-.frame[data-lower] .lower b {
-  font-weight: 700;
-  letter-spacing: -0.02em;
-}
-
-.frame[data-lower] .lower span {
-  font-family: var(--font-mono-stack);
-  font-size: 1.8cqw;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-
-/* Font: system captions, or the brand's face with its accent word. */
-.captions {
-  position: absolute;
-  right: 10%;
-  bottom: 9%;
-  left: 10%;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0 0.28em;
-  color: #fff;
-  font-size: 4.6cqw;
-  font-weight: 500;
-  line-height: 1.1;
-  text-shadow: 0 2px 12px rgb(0 0 0 / 0.6);
-}
-
-.frame[data-font] .captions {
-  font-family: var(--font-accent-stack);
-  font-size: 6cqw;
-  font-style: italic;
-  font-weight: 400;
-  animation: settle 0.45s var(--ease-land);
-}
-
-.frame[data-font] .captions [data-hot] {
-  color: var(--soft-mint);
-}
-
-/* Logo: the brand's bug in the corner. */
-.bug {
-  position: absolute;
-  top: 6%;
-  right: 4%;
-  display: inline-flex;
-  align-items: center;
-  gap: 1.2cqw;
-  color: rgb(255 255 255 / 0.85);
-  font-size: 2.8cqw;
-  font-weight: 760;
-  letter-spacing: -0.02em;
-  opacity: 0;
-  scale: 0.8;
-  transition:
-    opacity 0.4s ease,
-    scale 0.5s var(--ease-land);
-}
-
-.bug .mark {
-  width: 2.8cqw;
-  height: 2.8cqw;
-}
-
-.bug .mark::after {
-  inset: 0.9cqw;
-}
-
-.frame[data-logo] .bug {
-  opacity: 1;
-  scale: 1;
-}
-
-/* Beneath each picture: what it has. */
-.facts {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.side[data-brand] .facts {
-  justify-content: flex-end;
-}
-
-.facts li {
-  padding: 4px 10px;
-  border-radius: var(--radius-round);
-  background: rgb(244 241 234 / 0.04);
-  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.1) inset;
-  color: rgb(244 241 234 / 0.5);
-  font-family: var(--font-mono-stack);
-  font-size: 0.6875rem;
-  transition:
-    background-color 0.3s ease,
-    box-shadow 0.3s ease,
-    color 0.3s ease;
-}
-
-.facts li[data-on] {
-  background: rgb(95 224 176 / 0.1);
-  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.45) inset;
+.kitHead b {
   color: var(--mint-text-dark);
+  font-weight: 500;
 }
-
-/* ---------- The kit, between them ---------- */
 
 .kit {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-top: 1px solid rgb(244 241 234 / 0.1);
+  border-bottom: 1px solid rgb(244 241 234 / 0.1);
+}
+
+.cell {
   position: relative;
   display: grid;
-}
-
-/* One straight line through the kit's middle, from Plain's edge to an
-   arrowhead at On brand's edge, with light running along it. */
-.wire {
-  position: absolute;
-  top: 50%;
-  right: calc(var(--cg) * -1 + 4px);
-  left: calc(var(--cg) * -1 + 4px);
-  z-index: -1;
-  height: 1.5px;
-  overflow: hidden;
-  background: rgb(95 224 176 / 0.45);
-}
-
-.wire i {
-  position: absolute;
-  inset: 0;
-  width: 30%;
-  background: linear-gradient(90deg, transparent, var(--soft-mint), transparent);
-  animation: run 2.4s linear infinite;
-}
-
-.kit::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  right: calc(var(--cg) * -1 + 2px);
-  width: 8px;
-  height: 8px;
-  border-top: 1.5px solid var(--soft-mint);
-  border-right: 1.5px solid var(--soft-mint);
-  translate: 0 -50%;
-  rotate: 45deg;
-}
-
-.items {
-  display: grid;
-  grid-template-rows: repeat(4, minmax(0, 1fr));
-  margin: 0;
-  padding: 6px;
-  border-radius: 16px;
-  background: #121316;
-  box-shadow:
-    0 0 0 1px rgb(244 241 234 / 0.09),
-    0 30px 80px -36px rgb(0 0 0 / 0.95);
-  list-style: none;
-}
-
-.items li {
-  display: grid;
-  min-height: 0;
-}
-
-.item {
-  position: relative;
-  display: grid;
-  grid-template-columns: 36px minmax(0, 1fr) 16px;
+  grid-template-columns: auto 40px minmax(0, 1fr) 16px;
   align-items: center;
-  gap: 12px;
-  padding: 0 10px;
+  gap: 14px;
+  padding: 18px clamp(12px, 1.6vw, 22px);
+  overflow: hidden;
   border: 0;
-  border-radius: 11px;
+  border-left: 1px solid rgb(244 241 234 / 0.1);
   background: none;
   color: inherit;
   font: inherit;
@@ -394,55 +130,64 @@
   transition: background-color 0.3s ease;
 }
 
-.item:hover {
-  background: rgb(244 241 234 / 0.035);
+.cell:first-child {
+  border-left: 0;
 }
 
-.item[aria-pressed="true"] {
+.cell:hover {
+  background: rgb(244 241 234 / 0.03);
+}
+
+.cell[data-latest] {
   background: rgb(95 224 176 / 0.06);
 }
 
-.item[data-latest] {
-  background: rgb(95 224 176 / 0.12);
-  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.45) inset;
-}
-
-.item:focus-visible {
+.cell:focus-visible {
   outline: 2px solid var(--soft-mint);
   outline-offset: -2px;
+}
+
+.cellIndex {
+  color: rgb(244 241 234 / 0.35);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+}
+
+.cell[aria-pressed="true"] .cellIndex {
+  color: var(--soft-mint);
 }
 
 .specimen {
   display: grid;
   place-items: center;
-  width: 36px;
-  height: 30px;
-  border-radius: 8px;
+  width: 40px;
+  height: 34px;
+  border-radius: 9px;
   background: rgb(244 241 234 / 0.04);
   box-shadow: 0 0 0 1px rgb(244 241 234 / 0.08) inset;
 }
 
-.itemText {
+.cellText {
   display: grid;
-  gap: 1px;
+  gap: 2px;
   min-width: 0;
 }
 
-.itemName {
+.cellName {
   overflow: hidden;
   color: rgb(244 241 234 / 0.6);
-  font-size: 0.875rem;
+  font-size: 0.9375rem;
   font-weight: 560;
   white-space: nowrap;
   text-overflow: ellipsis;
   transition: color 0.3s ease;
 }
 
-.item[aria-pressed="true"] .itemName {
+.cell[aria-pressed="true"] .cellName {
   color: var(--paper);
 }
 
-.itemDetail {
+.cellDetail {
   overflow: hidden;
   color: rgb(244 241 234 / 0.4);
   font-size: 0.75rem;
@@ -461,44 +206,249 @@
     box-shadow 0.3s ease;
 }
 
-.item[aria-pressed="true"] .check {
+.cell[aria-pressed="true"] .check {
   background:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.6 8.2 7 10.6 11.4 6' fill='none' stroke='%2306231A' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 16px no-repeat,
     var(--soft-mint);
   box-shadow: none;
 }
 
-/* Beneath the kit: how much of it is on. */
-.count {
+/* The item just applied: a mint line runs along its foot. */
+.cellFill {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 2px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+  transform-origin: left;
+  scale: 0 1;
+}
+
+.cell[data-latest] .cellFill {
+  animation: fill 0.9s var(--ease-land) forwards;
+}
+
+/* ---------- The reel ---------- */
+
+/* The reel runs the width of the column, under the kit bar. */
+.reel {
+  position: relative;
+  margin-top: clamp(24px, 3vw, 36px);
+  padding: 4px 0;
+  overflow: hidden;
+  container-type: inline-size;
+}
+
+/* Soft edges, painted (no mask over moving content). */
+.reel::before,
+.reel::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 2;
+  width: clamp(24px, 5vw, 72px);
+  pointer-events: none;
+}
+
+.reel::before {
+  left: 0;
+  background: linear-gradient(90deg, var(--night), transparent);
+}
+
+.reel::after {
+  right: 0;
+  background: linear-gradient(-90deg, var(--night), transparent);
+}
+
+.track {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: drift 64s linear infinite;
+}
+
+.reel[data-paused] .track {
+  animation-play-state: paused;
+}
+
+.set {
+  display: flex;
+  align-items: flex-end;
+  gap: 18px;
+  padding-right: 18px;
+}
+
+.tile {
   display: grid;
-  grid-template-columns: auto auto minmax(0, 1fr);
-  align-items: center;
-  gap: 8px;
-  color: rgb(244 241 234 / 0.45);
+  gap: 10px;
+  margin: 0;
+}
+
+.picture {
+  position: relative;
+  display: block;
+  width: calc(var(--h) * var(--r));
+  height: var(--h);
+  overflow: hidden;
+  border-radius: 14px;
+  background: #050506;
+  box-shadow:
+    0 0 0 1px rgb(244 241 234 / 0.1),
+    0 30px 60px -30px rgb(0 0 0 / 0.9);
+  container-type: size;
+  transition: box-shadow 0.45s ease var(--delay, 0ms);
+}
+
+.reel[data-colours] .picture {
+  box-shadow:
+    0 0 0 1px rgb(123 108 240 / 0.55),
+    0 30px 60px -30px rgb(0 0 0 / 0.9);
+}
+
+.tileLabel {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  color: rgb(244 241 234 / 0.6);
   font-family: var(--font-mono-stack);
   font-size: 0.6875rem;
+  letter-spacing: 0.04em;
 }
 
-.count b {
-  color: var(--mint-text-dark);
-  font-weight: 500;
+.tileLabel span {
+  color: rgb(244 241 234 / 0.35);
 }
 
-.meter {
-  height: 2px;
-  overflow: hidden;
-  border-radius: 2px;
-  background: rgb(244 241 234 / 0.1);
+/* Colours: the brand's grade. */
+.grade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(150deg, rgb(95 224 176 / 0.14), rgb(123 108 240 / 0.26) 60%, rgb(123 108 240 / 0.08));
+  opacity: 0;
+  transition: opacity 0.5s ease var(--delay, 0ms);
 }
 
-.meter i {
+.reel[data-colours] .grade {
+  opacity: 1;
+}
+
+/* The video's title: plain, or in the brand's face and style. */
+.vidTitle {
+  position: absolute;
+  top: 7cqh;
+  left: 6cqh;
+  max-width: calc(100% - 12cqh);
+  padding: 2.2cqh 3.6cqh;
+  border-left: 0 solid #7b6cf0;
+  background: rgb(11 11 13 / 0.6);
+  transition:
+    border-width 0.35s ease var(--delay, 0ms),
+    background-color 0.35s ease var(--delay, 0ms);
+}
+
+.vidTitle b {
   display: block;
-  height: 100%;
-  background: var(--soft-mint);
-  transform-origin: left;
-  transition: scale 0.5s var(--ease-land);
+  color: #fff;
+  font-size: 6.4cqh;
+  font-weight: 450;
+  letter-spacing: 0;
+  line-height: 1.1;
+  white-space: nowrap;
+  transition:
+    font-weight 0.35s ease var(--delay, 0ms),
+    font-family 0.02s var(--delay, 0ms),
+    font-style 0.02s var(--delay, 0ms);
+  transition-behavior: allow-discrete;
 }
 
+/* UGC keeps its hook tag in the top corner; the title sits below it. */
+.tile[data-kind="ugc"] .vidTitle {
+  top: 15cqh;
+}
+
+.reel[data-title] .vidTitle {
+  border-left-width: 1.4cqh;
+  background: linear-gradient(90deg, rgb(11 11 13 / 0.85), rgb(11 11 13 / 0.35));
+}
+
+.reel[data-title] .vidTitle b {
+  font-weight: 720;
+  letter-spacing: -0.02em;
+}
+
+.reel[data-font] .vidTitle b {
+  font-family: var(--font-accent-stack);
+  font-size: 7.6cqh;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+.reel[data-font] .vidTitle b::first-letter {
+  color: var(--soft-mint);
+}
+
+/* Logo: the brand's bug in the corner. */
+.bug {
+  position: absolute;
+  right: 5cqh;
+  bottom: 5cqh;
+  display: inline-flex;
+  align-items: center;
+  gap: 1.6cqh;
+  color: rgb(255 255 255 / 0.9);
+  font-size: 4.6cqh;
+  font-weight: 760;
+  letter-spacing: -0.02em;
+  opacity: 0;
+  scale: 0.8;
+  transition:
+    opacity 0.4s ease var(--delay, 0ms),
+    scale 0.5s var(--ease-land) var(--delay, 0ms);
+}
+
+.bug .mark {
+  width: 4.6cqh;
+  height: 4.6cqh;
+}
+
+.bug .mark::after {
+  inset: 1.5cqh;
+}
+
+.reel[data-logo] .bug {
+  opacity: 1;
+  scale: 1;
+}
+
+/* The scan line that carries each change across the reel. */
+.scan {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  width: 2px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 14px 2px rgb(95 224 176 / 0.6);
+  pointer-events: none;
+  animation: sweep 0.9s linear forwards;
+}
+
+.scan::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 2px;
+  bottom: 0;
+  width: 120px;
+  background: linear-gradient(90deg, transparent, rgb(95 224 176 / 0.14));
+}
+
+/* Specimens. */
 /* Specimens. */
 .mark {
   position: relative;
@@ -517,11 +467,11 @@
   background: #0b0b0d;
 }
 
-.miniLower {
-  width: 24px;
-  height: 10px;
-  border-left: 2px solid var(--soft-mint);
-  background: linear-gradient(90deg, rgb(244 241 234 / 0.5), rgb(244 241 234 / 0.1));
+.miniTitle {
+  width: 26px;
+  height: 12px;
+  border-left: 3px solid #7b6cf0;
+  background: linear-gradient(90deg, rgb(244 241 234 / 0.55), rgb(244 241 234 / 0.08));
 }
 
 .aa {
@@ -562,6 +512,7 @@
 }
 
 
+
 .footnote {
   margin-top: 16px;
   color: rgb(244 241 234 / 0.38);
@@ -572,70 +523,55 @@
   text-transform: uppercase;
 }
 
-@keyframes run {
-  from {
-    translate: -100% 0;
-  }
+@keyframes fill {
   to {
-    translate: 340% 0;
+    scale: 1 1;
   }
 }
 
-@keyframes settle {
+@keyframes drift {
+  to {
+    translate: -50% 0;
+  }
+}
+
+@keyframes sweep {
   from {
+    translate: 0 0;
+    opacity: 1;
+  }
+  92% {
+    opacity: 1;
+  }
+  to {
+    translate: 100cqw 0;
     opacity: 0;
-    translate: 0 4px;
   }
 }
 
 /* ---------- Smaller screens ---------- */
 
 @media (max-width: 1080px) {
-  .itemDetail {
+  .cellIndex {
     display: none;
+  }
+
+  .cell {
+    grid-template-columns: 40px minmax(0, 1fr) 16px;
   }
 }
 
-/* Stacked: plain, the kit, on brand. */
 @media (max-width: 900px) {
-  .compare {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: none;
-    row-gap: 28px;
-  }
-
-  .side,
-  .kitCol {
-    grid-row: auto;
-    grid-template-rows: none;
-    gap: 12px;
-  }
-
-  .kitCol .label,
-  .side[data-brand] .label {
-    justify-content: flex-start;
-  }
-
-  .side[data-brand] .facts {
-    justify-content: flex-start;
-  }
-
-  .wire,
-  .kit::after {
-    display: none;
-  }
-
-  .items {
+  .kit {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-template-rows: none;
   }
 
-  .item {
-    padding: 10px;
+  .cell:nth-child(3) {
+    border-left: 0;
   }
 
-  .itemDetail {
-    display: block;
+  .cell:nth-child(n + 3) {
+    border-top: 1px solid rgb(244 241 234 / 0.1);
   }
 }
 
@@ -660,21 +596,38 @@
 }
 
 @media (max-width: 560px) {
-  .items {
-    grid-template-columns: minmax(0, 1fr);
+  .brand {
+    --h: 190px;
+  }
+
+  .cell {
+    grid-template-columns: 34px minmax(0, 1fr);
+    gap: 10px;
+    padding: 14px 10px;
+  }
+
+  .specimen {
+    width: 34px;
+  }
+
+  .cellDetail,
+  .check {
+    display: none;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .wire i,
-  .frame[data-font] .captions {
+  .track,
+  .scan,
+  .cell[data-latest] .cellFill {
     animation: none;
   }
 
+  .picture,
   .grade,
-  .bug,
-  .lower,
-  .meter i {
+  .vidTitle,
+  .vidTitle b,
+  .bug {
     transition: none;
   }
 }

@@ -250,15 +250,17 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
   - **Turning:** the next format every 4.2s while on screen and not held, until a tab is clicked. Reduced motion: no auto-turn, changes at once.
   - **Narrow screens:** the ratio and name sit in a row above the stage, the tabs show only glyph and ratio, and the lists go beneath.
   - **Copy:** `everyFormat`, PLACEHOLDER until the team confirms Keyfly's export options.
-- **On brand, every time** (`src/components/on-brand/`, added 2026-11-02; the team confirmed that day that Keyfly has a brand kit): "Your brand. *On every cut.*" Heading laid out like Use cases; captioned "Illustrative interface". An exploded 3D layer stack was built first and dropped the same day as not well structured or aligned; the team then picked "Plain cut | Kit | Branded cut".
-  - **`BrandCut`** (client): three columns on one set of rows (labels, pictures, facts) shared through `subgrid`, as in Edit with words.
-    - **Plain cut** (left, dimmed): the shared `Shot` with system-font captions and a plain title; chips "No logo · Plain titles · System font · Ungraded".
-    - **Brand kit** (centre): a card of four rows (Your logo, Title style, Your font, Your colours), each with a sample, a detail and a ring that becomes a mint check. Beneath, "N/4 applied" and a meter. One straight mint line runs through the card's middle across both gaps, with light running along it and an arrowhead at On brand.
-    - **On brand** (right, mint edge): the same shot with what is on, set by `data-logo`, `data-lower`, `data-font`, `data-colours` on the frame: the logo bug, the brand's lower third (violet bar, mono subtitle), captions in the serif italic with a mint word, and the grade. Its chips turn mint as each item applies.
-  - **Self-running:** the kit applies one item at a time (1.1s, the item just applied is outlined), holds the finished cut 3.2s, then starts again; while on screen and not held. Clicking an item makes the rows toggles and stops it. Reduced motion: everything applied, no self-running.
-  - **Narrow screens:** stacked plain, kit, on brand; the line hides, and the kit is two columns, then one on phones.
+- **On brand, every time** (`src/components/on-brand/`, added 2026-11-02; the team confirmed that day that Keyfly has a brand kit): "Your brand. *On every cut.*" Heading laid out like Use cases; captioned "Illustrative interface". Dropped the same day: an exploded 3D layer stack (not well aligned) and Plain cut | Kit | On brand (too like Edit with words). The team then picked "one brand, every video".
+  - **`BrandReel`** (client):
+    - **Kit bar:** "Brand kit" and "N/4 applied · 6 videos" above an even bar of four cells between hairlines (index, sample, name, detail, a ring that becomes a mint check): Your logo, Your colours, Your font, Title style. The item just applied gets a mint line along its foot.
+    - **Reel:** beneath, in the column with painted soft edges, six illustrative videos in their own shapes (Launch 16:9, UGC 9:16, Podcast 1:1, Explainer 16:9, Product Demo 4:5, Montage 16:9; the use-case `Preview`s, `bleed`) drift sideways as one track (two copies, `translate: -50%`, 64s). Each has a label and ratio beneath.
+    - **What the kit changes,** set on `.reel` (`data-logo`, `data-colours`, `data-font`, `data-title`): the logo bug in the corner; a grade and a violet edge; the title in the serif italic with a mint first letter; the title's bar and weight.
+    - **The scan:** each time an item applies, a mint scan line crosses the reel (0.9s), and each video changes as the line reaches it: just before the change, every tile gets `--delay` from where it stands, used as the transition delay (font family and style flip via `transition-behavior: allow-discrete`).
+  - **Self-running:** one item every 1.7s, hold fully on brand 3.2s, then start again; while on screen and not held. Clicking a cell toggles that item and stops it. Reduced motion: everything applied, the reel still, no scan.
+  - **Narrow screens:** the kit becomes 2 × 2 (names only on phones); the reel is shorter.
+  - **Gotcha:** the heading uses `.title`, so the videos' titles are `.vidTitle`.
   - **Copy:** `onBrand`, PLACEHOLDER until the team confirms what the brand kit holds.
-- **`Shot`** (`src/components/shot/`): the CSS-drawn illustrative shot (dusk through a window, a presenter at 62% across), shared by One edit, every format and On brand.
+- **`Shot`** (`src/components/shot/`): the CSS-drawn illustrative shot (dusk through a window, a presenter at 62% across), used by One edit, every format.
 - **Use cases** (`src/components/use-cases/`, added 2026-10-31, redesigned four times the same day): the six prompt-box presets on a **jog wheel**, the dial editors spin to move through footage. Captioned "Illustrative previews". It is not pinned, so it fits any height. Earlier versions were dropped:
   - a pinned reel (broke on short laptop screens);
   - a boxed multicam switcher with a tile grid (the team asked for no grid or box shapes);

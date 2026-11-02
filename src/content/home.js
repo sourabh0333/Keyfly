@@ -145,22 +145,27 @@ export const everyFormat = {
 export const onBrand = {
   eyebrow: "On brand, every time",
   title: [{ text: "Your brand." }, { text: "On every cut.", accent: true }],
-  lead: "Save your logo, colours and fonts once. Keyfly applies your brand kit to every cut, so each video looks like yours from the first draft.",
+  lead: "Save your logo, colours and fonts once. Keyfly applies your brand kit to every video it makes, whatever its shape, so each one looks like yours from the first draft.",
   note: "Illustrative interface",
-  plainLabel: "Plain cut",
   kitLabel: "Brand kit",
-  brandLabel: "On brand",
   applied: "applied",
-  // In the order Keyfly applies them.
+  videosLabel: "videos",
+  // The kit, in the order Keyfly applies it.
   items: [
-    { id: "logo", name: "Your logo", detail: "Corner, 80% opacity", plain: "No logo" },
-    { id: "lower", name: "Title style", detail: "Name and chapter", plain: "Plain titles" },
-    { id: "font", name: "Your font", detail: "Captions, word by word", plain: "System font" },
-    { id: "colours", name: "Your colours", detail: "Grade and accents", plain: "Ungraded" },
+    { id: "logo", name: "Your logo", detail: "Corner, 80% opacity" },
+    { id: "colours", name: "Your colours", detail: "Grade and accents" },
+    { id: "font", name: "Your font", detail: "Titles and captions" },
+    { id: "title", name: "Title style", detail: "Bar, weight, label" },
   ],
-  lowerTitle: "Launch day",
-  lowerSub: "Chapter 2",
-  captions: ["Built", "for", "launch", "day"],
+  // Illustrative videos, each in its own shape.
+  videos: [
+    { kind: "launch", ratio: "16:9", w: 16, h: 9, title: "Launch day", label: "Launch Video" },
+    { kind: "ugc", ratio: "9:16", w: 9, h: 16, title: "Real results", label: "UGC" },
+    { kind: "podcast", ratio: "1:1", w: 1, h: 1, title: "Episode 12", label: "Podcast" },
+    { kind: "explainer", ratio: "16:9", w: 16, h: 9, title: "How it works", label: "Explainer" },
+    { kind: "demo", ratio: "4:5", w: 4, h: 5, title: "New: Publish", label: "Product Demo" },
+    { kind: "montage", ratio: "16:9", w: 16, h: 9, title: "Highlights", label: "Montage" },
+  ],
 };
 
 export const useCases = {
