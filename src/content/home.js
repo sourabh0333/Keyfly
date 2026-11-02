@@ -145,19 +145,18 @@ export const everyFormat = {
 export const onBrand = {
   eyebrow: "On brand, every time",
   title: [{ text: "Your brand." }, { text: "On every cut.", accent: true }],
-  lead: "Save your logo, colours and fonts once. Keyfly builds every video from your brand kit, layer by layer, so each cut looks like yours.",
-  kit: "Brand kit",
-  kitSub: "Applied to every cut",
-  views: { layers: "Layers", final: "Final" },
-  viewLabel: "View",
+  lead: "Save your logo, colours and fonts once. Keyfly applies your brand kit to every cut, so each video looks like yours from the first draft.",
   note: "Illustrative interface",
-  // Top to bottom, as they stack in the frame.
-  layers: [
-    { id: "logo", label: "Logo", kit: "Your logo", detail: "Corner, 80% opacity" },
-    { id: "lower", label: "Lower third", kit: "Title style", detail: "Name and role" },
-    { id: "captions", label: "Captions", kit: "Your font", detail: "Word by word" },
-    { id: "grade", label: "Colour", kit: "Your colours", detail: "Grade and accents" },
-    { id: "footage", label: "Footage", kit: "Your footage", detail: "Cut by Keyfly" },
+  plainLabel: "Plain cut",
+  kitLabel: "Brand kit",
+  brandLabel: "On brand",
+  applied: "applied",
+  // In the order Keyfly applies them.
+  items: [
+    { id: "logo", name: "Your logo", detail: "Corner, 80% opacity", plain: "No logo" },
+    { id: "lower", name: "Title style", detail: "Name and chapter", plain: "Plain titles" },
+    { id: "font", name: "Your font", detail: "Captions, word by word", plain: "System font" },
+    { id: "colours", name: "Your colours", detail: "Grade and accents", plain: "Ungraded" },
   ],
   lowerTitle: "Launch day",
   lowerSub: "Chapter 2",

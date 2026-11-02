@@ -1,8 +1,10 @@
 /*
- * "On brand, every time": the brand kit beside an exploded view of one
- * frame. Layers sets data-view ("layers" or "final") on .layers, data-on
- * on the layer, kit item and line in focus, and --z (height in the stack)
- * on each layer. The lines' paths are measured and written by Layers.
+ * "On brand, every time": plain cut | brand kit | on brand, on one set of
+ * rows (labels, pictures, facts) that the three columns share through
+ * subgrid, as in Edit with words. BrandCut sets data-logo, data-lower,
+ * data-font and data-colours on the branded .frame for each kit item that
+ * is on, aria-pressed on the kit items, and data-latest on the one just
+ * applied.
  */
 .section {
   position: relative;
@@ -80,136 +82,421 @@
 
 
 
-/* ---------- Kit beside the stage ---------- */
 
-.layers {
-  --w: min(560px, 42vw);
-  --gap: calc(var(--w) * 0.11);
-  --ease-stack: cubic-bezier(0.65, 0, 0.35, 1);
-}
+/* ---------- Three columns, shared rows ---------- */
 
-.body {
-  position: relative;
+.compare {
+  --cg: clamp(28px, 3.4vw, 52px);
   display: grid;
-  grid-template-columns: minmax(250px, 0.75fr) minmax(0, 2fr);
-  align-items: center;
-  gap: clamp(32px, 5vw, 80px);
+  grid-template-columns: minmax(0, 1fr) clamp(240px, 22vw, 300px) minmax(0, 1fr);
+  grid-template-rows: auto auto auto;
+  column-gap: var(--cg);
+  row-gap: 14px;
 }
 
-.kitHead {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
-  padding-bottom: 14px;
-  border-bottom: 1px solid rgb(244 241 234 / 0.1);
-  color: rgb(244 241 234 / 0.75);
+.side,
+.kitCol {
+  display: grid;
+  grid-row: span 3;
+  grid-template-rows: subgrid;
+  min-width: 0;
+  margin: 0;
+}
+
+.label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: rgb(244 241 234 / 0.45);
   font-family: var(--font-mono-stack);
   font-size: 0.6875rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 
-.kitHead span {
-  color: rgb(244 241 234 / 0.4);
-  letter-spacing: 0.04em;
-  text-transform: none;
+.kitCol .label {
+  justify-content: center;
 }
 
-.items {
+.side[data-brand] .label {
+  justify-content: flex-end;
+  color: var(--soft-mint);
+}
+
+.side[data-brand] .label::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+}
+
+/* ---------- The pictures ---------- */
+
+.screen {
+  display: block;
+  aspect-ratio: 16 / 9;
+}
+
+.frame {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  border-radius: 16px;
+  background: #050506;
+  box-shadow:
+    0 0 0 1px rgb(244 241 234 / 0.09),
+    0 30px 80px -36px rgb(0 0 0 / 0.95);
+  container-type: inline-size;
+}
+
+.side:not([data-brand]) .frame {
+  opacity: 0.74;
+}
+
+.side[data-brand] .frame {
+  box-shadow:
+    0 0 0 1px rgb(95 224 176 / 0.45),
+    0 30px 80px -36px rgb(0 0 0 / 0.95),
+    0 0 70px -24px rgb(95 224 176 / 0.45);
+}
+
+/* Colours: the brand's grade over the picture. */
+.grade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(150deg, rgb(95 224 176 / 0.16), rgb(123 108 240 / 0.26) 60%, rgb(123 108 240 / 0.1));
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.frame[data-colours] .grade {
+  opacity: 1;
+}
+
+/* Title style: plain, or the brand's lower third. */
+.lower {
+  position: absolute;
+  top: 8%;
+  left: 4%;
+  display: grid;
+  gap: 0.3cqw;
+  padding: 1.1cqw 2.2cqw;
+  border-left: 0.5cqw solid transparent;
+  background: rgb(11 11 13 / 0.55);
+  transition:
+    border-color 0.4s ease,
+    background-color 0.4s ease;
+}
+
+.lower b {
+  color: #fff;
+  font-size: 3.3cqw;
+  font-weight: 450;
+  letter-spacing: 0;
+  transition: font-weight 0.3s ease;
+}
+
+.lower span {
+  color: rgb(244 241 234 / 0.7);
+  font-size: 2cqw;
+}
+
+.frame[data-lower] .lower {
+  border-color: #7b6cf0;
+  background: linear-gradient(90deg, rgb(11 11 13 / 0.8), rgb(11 11 13 / 0));
+}
+
+.frame[data-lower] .lower b {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.frame[data-lower] .lower span {
+  font-family: var(--font-mono-stack);
+  font-size: 1.8cqw;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* Font: system captions, or the brand's face with its accent word. */
+.captions {
+  position: absolute;
+  right: 10%;
+  bottom: 9%;
+  left: 10%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 0.28em;
+  color: #fff;
+  font-size: 4.6cqw;
+  font-weight: 500;
+  line-height: 1.1;
+  text-shadow: 0 2px 12px rgb(0 0 0 / 0.6);
+}
+
+.frame[data-font] .captions {
+  font-family: var(--font-accent-stack);
+  font-size: 6cqw;
+  font-style: italic;
+  font-weight: 400;
+  animation: settle 0.45s var(--ease-land);
+}
+
+.frame[data-font] .captions [data-hot] {
+  color: var(--soft-mint);
+}
+
+/* Logo: the brand's bug in the corner. */
+.bug {
+  position: absolute;
+  top: 6%;
+  right: 4%;
+  display: inline-flex;
+  align-items: center;
+  gap: 1.2cqw;
+  color: rgb(255 255 255 / 0.85);
+  font-size: 2.8cqw;
+  font-weight: 760;
+  letter-spacing: -0.02em;
+  opacity: 0;
+  scale: 0.8;
+  transition:
+    opacity 0.4s ease,
+    scale 0.5s var(--ease-land);
+}
+
+.bug .mark {
+  width: 2.8cqw;
+  height: 2.8cqw;
+}
+
+.bug .mark::after {
+  inset: 0.9cqw;
+}
+
+.frame[data-logo] .bug {
+  opacity: 1;
+  scale: 1;
+}
+
+/* Beneath each picture: what it has. */
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
+.side[data-brand] .facts {
+  justify-content: flex-end;
+}
+
+.facts li {
+  padding: 4px 10px;
+  border-radius: var(--radius-round);
+  background: rgb(244 241 234 / 0.04);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.1) inset;
+  color: rgb(244 241 234 / 0.5);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  transition:
+    background-color 0.3s ease,
+    box-shadow 0.3s ease,
+    color 0.3s ease;
+}
+
+.facts li[data-on] {
+  background: rgb(95 224 176 / 0.1);
+  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.45) inset;
+  color: var(--mint-text-dark);
+}
+
+/* ---------- The kit, between them ---------- */
+
+.kit {
+  position: relative;
+  display: grid;
+}
+
+/* One straight line through the kit's middle, from Plain's edge to an
+   arrowhead at On brand's edge, with light running along it. */
+.wire {
+  position: absolute;
+  top: 50%;
+  right: calc(var(--cg) * -1 + 4px);
+  left: calc(var(--cg) * -1 + 4px);
+  z-index: -1;
+  height: 1.5px;
+  overflow: hidden;
+  background: rgb(95 224 176 / 0.45);
+}
+
+.wire i {
+  position: absolute;
+  inset: 0;
+  width: 30%;
+  background: linear-gradient(90deg, transparent, var(--soft-mint), transparent);
+  animation: run 2.4s linear infinite;
+}
+
+.kit::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: calc(var(--cg) * -1 + 2px);
+  width: 8px;
+  height: 8px;
+  border-top: 1.5px solid var(--soft-mint);
+  border-right: 1.5px solid var(--soft-mint);
+  translate: 0 -50%;
+  rotate: 45deg;
+}
+
+.items {
+  display: grid;
+  grid-template-rows: repeat(4, minmax(0, 1fr));
+  margin: 0;
+  padding: 6px;
+  border-radius: 16px;
+  background: #121316;
+  box-shadow:
+    0 0 0 1px rgb(244 241 234 / 0.09),
+    0 30px 80px -36px rgb(0 0 0 / 0.95);
+  list-style: none;
+}
+
+.items li {
+  display: grid;
+  min-height: 0;
+}
+
 .item {
   position: relative;
   display: grid;
-  grid-template-columns: 44px minmax(0, 1fr) auto;
+  grid-template-columns: 36px minmax(0, 1fr) 16px;
   align-items: center;
-  gap: 14px;
-  width: 100%;
-  padding: 14px 0;
+  gap: 12px;
+  padding: 0 10px;
   border: 0;
-  border-bottom: 1px solid rgb(244 241 234 / 0.07);
+  border-radius: 11px;
   background: none;
   color: inherit;
   font: inherit;
   text-align: left;
   cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.item:hover {
+  background: rgb(244 241 234 / 0.035);
+}
+
+.item[aria-pressed="true"] {
+  background: rgb(95 224 176 / 0.06);
+}
+
+.item[data-latest] {
+  background: rgb(95 224 176 / 0.12);
+  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.45) inset;
 }
 
 .item:focus-visible {
   outline: 2px solid var(--soft-mint);
-  outline-offset: 2px;
-  border-radius: 6px;
+  outline-offset: -2px;
 }
 
 .specimen {
   display: grid;
   place-items: center;
-  width: 44px;
-  height: 36px;
-  border-radius: 9px;
+  width: 36px;
+  height: 30px;
+  border-radius: 8px;
   background: rgb(244 241 234 / 0.04);
   box-shadow: 0 0 0 1px rgb(244 241 234 / 0.08) inset;
-  transition: box-shadow 0.3s ease;
-}
-
-.item[data-on] .specimen {
-  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.6) inset;
 }
 
 .itemText {
   display: grid;
-  gap: 2px;
+  gap: 1px;
   min-width: 0;
 }
 
 .itemName {
-  color: rgb(244 241 234 / 0.72);
-  font-size: 0.9375rem;
+  overflow: hidden;
+  color: rgb(244 241 234 / 0.6);
+  font-size: 0.875rem;
   font-weight: 560;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   transition: color 0.3s ease;
 }
 
-.item[data-on] .itemName,
-.item:hover .itemName {
+.item[aria-pressed="true"] .itemName {
   color: var(--paper);
 }
 
 .itemDetail {
+  overflow: hidden;
   color: rgb(244 241 234 / 0.4);
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
-/* Where the line leaves the kit. */
-.dot {
-  width: 7px;
-  height: 7px;
+/* An empty ring, or a mint check once applied. */
+.check {
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
-  background: #0b0b0d;
-  box-shadow: 0 0 0 1.5px rgb(244 241 234 / 0.35);
+  box-shadow: 0 0 0 1.5px rgb(244 241 234 / 0.25) inset;
   transition:
     background-color 0.3s ease,
     box-shadow 0.3s ease;
 }
 
-.item[data-on] .dot {
-  background: var(--soft-mint);
-  box-shadow:
-    0 0 0 1.5px var(--soft-mint),
-    0 0 10px var(--soft-mint);
+.item[aria-pressed="true"] .check {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4.6 8.2 7 10.6 11.4 6' fill='none' stroke='%2306231A' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 16px no-repeat,
+    var(--soft-mint);
+  box-shadow: none;
 }
 
-/* In the finished frame, every kit item is applied. */
-.layers[data-view="final"] .item[data-kit] .dot {
-  background: var(--soft-mint);
-  box-shadow: 0 0 0 1.5px var(--soft-mint);
+/* Beneath the kit: how much of it is on. */
+.count {
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr);
+  align-items: center;
+  gap: 8px;
+  color: rgb(244 241 234 / 0.45);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
 }
 
-.layers[data-view="final"] .item[data-kit] .itemName {
-  color: var(--paper);
+.count b {
+  color: var(--mint-text-dark);
+  font-weight: 500;
+}
+
+.meter {
+  height: 2px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: rgb(244 241 234 / 0.1);
+}
+
+.meter i {
+  display: block;
+  height: 100%;
+  background: var(--soft-mint);
+  transform-origin: left;
+  transition: scale 0.5s var(--ease-land);
 }
 
 /* Specimens. */
@@ -274,256 +561,6 @@
   box-shadow: 0 0 0 1px rgb(244 241 234 / 0.25) inset;
 }
 
-.film {
-  width: 22px;
-  height: 15px;
-  border-radius: 3px;
-  background:
-    linear-gradient(to bottom, #6b4c7c, #d7896a);
-  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.3) inset;
-}
-
-/* ---------- The exploded stack ---------- */
-
-.stage {
-  display: grid;
-  place-items: center;
-  height: calc(var(--w) * 0.95);
-  perspective: 3000px;
-}
-
-.stack {
-  position: relative;
-  width: var(--w);
-  aspect-ratio: 16 / 9;
-  transform-style: preserve-3d;
-  transform: translateY(calc(var(--gap) * 1.7)) rotateX(56deg) rotateZ(-32deg);
-  transition: transform var(--settle, 1.2s) var(--ease-stack);
-}
-
-.layers[data-view="final"] .stack {
-  transform: scale(1.12);
-}
-
-.layer {
-  position: absolute;
-  inset: 0;
-  border-radius: 10px;
-  background: rgb(18 19 22 / 0.28);
-  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.3) inset;
-  transform: translateZ(calc(var(--z) * var(--gap)));
-  transition:
-    transform var(--settle, 1.2s) var(--ease-stack),
-    background-color 0.4s ease,
-    box-shadow 0.4s ease;
-}
-
-.layer[data-id="footage"] {
-  overflow: hidden;
-  background: #050506;
-}
-
-.layer[data-on] {
-  background: rgb(95 224 176 / 0.07);
-  box-shadow:
-    0 0 0 1.5px var(--soft-mint) inset,
-    0 0 30px -6px rgb(95 224 176 / 0.6);
-}
-
-.layer[data-id="footage"][data-on] {
-  background: #050506;
-}
-
-.layers[data-view="final"] .layer {
-  background: transparent;
-  box-shadow: none;
-  transform: translateZ(calc(var(--z) * 1px));
-}
-
-.layers[data-view="final"] .layer[data-id="footage"] {
-  background: #050506;
-  box-shadow:
-    0 0 0 1.5px var(--soft-mint),
-    0 0 60px -14px rgb(95 224 176 / 0.6),
-    0 40px 80px -30px rgb(0 0 0 / 0.9);
-}
-
-.tag {
-  position: absolute;
-  top: -22px;
-  left: 2px;
-  color: rgb(244 241 234 / 0.55);
-  font-family: var(--font-mono-stack);
-  font-size: 11px;
-  letter-spacing: 0.06em;
-  white-space: nowrap;
-  transition:
-    opacity 0.4s ease,
-    color 0.3s ease;
-}
-
-.layer[data-id="footage"] .tag {
-  top: auto;
-  bottom: 8px;
-  left: 10px;
-  color: rgb(244 241 234 / 0.8);
-}
-
-.layer[data-on] .tag {
-  color: var(--soft-mint);
-}
-
-.layers[data-view="final"] .tag {
-  opacity: 0;
-}
-
-.anchor {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  width: 1px;
-  height: 1px;
-}
-
-/* Layer contents, in units of the frame (it is 16:9 at --w). */
-.grade {
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: linear-gradient(150deg, rgb(95 224 176 / 0.18), rgb(123 108 240 / 0.24) 60%, rgb(123 108 240 / 0.08));
-}
-
-.captions {
-  position: absolute;
-  right: 10%;
-  bottom: 9%;
-  left: 10%;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0 0.28em;
-  color: #fff;
-  font-family: var(--font-accent-stack);
-  font-size: calc(var(--w) * 0.062);
-  font-style: italic;
-  line-height: 1.1;
-  text-shadow: 0 2px 12px rgb(0 0 0 / 0.6);
-}
-
-.captions [data-hot] {
-  color: var(--soft-mint);
-}
-
-.lower {
-  position: absolute;
-  top: 34%;
-  left: 5%;
-  display: grid;
-  gap: 2px;
-  padding: calc(var(--w) * 0.012) calc(var(--w) * 0.026);
-  border-left: 3px solid #7b6cf0;
-  background: linear-gradient(90deg, rgb(11 11 13 / 0.78), rgb(11 11 13 / 0));
-}
-
-.lower b {
-  color: #fff;
-  font-size: calc(var(--w) * 0.034);
-  font-weight: 680;
-  letter-spacing: -0.02em;
-}
-
-.lower span {
-  color: rgb(244 241 234 / 0.7);
-  font-family: var(--font-mono-stack);
-  font-size: calc(var(--w) * 0.019);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.bug {
-  position: absolute;
-  top: 6%;
-  right: 4%;
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  color: rgb(255 255 255 / 0.85);
-  font-size: calc(var(--w) * 0.028);
-  font-weight: 760;
-  letter-spacing: -0.02em;
-}
-
-/* ---------- Lines and the view switch ---------- */
-
-.lines {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
-  pointer-events: none;
-  transition: opacity 0.4s ease 0.9s;
-}
-
-.lines path {
-  fill: none;
-  stroke: rgb(244 241 234 / 0.2);
-  stroke-width: 1;
-  stroke-dasharray: 3 4;
-  transition: stroke 0.3s ease;
-}
-
-.lines path[data-on] {
-  stroke: var(--soft-mint);
-  stroke-width: 1.5;
-  stroke-dasharray: none;
-}
-
-.layers[data-view="final"] .lines {
-  opacity: 0;
-  transition-delay: 0s;
-  transition-duration: 0.2s;
-}
-
-.switch {
-  display: flex;
-  gap: 2px;
-  width: max-content;
-  margin: clamp(20px, 3vw, 36px) auto 0;
-  padding: 4px;
-  border-radius: var(--radius-round);
-  background: rgb(244 241 234 / 0.04);
-  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.1) inset;
-}
-
-.switch button {
-  padding: 8px 20px;
-  border: 0;
-  border-radius: var(--radius-round);
-  background: none;
-  color: rgb(244 241 234 / 0.6);
-  font: inherit;
-  font-size: 0.875rem;
-  font-weight: 560;
-  cursor: pointer;
-  transition:
-    background-color 0.25s ease,
-    color 0.25s ease;
-}
-
-.switch button:hover {
-  color: var(--paper);
-}
-
-.switch button[aria-pressed="true"] {
-  background: var(--soft-mint);
-  color: var(--mint-ink);
-}
-
-.switch button:focus-visible {
-  outline: 2px solid var(--soft-mint);
-  outline-offset: 2px;
-}
 
 .footnote {
   margin-top: 16px;
@@ -535,34 +572,70 @@
   text-transform: uppercase;
 }
 
+@keyframes run {
+  from {
+    translate: -100% 0;
+  }
+  to {
+    translate: 340% 0;
+  }
+}
+
+@keyframes settle {
+  from {
+    opacity: 0;
+    translate: 0 4px;
+  }
+}
+
 /* ---------- Smaller screens ---------- */
 
+@media (max-width: 1080px) {
+  .itemDetail {
+    display: none;
+  }
+}
+
+/* Stacked: plain, the kit, on brand. */
 @media (max-width: 900px) {
-  .layers {
-    --w: min(78vw, 520px);
-  }
-
-  .body {
+  .compare {
     grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+    row-gap: 28px;
   }
 
-  .kit {
-    order: 2;
+  .side,
+  .kitCol {
+    grid-row: auto;
+    grid-template-rows: none;
+    gap: 12px;
   }
 
-  .items {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    column-gap: 20px;
+  .kitCol .label,
+  .side[data-brand] .label {
+    justify-content: flex-start;
   }
 
-  .dot,
-  .lines {
+  .side[data-brand] .facts {
+    justify-content: flex-start;
+  }
+
+  .wire,
+  .kit::after {
     display: none;
   }
 
+  .items {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: none;
+  }
+
   .item {
-    grid-template-columns: 40px minmax(0, 1fr);
+    padding: 10px;
+  }
+
+  .itemDetail {
+    display: block;
   }
 }
 
@@ -587,30 +660,21 @@
 }
 
 @media (max-width: 560px) {
-  .layers {
-    --w: 68vw;
-  }
-
-  .stage {
-    padding-left: 8vw;
-  }
-
-  .itemDetail {
-    display: none;
-  }
-
-  .tag {
-    font-size: 9.5px;
-    top: -17px;
+  .items {
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .layers {
-    --settle: 0s;
+  .wire i,
+  .frame[data-font] .captions {
+    animation: none;
   }
 
-  .lines {
+  .grade,
+  .bug,
+  .lower,
+  .meter i {
     transition: none;
   }
 }
