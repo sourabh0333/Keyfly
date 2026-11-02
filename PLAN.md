@@ -98,10 +98,10 @@ Copy for anything not yet confirmed is marked PLACEHOLDER in `src/content/home.j
 | 4 | **You make the calls** (`#control`) | ✅ built 2026-10-31 | Against black-box generators: every AI decision lands on a real timeline you can adjust |
 | 5 | **One edit, every format** (`#formats`) | ✅ built 2026-10-31, rebuilt 2026-11-02 | The 16:9 → 9:16 → 1:1 pain: one cut reframes, captions follow |
 | 6 | **On brand, every time** (`#brand`) | ✅ built 2026-11-02 (brand kit confirmed) | Brand consistency: your fonts, colours and logo applied to every cut |
-| 7 | Use cases | ✅ | Six presets on the jog wheel |
-| 8 | **Works where you work** | next | ChatGPT · Claude, desktop and browser |
+| 7 | **Works where you work** (`#anywhere`) | ✅ built 2026-11-02 (chat app confirmed) | ChatGPT · Claude, desktop and browser; before Use cases so the thread's loop stays clear |
+| 8 | Use cases | ✅ | Six presets on the jog wheel |
 | 9 | Download | ✅ | Get the app |
-| 10 | **FAQ** | planned | Formats, export, privacy, ownership, pricing |
+| 10 | **FAQ** | next | Formats, export, privacy, ownership, pricing |
 | 11 | Footer | ✅ | |
 
 Proof (logos, numbers, reviews), before/after footage and pricing are added once real material exists.

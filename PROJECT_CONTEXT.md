@@ -147,7 +147,7 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
 
 ## Homepage (step by step, from 2026-10-30)
 
-`src/app/page.jsx` renders, inside `Scene`, Hero → HowItWorks (`#product`) → EditWithWords (`#edit`) → YourCall (`#control`) → EveryFormat (`#formats`) → OnBrand (`#brand`) → UseCases (`#use-cases`) → Download (`#download`). The planned sections and their order are in `PLAN.md` ("Homepage expansion"). All copy lives in `src/content/home.js`. Lines marked `PLACEHOLDER` wait for the confirmed product description, so the page is `noindex` until then.
+`src/app/page.jsx` renders, inside `Scene`, Hero → HowItWorks (`#product`) → EditWithWords (`#edit`) → YourCall (`#control`) → EveryFormat (`#formats`) → OnBrand (`#brand`) → Anywhere (`#anywhere`) → UseCases (`#use-cases`) → Download (`#download`). The planned sections and their order are in `PLAN.md` ("Homepage expansion"). All copy lives in `src/content/home.js`. Lines marked `PLACEHOLDER` wait for the confirmed product description, so the page is `noindex` until then.
 
 - **Scene** (`src/components/scene/`, added 2026-10-31 at the team's request: the page was flat black and the sections felt disconnected). It ties the sections together as one scroll:
   - **`SceneLight`:** a fixed light behind every section, so sections leave their own backgrounds transparent (the hero's backdrop fades out at its foot with a mask). Each section brings up its own layer as it fills the screen (`--w`), and the layers drift slowly:
@@ -260,6 +260,16 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
   - **Narrow screens:** the kit becomes 2 × 2 (names only on phones); the reel is shorter.
   - **Gotcha:** the heading uses `.title`, so the videos' titles are `.vidTitle`.
   - **Copy:** `onBrand`, PLACEHOLDER until the team confirms what the brand kit holds.
+- **Works where you work** (`src/components/anywhere/`, added 2026-11-02): "Start anywhere. *Finish anywhere.*" Heading laid out like Use cases; captioned "Illustrative interface". The team confirmed on 2026-11-02 that Keyfly runs as an app inside ChatGPT and Claude and the project then opens in Keyfly; browser–desktop sync and the example edits are PLACEHOLDER. Picked "one project, three doors" from three structures. It sits before Use cases because the flight thread's loop runs from Use cases straight to Download.
+  - **`Doors`** (client): a 3 × 2 grid, `"tabs desktop log" / "chat hub browser"`.
+    - **Top left, "Open it in":** the three surfaces as hairline rows (index, name, where); the one in use fills along its foot while it waits.
+    - **Top right, "Project history":** v3 · v2 · v1, the current one lit, earlier ones read.
+    - **Surfaces** (each captioned above, so wires meet the window): Desktop app (window, sidebar, viewer, export bar that fills); Chat (generic chat panel titled "ChatGPT · Claude", the ask, the reply and a Keyfly app card with "Open in Keyfly"; no official logos); Browser (address bar `app.keyfly.si`, viewer whose captions appear when in use). The one in use has a mint edge; the others dim.
+    - **The project** (centre, row 2): "One project · ● Synced", a thumbnail, "Launch Video · 0:30 · 16:9", the last change with its version, and a clip strip.
+    - **Wires:** straight lines from the project through the gaps to each surface (`--cg`, `--rg`; the desktop wire also crosses the 30px caption). Each round, a bright streak runs in from the surface in use (0.7s), the project flashes, then streaks run out to the other two. Each wire is `clip-path`ped to its length, and the streak is a rail translated by its own length.
+  - **Self-running:** the next surface every 3.6s while on screen and not held, until one is picked. Reduced motion: no pulses, no self-running.
+  - **Narrow screens:** list, project, then chat and browser side by side, desktop and history (one column on phones); wires hidden.
+  - **Copy:** `anywhere`.
 - **`Shot`** (`src/components/shot/`): the CSS-drawn illustrative shot (dusk through a window, a presenter at 62% across), used by One edit, every format.
 - **Use cases** (`src/components/use-cases/`, added 2026-10-31, redesigned four times the same day): the six prompt-box presets on a **jog wheel**, the dial editors spin to move through footage. Captioned "Illustrative previews". It is not pinned, so it fits any height. Earlier versions were dropped:
   - a pinned reel (broke on short laptop screens);
