@@ -1,0 +1,432 @@
+/*
+ * FAQ, "Ask Keyfly": the questions as a numbered list beside a panel
+ * styled like the app's prompt box, where the chosen question's answer
+ * types in (Ask). The panel stands beside the list, as tall as it, on wide
+ * screens and sits above it on narrow ones.
+ */
+.section {
+  position: relative;
+  padding: var(--section-pad) 0;
+  color: var(--paper);
+}
+
+.inner {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* ---------- Heading (as in Use cases and Download) ---------- */
+
+.head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+  margin-bottom: clamp(32px, 4vw, 56px);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: rgb(244 241 234 / 0.62);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.eyebrowMark {
+  width: 18px;
+  height: 1px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+}
+
+.title {
+  margin-top: 16px;
+  font-size: clamp(2.1rem, 1.1rem + 2.2vw, 3.4rem);
+  font-weight: 560;
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+
+.plain,
+.accent {
+  display: block;
+}
+
+.accent {
+  padding-bottom: 0.06em;
+  background: linear-gradient(100deg, var(--mint-text-dark), #eafff6 50%, var(--soft-mint));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-family: var(--font-accent-stack);
+  font-size: 1.1em;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.lead {
+  max-width: 38ch;
+  color: rgb(244 241 234 / 0.62);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  text-align: right;
+}
+
+
+
+
+/* ---------- List and panel ---------- */
+
+/* The panel stretches to the list's height, so both columns share their
+   top and bottom edges. */
+.ask {
+  display: grid;
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  align-items: stretch;
+  gap: clamp(32px, 5vw, 80px);
+}
+
+.list {
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid rgb(244 241 234 / 0.1);
+  list-style: none;
+}
+
+.question {
+  position: relative;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) 14px;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 62px;
+  padding: 16px 6px 16px 14px;
+  border: 0;
+  border-bottom: 1px solid rgb(244 241 234 / 0.1);
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* The question in play: a mint edge, as the rows elsewhere on the page. */
+.question::before {
+  content: "";
+  position: absolute;
+  top: 12px;
+  bottom: 12px;
+  left: 0;
+  width: 2px;
+  border-radius: 2px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.question:hover {
+  background: rgb(244 241 234 / 0.025);
+}
+
+.question[aria-pressed="true"] {
+  background: rgb(95 224 176 / 0.05);
+}
+
+.question[aria-pressed="true"]::before {
+  opacity: 1;
+}
+
+.question:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: -2px;
+}
+
+.index {
+  color: rgb(244 241 234 / 0.35);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+}
+
+.question[aria-pressed="true"] .index {
+  color: var(--soft-mint);
+}
+
+.qText {
+  color: rgb(244 241 234 / 0.65);
+  font-size: 1.0625rem;
+  font-weight: 540;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+  transition: color 0.3s ease;
+}
+
+.question:hover .qText,
+.question[aria-pressed="true"] .qText {
+  color: var(--paper);
+}
+
+.arrow {
+  color: var(--soft-mint);
+  opacity: 0;
+  translate: -6px 0;
+  transition:
+    opacity 0.3s ease,
+    translate 0.3s var(--ease-land);
+}
+
+.question[aria-pressed="true"] .arrow {
+  opacity: 1;
+  translate: 0 0;
+}
+
+/* The panel: the prompt box's glass, with a mint edge along its top. */
+.panel {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  min-height: clamp(320px, 34vw, 400px);
+  overflow: hidden;
+  border-radius: 22px;
+  background:
+    radial-gradient(80% 60% at 50% 0%, rgb(95 224 176 / 0.08), transparent 70%),
+    linear-gradient(180deg, #16181c, #101114);
+  box-shadow:
+    0 0 0 1px rgb(244 241 234 / 0.1),
+    0 1px 0 rgb(244 241 234 / 0.08) inset,
+    0 40px 100px -40px rgb(0 0 0 / 0.95),
+    0 0 90px -40px rgb(95 224 176 / 0.35);
+}
+
+.panel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 18%;
+  left: 18%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--soft-mint), transparent);
+}
+
+.panelHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px 24px;
+  border-bottom: 1px solid rgb(244 241 234 / 0.07);
+}
+
+.panelName {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: rgb(244 241 234 / 0.75);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.panelName i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+}
+
+.count {
+  color: rgb(244 241 234 / 0.4);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+}
+
+/* The question, as sent. */
+.sent {
+  display: flex;
+  gap: 12px;
+  margin: 24px 24px 0;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgb(244 241 234 / 0.05);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.07) inset;
+  color: var(--paper);
+  font-size: 1rem;
+  font-weight: 560;
+  line-height: 1.4;
+  animation: rise 0.4s var(--ease-land);
+}
+
+.chevron {
+  color: var(--soft-mint);
+  font-family: var(--font-mono-stack);
+}
+
+/* The answer, typing in. The rest of it is laid out but hidden, so the
+   panel keeps its height while it types. */
+.answer {
+  margin: 0;
+  padding: 22px 24px;
+  color: rgb(244 241 234 / 0.85);
+  font-size: clamp(1.0625rem, 0.95rem + 0.4vw, 1.3rem);
+  line-height: 1.55;
+  letter-spacing: -0.01em;
+}
+
+.ghost {
+  visibility: hidden;
+}
+
+.caret {
+  display: inline-block;
+  width: 2px;
+  height: 1.1em;
+  margin: 0 1px -0.18em 2px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+  animation: blink 1s steps(1) infinite;
+}
+
+.answer[data-typing] .caret {
+  animation: none;
+}
+
+.panelFoot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 24px 20px;
+  border-top: 1px solid rgb(244 241 234 / 0.07);
+}
+
+.link,
+.next {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 560;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.link {
+  color: var(--mint-text-dark);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.link[data-ready] {
+  opacity: 1;
+}
+
+.next {
+  color: rgb(244 241 234 / 0.6);
+  transition: color 0.25s ease;
+}
+
+.next:hover,
+.link:hover {
+  color: var(--paper);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    translate: 0 6px;
+  }
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* ---------- Smaller screens ---------- */
+
+/* The panel above the list. */
+@media (max-width: 900px) {
+  .ask {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .panel {
+    order: -1;
+    min-height: 0;
+  }
+}
+
+@media (max-width: 860px) {
+  .head {
+    display: grid;
+    gap: 14px;
+  }
+
+  .lead {
+    text-align: left;
+  }
+
+  .plain,
+  .accent {
+    display: inline;
+  }
+
+  .title {
+    font-size: clamp(1.9rem, 1.2rem + 3vw, 2.75rem);
+  }
+}
+
+@media (max-width: 560px) {
+  .panelHead,
+  .panelFoot,
+  .answer {
+    padding-right: 18px;
+    padding-left: 18px;
+  }
+
+  .sent {
+    margin: 18px 18px 0;
+  }
+
+  .qText {
+    font-size: 1rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sent,
+  .caret {
+    animation: none;
+  }
+
+  .link,
+  .arrow,
+  .question::before {
+    transition: none;
+  }
+}

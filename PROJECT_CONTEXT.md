@@ -147,7 +147,7 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
 
 ## Homepage (step by step, from 2026-10-30)
 
-`src/app/page.jsx` renders, inside `Scene`, Hero → HowItWorks (`#product`) → EditWithWords (`#edit`) → YourCall (`#control`) → EveryFormat (`#formats`) → OnBrand (`#brand`) → Anywhere (`#anywhere`) → UseCases (`#use-cases`) → Download (`#download`). The planned sections and their order are in `PLAN.md` ("Homepage expansion"). All copy lives in `src/content/home.js`. Lines marked `PLACEHOLDER` wait for the confirmed product description, so the page is `noindex` until then.
+`src/app/page.jsx` renders, inside `Scene`, Hero → HowItWorks (`#product`) → EditWithWords (`#edit`) → YourCall (`#control`) → EveryFormat (`#formats`) → OnBrand (`#brand`) → Anywhere (`#anywhere`) → UseCases (`#use-cases`) → Download (`#download`) → Faq (`#faq`). The planned sections and their order are in `PLAN.md` ("Homepage expansion"). All copy lives in `src/content/home.js`. Lines marked `PLACEHOLDER` wait for the confirmed product description, so the page is `noindex` until then.
 
 - **Scene** (`src/components/scene/`, added 2026-10-31 at the team's request: the page was flat black and the sections felt disconnected). It ties the sections together as one scroll:
   - **`SceneLight`:** a fixed light behind every section, so sections leave their own backgrounds transparent (the hero's backdrop fades out at its foot with a mask). Each section brings up its own layer as it fills the screen (`--w`), and the layers drift slowly:
@@ -270,6 +270,15 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
   - **Self-running:** the next surface every 3.6s while on screen and not held, until one is picked. Reduced motion: no pulses, no self-running.
   - **Narrow screens:** list, project, then chat and browser side by side, desktop and history (one column on phones); wires hidden.
   - **Copy:** `anywhere`.
+- **FAQ, "Ask Keyfly"** (`src/components/faq/`, added 2026-11-02): "Ask Keyfly. *Anything.*" The team picked "Ask Keyfly" from three layouts, and chose to include the topics we don't have facts for yet, with placeholder answers.
+  - **`Ask`** (client): two columns that share their top and bottom edges.
+    - **Left:** eight questions as numbered hairline rows; the one in play has a mint edge, a tint and an arrow.
+    - **Right:** a panel in the prompt box's glass (a mint line along its top): "● Ask Keyfly", "01 / 08", the question as sent (› …), the answer typing in with a mint caret (the rest is laid out but hidden, so the panel never jumps), and at its foot a link to the section that shows it (e.g. "Edit with words ↓") and "Next question →".
+    - The first answer types when the panel first comes on screen. Nothing changes by itself after that: it is something to read.
+  - **Accessibility and search:** every question and answer is also in the page as a visually hidden `<dl>`; the panel is decorative (`aria-hidden`, its controls out of the tab order).
+  - **Narrow screens:** the panel sits above the list; asking scrolls it into view.
+  - **Copy:** `faq`. Answers come from confirmed facts where we have them. Changing the cut, formats, ownership and privacy, and pricing are PLACEHOLDER; ownership, privacy and pricing say the details are coming rather than guessing.
+  - **Flight thread:** the sweep to the footer now starts below the last section (`main [data-section]`), so the line runs down the right margin beside the FAQ and never crosses it.
 - **`Shot`** (`src/components/shot/`): the CSS-drawn illustrative shot (dusk through a window, a presenter at 62% across), used by One edit, every format.
 - **Use cases** (`src/components/use-cases/`, added 2026-10-31, redesigned four times the same day): the six prompt-box presets on a **jog wheel**, the dial editors spin to move through footage. Captioned "Illustrative previews". It is not pinned, so it fits any height. Earlier versions were dropped:
   - a pinned reel (broke on short laptop screens);

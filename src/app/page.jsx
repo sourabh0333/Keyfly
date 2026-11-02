@@ -1,4 +1,5 @@
 import { Download } from "@/components/download/download";
+import { Faq } from "@/components/faq/faq";
 import { EditWithWords } from "@/components/edit-with-words/edit-with-words";
 import { EveryFormat } from "@/components/every-format/every-format";
 import { OnBrand } from "@/components/on-brand/on-brand";
@@ -31,6 +32,7 @@ export default function Home() {
       <Anywhere />
       <UseCases />
       <Download />
+      <Faq />
     </Scene>
   );
 }

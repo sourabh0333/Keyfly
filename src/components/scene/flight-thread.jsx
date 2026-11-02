@@ -112,8 +112,14 @@ function measure(page, path) {
     const stopX = box(stop).left + 1;
     const maxHead = document.documentElement.scrollHeight - top0 - (1 - HEAD) * vh;
     const run = Math.max(60, Math.min(260, maxHead - pTop - 24));
-    const landEnd = y(land) + land.offsetHeight - parseFloat(getComputedStyle(land).paddingBottom);
-    const yA = Math.min(landEnd + 16, pTop - 60);
+    // The sweep starts below the last section (Download, or what follows
+    // it, such as the FAQ), so it never crosses a section's copy.
+    const last = [...document.querySelectorAll("main [data-section]")].at(-1) ?? land;
+    const lastEnd = Math.max(
+      y(land) + land.offsetHeight - parseFloat(getComputedStyle(land).paddingBottom),
+      y(last) + last.offsetHeight - parseFloat(getComputedStyle(last).paddingBottom),
+    );
+    const yA = Math.min(lastEnd + 16, pTop - 60);
     const gap = pTop - yA;
     const into = Math.max(pr.left + 14, lx + 30);
     segs.push(

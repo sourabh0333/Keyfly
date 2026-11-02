@@ -101,7 +101,7 @@ Copy for anything not yet confirmed is marked PLACEHOLDER in `src/content/home.j
 | 7 | **Works where you work** (`#anywhere`) | ✅ built 2026-11-02 (chat app confirmed) | ChatGPT · Claude, desktop and browser; before Use cases so the thread's loop stays clear |
 | 8 | Use cases | ✅ | Six presets on the jog wheel |
 | 9 | Download | ✅ | Get the app |
-| 10 | **FAQ** | next | Formats, export, privacy, ownership, pricing |
+| 10 | **FAQ, "Ask Keyfly"** (`#faq`) | ✅ built 2026-11-02 | Formats, export, privacy, ownership, pricing |
 | 11 | Footer | ✅ | |
 
 Proof (logos, numbers, reviews), before/after footage and pricing are added once real material exists.

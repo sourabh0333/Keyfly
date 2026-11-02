@@ -235,3 +235,59 @@ export const download = {
     { id: "windows", label: "Windows", target: "Desktop", step: "Run the installer and Keyfly is ready.", href: null }, // PLACEHOLDER step
   ],
 };
+
+// FAQ: answers from confirmed facts where we have them. Entries marked
+// PLACEHOLDER wait for the team (changing the cut, formats, ownership and
+// privacy, pricing). Never fill these with guesses.
+export const faq = {
+  eyebrow: "Questions",
+  title: [{ text: "Ask Keyfly." }, { text: "Anything.", accent: true }],
+  lead: "The short answers to what people ask most. Pick a question and Keyfly answers it.",
+  panel: "Ask Keyfly",
+  listLabel: "Questions",
+  next: "Next question",
+  items: [
+    {
+      q: "What is Keyfly?",
+      a: "Keyfly is an AI video editor. Describe the video you want, or drop in your footage, and Keyfly edits it into a first cut you can refine.",
+      link: { label: "How it works", href: "#product" },
+    },
+    {
+      q: "Does it run on Mac, Windows and the web?",
+      a: "Yes. Keyfly is a desktop app for macOS and Windows, and it also runs in your browser at app.keyfly.si.",
+      link: { label: "Download", href: "#download" },
+    },
+    {
+      q: "Can I use Keyfly from ChatGPT or Claude?",
+      a: "Yes. Keyfly runs as an app inside ChatGPT and Claude. Ask for a video in the chat, then open the project in Keyfly when you want to keep working on it.",
+      link: { label: "Works where you work", href: "#anywhere" },
+    },
+    {
+      // PLACEHOLDER until the team confirms what can be changed after the first cut.
+      q: "Can I change the video after Keyfly edits it?",
+      a: "Yes. Ask for changes in plain words, like “make it shorter” or “add captions”, or change any of Keyfly's decisions yourself on the timeline.",
+      link: { label: "Edit with words", href: "#edit" },
+    },
+    {
+      q: "Can Keyfly keep my videos on brand?",
+      a: "Yes. Save your logo, colours and fonts in a brand kit, and Keyfly applies them to every video it makes.",
+      link: { label: "On brand, every time", href: "#brand" },
+    },
+    {
+      // PLACEHOLDER until the team confirms Keyfly's export options.
+      q: "Which formats can I export?",
+      a: "Widescreen 16:9, vertical 9:16, square 1:1 and portrait 4:5. Keyfly reframes the same edit for each shape and keeps your subject in frame.",
+      link: { label: "One edit, every format", href: "#formats" },
+    },
+    {
+      // PLACEHOLDER until the team confirms ownership and privacy terms.
+      q: "Who owns my videos, and what happens to my footage?",
+      a: "We'll publish the full details on ownership and privacy here soon.",
+    },
+    {
+      // PLACEHOLDER until the team confirms pricing.
+      q: "How much does Keyfly cost?",
+      a: "Pricing hasn't been announced yet. We'll share the plans here soon.",
+    },
+  ],
+};

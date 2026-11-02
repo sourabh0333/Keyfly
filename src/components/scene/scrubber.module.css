@@ -138,6 +138,10 @@
   --clip: linear-gradient(180deg, #12805b, #2fae82);
 }
 
+.clip[data-key="faq"] {
+  --clip: linear-gradient(180deg, #1c3a30, #12261f);
+}
+
 /* The playhead: a mint bar across the rail. */
 .head {
   position: absolute;
