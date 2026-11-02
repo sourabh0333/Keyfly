@@ -1,0 +1,616 @@
+/*
+ * "On brand, every time": the brand kit beside an exploded view of one
+ * frame. Layers sets data-view ("layers" or "final") on .layers, data-on
+ * on the layer, kit item and line in focus, and --z (height in the stack)
+ * on each layer. The lines' paths are measured and written by Layers.
+ */
+.section {
+  position: relative;
+  padding: var(--section-pad) 0;
+  color: var(--paper);
+}
+
+.inner {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* ---------- Heading (as in Use cases and Download) ---------- */
+
+.head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+  margin-bottom: clamp(32px, 4vw, 56px);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: rgb(244 241 234 / 0.62);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.eyebrowMark {
+  width: 18px;
+  height: 1px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+}
+
+.title {
+  margin-top: 16px;
+  font-size: clamp(2.1rem, 1.1rem + 2.2vw, 3.4rem);
+  font-weight: 560;
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+
+.plain,
+.accent {
+  display: block;
+}
+
+.accent {
+  padding-bottom: 0.06em;
+  background: linear-gradient(100deg, var(--mint-text-dark), #eafff6 50%, var(--soft-mint));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-family: var(--font-accent-stack);
+  font-size: 1.1em;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.lead {
+  max-width: 38ch;
+  color: rgb(244 241 234 / 0.62);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  text-align: right;
+}
+
+
+
+/* ---------- Kit beside the stage ---------- */
+
+.layers {
+  --w: min(560px, 42vw);
+  --gap: calc(var(--w) * 0.11);
+  --ease-stack: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.body {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(250px, 0.75fr) minmax(0, 2fr);
+  align-items: center;
+  gap: clamp(32px, 5vw, 80px);
+}
+
+.kitHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid rgb(244 241 234 / 0.1);
+  color: rgb(244 241 234 / 0.75);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.kitHead span {
+  color: rgb(244 241 234 / 0.4);
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+
+.items {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  position: relative;
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 14px 0;
+  border: 0;
+  border-bottom: 1px solid rgb(244 241 234 / 0.07);
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.item:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.specimen {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 36px;
+  border-radius: 9px;
+  background: rgb(244 241 234 / 0.04);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.08) inset;
+  transition: box-shadow 0.3s ease;
+}
+
+.item[data-on] .specimen {
+  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.6) inset;
+}
+
+.itemText {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.itemName {
+  color: rgb(244 241 234 / 0.72);
+  font-size: 0.9375rem;
+  font-weight: 560;
+  transition: color 0.3s ease;
+}
+
+.item[data-on] .itemName,
+.item:hover .itemName {
+  color: var(--paper);
+}
+
+.itemDetail {
+  color: rgb(244 241 234 / 0.4);
+  font-size: 0.8125rem;
+}
+
+/* Where the line leaves the kit. */
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #0b0b0d;
+  box-shadow: 0 0 0 1.5px rgb(244 241 234 / 0.35);
+  transition:
+    background-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.item[data-on] .dot {
+  background: var(--soft-mint);
+  box-shadow:
+    0 0 0 1.5px var(--soft-mint),
+    0 0 10px var(--soft-mint);
+}
+
+/* In the finished frame, every kit item is applied. */
+.layers[data-view="final"] .item[data-kit] .dot {
+  background: var(--soft-mint);
+  box-shadow: 0 0 0 1.5px var(--soft-mint);
+}
+
+.layers[data-view="final"] .item[data-kit] .itemName {
+  color: var(--paper);
+}
+
+/* Specimens. */
+.mark {
+  position: relative;
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--soft-mint), #7b6cf0);
+}
+
+.mark::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border-radius: 50%;
+  background: #0b0b0d;
+}
+
+.miniLower {
+  width: 24px;
+  height: 10px;
+  border-left: 2px solid var(--soft-mint);
+  background: linear-gradient(90deg, rgb(244 241 234 / 0.5), rgb(244 241 234 / 0.1));
+}
+
+.aa {
+  color: var(--paper);
+  font-family: var(--font-accent-stack);
+  font-size: 1.25rem;
+  font-style: italic;
+  line-height: 1;
+}
+
+.swatches {
+  display: grid;
+  grid-template-columns: repeat(2, 9px);
+  gap: 2px;
+}
+
+.swatches i {
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+}
+
+.swatches i:nth-child(1) {
+  background: var(--soft-mint);
+}
+
+.swatches i:nth-child(2) {
+  background: #7b6cf0;
+}
+
+.swatches i:nth-child(3) {
+  background: var(--paper);
+}
+
+.swatches i:nth-child(4) {
+  background: #1b1c22;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.25) inset;
+}
+
+.film {
+  width: 22px;
+  height: 15px;
+  border-radius: 3px;
+  background:
+    linear-gradient(to bottom, #6b4c7c, #d7896a);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.3) inset;
+}
+
+/* ---------- The exploded stack ---------- */
+
+.stage {
+  display: grid;
+  place-items: center;
+  height: calc(var(--w) * 0.95);
+  perspective: 3000px;
+}
+
+.stack {
+  position: relative;
+  width: var(--w);
+  aspect-ratio: 16 / 9;
+  transform-style: preserve-3d;
+  transform: translateY(calc(var(--gap) * 1.7)) rotateX(56deg) rotateZ(-32deg);
+  transition: transform var(--settle, 1.2s) var(--ease-stack);
+}
+
+.layers[data-view="final"] .stack {
+  transform: scale(1.12);
+}
+
+.layer {
+  position: absolute;
+  inset: 0;
+  border-radius: 10px;
+  background: rgb(18 19 22 / 0.28);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.3) inset;
+  transform: translateZ(calc(var(--z) * var(--gap)));
+  transition:
+    transform var(--settle, 1.2s) var(--ease-stack),
+    background-color 0.4s ease,
+    box-shadow 0.4s ease;
+}
+
+.layer[data-id="footage"] {
+  overflow: hidden;
+  background: #050506;
+}
+
+.layer[data-on] {
+  background: rgb(95 224 176 / 0.07);
+  box-shadow:
+    0 0 0 1.5px var(--soft-mint) inset,
+    0 0 30px -6px rgb(95 224 176 / 0.6);
+}
+
+.layer[data-id="footage"][data-on] {
+  background: #050506;
+}
+
+.layers[data-view="final"] .layer {
+  background: transparent;
+  box-shadow: none;
+  transform: translateZ(calc(var(--z) * 1px));
+}
+
+.layers[data-view="final"] .layer[data-id="footage"] {
+  background: #050506;
+  box-shadow:
+    0 0 0 1.5px var(--soft-mint),
+    0 0 60px -14px rgb(95 224 176 / 0.6),
+    0 40px 80px -30px rgb(0 0 0 / 0.9);
+}
+
+.tag {
+  position: absolute;
+  top: -22px;
+  left: 2px;
+  color: rgb(244 241 234 / 0.55);
+  font-family: var(--font-mono-stack);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  transition:
+    opacity 0.4s ease,
+    color 0.3s ease;
+}
+
+.layer[data-id="footage"] .tag {
+  top: auto;
+  bottom: 8px;
+  left: 10px;
+  color: rgb(244 241 234 / 0.8);
+}
+
+.layer[data-on] .tag {
+  color: var(--soft-mint);
+}
+
+.layers[data-view="final"] .tag {
+  opacity: 0;
+}
+
+.anchor {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 1px;
+  height: 1px;
+}
+
+/* Layer contents, in units of the frame (it is 16:9 at --w). */
+.grade {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(150deg, rgb(95 224 176 / 0.18), rgb(123 108 240 / 0.24) 60%, rgb(123 108 240 / 0.08));
+}
+
+.captions {
+  position: absolute;
+  right: 10%;
+  bottom: 9%;
+  left: 10%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 0.28em;
+  color: #fff;
+  font-family: var(--font-accent-stack);
+  font-size: calc(var(--w) * 0.062);
+  font-style: italic;
+  line-height: 1.1;
+  text-shadow: 0 2px 12px rgb(0 0 0 / 0.6);
+}
+
+.captions [data-hot] {
+  color: var(--soft-mint);
+}
+
+.lower {
+  position: absolute;
+  top: 34%;
+  left: 5%;
+  display: grid;
+  gap: 2px;
+  padding: calc(var(--w) * 0.012) calc(var(--w) * 0.026);
+  border-left: 3px solid #7b6cf0;
+  background: linear-gradient(90deg, rgb(11 11 13 / 0.78), rgb(11 11 13 / 0));
+}
+
+.lower b {
+  color: #fff;
+  font-size: calc(var(--w) * 0.034);
+  font-weight: 680;
+  letter-spacing: -0.02em;
+}
+
+.lower span {
+  color: rgb(244 241 234 / 0.7);
+  font-family: var(--font-mono-stack);
+  font-size: calc(var(--w) * 0.019);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.bug {
+  position: absolute;
+  top: 6%;
+  right: 4%;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: rgb(255 255 255 / 0.85);
+  font-size: calc(var(--w) * 0.028);
+  font-weight: 760;
+  letter-spacing: -0.02em;
+}
+
+/* ---------- Lines and the view switch ---------- */
+
+.lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  transition: opacity 0.4s ease 0.9s;
+}
+
+.lines path {
+  fill: none;
+  stroke: rgb(244 241 234 / 0.2);
+  stroke-width: 1;
+  stroke-dasharray: 3 4;
+  transition: stroke 0.3s ease;
+}
+
+.lines path[data-on] {
+  stroke: var(--soft-mint);
+  stroke-width: 1.5;
+  stroke-dasharray: none;
+}
+
+.layers[data-view="final"] .lines {
+  opacity: 0;
+  transition-delay: 0s;
+  transition-duration: 0.2s;
+}
+
+.switch {
+  display: flex;
+  gap: 2px;
+  width: max-content;
+  margin: clamp(20px, 3vw, 36px) auto 0;
+  padding: 4px;
+  border-radius: var(--radius-round);
+  background: rgb(244 241 234 / 0.04);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.1) inset;
+}
+
+.switch button {
+  padding: 8px 20px;
+  border: 0;
+  border-radius: var(--radius-round);
+  background: none;
+  color: rgb(244 241 234 / 0.6);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 560;
+  cursor: pointer;
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease;
+}
+
+.switch button:hover {
+  color: var(--paper);
+}
+
+.switch button[aria-pressed="true"] {
+  background: var(--soft-mint);
+  color: var(--mint-ink);
+}
+
+.switch button:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 2px;
+}
+
+.footnote {
+  margin-top: 16px;
+  color: rgb(244 241 234 / 0.38);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+/* ---------- Smaller screens ---------- */
+
+@media (max-width: 900px) {
+  .layers {
+    --w: min(78vw, 520px);
+  }
+
+  .body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .kit {
+    order: 2;
+  }
+
+  .items {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 20px;
+  }
+
+  .dot,
+  .lines {
+    display: none;
+  }
+
+  .item {
+    grid-template-columns: 40px minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 860px) {
+  .head {
+    display: grid;
+    gap: 14px;
+  }
+
+  .lead {
+    text-align: left;
+  }
+
+  .plain,
+  .accent {
+    display: inline;
+  }
+
+  .title {
+    font-size: clamp(1.9rem, 1.2rem + 3vw, 2.75rem);
+  }
+}
+
+@media (max-width: 560px) {
+  .layers {
+    --w: 68vw;
+  }
+
+  .stage {
+    padding-left: 8vw;
+  }
+
+  .itemDetail {
+    display: none;
+  }
+
+  .tag {
+    font-size: 9.5px;
+    top: -17px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .layers {
+    --settle: 0s;
+  }
+
+  .lines {
+    transition: none;
+  }
+}

@@ -139,6 +139,31 @@ export const everyFormat = {
   ],
 };
 
+// "On brand, every time": the brand kit, applied to every cut. The team
+// confirmed on 2026-11-02 that Keyfly has a brand kit; the details below
+// are PLACEHOLDER until the team confirms what it holds.
+export const onBrand = {
+  eyebrow: "On brand, every time",
+  title: [{ text: "Your brand." }, { text: "On every cut.", accent: true }],
+  lead: "Save your logo, colours and fonts once. Keyfly builds every video from your brand kit, layer by layer, so each cut looks like yours.",
+  kit: "Brand kit",
+  kitSub: "Applied to every cut",
+  views: { layers: "Layers", final: "Final" },
+  viewLabel: "View",
+  note: "Illustrative interface",
+  // Top to bottom, as they stack in the frame.
+  layers: [
+    { id: "logo", label: "Logo", kit: "Your logo", detail: "Corner, 80% opacity" },
+    { id: "lower", label: "Lower third", kit: "Title style", detail: "Name and role" },
+    { id: "captions", label: "Captions", kit: "Your font", detail: "Word by word" },
+    { id: "grade", label: "Colour", kit: "Your colours", detail: "Grade and accents" },
+    { id: "footage", label: "Footage", kit: "Your footage", detail: "Cut by Keyfly" },
+  ],
+  lowerTitle: "Launch day",
+  lowerSub: "Chapter 2",
+  captions: ["Built", "for", "launch", "day"],
+};
+
 export const useCases = {
   eyebrow: "Use cases",
   title: [{ text: "Made for" }, { text: "every kind of video.", accent: true }],

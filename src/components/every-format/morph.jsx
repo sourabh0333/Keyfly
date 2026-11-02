@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { Shot } from "@/components/shot/shot";
 import styles from "./every-format.module.css";
 
 const HOLD = 4200; // ms each format stays before the next (matches the tab's fill)
@@ -19,25 +20,6 @@ function Glyph({ f }) {
   return (
     <span className={styles.glyph} aria-hidden="true">
       <i style={{ width: `${r >= 1 ? 100 : r * 100}%`, height: `${r >= 1 ? 100 / r : 100}%` }} />
-    </span>
-  );
-}
-
-// The shot itself, drawn in CSS: dusk through a window, a presenter.
-function Shot() {
-  return (
-    <span className={styles.scene} aria-hidden="true">
-      <span className={styles.sky} />
-      <span className={styles.panes} />
-      <span className={styles.floorLine} />
-      <span className={styles.lamp} />
-      <span className={styles.desk} />
-      <span className={styles.subject}>
-        <span className={styles.figure}>
-          <i />
-          <b />
-        </span>
-      </span>
     </span>
   );
 }

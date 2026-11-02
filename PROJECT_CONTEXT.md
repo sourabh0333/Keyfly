@@ -147,7 +147,7 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
 
 ## Homepage (step by step, from 2026-10-30)
 
-`src/app/page.jsx` renders, inside `Scene`, Hero → HowItWorks (`#product`) → EditWithWords (`#edit`) → YourCall (`#control`) → EveryFormat (`#formats`) → UseCases (`#use-cases`) → Download (`#download`). The planned sections and their order are in `PLAN.md` ("Homepage expansion"). All copy lives in `src/content/home.js`. Lines marked `PLACEHOLDER` wait for the confirmed product description, so the page is `noindex` until then.
+`src/app/page.jsx` renders, inside `Scene`, Hero → HowItWorks (`#product`) → EditWithWords (`#edit`) → YourCall (`#control`) → EveryFormat (`#formats`) → OnBrand (`#brand`) → UseCases (`#use-cases`) → Download (`#download`). The planned sections and their order are in `PLAN.md` ("Homepage expansion"). All copy lives in `src/content/home.js`. Lines marked `PLACEHOLDER` wait for the confirmed product description, so the page is `noindex` until then.
 
 - **Scene** (`src/components/scene/`, added 2026-10-31 at the team's request: the page was flat black and the sections felt disconnected). It ties the sections together as one scroll:
   - **`SceneLight`:** a fixed light behind every section, so sections leave their own backgrounds transparent (the hero's backdrop fades out at its foot with a mask). Each section brings up its own layer as it fills the screen (`--w`), and the layers drift slowly:
@@ -250,6 +250,15 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
   - **Turning:** the next format every 4.2s while on screen and not held, until a tab is clicked. Reduced motion: no auto-turn, changes at once.
   - **Narrow screens:** the ratio and name sit in a row above the stage, the tabs show only glyph and ratio, and the lists go beneath.
   - **Copy:** `everyFormat`, PLACEHOLDER until the team confirms Keyfly's export options.
+- **On brand, every time** (`src/components/on-brand/`, added 2026-11-02; the team confirmed that day that Keyfly has a brand kit): "Your brand. *On every cut.*" Heading laid out like Use cases; captioned "Illustrative interface". The team picked "exploded layers" from three structures.
+  - **`Layers`** (client): the brand kit (left) beside one frame pulled apart into its layers (right), a "Layers | Final" switch beneath.
+    - **Brand kit:** a frameless list (Your logo, Title style, Your font, Your colours, Your footage), each with a specimen, a detail and a dot where its line leaves.
+    - **The stack:** five planes in an isometric 3D view (`rotateX(56deg) rotateZ(-32deg)`, `preserve-3d`), raised by `--z` × `--gap`: footage (the shared `Shot`), colour (a tint), captions in the serif italic, the lower third, and the logo bug. Each plane carries a tag ("05 · Logo"). In Final they come flat (1px apart, so they don't z-fight), scaled 1.12, with a mint edge on the frame.
+    - **Lines:** an SVG over the body draws a curve from each kit dot to an anchor on its layer (`[data-from]` → `[data-to]`), measured from the DOM after the stack settles (1.2s) and on resize, written straight to the paths. They fade out in Final. Hidden below 900px.
+  - **Self-running:** one layer lit at a time (1.1s each, with its kit item and line in mint), then the frame comes together and holds 3.6s, then apart again; while on screen and not held, until the switch or a kit item is used. Reduced motion: no self-running, no easing (`--settle: 0s`).
+  - **Narrow screens:** the stack first, then the kit as two columns (names only on phones).
+  - **Copy:** `onBrand`, PLACEHOLDER until the team confirms what the brand kit holds.
+- **`Shot`** (`src/components/shot/`): the CSS-drawn illustrative shot (dusk through a window, a presenter at 62% across), shared by One edit, every format and On brand.
 - **Use cases** (`src/components/use-cases/`, added 2026-10-31, redesigned four times the same day): the six prompt-box presets on a **jog wheel**, the dial editors spin to move through footage. Captioned "Illustrative previews". It is not pinned, so it fits any height. Earlier versions were dropped:
   - a pinned reel (broke on short laptop screens);
   - a boxed multicam switcher with a tile grid (the team asked for no grid or box shapes);

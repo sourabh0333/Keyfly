@@ -96,10 +96,10 @@ Copy for anything not yet confirmed is marked PLACEHOLDER in `src/content/home.j
 | 2 | How it works | ✅ | Describe → Keyfly edits → Export |
 | 3 | **Edit with words** (`#edit`) | ✅ built 2026-10-31 | The core differentiator: refine the cut by asking, with the timeline following |
 | 4 | **You make the calls** (`#control`) | ✅ built 2026-10-31 | Against black-box generators: every AI decision lands on a real timeline you can adjust |
-| 5 | **One edit, every format** (`#formats`) | ✅ built 2026-10-31 | The 16:9 → 9:16 → 1:1 pain: one cut reframes, captions follow |
-| 6 | Use cases | ✅ | Six presets on the jog wheel |
-| 7 | **On brand, every time** | next (to confirm) | Brand consistency: your fonts, colours and logo applied to every cut |
-| 8 | **Works where you work** | planned | ChatGPT · Claude, desktop and browser |
+| 5 | **One edit, every format** (`#formats`) | ✅ built 2026-10-31, rebuilt 2026-11-02 | The 16:9 → 9:16 → 1:1 pain: one cut reframes, captions follow |
+| 6 | **On brand, every time** (`#brand`) | ✅ built 2026-11-02 (brand kit confirmed) | Brand consistency: your fonts, colours and logo applied to every cut |
+| 7 | Use cases | ✅ | Six presets on the jog wheel |
+| 8 | **Works where you work** | next | ChatGPT · Claude, desktop and browser |
 | 9 | Download | ✅ | Get the app |
 | 10 | **FAQ** | planned | Formats, export, privacy, ownership, pricing |
 | 11 | Footer | ✅ | |
