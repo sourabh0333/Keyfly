@@ -2,6 +2,7 @@ import { Download } from "@/components/download/download";
 import { EditWithWords } from "@/components/edit-with-words/edit-with-words";
 import { EveryFormat } from "@/components/every-format/every-format";
 import { OnBrand } from "@/components/on-brand/on-brand";
+import { Anywhere } from "@/components/anywhere/anywhere";
 import { YourCall } from "@/components/your-call/your-call";
 import { Hero } from "@/components/hero/hero";
 import { Scene } from "@/components/scene/scene";
@@ -27,6 +28,7 @@ export default function Home() {
       <YourCall />
       <EveryFormat />
       <OnBrand />
+      <Anywhere />
       <UseCases />
       <Download />
     </Scene>

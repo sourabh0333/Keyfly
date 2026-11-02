@@ -1,0 +1,963 @@
+/*
+ * "Works where you work": one project, three doors. A 3 × 2 grid: the
+ * surface list, the desktop app and the history on top; the chat, the
+ * project and the browser beneath. Straight wires run from the project
+ * through the gaps (--cg, --rg) to each surface. Doors sets data-active
+ * (the surface in use) on .doors, data-on on that surface, and data-run
+ * (fwd or back) and data-phase (in or out) on each wire's pulse.
+ */
+.section {
+  position: relative;
+  padding: var(--section-pad) 0;
+  color: var(--paper);
+}
+
+.inner {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* ---------- Heading (as in Use cases and Download) ---------- */
+
+.head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+  margin-bottom: clamp(32px, 4vw, 56px);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: rgb(244 241 234 / 0.62);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.eyebrowMark {
+  width: 18px;
+  height: 1px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+}
+
+.title {
+  margin-top: 16px;
+  font-size: clamp(2.1rem, 1.1rem + 2.2vw, 3.4rem);
+  font-weight: 560;
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+
+.plain,
+.accent {
+  display: block;
+}
+
+.accent {
+  padding-bottom: 0.06em;
+  background: linear-gradient(100deg, var(--mint-text-dark), #eafff6 50%, var(--soft-mint));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-family: var(--font-accent-stack);
+  font-size: 1.1em;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.lead {
+  max-width: 38ch;
+  color: rgb(244 241 234 / 0.62);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  text-align: right;
+}
+
+
+
+
+/* ---------- The grid ---------- */
+
+.doors {
+  --cg: clamp(36px, 4.4vw, 72px);
+  --rg: clamp(36px, 4vw, 60px);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.08fr) minmax(0, 1fr);
+  grid-template-areas:
+    "tabs desktop log"
+    "chat hub browser";
+  column-gap: var(--cg);
+  row-gap: var(--rg);
+}
+
+.kicker {
+  color: rgb(244 241 234 / 0.45);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* Top left: the surfaces. */
+.tabs {
+  grid-area: tabs;
+  display: grid;
+  align-content: end;
+  gap: 12px;
+}
+
+.tabList {
+  display: grid;
+  border-top: 1px solid rgb(244 241 234 / 0.1);
+}
+
+.tab {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: baseline;
+  min-height: 52px;
+  gap: 12px;
+  padding: 13px 4px;
+  overflow: hidden;
+  border: 0;
+  border-bottom: 1px solid rgb(244 241 234 / 0.1);
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.tab:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: -2px;
+}
+
+.tabIndex {
+  color: rgb(244 241 234 / 0.35);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+}
+
+.tabName {
+  color: rgb(244 241 234 / 0.6);
+  font-size: 1rem;
+  font-weight: 560;
+  transition: color 0.3s ease;
+}
+
+.tabWhere {
+  color: rgb(244 241 234 / 0.38);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+}
+
+.tab:hover .tabName,
+.tab[aria-pressed="true"] .tabName {
+  color: var(--paper);
+}
+
+.tab[aria-pressed="true"] .tabIndex,
+.tab[aria-pressed="true"] .tabWhere {
+  color: var(--soft-mint);
+}
+
+.tabFill {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 2px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+  transform-origin: left;
+  scale: 0 1;
+}
+
+.tab[aria-pressed="true"] .tabFill {
+  scale: 1 1;
+}
+
+.doors[data-auto] .tab[aria-pressed="true"] .tabFill {
+  scale: 0 1;
+  animation: fill 3.6s linear forwards;
+}
+
+/* Top right: the project's history. */
+.log {
+  grid-area: log;
+  display: grid;
+  align-content: end;
+  gap: 12px;
+}
+
+.logList {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid rgb(244 241 234 / 0.1);
+  list-style: none;
+}
+
+.logList li {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  align-items: baseline;
+  min-height: 52px;
+  padding: 13px 4px;
+  border-bottom: 1px solid rgb(244 241 234 / 0.1);
+  color: rgb(244 241 234 / 0.3);
+  font-size: 0.9375rem;
+  transition: color 0.3s ease;
+}
+
+.logList li span {
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+}
+
+.logList li[data-done] {
+  color: rgb(244 241 234 / 0.6);
+}
+
+.logList li[data-now] {
+  color: var(--paper);
+}
+
+.logList li[data-now] span {
+  color: var(--soft-mint);
+}
+
+/* ---------- The surfaces ---------- */
+
+.surface {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 10px;
+  min-width: 0;
+  margin: 0;
+  opacity: 0.6;
+  transition: opacity 0.4s ease;
+}
+
+.surface[data-id="chat"] {
+  grid-area: chat;
+}
+
+.surface[data-id="browser"] {
+  grid-area: browser;
+}
+
+.surface[data-id="desktop"] {
+  grid-area: desktop;
+}
+
+.surface[data-on] {
+  opacity: 1;
+}
+
+/* The caption sits above, so the wires meet the window itself. */
+.caption {
+  order: -1;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  height: 20px;
+  color: rgb(244 241 234 / 0.75);
+  font-size: 0.875rem;
+  font-weight: 560;
+}
+
+.caption span {
+  color: rgb(244 241 234 / 0.4);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  font-weight: 400;
+}
+
+.surface[data-on] .caption span {
+  color: var(--soft-mint);
+}
+
+.chat,
+.browser,
+.desktop {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  min-height: 0;
+  overflow: hidden;
+  border-radius: 14px;
+  background: #121316;
+  box-shadow:
+    0 0 0 1px rgb(244 241 234 / 0.09),
+    0 30px 70px -36px rgb(0 0 0 / 0.95);
+  font-size: 12px;
+  transition: box-shadow 0.4s ease;
+}
+
+.surface[data-on] .chat,
+.surface[data-on] .browser,
+.surface[data-on] .desktop {
+  box-shadow:
+    0 0 0 1.5px var(--soft-mint),
+    0 0 50px -16px rgb(95 224 176 / 0.6),
+    0 30px 70px -36px rgb(0 0 0 / 0.95);
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 30px;
+  padding: 0 12px;
+  border-bottom: 1px solid rgb(244 241 234 / 0.06);
+  background: #18191d;
+  color: rgb(244 241 234 / 0.6);
+  font-size: 11px;
+}
+
+.lights {
+  display: flex;
+  gap: 5px;
+}
+
+.lights i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgb(244 241 234 / 0.15);
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px;
+  border-top: 1px solid rgb(244 241 234 / 0.06);
+  color: rgb(244 241 234 / 0.55);
+  font-family: var(--font-mono-stack);
+  font-size: 10.5px;
+}
+
+.status > i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgb(244 241 234 / 0.3);
+}
+
+.surface[data-on] .status {
+  color: var(--mint-text-dark);
+}
+
+.surface[data-on] .status > i {
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+}
+
+.viewer {
+  position: relative;
+  display: block;
+  min-height: 0;
+  overflow: hidden;
+  background: #050506;
+}
+
+/* Chat. */
+.chat {
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+.bubbleIcon {
+  width: 12px;
+  height: 12px;
+  border-radius: 50% 50% 50% 2px;
+  background: rgb(244 241 234 / 0.4);
+}
+
+.thread {
+  display: grid;
+  align-content: center;
+  gap: 9px;
+  padding: 14px 12px;
+}
+
+.ask {
+  justify-self: end;
+  max-width: 85%;
+  padding: 8px 11px;
+  border-radius: 12px 12px 3px 12px;
+  background: #23252b;
+  color: var(--paper);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.reply {
+  color: rgb(244 241 234 / 0.7);
+  font-size: 12px;
+}
+
+.appCard {
+  display: grid;
+  grid-template-columns: 54px minmax(0, 1fr);
+  grid-template-areas:
+    "thumb text"
+    "button button";
+  gap: 9px 10px;
+  padding: 9px;
+  border-radius: 11px;
+  background: #18191d;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.08) inset;
+}
+
+.appThumb {
+  grid-area: thumb;
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 5px;
+}
+
+.appText {
+  grid-area: text;
+  display: grid;
+  align-content: center;
+  gap: 1px;
+  min-width: 0;
+}
+
+.appText b {
+  color: var(--paper);
+  font-size: 12px;
+}
+
+.appText span {
+  overflow: hidden;
+  color: rgb(244 241 234 / 0.5);
+  font-size: 11px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.appButton {
+  grid-area: button;
+  padding: 6px;
+  border-radius: var(--radius-round);
+  background: rgb(244 241 234 / 0.08);
+  color: rgb(244 241 234 / 0.8);
+  font-size: 11.5px;
+  font-weight: 600;
+  text-align: center;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+.surface[data-on] .appButton {
+  background: var(--soft-mint);
+  color: var(--mint-ink);
+}
+
+.surface[data-on] .thread > * {
+  animation: rise 0.5s var(--ease-land) backwards;
+}
+
+.surface[data-on] .reply {
+  animation-delay: 0.25s;
+}
+
+.surface[data-on] .appCard {
+  animation-delay: 0.45s;
+}
+
+/* Browser. */
+.browser .viewer {
+  aspect-ratio: 16 / 9;
+}
+
+.address {
+  display: inline-flex;
+  flex: 1;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 9px;
+  border-radius: var(--radius-round);
+  background: #0e0f12;
+  color: rgb(244 241 234 / 0.7);
+  font-family: var(--font-mono-stack);
+  font-size: 10.5px;
+}
+
+.subs {
+  position: absolute;
+  right: 0;
+  bottom: 10%;
+  left: 0;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 760;
+  text-align: center;
+  text-shadow: 0 2px 8px rgb(0 0 0 / 0.7);
+  opacity: 0;
+  translate: 0 4px;
+  transition:
+    opacity 0.4s ease,
+    translate 0.4s var(--ease-land);
+}
+
+.surface[data-on] .subs {
+  opacity: 1;
+  translate: 0 0;
+}
+
+/* Desktop. */
+.appName {
+  flex: 1;
+  margin-right: 46px;
+  color: rgb(244 241 234 / 0.75);
+  font-weight: 560;
+  text-align: center;
+}
+
+.desk {
+  display: grid;
+  grid-template-columns: 22% minmax(0, 1fr);
+  min-height: 0;
+}
+
+.side {
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  padding: 10px;
+  border-right: 1px solid rgb(244 241 234 / 0.06);
+  background: #141518;
+}
+
+.side i {
+  height: 6px;
+  border-radius: 3px;
+  background: rgb(244 241 234 / 0.1);
+}
+
+.side i:first-child {
+  background: rgb(95 224 176 / 0.4);
+}
+
+.desk .viewer {
+  aspect-ratio: 16 / 9;
+}
+
+.export {
+  width: 70px;
+  height: 4px;
+  overflow: hidden;
+  border-radius: 4px;
+  background: rgb(244 241 234 / 0.1);
+}
+
+.export i {
+  display: block;
+  height: 100%;
+  background: rgb(244 241 234 / 0.4);
+  transform-origin: left;
+}
+
+.surface[data-on] .export i {
+  background: var(--soft-mint);
+  animation: fill 1.6s var(--ease-land) 0.3s backwards;
+}
+
+/* ---------- The project, and the wires ---------- */
+
+.hub {
+  grid-area: hub;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 10px;
+}
+
+.hub .caption {
+  order: 0;
+  color: var(--paper);
+}
+
+.projectWrap {
+  position: relative;
+  display: grid;
+}
+
+.project {
+  position: relative;
+  display: grid;
+  align-content: center;
+  gap: 11px;
+  padding: 16px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #16181c, #101114);
+  box-shadow:
+    0 0 0 1px rgb(95 224 176 / 0.4),
+    0 0 80px -30px rgb(95 224 176 / 0.55),
+    0 40px 90px -40px rgb(0 0 0 / 0.95);
+}
+
+/* The project lights as a pulse arrives. */
+.project::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow:
+    0 0 0 2px var(--soft-mint),
+    0 0 40px 2px rgb(95 224 176 / 0.5);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.project[data-flash]::after {
+  animation: flash 1s ease 0.7s;
+}
+
+.synced {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--mint-text-dark);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+}
+
+.synced i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+}
+
+.projectThumb {
+  position: relative;
+  display: block;
+  aspect-ratio: 2.4 / 1;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.08);
+}
+
+.projectName {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  color: var(--paper);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.projectName span {
+  color: rgb(244 241 234 / 0.45);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  font-weight: 400;
+}
+
+.projectLast {
+  display: flex;
+  gap: 10px;
+  color: rgb(244 241 234 / 0.7);
+  font-size: 0.8125rem;
+  animation: rise 0.45s var(--ease-land) 0.75s backwards;
+}
+
+.projectLast span {
+  color: var(--soft-mint);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+}
+
+.projectStrip {
+  display: flex;
+  gap: 2px;
+  height: 8px;
+}
+
+.projectStrip i {
+  border-radius: 2px;
+  background: #4f6b8c;
+}
+
+.projectStrip i:nth-child(3n + 2) {
+  background: #8a5a78;
+}
+
+.projectStrip i:nth-child(3n) {
+  background: #6aa3b3;
+}
+
+/* Wires: straight, through the gaps, from the project to each surface. */
+.wire {
+  position: absolute;
+  overflow: visible;
+  background: rgb(95 224 176 / 0.3);
+  pointer-events: none;
+}
+
+.wire[data-wire="chat"] {
+  top: 50%;
+  right: 100%;
+  width: var(--cg);
+  height: 1.5px;
+}
+
+.wire[data-wire="browser"] {
+  top: 50%;
+  left: 100%;
+  width: var(--cg);
+  height: 1.5px;
+}
+
+/* Up through the gap and past the project's caption (20px + 10px). */
+.wire[data-wire="desktop"] {
+  bottom: 100%;
+  left: 50%;
+  width: 1.5px;
+  height: calc(var(--rg) + 30px);
+}
+
+/* The pulse: a short streak on a rail as long as the wire, clipped to it. */
+.wire i {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+}
+
+.wire[data-axis="x"] {
+  clip-path: inset(-12px 0);
+}
+
+.wire[data-axis="y"] {
+  clip-path: inset(0 -12px);
+}
+
+.wire i::after {
+  content: "";
+  position: absolute;
+  background: #eafff6;
+  box-shadow:
+    0 0 6px 1px var(--soft-mint),
+    0 0 16px 3px rgb(95 224 176 / 0.6);
+}
+
+.wire[data-axis="x"] i::after {
+  top: -1.25px;
+  left: -22px;
+  width: 44px;
+  height: 4px;
+  border-radius: 4px;
+}
+
+.wire[data-axis="y"] i::after {
+  top: -22px;
+  left: -1.25px;
+  width: 4px;
+  height: 44px;
+  border-radius: 4px;
+}
+
+.wire[data-axis="x"] i[data-run="fwd"][data-phase="in"] {
+  animation: x-fwd 0.7s ease-in 0.05s;
+}
+
+.wire[data-axis="x"] i[data-run="back"][data-phase="in"] {
+  animation: x-back 0.7s ease-in 0.05s;
+}
+
+.wire[data-axis="x"] i[data-run="fwd"][data-phase="out"] {
+  animation: x-fwd 0.7s ease-out 0.85s;
+}
+
+.wire[data-axis="x"] i[data-run="back"][data-phase="out"] {
+  animation: x-back 0.7s ease-out 0.85s;
+}
+
+.wire[data-axis="y"] i[data-run="fwd"][data-phase="in"] {
+  animation: y-fwd 0.7s ease-in 0.05s;
+}
+
+.wire[data-axis="y"] i[data-run="back"][data-phase="out"] {
+  animation: y-back 0.7s ease-out 0.85s;
+}
+
+.doors[data-paused] * {
+  animation-play-state: paused;
+}
+
+.footnote {
+  margin-top: 18px;
+  color: rgb(244 241 234 / 0.38);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+@keyframes fill {
+  from {
+    scale: 0 1;
+  }
+  to {
+    scale: 1 1;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    translate: 0 6px;
+  }
+}
+
+@keyframes flash {
+  30% {
+    opacity: 1;
+  }
+}
+
+@keyframes x-fwd {
+  from {
+    translate: 0 0;
+    opacity: 1;
+  }
+  to {
+    translate: 100% 0;
+    opacity: 1;
+  }
+}
+
+@keyframes x-back {
+  from {
+    translate: 100% 0;
+    opacity: 1;
+  }
+  to {
+    translate: 0 0;
+    opacity: 1;
+  }
+}
+
+@keyframes y-fwd {
+  from {
+    translate: 0 0;
+    opacity: 1;
+  }
+  to {
+    translate: 0 100%;
+    opacity: 1;
+  }
+}
+
+@keyframes y-back {
+  from {
+    translate: 0 100%;
+    opacity: 1;
+  }
+  to {
+    translate: 0 0;
+    opacity: 1;
+  }
+}
+
+/* ---------- Smaller screens ---------- */
+
+@media (max-width: 1080px) {
+  .tabWhere {
+    display: none;
+  }
+}
+
+/* Stacked: the list, the project, then the three surfaces. */
+@media (max-width: 900px) {
+  .doors {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas:
+      "tabs tabs"
+      "hub hub"
+      "chat browser"
+      "desktop log";
+    row-gap: 28px;
+    column-gap: 20px;
+  }
+
+  .tabWhere {
+    display: inline;
+  }
+
+  .hub {
+    justify-self: center;
+    width: min(100%, 440px);
+  }
+
+  .wire {
+    display: none;
+  }
+}
+
+@media (max-width: 860px) {
+  .head {
+    display: grid;
+    gap: 14px;
+  }
+
+  .lead {
+    text-align: left;
+  }
+
+  .plain,
+  .accent {
+    display: inline;
+  }
+
+  .title {
+    font-size: clamp(1.9rem, 1.2rem + 3vw, 2.75rem);
+  }
+}
+
+@media (max-width: 560px) {
+  .doors {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "tabs"
+      "hub"
+      "chat"
+      "browser"
+      "desktop"
+      "log";
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .doors[data-auto] .tab[aria-pressed="true"] .tabFill,
+  .surface[data-on] .thread > *,
+  .surface[data-on] .export i,
+  .projectLast {
+    animation: none;
+  }
+
+  .surface,
+  .subs {
+    transition: none;
+  }
+}

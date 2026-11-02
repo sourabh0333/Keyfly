@@ -168,6 +168,26 @@ export const onBrand = {
   ],
 };
 
+// "Works where you work": one project across chat, browser and desktop.
+// The team confirmed on 2026-11-02 that Keyfly runs as an app inside
+// ChatGPT and Claude, and the project then opens in Keyfly. That the same
+// project syncs between the browser and the desktop app is PLACEHOLDER
+// until confirmed, as are the example edits.
+export const anywhere = {
+  eyebrow: "Works where you work",
+  title: [{ text: "Start anywhere." }, { text: "Finish anywhere.", accent: true }],
+  lead: "Ask for a video in ChatGPT or Claude, pick it up in your browser, finish it in the desktop app. One project, wherever you open it.",
+  note: "Illustrative interface",
+  openIn: "Open it in",
+  history: "Project history",
+  project: { name: "Launch Video", meta: "0:30 · 16:9", synced: "Synced", label: "One project" },
+  surfaces: [
+    { id: "chat", name: "Chat", where: "ChatGPT · Claude", ask: "Make a 30-second launch video from my footage", reply: "Here's your first cut.", card: "Open in Keyfly", log: "Draft made in chat" },
+    { id: "browser", name: "Browser", where: "app.keyfly.si", action: "Captions added", log: "Captions added in the browser" },
+    { id: "desktop", name: "Desktop app", where: "macOS · Windows", action: "Exported · 1920 × 1080", log: "Exported from the desktop" },
+  ],
+};
+
 export const useCases = {
   eyebrow: "Use cases",
   title: [{ text: "Made for" }, { text: "every kind of video.", accent: true }],
