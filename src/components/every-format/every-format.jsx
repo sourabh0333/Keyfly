@@ -1,15 +1,15 @@
 import { everyFormat } from "@/content/home";
 import wipe from "@/components/scene/wipe.module.css";
 import { PauseOffscreen } from "@/components/pause-offscreen";
-import { Carousel } from "./carousel";
+import { Reframe } from "./reframe";
 import styles from "./every-format.module.css";
 
 /**
- * "One edit, every format": the same cut in every shape, on a curved 3D
- * carousel (see Carousel).
+ * "One edit, every format": the same cut reframed for every shape, in the
+ * Keyfly editor (see Reframe).
  */
 export function EveryFormat() {
-  const { eyebrow, title, lead, note, ...exportWindow } = everyFormat;
+  const { eyebrow, title, lead, note, ...editor } = everyFormat;
 
   return (
     <section id="formats" className={styles.section} aria-labelledby="formats-title" data-section="Every format">
@@ -33,7 +33,7 @@ export function EveryFormat() {
           <p className={styles.lead}>{lead}</p>
         </div>
 
-        <Carousel {...exportWindow} />
+        <Reframe {...editor} />
 
         <p className={styles.footnote}>{note}</p>
       </div>

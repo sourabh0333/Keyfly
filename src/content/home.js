@@ -124,11 +124,19 @@ export const everyFormat = {
   eyebrow: "One edit, every format",
   title: [{ text: "One edit." }, { text: "Every screen.", accent: true }],
   lead: "Make the cut once. Keyfly reframes it for every shape it needs, keeps your subject in frame and moves the captions with it.",
-  hint: "Drag, or use the arrows",
-  prev: "Previous format",
-  next: "Next format",
-  carousel: "Formats",
   note: "Illustrative interface",
+  // The reframe window (PLACEHOLDER until the team confirms Keyfly's export options).
+  file: "Launch Video",
+  mode: "Reframe",
+  panel: "Formats",
+  source: "Source",
+  output: "Output",
+  tracked: "Subject tracked",
+  settings: [
+    { label: "Keep in frame", value: "Subject" },
+    { label: "Captions", value: "Follow" },
+  ],
+  captions: ["Your", "story,", "cut", "in", "seconds"],
   formats: [
     { id: "wide", ratio: "16:9", w: 16, h: 9, px: [1920, 1080], name: "Widescreen", use: "YouTube, websites" },
     { id: "vertical", ratio: "9:16", w: 9, h: 16, px: [1080, 1920], name: "Vertical", use: "Reels, Shorts, TikTok" },

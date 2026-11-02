@@ -1,6 +1,6 @@
 # Keyfly Marketing Website — Project Context
 
-Last updated: 2026-10-31
+Last updated: 2026-11-02
 
 The durable handoff for anyone (people or coding agents) working on the Keyfly website. Update it whenever a lasting decision changes. The step-by-step build order lives in `PLAN.md`.
 
@@ -241,16 +241,15 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
   - **The self-running demo:** until a switch is touched, each decision in turn tries its other options and returns, every 1.7s, while on screen and not hovered or focused. Reduced motion is read with `useSyncExternalStore`.
   - **Narrow screens:** below 900px the inspector moves under the viewer, with its rows in 2 columns, then 1.
   - **Copy:** `yourCall`, PLACEHOLDER until the team confirms which decisions Keyfly exposes.
-- **One edit, every format** (`src/components/every-format/`, added 2026-10-31): "One edit. *Every screen.*" Heading laid out like Use cases; captioned "Illustrative interface". Dropped before it: an export window, four screens in a row, and a scroll-driven reframe. The team then picked the 3D carousel from three new UIs.
-  - **`Carousel`** (client): the formats as frames on a curved 3D carousel (`perspective` on `.ring`).
-    - **The frames:** each one is the same cut at its own shape. Each slide is placed by `--d`, its signed distance from the front (a float while turning): `translateX(d × --gap)`, pushed back by `--dist` and turned by `rotateY(d × −38°)`. It fades past one step away.
-    - **The front frame** is lit mint and playing; the others pause. Inside every frame, the 16:9 cut is centred on its subject (66% across, clamped to the edges) and the captions re-flow (`cqw`/`cqh`). A ratio chip sits in the corner, and a pool of mint light sits on the floor.
-    - **Beneath:** prev and next arrows around the front frame's ratio (big mono, mint gradient), "01 Widescreen", and size and use. Then dots, the front one a bar that fills while it waits, then the hint "Drag, or use the arrows".
-  - **Turning:** by drag (the pointer is captured after 6px, then it settles on the nearest frame), the arrows, the ← → keys, clicking a side frame or a dot, and by itself every 3.2s while on screen and not held. Turns ease over 850ms, around the ring the short way.
-  - **Reduced motion:** read with `useSyncExternalStore`; it never turns by itself and turns are instant.
-  - **Sizing:** frames are as tall as `--h` allows but never wider than the screen (`min(--h, (100vw − gutters) / ratio)`), so 16:9 fits on phones.
-  - **Gotcha:** don't name a custom property `--a`. The prompt box registers `--a` as an `<angle>`, which turned a distance into "0deg" and silently invalidated the whole transform.
-  - **Copy:** `everyFormat` (formats with pixel sizes), PLACEHOLDER until the team confirms Keyfly's export options.
+- **One edit, every format** (`src/components/every-format/`, added 2026-10-31, rebuilt 2026-11-02): "One edit. *Every screen.*" Heading laid out like Use cases; captioned "Illustrative interface". Dropped before it: an export window, four screens in a row, a scroll-driven reframe and a 3D carousel. The team then picked the reframe window, in the same window language as You make the calls.
+  - **`Reframe`** (client): the Keyfly editor reframing one cut. Chrome "Launch Video · Keyfly", with "Reframe · {ratio}" in mint.
+    - **Formats panel** (left): four rows (a shape glyph, name, ratio, use), the one up with a mint edge, and the settings "Keep in frame: Subject" and "Captions: Follow". Below 900px it becomes a row of four; on phones only the glyphs and ratios.
+    - **Source** (middle): a CSS-drawn 16:9 shot (dusk through a window, a presenter who walks across), with a tracking box on the subject and the mint crop for the format (thirds, a ratio tag, the rest dimmed). The crop follows the subject, kept inside the picture.
+    - **Output** (right): the same shot at the format's true shape, fitted to the column (`min(100cqw, 100cqh × r)`), with captions that re-flow, and its pixel size and use beneath.
+    - **Timeline:** V1 clips, RF (the crop's path over time, with a keyframe diamond at each move; "Full frame" at 16:9) and C1 caption words, with the playhead.
+  - **One clock:** the subject (in both pictures), the crop, the output's picture and the playhead are Web Animations sharing one start time (8s loop), rebuilt when the format changes, paused off screen. They use container units (`cqw`, `cqh`), so the scene is a container.
+  - **Turning:** it moves to the next format every 4s (the row fills along its foot) while on screen and not held, until a format is clicked. Reduced motion holds everything still, mid-walk.
+  - **Copy:** `everyFormat`, PLACEHOLDER until the team confirms Keyfly's export options.
 - **Use cases** (`src/components/use-cases/`, added 2026-10-31, redesigned four times the same day): the six prompt-box presets on a **jog wheel**, the dial editors spin to move through footage. Captioned "Illustrative previews". It is not pinned, so it fits any height. Earlier versions were dropped:
   - a pinned reel (broke on short laptop screens);
   - a boxed multicam switcher with a tile grid (the team asked for no grid or box shapes);
@@ -309,6 +308,7 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
   - **Per-frame scripts do lookups, not measurements:** the thread reads its comet position from a table of points (every 4px) built once.
   - **React:** the jog wheel's ticks are built once and `Preview` is memoised, so turning the wheel doesn't re-render the previews.
 - **Gotchas:**
+  - **Don't name a custom property `--a`:** the prompt box registers `--a` as an `<angle>`, which turns any other value into "0deg" and silently invalidates the declaration using it.
   - **Grid overflow:** grid containers that hold the scrolling chip row need `grid-template-columns: minmax(0, 1fr)`. Without it the row's `max-content` width widens the page on mobile.
   - **No large blur:** never put a large `filter: blur()` in a 3D, animated stage.
   - **Smooth scrolling:** `html` scrolls smoothly, so test scripts must pass `behavior: "instant"`.

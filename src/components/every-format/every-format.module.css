@@ -1,8 +1,9 @@
 /*
- * "One edit, every format": the formats on a curved 3D carousel. Carousel
- * sets --d (each frame's signed distance from the front, a float while it
- * turns), --dist (its absolute value) and --r (its ratio) on every slide,
- * data-on on the front one, and data-auto while it turns by itself.
+ * "One edit, every format": the Keyfly editor reframing one cut, in the
+ * same window language as "How it works" and "You make the calls". The
+ * subject, the crop, the output's picture and the playhead move by the
+ * Web Animations API (Reframe); data-full on .window when the format is
+ * the source's own 16:9.
  */
 .section {
   position: relative;
@@ -78,285 +79,695 @@
   text-align: right;
 }
 
-/* ---------- The carousel ---------- */
 
-.carousel {
-  --h: min(clamp(250px, 34vw, 430px), 50svh);
-  --gap: calc(var(--h) * 1.25);
-  display: grid;
-  justify-items: center;
-  gap: 18px;
-  outline: none;
-}
+/* ---------- The window ---------- */
 
-.carousel:focus-visible .slide[data-on] .screen {
-  box-shadow:
-    0 0 0 2px var(--soft-mint),
-    0 0 0 6px rgb(95 224 176 / 0.25);
-}
-
-.ring {
-  position: relative;
-  width: 100%;
-  height: calc(var(--h) + 70px);
-  overflow-x: clip;
-  perspective: 1400px;
-  perspective-origin: 50% 40%;
-  cursor: grab;
-  touch-action: pan-y;
-  user-select: none;
-}
-
-.carousel[data-dragging] .ring {
-  cursor: grabbing;
-}
-
-/* A pool of light on the floor under the front frame. */
-.floor {
-  position: absolute;
-  left: 50%;
-  bottom: 0;
-  width: min(80%, calc(var(--h) * 2.2));
-  height: 70px;
-  translate: -50% 0;
-  background: radial-gradient(50% 50% at 50% 50%, rgb(95 224 176 / 0.22), transparent 70%);
-  pointer-events: none;
-}
-
-/* Each frame: placed by its distance from the front, turned away and
-   pushed back the further it is. */
-.slide {
-  position: absolute;
-  top: calc(var(--h) / 2 + 10px);
-  left: 50%;
-  /* As tall as the carousel allows, but never wider than the screen. */
-  height: min(var(--h), calc((100vw - 2 * var(--gutter) - 8px) / var(--r)));
-  aspect-ratio: var(--r);
-  padding: 0;
-  border: 0;
-  background: none;
-  transform: translate(-50%, -50%) translateX(calc(var(--d) * var(--gap))) translateZ(calc(var(--dist) * -240px)) rotateY(calc(var(--d) * -38deg));
-  cursor: pointer;
-  will-change: transform, opacity;
-}
-
-.slide[data-on] {
-  cursor: inherit;
-}
-
-/* The frame: the 16:9 cut framed around its subject (66% across), with
-   the captions re-flowed to its shape. */
-.screen {
-  position: absolute;
-  inset: 0;
+.window {
+  --pad: 14px;
   overflow: hidden;
-  border-radius: 14px;
-  background: #050506;
+  border-radius: var(--radius-window);
+  background: #121316;
   box-shadow:
-    0 0 0 1px rgb(244 241 234 / 0.12),
-    0 30px 70px -30px rgb(0 0 0 / 0.95);
-  container-type: size;
-  transition: box-shadow 0.4s ease;
+    0 0 0 1px rgb(244 241 234 / 0.09),
+    0 1px 0 rgb(244 241 234 / 0.07) inset,
+    0 40px 100px -40px rgb(0 0 0 / 0.95),
+    0 0 90px -40px rgb(95 224 176 / 0.3);
+  font-size: 12px;
 }
 
-.slide[data-on] .screen {
-  box-shadow:
-    0 0 0 1.5px var(--soft-mint),
-    0 0 60px -14px rgb(95 224 176 / 0.6),
-    0 40px 90px -30px rgb(0 0 0 / 0.95);
+.chrome {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  height: 36px;
+  padding: 0 var(--pad);
+  border-bottom: 1px solid rgb(244 241 234 / 0.06);
+  background: #18191d;
+}
+
+.dots {
+  display: flex;
+  gap: 6px;
+}
+
+.dots i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgb(244 241 234 / 0.14);
+}
+
+.file {
+  color: rgb(244 241 234 / 0.85);
+  font-weight: 560;
+}
+
+.fileMuted {
+  color: rgb(244 241 234 / 0.4);
+  font-weight: 450;
+}
+
+.mode {
+  justify-self: end;
+  color: var(--mint-text-dark);
+  font-family: var(--font-mono-stack);
+  font-size: 11px;
+  animation: rise 0.4s var(--ease-land);
+}
+
+.body {
+  display: grid;
+  grid-template-columns: clamp(200px, 19%, 236px) minmax(0, 1fr) clamp(230px, 24%, 300px);
+  border-bottom: 1px solid rgb(244 241 234 / 0.06);
+}
+
+/* ---------- Formats panel ---------- */
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border-right: 1px solid rgb(244 241 234 / 0.06);
+  background: #141518;
+}
+
+.panelHead,
+.colHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  color: rgb(244 241 234 / 0.75);
+  font-family: var(--font-mono-stack);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.panelHead {
+  padding: 12px var(--pad);
+  border-bottom: 1px solid rgb(244 241 234 / 0.06);
+}
+
+.panelHead span,
+.colHead span {
+  color: rgb(244 241 234 / 0.4);
+  letter-spacing: 0.06em;
+}
+
+.formats {
+  display: grid;
+}
+
+.format {
+  position: relative;
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr) auto;
+  grid-template-areas:
+    "shape name ratio"
+    "shape use use";
+  align-items: center;
+  column-gap: 11px;
+  row-gap: 2px;
+  padding: 12px var(--pad);
+  overflow: hidden;
+  border: 0;
+  border-bottom: 1px solid rgb(244 241 234 / 0.06);
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* The format up: a mint edge and a lift, as the inspector's rows. */
+.format::before {
+  content: "";
+  position: absolute;
+  top: 10px;
+  bottom: 10px;
+  left: 0;
+  width: 2px;
+  border-radius: 2px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.format:hover {
+  background: rgb(244 241 234 / 0.025);
+}
+
+.format[aria-checked="true"] {
+  background: rgb(95 224 176 / 0.05);
+}
+
+.format[aria-checked="true"]::before {
+  opacity: 1;
+}
+
+.format:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: -2px;
+}
+
+.shape {
+  grid-area: shape;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+}
+
+.shape i {
+  border-radius: 2.5px;
+  box-shadow: 0 0 0 1.5px rgb(244 241 234 / 0.35) inset;
+  transition: box-shadow 0.3s ease;
+}
+
+.format[aria-checked="true"] .shape i {
+  background: rgb(95 224 176 / 0.12);
+  box-shadow: 0 0 0 1.5px var(--soft-mint) inset;
+}
+
+.formatName {
+  grid-area: name;
+  overflow: hidden;
+  color: rgb(244 241 234 / 0.9);
+  font-size: 12.5px;
+  font-weight: 560;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.formatRatio {
+  grid-area: ratio;
+  color: rgb(244 241 234 / 0.45);
+  font-family: var(--font-mono-stack);
+  font-size: 10.5px;
+}
+
+.format[aria-checked="true"] .formatRatio {
+  color: var(--soft-mint);
+}
+
+.formatUse {
+  grid-area: use;
+  overflow: hidden;
+  color: rgb(244 241 234 / 0.42);
+  font-size: 11px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* While it runs by itself, the format up fills along its foot. */
+.formatFill {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 1px;
+  background: var(--soft-mint);
+  transform-origin: left;
+  scale: 0 1;
+}
+
+.format[data-auto] .formatFill {
+  animation: fill 4s linear forwards;
+}
+
+.settings {
+  display: grid;
+  gap: 9px;
+  margin: auto 0 0;
+  padding: 14px var(--pad);
+  border-top: 1px solid rgb(244 241 234 / 0.06);
+}
+
+.settings div {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.settings dt {
+  color: rgb(244 241 234 / 0.45);
+}
+
+.settings dd {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  color: rgb(244 241 234 / 0.85);
+  font-weight: 540;
+}
+
+.settings dd::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--soft-mint);
+  box-shadow: 0 0 6px var(--soft-mint);
+}
+
+/* ---------- Source and output ---------- */
+
+.sourceCol,
+.outCol {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 10px;
+  min-width: 0;
+  padding: 12px var(--pad) var(--pad);
+}
+
+.sourceCol {
+  background: #0c0d0f;
+}
+
+.outCol {
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  border-left: 1px solid rgb(244 241 234 / 0.06);
+  background: #0e0f12;
 }
 
 .source {
-  --sw: calc(100cqh * 16 / 9);
+  position: relative;
+  align-self: center;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #050506;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.08);
+  container-type: inline-size;
+}
+
+/* The crop: what the format keeps, the rest dimmed around it. */
+.crop {
   position: absolute;
   top: 0;
   bottom: 0;
-  left: clamp(calc(100cqw - var(--sw)), calc(50cqw - var(--sw) * 0.66), 0px);
-  width: var(--sw);
+  left: 0;
+  border-radius: 3px;
+  box-shadow:
+    0 0 0 1.5px var(--soft-mint) inset,
+    0 0 0 200vmax rgb(5 5 6 / 0.62);
+  transition: width 0.6s var(--ease-land);
+}
+
+.window[data-full] .crop {
+  box-shadow: 0 0 0 1.5px rgb(95 224 176 / 0.7) inset;
+}
+
+.cropTag {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  padding: 3px 7px;
+  border-radius: 5px;
+  background: var(--soft-mint);
+  color: var(--mint-ink);
+  font-family: var(--font-mono-stack);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+/* Thirds inside the crop, as a framing guide. */
+.thirds {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to right, transparent calc(33.33% - 0.5px), rgb(95 224 176 / 0.22) 0 calc(33.33% + 0.5px), transparent 0 calc(66.67% - 0.5px), rgb(95 224 176 / 0.22) 0 calc(66.67% + 0.5px), transparent 0),
+    linear-gradient(to bottom, transparent calc(33.33% - 0.5px), rgb(95 224 176 / 0.22) 0 calc(33.33% + 0.5px), transparent 0 calc(66.67% - 0.5px), rgb(95 224 176 / 0.22) 0 calc(66.67% + 0.5px), transparent 0);
+}
+
+/* The tracking box on the subject (it rides the subject's path). */
+.track {
+  position: absolute;
+  top: 26%;
+  left: 0;
+  width: 0;
+  height: 62%;
+  pointer-events: none;
+}
+
+.track span {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -7cqw;
+  width: 14cqw;
+  border: 1px dashed rgb(244 241 234 / 0.55);
+  border-radius: 4px;
+  font-size: 0;
+}
+
+.track span::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: var(--paper);
+}
+
+.outStage {
+  display: grid;
+  place-items: center;
+  min-height: 0;
+  container-type: size;
+}
+
+.out {
+  position: relative;
+  width: min(100cqw, calc(100cqh * var(--r)));
+  aspect-ratio: var(--r);
+  overflow: hidden;
+  border-radius: 8px;
+  background: #050506;
+  box-shadow:
+    0 0 0 1.5px var(--soft-mint),
+    0 0 40px -10px rgb(95 224 176 / 0.45);
+  container-type: size;
+  transition: width 0.6s var(--ease-land);
+}
+
+.outScene {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: calc(100cqh * 16 / 9);
 }
 
 .captions {
   position: absolute;
-  left: 8%;
   right: 8%;
-  bottom: 9%;
+  bottom: 8%;
+  left: 8%;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 0 0.3em;
   color: #fff;
-  font-size: min(7cqw, 5.6cqh);
+  font-size: clamp(11px, min(7cqw, 7cqh), 22px);
   font-weight: 760;
   letter-spacing: -0.01em;
-  line-height: 1.2;
+  line-height: 1.15;
   text-align: center;
-  text-shadow: 0 2px 8px rgb(0 0 0 / 0.7);
-  text-transform: uppercase;
+  text-shadow: 0 2px 10px rgb(0 0 0 / 0.7);
 }
 
 .captions span:nth-child(3) {
-  padding: 0 0.15em;
-  border-radius: 3px;
-  background: var(--soft-mint);
-  color: var(--mint-ink);
-  text-shadow: none;
+  color: var(--soft-mint);
 }
 
-.chip {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  padding: 3px 8px;
-  border-radius: 6px;
-  background: rgb(11 11 13 / 0.75);
+.outMeta {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  animation: rise 0.4s var(--ease-land);
+}
+
+.outMeta b {
   color: rgb(244 241 234 / 0.85);
   font-family: var(--font-mono-stack);
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 500;
 }
 
-.slide[data-on] .chip {
-  color: var(--soft-mint);
-  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.5);
+.outMeta span {
+  overflow: hidden;
+  color: rgb(244 241 234 / 0.45);
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
-/* ---------- Beneath: the front frame's details ---------- */
+/* ---------- The shot (drawn in CSS, in units of its own width) ---------- */
 
-.caption {
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
-  align-items: center;
-  gap: clamp(16px, 4vw, 48px);
-  width: min(560px, 100%);
+.scene {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  container-type: inline-size;
 }
 
-.spec {
-  display: grid;
-  justify-items: center;
-  gap: 4px;
-  text-align: center;
-  animation: rise 0.45s var(--ease-land);
+.sky {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(60% 70% at 72% 78%, rgb(255 170 120 / 0.55), transparent 70%),
+    linear-gradient(to bottom, #2b2f5c, #6b4c7c 52%, #d7896a 78%, #2a1d24 78.2%, #17121a);
 }
 
-.specRatio {
-  background: linear-gradient(100deg, var(--mint-text-dark), #eafff6 50%, var(--soft-mint));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  font-family: var(--font-mono-stack);
-  font-size: clamp(2rem, 1.4rem + 2vw, 3rem);
-  font-weight: 600;
-  letter-spacing: -0.05em;
-  line-height: 1;
+/* Window mullions over the dusk. */
+.panes {
+  position: absolute;
+  inset: 0 0 22%;
+  background:
+    linear-gradient(to right, transparent calc(25% - 0.6cqw), #141018 0 calc(25% + 0.6cqw), transparent 0 calc(50% - 0.6cqw), #141018 0 calc(50% + 0.6cqw), transparent 0 calc(75% - 0.6cqw), #141018 0 calc(75% + 0.6cqw), transparent 0),
+    linear-gradient(to bottom, transparent 38%, #141018 0 calc(38% + 1cqw), transparent 0);
+  opacity: 0.85;
 }
 
-.specName {
-  font-size: 1.0625rem;
-  font-weight: 560;
-  letter-spacing: -0.02em;
+.floorLine {
+  position: absolute;
+  right: 0;
+  bottom: 22%;
+  left: 0;
+  height: 0.5cqw;
+  background: rgb(255 200 160 / 0.25);
 }
 
-.specName span {
-  margin-right: 6px;
-  color: var(--soft-mint);
-  font-family: var(--font-mono-stack);
-  font-size: 0.75rem;
+.lamp {
+  position: absolute;
+  bottom: 22%;
+  left: 8%;
+  width: 1cqw;
+  height: 30%;
+  background: #1c1620;
 }
 
-.specMeta {
-  color: rgb(244 241 234 / 0.55);
-  font-family: var(--font-mono-stack);
-  font-size: 0.75rem;
-  letter-spacing: 0.04em;
+.lamp::before {
+  content: "";
+  position: absolute;
+  top: -2cqw;
+  left: -3cqw;
+  width: 7cqw;
+  height: 4cqw;
+  border-radius: 3cqw 3cqw 0.5cqw 0.5cqw;
+  background: #f3c98f;
+  box-shadow: 0 0 6cqw 2cqw rgb(243 201 143 / 0.4);
 }
 
-.arrow {
-  display: grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  border: 0;
+.desk {
+  position: absolute;
+  right: 6%;
+  bottom: 22%;
+  width: 18%;
+  height: 12%;
+  border-radius: 0.6cqw 0.6cqw 0 0;
+  background: #231a22;
+}
+
+.subject {
+  position: absolute;
+  bottom: 14%;
+  left: 0;
+  width: 0;
+  height: 62%;
+}
+
+/* The presenter: head and shoulders, rim-lit by the dusk. */
+.figure {
+  position: absolute;
+  bottom: 0;
+  left: -6cqw;
+  width: 12cqw;
+  height: 100%;
+  animation: bob 0.9s ease-in-out infinite alternate;
+}
+
+.figure i {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 6.4cqw;
+  aspect-ratio: 1;
+  translate: -50% 0;
   border-radius: 50%;
-  background: rgb(244 241 234 / 0.05);
-  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.12) inset;
-  color: var(--paper);
-  cursor: pointer;
-  transition:
-    background-color 0.25s ease,
-    box-shadow 0.25s ease;
+  background: radial-gradient(circle at 70% 40%, #ffcfa8, #5a3c48 62%);
 }
 
-.arrow:hover {
-  background: rgb(95 224 176 / 0.12);
-  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.5) inset;
+.figure b {
+  position: absolute;
+  top: 7.2cqw;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: 6cqw 6cqw 1cqw 1cqw;
+  background: linear-gradient(100deg, #2a2440, #4a3f6e 60%, #ff9f78);
 }
 
-.arrow:focus-visible {
-  outline: 2px solid var(--soft-mint);
-  outline-offset: 3px;
+/* ---------- Timeline ---------- */
+
+.timeline {
+  position: relative;
+  display: grid;
+  gap: 5px;
+  padding: 12px var(--pad) var(--pad);
+  overflow-x: clip;
+  background: #101114;
 }
 
-/* Dots: the front one is a bar that fills while it waits to turn. */
-.dots {
-  display: flex;
+/* The rail starts after the track labels (22px + 8px). */
+.rail {
+  position: absolute;
+  left: calc(var(--pad) + 30px);
+  right: var(--pad);
+}
+
+.ruler {
+  height: 12px;
+  margin-left: 30px;
+  background:
+    repeating-linear-gradient(to right, rgb(244 241 234 / 0.3) 0 1px, transparent 1px 8.333%) 0 100% / 100% 8px no-repeat,
+    repeating-linear-gradient(to right, rgb(244 241 234 / 0.14) 0 1px, transparent 1px 2.0833%) 0 100% / 100% 4px no-repeat;
+}
+
+.lane {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  align-items: center;
   gap: 8px;
 }
 
-.dot {
-  display: grid;
-  place-items: center;
-  width: 28px;
-  height: 20px;
-  padding: 0;
-  border: 0;
-  background: none;
-  cursor: pointer;
-}
-
-.dot i {
-  position: relative;
-  width: 6px;
-  height: 6px;
-  overflow: hidden;
-  border-radius: 6px;
-  background: rgb(244 241 234 / 0.25);
-  transition: width 0.35s var(--ease-land);
-}
-
-.dot[aria-pressed="true"] i {
-  width: 28px;
-  background: rgb(95 224 176 / 0.25);
-}
-
-.dot[aria-pressed="true"] i::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: var(--soft-mint);
-  transform-origin: left;
-  scale: 1 1;
-}
-
-.carousel[data-auto] .dot[aria-pressed="true"] i::after {
-  animation: fill 3.2s linear both;
-}
-
-.dot:focus-visible {
-  outline: 2px solid var(--soft-mint);
-  outline-offset: 2px;
-  border-radius: 6px;
-}
-
-.hint {
-  color: rgb(244 241 234 / 0.35);
+.trackLabel {
+  color: rgb(244 241 234 / 0.4);
   font-family: var(--font-mono-stack);
-  font-size: 0.625rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  font-size: 10px;
+}
+
+.laneBody {
+  position: relative;
+  height: 24px;
+  border-radius: 5px;
+  background: rgb(244 241 234 / 0.025);
+}
+
+.clip,
+.word {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: 5px;
+}
+
+.clip {
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.55) inset;
+}
+
+.clip[data-n="0"] {
+  background: #4f6b8c;
+}
+
+.clip[data-n="1"] {
+  background: #8a5a78;
+}
+
+.clip[data-n="2"] {
+  background: #6aa3b3;
+}
+
+.reframe {
+  background: rgb(95 224 176 / 0.05);
+  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.18) inset;
+}
+
+.path {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.path path {
+  fill: none;
+  stroke: var(--soft-mint);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+  transition: d 0.6s var(--ease-land);
+}
+
+.key {
+  position: absolute;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  translate: -50% -50%;
+  rotate: 45deg;
+  border-radius: 1px;
+  background: #101114;
+  box-shadow: 0 0 0 1.5px var(--soft-mint);
+}
+
+.pathLabel {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  translate: 0 -50%;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: #101114;
+  color: rgb(244 241 234 / 0.6);
+  font-family: var(--font-mono-stack);
+  font-size: 9.5px;
+}
+
+.word {
+  display: grid;
+  align-items: center;
+  width: 14%;
+  overflow: hidden;
+  padding-left: 7px;
+  background: rgb(244 241 234 / 0.08);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.22) inset;
+  color: rgb(244 241 234 / 0.7);
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* The playhead on a rail that slides by its own width (Reframe). */
+.rail {
+  top: 12px;
+  bottom: var(--pad);
+  pointer-events: none;
+}
+
+.playhead {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 2px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 10px rgb(95 224 176 / 0.7);
+}
+
+.window[data-paused] .figure {
+  animation-play-state: paused;
 }
 
 .footnote {
-  margin-top: 14px;
+  margin-top: 12px;
   color: rgb(244 241 234 / 0.38);
   font-family: var(--font-mono-stack);
   font-size: 0.6875rem;
@@ -366,19 +777,74 @@
 }
 
 @keyframes fill {
-  from {
-    scale: 0 1;
+  to {
+    scale: 1 1;
   }
 }
 
 @keyframes rise {
   from {
     opacity: 0;
-    translate: 0 8px;
+    translate: 0 6px;
+  }
+}
+
+@keyframes bob {
+  to {
+    translate: 0 -1.5%;
   }
 }
 
 /* ---------- Smaller screens ---------- */
+
+@media (max-width: 900px) {
+  .body {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.6fr);
+    grid-template-areas:
+      "panel panel"
+      "source out";
+  }
+
+  .panel {
+    grid-area: panel;
+    border-right: 0;
+    border-bottom: 1px solid rgb(244 241 234 / 0.06);
+  }
+
+  .sourceCol {
+    grid-area: source;
+  }
+
+  .outCol {
+    grid-area: out;
+  }
+
+  .formats {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .format {
+    border-right: 1px solid rgb(244 241 234 / 0.06);
+    border-bottom: 0;
+  }
+
+  .format:last-child {
+    border-right: 0;
+  }
+
+  .format::before {
+    top: auto;
+    right: 10px;
+    bottom: 0;
+    left: 10px;
+    width: auto;
+    height: 2px;
+  }
+
+  .settings {
+    display: none;
+  }
+}
 
 @media (max-width: 860px) {
   .head {
@@ -400,30 +866,62 @@
   }
 }
 
-@media (max-width: 560px) {
-  .carousel {
-    --h: 280px;
-    --gap: calc(var(--h) * 0.95);
+@media (max-width: 640px) {
+  .window {
+    --pad: 10px;
+    font-size: 11px;
   }
 
-  .arrow {
-    width: 38px;
-    height: 38px;
+  .body {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "panel"
+      "source"
+      "out";
   }
 
-  .hint {
+  .outCol {
+    grid-template-rows: auto 240px auto;
+    border-left: 0;
+    border-top: 1px solid rgb(244 241 234 / 0.06);
+  }
+
+  .format {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "shape"
+      "ratio";
+    justify-items: center;
+    row-gap: 4px;
+    padding: 10px 4px;
+  }
+
+  .formatName,
+  .formatUse {
     display: none;
+  }
+
+  .laneBody {
+    height: 18px;
+  }
+
+  .word,
+  .pathLabel {
+    font-size: 0;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .spec,
-  .carousel[data-auto] .dot[aria-pressed="true"] i::after {
+  .mode,
+  .outMeta,
+  .figure,
+  .format[data-auto] .formatFill {
     animation: none;
   }
 
-  .screen,
-  .dot i {
+  .crop,
+  .out,
+  .path path {
     transition: none;
   }
 }
