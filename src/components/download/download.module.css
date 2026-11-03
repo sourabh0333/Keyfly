@@ -412,6 +412,26 @@
   line-height: 1.5;
 }
 
+/* What the build needs, and the Intel Mac link. */
+.needs {
+  margin-top: -4px;
+  color: rgb(244 241 234 / 0.42);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+}
+
+.needs a {
+  color: var(--mint-text-dark);
+  text-decoration: underline;
+  text-decoration-color: rgb(130 232 194 / 0.4);
+  text-underline-offset: 3px;
+}
+
+.needs a:hover {
+  text-decoration-color: currentColor;
+}
+
 .actions {
   display: flex;
   align-items: center;

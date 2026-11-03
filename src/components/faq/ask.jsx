@@ -15,7 +15,7 @@ function onMotionChange(callback) {
 }
 
 /**
- * The FAQ as a conversation with Keyfly: the questions as a numbered list
+ * The FAQ as a conversation with KeyFly: the questions as a numbered list
  * on the left, and on the right a panel styled like the app's prompt box,
  * where the chosen question is "sent" and its answer types in beneath it
  * with a mint caret. The first answer types when the panel first comes on
@@ -105,8 +105,9 @@ export function Ask({ panel, listLabel, next, items }) {
           {item.link ? (
             <a className={styles.link} href={item.link.href} tabIndex={-1} data-ready={typing ? undefined : ""}>
               {item.link.label}
+              {/* Down to a section on this page; out to anything else. */}
               <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true">
-                <path d="M8 3v9M4.5 8.5 8 12l3.5-3.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                <path d={item.link.href.startsWith("#") ? "M8 3v9M4.5 8.5 8 12l3.5-3.5" : "M4 12 12 4M5.5 4H12v6.5"} fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </a>
           ) : (

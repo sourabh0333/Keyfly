@@ -28,7 +28,7 @@ function Glyph({ f }) {
  * One frame that changes shape: the same cut morphs from format to format
  * (its size eases; the picture inside stays centred on the subject, and the
  * captions re-flow), between faint guides for every shape. The format's
- * ratio, name and size sit to the left, where it goes and what Keyfly keeps
+ * ratio, name and size sit to the left, where it goes and what KeyFly keeps
  * to the right, and a bar of the formats beneath, which fills while it
  * waits. It moves on by itself while on screen and not held, until a format
  * is chosen; with reduced motion it waits for a click and changes at once.

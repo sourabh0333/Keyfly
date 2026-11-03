@@ -39,15 +39,15 @@ function level(duck) {
 }
 
 /**
- * The Keyfly editor with its inspector open: the viewer on the left, the
- * inspector on the right listing every decision Keyfly made (its reason
+ * The KeyFly editor with its inspector open: the viewer on the left, the
+ * inspector on the right listing every decision KeyFly made (its reason
  * and a switch to change it), and the timeline beneath with each decision
  * marked where it acts. Changing a switch changes the viewer and the
  * timeline: the opening take, where the cuts fall, the chapter title's
  * hold, the music's level under the voice.
  *
  * Until someone touches a switch it demonstrates itself: one decision at
- * a time tries its other options, then returns to Keyfly's pick (while on
+ * a time tries its other options, then returns to KeyFly's pick (while on
  * screen, not hovered or focused, and with motion allowed).
  */
 export function Inspector({ file, inspector, inspectorSub, decisions, why, pickLabel, changedLabel, reset }) {
@@ -90,7 +90,7 @@ export function Inspector({ file, inspector, inspectorSub, decisions, why, pickL
     setFocus(i);
   }
 
-  function backToKeyfly() {
+  function backToKeyFly() {
     setMine(picks);
     setTouched(true);
   }
@@ -118,7 +118,7 @@ export function Inspector({ file, inspector, inspectorSub, decisions, why, pickL
         </span>
         <span className={styles.file}>
           {file}
-          <span className={styles.fileMuted}> · Keyfly</span>
+          <span className={styles.fileMuted}> · KeyFly</span>
         </span>
         <span className={styles.count} data-changed={changes ? "" : undefined}>
           {decisions.length} decisions{changes ? ` · ${changes} changed` : ""}
@@ -192,7 +192,7 @@ export function Inspector({ file, inspector, inspectorSub, decisions, why, pickL
               );
             })}
           </ol>
-          <button type="button" className={styles.reset} disabled={!changes || !touched} onClick={backToKeyfly}>
+          <button type="button" className={styles.reset} disabled={!changes || !touched} onClick={backToKeyFly}>
             <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true">
               <path d="M3 8a5 5 0 1 0 1.6-3.7M3 2.5V5h2.5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
             </svg>

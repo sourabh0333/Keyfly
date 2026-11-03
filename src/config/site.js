@@ -1,13 +1,13 @@
-// Single source for site-wide facts. Placeholder copy is marked; replace it
-// once the product description is confirmed (see PLAN.md, open questions).
+// Single source for site-wide facts.
 export const siteConfig = {
-  name: "Keyfly",
-  // Domain taken from the installer art ("Keyfly.si"); unconfirmed.
+  name: "KeyFly",
+  // The app's About: "KeyFly.si is a Cevrynt Inc. product."
   url: process.env.NEXT_PUBLIC_SITE_URL || "https://keyfly.si",
-  // The Keyfly web app. Every "open the app" action points here.
+  // The KeyFly web app. Every "open the app" action points here.
   appUrl: "https://app.keyfly.si",
   company: "Cevrynt Inc.",
-  // PLACEHOLDER until the product positioning is agreed.
-  description: "Describe your video, or drop in your footage, and Keyfly edits it into a finished video.",
+  // From the app ("Describe it in a sentence. KeyFly writes the storyboard,
+  // voice-over and motion graphics") and its download page.
+  description: "The AI video editor for Mac, Windows and the browser. Describe a video in a sentence, and KeyFly writes the storyboard, voice-over and motion graphics, on a timeline you can change.",
   locale: "en_US",
 };

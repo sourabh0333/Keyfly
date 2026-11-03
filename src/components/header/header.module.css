@@ -108,6 +108,7 @@
 }
 
 .signIn {
+  white-space: nowrap;
   padding: 8px 14px;
   border-radius: 10px;
   color: rgb(244 241 234 / 0.8);
@@ -129,6 +130,7 @@
   position: relative;
   display: inline-flex;
   align-items: center;
+  white-space: nowrap;
   gap: 8px;
   height: 38px;
   padding: 0 14px 0 16px;
@@ -300,7 +302,7 @@
   }
 }
 
-@media (max-width: 860px) {
+@media (max-width: 1000px) {
   .bar {
     grid-template-columns: 1fr auto;
     height: 54px;

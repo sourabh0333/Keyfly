@@ -1,3 +1,4 @@
+import { Creates } from "@/components/creates/creates";
 import { Divider } from "@/components/divider/divider";
 import { Download } from "@/components/download/download";
 import { Faq } from "@/components/faq/faq";
@@ -7,6 +8,7 @@ import { OnBrand } from "@/components/on-brand/on-brand";
 import { Prompts } from "@/components/prompts/prompts";
 import { Pricing } from "@/components/pricing/pricing";
 import { Anywhere } from "@/components/anywhere/anywhere";
+import { Tools } from "@/components/tools/tools";
 import { Audience } from "@/components/audience/audience";
 import { YourCall } from "@/components/your-call/your-call";
 import { Hero } from "@/components/hero/hero";
@@ -19,12 +21,12 @@ import { siteConfig } from "@/config/site";
 // Kept out of search until the product details are confirmed (see the
 // PLACEHOLDER notes in src/content/home.js). Built step by step: each
 // section is added once the one before is agreed.
-// The pricing section reads Keyfly's pricing API; refresh the page's data
+// The pricing section reads KeyFly's pricing API; refresh the page's data
 // at most every 5 minutes (see src/lib/pricing.js).
 export const revalidate = 300;
 
 export const metadata = {
-  title: { absolute: "Keyfly · The AI video editor" },
+  title: { absolute: "KeyFly · The AI video editor" },
   description: siteConfig.description,
   robots: { index: false, follow: false },
 };
@@ -35,6 +37,8 @@ export default function Home() {
       <Hero />
       <Divider ruler={false} up="120px" down="84px" />
       <HowItWorks />
+      <Divider />
+      <Creates />
       <Divider />
       <OldWay />
       <Divider />
@@ -47,6 +51,8 @@ export default function Home() {
       <OnBrand />
       <Divider />
       <Anywhere />
+      <Divider />
+      <Tools />
       <Divider />
       <Audience />
       <Divider />

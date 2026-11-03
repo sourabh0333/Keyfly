@@ -5,14 +5,15 @@ import { Story } from "./story";
 import styles from "./old-way.module.css";
 
 /**
- * "The old way": the same launch video made two ways, six chores by hand
- * against one sentence with Keyfly, played by the scroll (see Story).
+ * "Your footage" (it began as "The old way", hence the file names): your
+ * footage edited two ways, six chores by hand against one sentence with
+ * KeyFly, played by the scroll (see Story).
  */
 export function OldWay() {
   const { eyebrow, title, lead, note, ...story } = oldWay;
 
   return (
-    <section id="old-way" className={styles.section} aria-labelledby="old-way-title" data-section="The old way">
+    <section id="footage" className={styles.section} aria-labelledby="footage-title" data-section="Your footage">
       <PauseOffscreen />
       <div className={styles.inner}>
         <div className={styles.head}>
@@ -21,7 +22,7 @@ export function OldWay() {
               <span className={styles.eyebrowMark} aria-hidden="true" />
               {eyebrow}
             </p>
-            <h2 id="old-way-title" className={`${styles.title} ${wipe.wipe}`}>
+            <h2 id="footage-title" className={`${styles.title} ${wipe.wipe}`}>
               {title.map((line, i) => (
                 <span key={i} className={line.accent ? styles.accent : styles.plain}>
                   {line.text}

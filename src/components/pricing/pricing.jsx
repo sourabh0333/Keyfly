@@ -30,7 +30,7 @@ function Heading({ eyebrow, title, lead }) {
 }
 
 /**
- * Pricing: the plans from Keyfly's pricing API (see Plans and
+ * Pricing: the plans from KeyFly's pricing API (see Plans and
  * src/lib/pricing.js). Until there has been a good fetch, it shows the
  * plans "still rendering" (see Render) with what you can do today.
  */

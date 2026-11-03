@@ -195,6 +195,61 @@
   translate: 0 0;
 }
 
+/* ---------- Templates: the list's last row ---------- */
+
+.templates {
+  display: grid;
+  grid-template-columns: clamp(110px, 12vw, 180px) minmax(0, 1fr);
+  gap: clamp(16px, 3vw, 48px);
+  border-bottom: 1px solid rgb(244 241 234 / 0.1);
+}
+
+.templatesBody {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: baseline;
+  gap: 18px 28px;
+  padding: 26px 0 28px 56px;
+}
+
+.templatesText {
+  max-width: 62ch;
+  color: rgb(244 241 234 / 0.6);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.templatesText b {
+  color: var(--paper);
+  font-weight: 600;
+}
+
+.browse {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--mint-text-dark);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.browse svg {
+  transition: translate 0.3s var(--ease-land);
+}
+
+.browse:hover svg,
+.browse:focus-visible svg {
+  translate: 2px -2px;
+}
+
+.browse:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
 /* ---------- The floating preview ---------- */
 
 .float {
@@ -279,6 +334,25 @@
     padding-top: 22px;
   }
 
+  .templates {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+
+  .templatesBody {
+    grid-template-columns: minmax(0, 1fr) auto;
+    padding: 14px 0 22px;
+  }
+
+  .templatesText {
+    grid-column: 1 / -1;
+  }
+
+  /* .meta takes a grid area in the list's rows; not in this one. */
+  .templates .meta {
+    grid-area: auto;
+  }
+
   /* No hover here: the meta goes under the prompt and "Try it" shows. */
   .item {
     grid-template-columns: 30px minmax(0, 1fr);
@@ -309,7 +383,8 @@
 @media (prefers-reduced-motion: reduce) {
   .text,
   .try,
-  .float {
+  .float,
+  .browse svg {
     transition: none;
   }
 

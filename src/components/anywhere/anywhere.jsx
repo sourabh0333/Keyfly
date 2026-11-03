@@ -5,7 +5,7 @@ import { Doors } from "./doors";
 import styles from "./anywhere.module.css";
 
 /**
- * "Works where you work": one Keyfly project with the chat, the browser
+ * "Works where you work": one KeyFly project with the chat, the browser
  * and the desktop app around it (see Doors).
  */
 export function Anywhere() {

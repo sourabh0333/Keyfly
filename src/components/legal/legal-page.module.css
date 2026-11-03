@@ -1,0 +1,187 @@
+/*
+ * A legal page: one readable column on Night, the heading set as on the
+ * homepage's sections, with hairline rows for the quoted facts.
+ */
+.page {
+  padding: calc(var(--header-h) + clamp(48px, 8vw, 112px)) 0 var(--section-pad);
+  color: var(--paper);
+}
+
+.inner {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: rgb(244 241 234 / 0.62);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.eyebrowMark {
+  width: 18px;
+  height: 1px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+}
+
+.title {
+  margin-top: 16px;
+  font-size: clamp(2.4rem, 1.4rem + 3vw, 4rem);
+  font-weight: 560;
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+
+.plain,
+.accent {
+  display: inline;
+}
+
+.accent {
+  padding-bottom: 0.06em;
+  background: linear-gradient(100deg, var(--mint-text-dark), #eafff6 50%, var(--soft-mint));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-family: var(--font-accent-stack);
+  font-size: 1.1em;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+/* "Being finalised": an amber chip, since it's a notice, not a success. */
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 28px;
+  padding: 5px 12px;
+  border-radius: var(--radius-round);
+  box-shadow: 0 0 0 1px rgb(242 168 110 / 0.4) inset;
+  color: #f2c49a;
+  font-family: var(--font-mono-stack);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+}
+
+.status i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #f2a86e;
+}
+
+.intro {
+  margin-top: 20px;
+  color: rgb(244 241 234 / 0.75);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+}
+
+.section {
+  margin-top: clamp(40px, 6vw, 64px);
+}
+
+.sectionTitle {
+  font-size: 1.25rem;
+  font-weight: 560;
+  letter-spacing: -0.02em;
+}
+
+.note {
+  margin-top: 6px;
+  color: rgb(244 241 234 / 0.45);
+  font-size: 0.8125rem;
+}
+
+.list {
+  margin-top: 18px;
+  border-top: 1px solid rgb(244 241 234 / 0.08);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 190px) minmax(0, 1fr);
+  gap: 20px;
+  padding: 16px 0;
+  border-bottom: 1px solid rgb(244 241 234 / 0.08);
+}
+
+.row dt {
+  color: var(--mint-text-dark);
+  font-family: var(--font-mono-stack);
+  font-size: 0.75rem;
+  letter-spacing: 0.06em;
+  line-height: 1.6;
+  text-transform: uppercase;
+}
+
+.row dd {
+  margin: 0;
+  color: rgb(244 241 234 / 0.82);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+}
+
+.contact {
+  display: grid;
+  gap: 10px;
+  margin-top: clamp(40px, 6vw, 64px);
+  padding: 22px 24px;
+  border-radius: 16px;
+  background: rgb(255 255 255 / 0.03);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.08) inset;
+}
+
+.contact p {
+  color: rgb(244 241 234 / 0.7);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.mail {
+  justify-self: start;
+  color: var(--mint-text-dark);
+  font-size: 1.0625rem;
+  font-weight: 560;
+  text-decoration: underline;
+  text-decoration-color: rgb(130 232 194 / 0.4);
+  text-underline-offset: 4px;
+}
+
+.mail:hover {
+  text-decoration-color: currentColor;
+}
+
+.foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 28px;
+  color: rgb(244 241 234 / 0.45);
+  font-size: 0.8125rem;
+}
+
+.back {
+  color: rgb(244 241 234 / 0.7);
+}
+
+.back:hover {
+  color: var(--soft-mint);
+}
+
+@media (max-width: 560px) {
+  .row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+  }
+}

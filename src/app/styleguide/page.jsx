@@ -48,7 +48,7 @@ export default function StyleguidePage() {
         </div>
         <h1 className={styles.h1}>Paper and mint</h1>
         <p className={styles.intro}>
-          Every token and building block the Keyfly website is made from. Reload the page to replay
+          Every token and building block the KeyFly website is made from. Reload the page to replay
           the flight paths.
         </p>
       </Section>
@@ -164,7 +164,7 @@ export default function StyleguidePage() {
             </div>
           </div>
           <figure className={styles.flight}>
-            <FlightPath play="view" size={200} label="Keyfly flight path symbol" />
+            <FlightPath play="view" size={200} label="KeyFly flight path symbol" />
             <figcaption className={styles.caption}>play=&quot;view&quot; (draws on scroll)</figcaption>
           </figure>
         </div>

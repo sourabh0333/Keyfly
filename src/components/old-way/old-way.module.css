@@ -1,5 +1,5 @@
 /*
- * "The old way": the same launch video made two ways. Story pins the
+ * "Your footage" (was "The old way"): your footage edited two ways. Story pins the
  * stage (data-live on .track) and the scroll moves through six steps;
  * .stage carries data-step (the chore in play) and data-reached (every
  * step so far, space-separated, matched with ~=), so what each chore
@@ -266,7 +266,7 @@
 
 /* Overlays in the viewer, each shown at its step. */
 .timecode,
-.star,
+.zoom,
 .typing,
 .crop {
   position: absolute;
@@ -290,7 +290,7 @@
   animation: flicker 0.5s steps(2) infinite;
 }
 
-.star {
+.zoom {
   top: 10px;
   left: 10px;
   padding: 4px 9px;
@@ -302,8 +302,18 @@
   font-weight: 600;
 }
 
-.stage[data-step="2"] .star {
+.stage[data-step="2"] .zoom {
   opacity: 1;
+}
+
+/* Step 2: the raw shot zooms in on the presenter while the zoom is set. */
+.hand .viewer > :first-child {
+  transform-origin: 62% 55%;
+  transition: scale 0.8s var(--ease-land);
+}
+
+.stage[data-step="2"] .hand .viewer > :first-child {
+  scale: 1.4;
 }
 
 .typing {
@@ -381,9 +391,9 @@
   box-shadow: 1px 0 0 #0b0b0d inset, -1px 0 0 #0b0b0d inset;
 }
 
-/* Step 2 on: the best takes carry a star. */
-.raw[data-star]::after {
-  content: "★";
+/* Step 2 on: the clips that zoom carry a keyframe. */
+.raw[data-zoom]::after {
+  content: "◆";
   position: absolute;
   top: 50%;
   left: 6px;
@@ -394,11 +404,11 @@
   transition: opacity 0.3s ease;
 }
 
-.stage[data-reached~="2"] .raw[data-star] {
+.stage[data-reached~="2"] .raw[data-zoom] {
   background: rgb(244 241 234 / 0.24);
 }
 
-.stage[data-reached~="2"] .raw[data-star]::after {
+.stage[data-reached~="2"] .raw[data-zoom]::after {
   opacity: 1;
 }
 
@@ -974,6 +984,16 @@
     margin-top: 6px;
   }
 
+  /* The columns are narrow here: let the results wrap, not cut off. */
+  .stepKey {
+    align-items: flex-start;
+    white-space: normal;
+  }
+
+  .stepKey svg {
+    margin-top: 2px;
+  }
+
   .hint {
     grid-row: auto;
   }
@@ -986,6 +1006,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .hand .viewer > :first-child {
+    transition: none;
+  }
+
   .hand .line,
   .stage .timecode,
   .stage .typing,

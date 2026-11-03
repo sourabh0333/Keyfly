@@ -1,4 +1,4 @@
-// Keyfly's plans come from its pricing API, never typed into the website
+// KeyFly's plans come from its pricing API, never typed into the website
 // (see the client's "Pricing API" document). Fetched on the server, at
 // build time and then at most every 5 minutes (ISR); if a refresh fails,
 // Next keeps serving the last good page. If there has never been a good

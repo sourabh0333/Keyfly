@@ -36,6 +36,35 @@ function ArrowUp() {
   );
 }
 
+// The motion style: a frame with a swoosh of motion through it.
+function StyleIcon() {
+  return (
+    <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true">
+      <rect x="2" y="3" width="12" height="10" rx="2.5" fill="none" stroke="currentColor" strokeWidth="1.4" />
+      <path d="M4.5 10.5c2-3.5 4.5-3.5 7-5" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+// The brand kit: a swatch card.
+function BrandIcon() {
+  return (
+    <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true">
+      <rect x="2.5" y="2.5" width="11" height="11" rx="3" fill="none" stroke="currentColor" strokeWidth="1.4" />
+      <circle cx="6" cy="6.5" r="1.4" fill="currentColor" />
+      <path d="M5 11h6" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function Blank() {
+  return (
+    <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+      <rect x="2.5" y="3" width="11" height="10" rx="2" fill="none" stroke="currentColor" strokeWidth="1.4" strokeDasharray="2.2 1.8" />
+    </svg>
+  );
+}
+
 function Close() {
   return (
     <svg viewBox="0 0 12 12" width="10" height="10" aria-hidden="true">
@@ -47,22 +76,28 @@ function Close() {
 const hasFiles = (event) => Array.from(event.dataTransfer?.types || []).includes("Files");
 
 /**
- * The prompt box from the Keyfly app, working on the homepage: type a
- * description or add footage (with + or by dropping files anywhere on the
- * page), pick a format, or start from one of the presets, which types its
- * example prompt into the box. Sending opens the app.
+ * The prompt box from the KeyFly app's "New video" box, working on the
+ * homepage: type a description or add media (with + or by dropping files
+ * anywhere on the page), pick the aspect ratio, the motion style and the
+ * brand kit, Enhance the prompt, or start from one of the presets, which
+ * types its example prompt into the box. Create opens the app; so does
+ * Blank project.
+ *
+ * Enhance here can't call the app's AI: with an empty box it types a
+ * preset's prompt; with a prompt, it rewrites it to name the chosen ratio
+ * and style and the usual asks (a hook, captions, music).
  */
-export function PromptBox({ label, placeholder, action, accept, modes, presets, elsewhere }) {
+export function PromptBox({ label, placeholder, action, accept, addMedia, formats, styles: motion, brandKit, enhance, create, blank, presets, elsewhere }) {
   const [text, setText] = useState("");
   const [files, setFiles] = useState([]);
-  const [mode, setMode] = useState(modes[0]);
-  const [menu, setMenu] = useState(false);
+  const [format, setFormat] = useState(formats.options[0]);
+  const [style, setStyle] = useState(motion.options[0]);
+  const [open, setOpen] = useState(null); // which picker's menu is open
   const [dragging, setDragging] = useState(false);
   const [typing, setTyping] = useState(null);
   const [sending, setSending] = useState(false);
   const field = useRef(null);
   const picker = useRef(null);
-  const modeRef = useRef(null);
   const typer = useRef(0);
 
   const ready = text.trim().length > 0 || files.length > 0;
@@ -109,18 +144,18 @@ export function PromptBox({ label, placeholder, action, accept, modes, presets, 
     };
   }, []);
 
-  // Close the format menu on an outside click or Escape.
+  // Close an open picker on an outside click or Escape.
   useEffect(() => {
-    if (!menu) return;
-    const onDown = (event) => !modeRef.current?.contains(event.target) && setMenu(false);
-    const onKey = (event) => event.key === "Escape" && setMenu(false);
+    if (!open) return;
+    const onDown = (event) => !event.target.closest?.("[data-picker]") && setOpen(null);
+    const onKey = (event) => event.key === "Escape" && setOpen(null);
     document.addEventListener("pointerdown", onDown);
     document.addEventListener("keydown", onKey);
     return () => {
       document.removeEventListener("pointerdown", onDown);
       document.removeEventListener("keydown", onKey);
     };
-  }, [menu]);
+  }, [open]);
 
   useEffect(() => () => clearInterval(typer.current), []);
 
@@ -176,9 +211,23 @@ export function PromptBox({ label, placeholder, action, accept, modes, presets, 
     }, 16);
   }
 
-  function inspire() {
-    const choices = presets.filter((preset) => preset.prompt !== text);
-    typeOut(choices[Math.floor(Math.random() * choices.length)]);
+  // Enhance: a preset's prompt into an empty box, or the prompt rewritten
+  // with the chosen ratio and style (once).
+  function enhancePrompt() {
+    const base = text.trim();
+    if (!base) {
+      const choices = presets.filter((preset) => preset.prompt !== text);
+      typeOut(choices[Math.floor(Math.random() * choices.length)]);
+      return;
+    }
+    if (base.includes("hook in the first two seconds")) return;
+    const look = style.id === "ai" ? "in a style KeyFly picks" : `in the ${style.label} style`;
+    const rewritten = `${base.replace(/[.\s]+$/, "")}. Make it ${format.label} ${format.name}, ${look}, with a hook in the first two seconds, captions and music that fits the mood.`;
+    typeOut({ label: null, prompt: rewritten });
+  }
+
+  function toggle(name) {
+    setOpen((current) => (current === name ? null : name));
   }
 
   function submit(event) {
@@ -228,7 +277,7 @@ export function PromptBox({ label, placeholder, action, accept, modes, presets, 
         />
 
         <div className={styles.toolbar}>
-          <button type="button" className={styles.square} aria-label="Add footage" title="Add footage" onClick={() => picker.current?.click()}>
+          <button type="button" className={styles.square} aria-label={addMedia} title={addMedia} onClick={() => picker.current?.click()}>
             <Plus />
           </button>
           <input
@@ -243,34 +292,37 @@ export function PromptBox({ label, placeholder, action, accept, modes, presets, 
             }}
           />
 
-          <div className={styles.mode} ref={modeRef}>
+          {/* Aspect ratio. */}
+          <div className={styles.mode} data-picker="">
             <button
               type="button"
               className={styles.modeButton}
               aria-haspopup="listbox"
-              aria-expanded={menu}
-              aria-label={`Format: ${mode.label}`}
-              onClick={() => setMenu((open) => !open)}
+              aria-expanded={open === "format"}
+              aria-label={`${formats.label}: ${format.label} ${format.name}`}
+              onClick={() => toggle("format")}
             >
-              {mode.label}
+              <span className={styles.frame} data-mode={format.id} aria-hidden="true" />
+              {format.label}
+              <span className={styles.long}>{format.name}</span>
               <Chevron />
             </button>
-            {menu ? (
-              <ul className={styles.menu} role="listbox" aria-label="Format">
-                {modes.map((option) => (
+            {open === "format" ? (
+              <ul className={styles.menu} role="listbox" aria-label={formats.label}>
+                {formats.options.map((option) => (
                   <li key={option.id}>
                     <button
                       type="button"
                       role="option"
-                      aria-selected={option.id === mode.id}
+                      aria-selected={option.id === format.id}
                       onClick={() => {
-                        setMode(option);
-                        setMenu(false);
+                        setFormat(option);
+                        setOpen(null);
                       }}
                     >
                       <span className={styles.frame} data-mode={option.id} aria-hidden="true" />
                       <span>{option.label}</span>
-                      <span className={styles.note}>{option.note}</span>
+                      <span className={styles.note}>{option.name}</span>
                     </button>
                   </li>
                 ))}
@@ -278,14 +330,95 @@ export function PromptBox({ label, placeholder, action, accept, modes, presets, 
             ) : null}
           </div>
 
-          <button type="button" className={styles.square} data-quiet="" aria-label="Inspire me" title="Inspire me" onClick={inspire}>
+          {/* Motion style. */}
+          <div className={styles.mode} data-picker="">
+            <button
+              type="button"
+              className={styles.modeButton}
+              aria-haspopup="listbox"
+              aria-expanded={open === "style"}
+              aria-label={`${motion.label}: ${style.label}`}
+              onClick={() => toggle("style")}
+            >
+              <StyleIcon />
+              <span className={styles.long}>{motion.prefix}</span>
+              <span className={styles.styleLabel}>{style.label}</span>
+              <Chevron />
+            </button>
+            {open === "style" ? (
+              <ul className={`${styles.menu} ${styles.styleMenu}`} role="listbox" aria-label={motion.label}>
+                {motion.options.map((option) => (
+                  <li key={option.id}>
+                    <button
+                      type="button"
+                      role="option"
+                      aria-selected={option.id === style.id}
+                      onClick={() => {
+                        setStyle(option);
+                        setOpen(null);
+                      }}
+                    >
+                      <span className={styles.swatch} data-style={option.id} aria-hidden="true" />
+                      <span className={styles.styleText}>
+                        <span>{option.label}</span>
+                        <span className={styles.note}>{option.note}</span>
+                      </span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+          </div>
+
+          {/* Brand kit: visitors have none yet; the menu points to the app. */}
+          <div className={styles.mode} data-picker="">
+            <button
+              type="button"
+              className={styles.modeButton}
+              aria-haspopup="listbox"
+              aria-expanded={open === "brand"}
+              aria-label={`${brandKit.label}: ${brandKit.none}`}
+              onClick={() => toggle("brand")}
+            >
+              <BrandIcon />
+              <span className={styles.long}>{brandKit.none}</span>
+              <Chevron />
+            </button>
+            {open === "brand" ? (
+              <ul className={styles.menu} role="listbox" aria-label={brandKit.label}>
+                <li>
+                  <button type="button" role="option" aria-selected="true" onClick={() => setOpen(null)}>
+                    <BrandIcon />
+                    <span>{brandKit.none}</span>
+                    <span />
+                  </button>
+                </li>
+                <li>
+                  <a className={styles.menuLink} href={brandKit.href}>
+                    <Plus />
+                    <span>{brandKit.add}</span>
+                    <span className={styles.note}>↗</span>
+                  </a>
+                </li>
+              </ul>
+            ) : null}
+          </div>
+
+          <button type="button" className={styles.enhance} title={enhance.title} onClick={enhancePrompt}>
             <Sparkle />
+            <span className={styles.long}>{enhance.label}</span>
           </button>
-          <button type="submit" className={styles.send} aria-label="Create video" title="Create video" disabled={!ready}>
+          <button type="submit" className={styles.send} title={create} disabled={!ready}>
             <ArrowUp />
+            {create}
           </button>
         </div>
       </form>
+
+      <a className={styles.blank} href={blank.href} title={blank.title}>
+        <Blank />
+        {blank.label}
+      </a>
 
       <div className={styles.presets}>
         <ul aria-label="Start from">

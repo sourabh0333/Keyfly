@@ -21,7 +21,16 @@ function onMotionChange(callback) {
 function Specimen({ id }) {
   if (id === "logo") return <span className={styles.mark} />;
   if (id === "font") return <span className={styles.aa}>Aa</span>;
-  if (id === "title") return <span className={styles.miniTitle} />;
+  if (id === "voice")
+    return (
+      <span className={styles.miniWave}>
+        <i />
+        <i />
+        <i />
+        <i />
+        <i />
+      </span>
+    );
   return (
     <span className={styles.swatches}>
       <i />
@@ -41,6 +50,15 @@ function Tile({ video }) {
         <span className={styles.vidTitle}>
           <b>{video.title}</b>
         </span>
+        <span className={styles.voice} aria-hidden="true">
+          <i />
+          <i />
+          <i />
+          <i />
+          <i />
+          <i />
+          <i />
+        </span>
         <span className={styles.bug}>
           <span className={styles.mark} />
           logo
@@ -57,7 +75,7 @@ function Tile({ video }) {
 /**
  * One brand kit over every video: the kit as a bar of four cells, and
  * beneath it a reel of different videos in their own shapes drifting by.
- * Keyfly applies the kit one item at a time; each time, a mint scan line
+ * KeyFly applies the kit one item at a time; each time, a mint scan line
  * crosses the reel and every video takes the item as the line reaches it
  * (each tile's --delay is set from where it stands when the line sets
  * off). It holds fully on brand, then starts again; while on screen and
@@ -162,7 +180,7 @@ export function BrandReel({ kitLabel, applied, videosLabel, items, videos }) {
         data-logo={on.logo ? "" : undefined}
         data-colours={on.colours ? "" : undefined}
         data-font={on.font ? "" : undefined}
-        data-title={on.title ? "" : undefined}
+        data-voice={on.voice ? "" : undefined}
         data-paused={visible ? undefined : ""}
       >
         <div className={styles.track}>

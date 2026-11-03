@@ -1,0 +1,726 @@
+/*
+ * "What Keyfly makes": the film beside its panel, above its own timeline.
+ * Anatomy moves the playhead by translate (a percentage of the lanes), and
+ * sets data-on on the scene mark, the clips, the track labels and the
+ * panel's track rows in play.
+ */
+.section {
+  position: relative;
+  padding: var(--section-pad) 0;
+  color: var(--paper);
+}
+
+.inner {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* ---------- Heading (as in Every format and Use cases) ---------- */
+
+.head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+  margin-bottom: clamp(32px, 4vw, 56px);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: rgb(244 241 234 / 0.62);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.eyebrowMark {
+  width: 18px;
+  height: 1px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+}
+
+.title {
+  margin-top: 16px;
+  font-size: clamp(2.1rem, 1.1rem + 2.2vw, 3.4rem);
+  font-weight: 560;
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+
+.plain,
+.accent {
+  display: block;
+}
+
+.accent {
+  padding-bottom: 0.06em;
+  background: linear-gradient(100deg, var(--mint-text-dark), #eafff6 50%, var(--soft-mint));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-family: var(--font-accent-stack);
+  font-size: 1.1em;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.lead {
+  max-width: 40ch;
+  color: rgb(244 241 234 / 0.62);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  text-align: right;
+}
+
+.footnote {
+  margin-top: 16px;
+  color: rgb(244 241 234 / 0.38);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.kicker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: rgb(244 241 234 / 0.5);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* ---------- The stage: the film and its panel ---------- */
+
+.anatomy {
+  --label-w: 230px;
+  --ruler-h: 22px;
+  --lane-h: 28px;
+  --row-gap: 6px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 26px;
+}
+
+.stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1.8fr) minmax(270px, 1fr);
+  gap: clamp(20px, 2.4vw, 32px);
+  align-items: stretch;
+}
+
+/* The film fills its column edge to edge, at 16:9. */
+.film {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  margin: 0;
+  overflow: hidden;
+  border-radius: 16px;
+  background: #050506;
+  box-shadow:
+    0 0 0 1.5px var(--soft-mint),
+    0 0 50px -12px rgb(95 224 176 / 0.55),
+    0 40px 80px -30px rgb(0 0 0 / 0.9);
+}
+
+.video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.corners {
+  position: absolute;
+  inset: 12px;
+  --m: linear-gradient(var(--soft-mint), var(--soft-mint));
+  background:
+    var(--m) 0 0 / 16px 1.5px,
+    var(--m) 0 0 / 1.5px 16px,
+    var(--m) 100% 0 / 16px 1.5px,
+    var(--m) 100% 0 / 1.5px 16px,
+    var(--m) 0 100% / 16px 1.5px,
+    var(--m) 0 100% / 1.5px 16px,
+    var(--m) 100% 100% / 16px 1.5px,
+    var(--m) 100% 100% / 1.5px 16px;
+  background-repeat: no-repeat;
+  opacity: 0.85;
+  pointer-events: none;
+}
+
+.tag {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: var(--soft-mint);
+  color: var(--mint-ink);
+  font-family: var(--font-mono-stack);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* The panel: same height as the film, its parts spread top to bottom. */
+.side {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 18px;
+  min-width: 0;
+  padding: 20px;
+  border-radius: 16px;
+  background: rgb(255 255 255 / 0.025);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.08) inset;
+}
+
+/* The prompt, in the prompt box's glass. */
+.promptBox {
+  position: relative;
+  display: grid;
+  gap: 8px;
+  padding: 14px 52px 14px 16px;
+  border-radius: 14px;
+  background: rgb(255 255 255 / 0.04);
+  box-shadow:
+    0 0 0 1px rgb(244 241 234 / 0.12) inset,
+    0 -1px 0 rgb(95 224 176 / 0.5) inset;
+}
+
+.promptText {
+  color: var(--paper);
+  font-size: 0.9375rem;
+  line-height: 1.4;
+}
+
+.send {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--soft-mint);
+  color: var(--mint-ink);
+}
+
+.send svg {
+  width: 15px;
+  height: 15px;
+}
+
+/* Now: the scene in play and the line spoken in it. */
+.now {
+  display: grid;
+  gap: 6px;
+}
+
+.nowMark {
+  width: 7px;
+  height: 7px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 10px var(--soft-mint);
+  rotate: 45deg;
+}
+
+.nowIndex {
+  color: var(--soft-mint);
+}
+
+.nowScene {
+  color: var(--paper);
+  font-size: clamp(1.35rem, 1rem + 0.9vw, 1.75rem);
+  font-weight: 560;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  animation: rise 0.45s var(--ease-land);
+}
+
+.nowLine {
+  min-height: 2.6em;
+  color: rgb(244 241 234 / 0.7);
+  font-family: var(--font-accent-stack);
+  font-size: 1.125rem;
+  font-style: italic;
+  line-height: 1.3;
+  animation: rise 0.45s var(--ease-land) 0.08s backwards;
+}
+
+.says {
+  display: block;
+  margin-bottom: 2px;
+  color: rgb(244 241 234 / 0.4);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  font-style: normal;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* The tracks, the ones with a clip under the playhead lit. */
+.tracks {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.track {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.08) inset;
+  color: rgb(244 241 234 / 0.42);
+  font-size: 0.8125rem;
+  white-space: nowrap;
+  transition:
+    color 0.25s ease,
+    box-shadow 0.25s ease,
+    background-color 0.25s ease;
+}
+
+.track[data-on] {
+  background: rgb(95 224 176 / 0.08);
+  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.45) inset;
+  color: var(--paper);
+}
+
+.swatch {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+  opacity: 0.6;
+}
+
+.track[data-on] .swatch {
+  opacity: 1;
+}
+
+.swatch.storyboard {
+  background: rgb(244 241 234 / 0.5);
+}
+
+.swatch.voice {
+  background: var(--soft-mint);
+}
+
+.swatch.graphics {
+  background: #8b7cf6;
+}
+
+.swatch.transitions {
+  background: rgb(244 241 234 / 0.7);
+  rotate: 45deg;
+  scale: 0.8;
+}
+
+.swatch.music {
+  background: #f2a86e;
+}
+
+/* Play, sound and the timecode. */
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.control {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 38px;
+  height: 38px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: var(--radius-round);
+  background: rgb(244 241 234 / 0.06);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.16) inset;
+  color: var(--paper);
+  font: inherit;
+  font-size: 0.8125rem;
+  cursor: pointer;
+  transition:
+    box-shadow 0.25s ease,
+    background-color 0.25s ease;
+}
+
+.control:hover {
+  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.6) inset;
+}
+
+.control:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 2px;
+}
+
+.control svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+/* Sound off by default (browsers start videos muted): the button invites it. */
+.sound {
+  background: var(--soft-mint);
+  box-shadow: none;
+  color: var(--mint-ink);
+  font-weight: 600;
+}
+
+.sound:hover {
+  box-shadow: 0 0 0 1px var(--soft-mint), 0 0 18px -4px var(--soft-mint);
+}
+
+.sound[aria-pressed="true"] {
+  background: rgb(95 224 176 / 0.1);
+  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.45) inset;
+  color: var(--mint-text-dark);
+}
+
+.time {
+  margin-left: auto;
+  color: rgb(244 241 234 / 0.5);
+  font-family: var(--font-mono-stack);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.time span {
+  color: var(--paper);
+}
+
+/* ---------- The timeline ---------- */
+
+.timeline {
+  display: grid;
+  grid-template-columns: var(--label-w) minmax(0, 1fr);
+  gap: 14px;
+}
+
+.labels,
+.lanes {
+  display: grid;
+  grid-template-rows: var(--ruler-h) repeat(var(--tracks, 5), var(--lane-h));
+  gap: var(--row-gap);
+}
+
+.label {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  color: rgb(244 241 234 / 0.55);
+  font-size: 0.8125rem;
+  transition: color 0.3s ease;
+}
+
+.labelIndex {
+  color: rgb(244 241 234 / 0.3);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  transition: color 0.3s ease;
+}
+
+.labelName {
+  font-weight: 540;
+}
+
+.labelDetail {
+  color: rgb(244 241 234 / 0.36);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  white-space: nowrap;
+}
+
+.label[data-on] {
+  color: var(--paper);
+}
+
+.label[data-on] .labelIndex {
+  color: var(--soft-mint);
+}
+
+/* The playhead travels across the lanes on a full-width strip moved by
+   translate; clipping sideways keeps that strip from widening the page. */
+.lanes {
+  position: relative;
+  overflow-x: clip;
+  cursor: pointer;
+}
+
+/* The ruler: one mark per scene, numbered. */
+.ruler {
+  position: relative;
+  border-bottom: 1px solid rgb(244 241 234 / 0.1);
+}
+
+.sceneMark {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-left: 1px solid rgb(244 241 234 / 0.18);
+  color: rgb(244 241 234 / 0.38);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  transition: color 0.3s ease;
+}
+
+.sceneMark span {
+  position: absolute;
+  top: 3px;
+  left: 6px;
+}
+
+.sceneMark[data-on] {
+  color: var(--soft-mint);
+}
+
+.lane {
+  position: relative;
+  border-radius: 6px;
+  background: rgb(244 241 234 / 0.03);
+}
+
+.clip {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  border-radius: 4px;
+  opacity: 0.55;
+  transition:
+    opacity 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.clip[data-on] {
+  opacity: 1;
+  box-shadow: 0 0 0 1px var(--soft-mint) inset, 0 0 14px -4px rgb(95 224 176 / 0.7);
+}
+
+/* Each track in its own quiet colour; the clips in play light in mint. */
+.lane.storyboard .clip {
+  margin-left: 2px;
+  background:
+    linear-gradient(90deg, rgb(244 241 234 / 0.18) 0 18%, transparent 18%) 6px 50% / 22px 8px no-repeat,
+    rgb(244 241 234 / 0.1);
+}
+
+.lane.voice .clip {
+  background:
+    repeating-linear-gradient(90deg, rgb(95 224 176 / 0.55) 0 2px, transparent 2px 5px) 0 50% / 100% 46% no-repeat,
+    rgb(95 224 176 / 0.12);
+}
+
+.lane.graphics .clip {
+  margin-left: 2px;
+  background: linear-gradient(120deg, rgb(139 124 246 / 0.34), rgb(139 124 246 / 0.14));
+}
+
+.lane.transitions .clip {
+  top: 50%;
+  bottom: auto;
+  width: 10px !important;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 2px;
+  background: rgb(244 241 234 / 0.55);
+  rotate: 45deg;
+}
+
+.lane.transitions .clip[data-on] {
+  background: var(--soft-mint);
+}
+
+.lane.music .clip {
+  background:
+    repeating-linear-gradient(90deg, rgb(242 168 110 / 0.5) 0 2px, transparent 2px 4px) 0 50% / 100% 30% no-repeat,
+    rgb(242 168 110 / 0.1);
+}
+
+.playheadTrack {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.playhead {
+  position: absolute;
+  top: -6px;
+  bottom: -4px;
+  left: 0;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 12px var(--soft-mint);
+}
+
+.playhead::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  margin-left: -5px;
+  border-radius: 2px;
+  background: var(--soft-mint);
+  rotate: 45deg;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    translate: 0 6px;
+  }
+}
+
+/* ---------- Smaller screens ---------- */
+
+@media (max-width: 1080px) {
+  .anatomy {
+    --label-w: 170px;
+  }
+
+  .stage {
+    grid-template-columns: minmax(0, 1.5fr) minmax(250px, 1fr);
+  }
+
+  .labelDetail {
+    display: none;
+  }
+
+  .label {
+    grid-template-columns: 22px minmax(0, 1fr);
+  }
+
+  .tracks {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+  }
+
+  .track {
+    padding: 4px 10px;
+  }
+}
+
+/* Below 900px the panel sits under the film, its parts side by side. */
+@media (max-width: 900px) {
+  .stage {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .side {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+    gap: 16px 20px;
+  }
+
+  .promptBox,
+  .controls {
+    grid-column: 1 / -1;
+  }
+
+  .tracks {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 860px) {
+  .head {
+    display: grid;
+    gap: 14px;
+  }
+
+  .lead {
+    text-align: left;
+  }
+
+  .plain,
+  .accent {
+    display: inline;
+  }
+
+  .title {
+    font-size: clamp(1.9rem, 1.2rem + 3vw, 2.75rem);
+  }
+}
+
+@media (max-width: 640px) {
+  .anatomy {
+    --label-w: 84px;
+    --lane-h: 24px;
+  }
+
+  .side {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 16px;
+  }
+
+  .timeline {
+    gap: 10px;
+  }
+
+  .label {
+    grid-template-columns: minmax(0, 1fr);
+    font-size: 0.6875rem;
+  }
+
+  .labelIndex {
+    display: none;
+  }
+
+  .labelName {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .sceneMark span {
+    left: 3px;
+  }
+
+  .tag {
+    top: 10px;
+    left: 10px;
+    padding: 2px 6px;
+    font-size: 10px;
+  }
+
+  .corners {
+    inset: 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nowScene,
+  .nowLine {
+    animation: none;
+  }
+
+  .clip,
+  .track,
+  .label,
+  .labelIndex,
+  .sceneMark {
+    transition: none;
+  }
+}

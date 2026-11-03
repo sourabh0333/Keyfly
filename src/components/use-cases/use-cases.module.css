@@ -587,6 +587,7 @@
 @media (max-width: 860px) {
   .head {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: 14px;
   }
 
@@ -597,6 +598,7 @@
   .plain,
   .accent {
     display: inline;
+    white-space: normal;
   }
 
   .title {

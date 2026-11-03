@@ -5,7 +5,7 @@ import { Ask } from "./ask";
 import styles from "./faq.module.css";
 
 /**
- * FAQ: the questions beside a panel where Keyfly answers them (see Ask).
+ * FAQ: the questions beside a panel where KeyFly answers them (see Ask).
  */
 export function Faq() {
   const { eyebrow, title, lead, ...ask } = faq;

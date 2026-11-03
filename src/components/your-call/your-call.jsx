@@ -5,7 +5,7 @@ import { Inspector } from "./inspector";
 import styles from "./your-call.module.css";
 
 /**
- * "You make the calls": the Keyfly editor with its inspector open, every
+ * "You make the calls": the KeyFly editor with its inspector open, every
  * decision listed with its reason and a switch, and marked on the
  * timeline (see Inspector).
  */

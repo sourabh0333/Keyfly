@@ -1,0 +1,612 @@
+/*
+ * "Works with your tools": three columns (the AI, one timeline, the
+ * editor) joined by mint wires (an SVG behind them, drawn by Handoff). The
+ * chosen rows are aria-checked; data-auto is on while it runs by itself.
+ */
+.section {
+  position: relative;
+  padding: var(--section-pad) 0;
+  color: var(--paper);
+}
+
+.inner {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* ---------- Heading (as in Every format and Use cases) ---------- */
+
+.head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+  margin-bottom: clamp(32px, 4vw, 56px);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: rgb(244 241 234 / 0.62);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.eyebrowMark {
+  width: 18px;
+  height: 1px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+}
+
+.title {
+  margin-top: 16px;
+  font-size: clamp(2.1rem, 1.1rem + 2.2vw, 3.4rem);
+  font-weight: 560;
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+
+.plain,
+.accent {
+  display: block;
+}
+
+.accent {
+  padding-bottom: 0.06em;
+  background: linear-gradient(100deg, var(--mint-text-dark), #eafff6 50%, var(--soft-mint));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-family: var(--font-accent-stack);
+  font-size: 1.1em;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.lead {
+  max-width: 40ch;
+  color: rgb(244 241 234 / 0.62);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  text-align: right;
+}
+
+.footnote {
+  margin-top: 20px;
+  color: rgb(244 241 234 / 0.38);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.kicker {
+  color: rgb(244 241 234 / 0.5);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.kicker span {
+  color: var(--soft-mint);
+}
+
+/* ---------- The hand-off ---------- */
+
+.handoff {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr) minmax(0, 1fr);
+  column-gap: clamp(48px, 6vw, 96px);
+  align-items: center;
+}
+
+/* The wires sit behind everything and never take clicks. */
+.wires {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+  fill: none;
+}
+
+.wire {
+  stroke: rgb(95 224 176 / 0.28);
+  stroke-width: 1.5;
+}
+
+/* A short bright run along the wire each time it moves. */
+.flow {
+  stroke: var(--soft-mint);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-dasharray: 18 100;
+  stroke-dashoffset: 18;
+  filter: drop-shadow(0 0 4px var(--soft-mint));
+  animation: flow 0.9s var(--ease-land) forwards;
+}
+
+/* The out-wire's light starts when the hub has taken the edit. */
+.flowOut {
+  animation-delay: 0.15s;
+}
+
+@keyframes flow {
+  to {
+    stroke-dashoffset: -100;
+  }
+}
+
+.column {
+  display: grid;
+  gap: 16px;
+  align-content: center;
+}
+
+.options {
+  display: grid;
+}
+
+/* Each choice: a hairline row; the chosen one gets a mint edge and tint. */
+.option {
+  position: relative;
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  overflow: hidden;
+  padding: 12px 14px;
+  border: 0;
+  border-top: 1px solid rgb(244 241 234 / 0.08);
+  border-radius: 0;
+  background: transparent;
+  color: var(--paper);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.option:last-child {
+  border-bottom: 1px solid rgb(244 241 234 / 0.08);
+}
+
+.option:hover {
+  background: rgb(244 241 234 / 0.035);
+}
+
+.option[aria-checked="true"] {
+  border-radius: 12px;
+  background: rgb(95 224 176 / 0.08);
+  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.45) inset;
+}
+
+/* Hairlines either side of the chosen row would double its edge. */
+.option[aria-checked="true"],
+.option[aria-checked="true"] + .option {
+  border-top-color: transparent;
+}
+
+.option:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 2px;
+}
+
+.optionIndex {
+  color: rgb(244 241 234 / 0.32);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+}
+
+.option[aria-checked="true"] .optionIndex {
+  color: var(--soft-mint);
+}
+
+.optionBody {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.optionName {
+  font-size: 1rem;
+  font-weight: 560;
+  letter-spacing: -0.01em;
+}
+
+.optionNote {
+  color: rgb(244 241 234 / 0.5);
+  font-size: 0.8125rem;
+  line-height: 1.35;
+}
+
+.optionOut .optionNote {
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+}
+
+.cost {
+  padding: 2px 8px;
+  border-radius: var(--radius-round);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.14) inset;
+  color: rgb(244 241 234 / 0.55);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.option[data-own] .cost {
+  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.35) inset;
+  color: var(--mint-text-dark);
+}
+
+.foot {
+  color: rgb(244 241 234 / 0.45);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+/* ---------- The hub: one Keyfly timeline ---------- */
+
+.hub {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 16px;
+  padding: 18px;
+  border-radius: 18px;
+  background: #121316;
+  box-shadow:
+    0 0 0 1px rgb(244 241 234 / 0.1),
+    0 0 0 1px rgb(95 224 176 / 0.12),
+    0 40px 80px -30px rgb(0 0 0 / 0.9),
+    0 0 60px -20px rgb(95 224 176 / 0.25);
+}
+
+.hubChrome {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgb(244 241 234 / 0.07);
+}
+
+.dots {
+  display: flex;
+  gap: 5px;
+}
+
+.dots i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgb(244 241 234 / 0.16);
+}
+
+.file {
+  color: rgb(244 241 234 / 0.6);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+}
+
+/* Who is editing, and what it costs. */
+.agentLine {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  animation: rise 0.45s var(--ease-land);
+}
+
+.agentName {
+  font-family: var(--font-accent-stack);
+  font-size: clamp(1.5rem, 1.1rem + 1vw, 2rem);
+  font-style: italic;
+  line-height: 1.1;
+}
+
+.agentCost {
+  padding: 2px 9px;
+  border-radius: var(--radius-round);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.16) inset;
+  color: rgb(244 241 234 / 0.6);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+}
+
+.agentCost[data-own] {
+  background: var(--soft-mint);
+  box-shadow: none;
+  color: var(--mint-ink);
+  font-weight: 600;
+}
+
+/* The ask and the reply. */
+.chat {
+  display: grid;
+  gap: 8px;
+}
+
+.ask,
+.reply {
+  justify-self: start;
+  max-width: 100%;
+  padding: 8px 12px;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  line-height: 1.35;
+}
+
+.ask {
+  justify-self: end;
+  background: rgb(95 224 176 / 0.12);
+  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.35) inset;
+}
+
+.ask span {
+  color: var(--soft-mint);
+}
+
+.reply {
+  background: rgb(244 241 234 / 0.05);
+  color: rgb(244 241 234 / 0.8);
+  animation: rise 0.45s var(--ease-land) 0.35s backwards;
+}
+
+.reply span {
+  color: var(--soft-mint);
+}
+
+/* The timeline: four tracks under a playhead that keeps playing. */
+.lanes {
+  position: relative;
+  display: grid;
+  gap: 5px;
+  padding: 10px 0 2px 30px;
+  overflow-x: clip;
+}
+
+.lane {
+  position: relative;
+  height: 20px;
+}
+
+.laneLabel {
+  position: absolute;
+  top: 50%;
+  left: -30px;
+  color: rgb(244 241 234 / 0.4);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  translate: 0 -50%;
+}
+
+.laneTrack {
+  position: absolute;
+  inset: 0;
+  border-radius: 5px;
+  background: rgb(244 241 234 / 0.03);
+}
+
+.laneTrack i {
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  margin-left: 1px;
+  border-radius: 4px;
+}
+
+.t1 i {
+  background: rgb(95 224 176 / 0.4);
+}
+
+.v1 i {
+  background: linear-gradient(120deg, rgb(139 124 246 / 0.5), rgb(139 124 246 / 0.25));
+}
+
+.a1 i {
+  background:
+    repeating-linear-gradient(90deg, rgb(95 224 176 / 0.6) 0 2px, transparent 2px 4px) 0 50% / 100% 50% no-repeat,
+    rgb(95 224 176 / 0.12);
+}
+
+.a2 i {
+  background:
+    repeating-linear-gradient(90deg, rgb(242 168 110 / 0.5) 0 2px, transparent 2px 4px) 0 50% / 100% 34% no-repeat,
+    rgb(242 168 110 / 0.1);
+}
+
+.headTrack {
+  position: absolute;
+  top: 2px;
+  right: 0;
+  bottom: 0;
+  left: 30px;
+  pointer-events: none;
+  animation: play 7s linear infinite;
+}
+
+.playhead {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 10px var(--soft-mint);
+}
+
+.playhead::before {
+  content: "";
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  margin-left: -4px;
+  border-radius: 2px;
+  background: var(--soft-mint);
+  rotate: 45deg;
+}
+
+@keyframes play {
+  from {
+    translate: 0 0;
+  }
+
+  to {
+    translate: 100% 0;
+  }
+}
+
+.handoff[data-paused] .headTrack {
+  animation-play-state: paused;
+}
+
+/* Where it goes: the format, and the editor. */
+.handOff {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  padding-top: 14px;
+  border-top: 1px solid rgb(244 241 234 / 0.07);
+  animation: rise 0.45s var(--ease-land);
+}
+
+.format {
+  padding: 3px 9px;
+  border-radius: 6px;
+  background: rgb(95 224 176 / 0.1);
+  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.4) inset;
+  color: var(--mint-text-dark);
+  font-family: var(--font-mono-stack);
+  font-size: 0.75rem;
+}
+
+.arrow {
+  color: var(--soft-mint);
+}
+
+.target {
+  font-weight: 560;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    translate: 0 6px;
+  }
+}
+
+/* ---------- Smaller screens ---------- */
+
+@media (max-width: 1180px) {
+  .handoff {
+    column-gap: clamp(36px, 4vw, 56px);
+  }
+
+  .cost {
+    display: none;
+  }
+
+  .option {
+    grid-template-columns: 22px minmax(0, 1fr);
+  }
+}
+
+/* Below 980px the three stack: the AI, the timeline, the editor. The
+   choices become two columns of chips; the wires go. */
+@media (max-width: 980px) {
+  .handoff {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 28px;
+  }
+
+  .options {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .option,
+  .option:last-child {
+    border: 0;
+    border-radius: 12px;
+    box-shadow: 0 0 0 1px rgb(244 241 234 / 0.08) inset;
+  }
+
+  .option[aria-checked="true"] {
+    box-shadow: 0 0 0 1px rgb(95 224 176 / 0.45) inset;
+  }
+
+  .hub {
+    order: 0;
+  }
+}
+
+@media (max-width: 860px) {
+  .head {
+    display: grid;
+    gap: 14px;
+  }
+
+  .lead {
+    text-align: left;
+  }
+
+  .plain,
+  .accent {
+    display: inline;
+  }
+
+  .title {
+    font-size: clamp(1.9rem, 1.2rem + 3vw, 2.75rem);
+  }
+}
+
+/* Phones: still two columns, tighter, without the index. */
+@media (max-width: 480px) {
+  .option {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 10px 12px;
+  }
+
+  .optionIndex {
+    display: none;
+  }
+
+  .optionName {
+    font-size: 0.9375rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flow,
+  .agentLine,
+  .reply,
+  .handOff,
+  .headTrack {
+    animation: none;
+  }
+
+  .flow {
+    stroke-dasharray: none;
+    stroke: rgb(95 224 176 / 0.6);
+  }
+}

@@ -53,7 +53,7 @@ export function SiteHeader() {
   useEffect(() => {
     if (!open) return;
     const onKey = (event) => event.key === "Escape" && setOpen(false);
-    const onResize = () => window.innerWidth > 860 && setOpen(false);
+    const onResize = () => window.innerWidth > 1000 && setOpen(false);
     window.addEventListener("keydown", onKey);
     window.addEventListener("resize", onResize);
     return () => {

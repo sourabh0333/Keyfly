@@ -16,7 +16,7 @@ function onMotionChange(callback) {
 }
 
 /**
- * Keyfly by role, as expanding panels: four tall panels side by side, each
+ * KeyFly by role, as expanding panels: four tall panels side by side, each
  * filled with what its role makes. The open one is wide and shows the
  * role, its line, what it makes and its prompt to try (sent to the hero's
  * prompt box); the others are slim strips with the role's name written up

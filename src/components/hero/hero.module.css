@@ -67,8 +67,9 @@
   width: min(1040px, 100%);
 }
 
+/* The prompt box: wide enough for the app's full toolbar. */
 .inner > :last-child {
-  max-width: 680px;
+  max-width: 760px;
 }
 
 .eyebrow {

@@ -7,9 +7,12 @@ The durable handoff for anyone (people or coding agents) working on the Keyfly w
 ## Product (what we know so far)
 
 - Keyfly is a desktop app for macOS and Windows (the team confirmed on 2026-10-31 that there is no Linux build), made by Cevrynt Inc.
+- **Spelling: "KeyFly"** (the team's decision, 2026-11-03), as in the app, the pricing API and the desktop app page. All site text uses it. The logo artwork keeps the brand kit's wordmark as drawn, since brand files are never redrawn.
 - Its symbol, "Flight path", stands for the camera's flight and the moment a shot lands, so the product is about video.
 - Domain: probably `keyfly.si` (from the installer art). `siteConfig.url` falls back to it; set `NEXT_PUBLIC_SITE_URL` to override.
-- Still open: what Keyfly does in detail, the audience, the main conversion (download, waitlist, purchase), pricing, and real product screenshots. Do not write product claims until these are answered.
+- **Read from the app (2026-11-03)** and used in the copy: the AI director writes the storyboard, voice-over and motion graphics; 91 templates in 11 categories; brand kits hold logo (plus versions and banners), five colours, font, tone of voice and voice-over (AI or cloned), and can be filled from a website; help answers (own footage, changing a scene, Revert, talking heads: silences and filler words cut, captions, zooms); "Your projects stay yours and you can always export them"; help@keyfly.si.
+- **Legal pages** (added 2026-11-03, because the app's sign-in links to `keyfly.si/terms` and `keyfly.si/privacy`): `src/app/terms/` and `src/app/privacy/`, built by `LegalPage` (`src/components/legal/`) from `src/content/legal.js`. Until the team sends the full text, each shows an amber "Being finalised" chip and help@keyfly.si; Privacy also quotes what the app itself states (marked "not the privacy policy"). Both are `noindex`. Never write legal terms ourselves. The footer's bottom bar links to them.
+- Still open: real product screenshots or footage, and the ChatGPT and Claude app install links. Do not write product claims the app or the team hasn't confirmed.
 
 ## Technical baseline
 
@@ -114,14 +117,14 @@ The team's decision: **the website logo uses the brand kit's lockup shapes and c
 
 ## Header (rebuilt 2026-10-30)
 
-The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `SiteFooter`. Pages render a fragment or `<div>`, never their own `<main>`. Navigation labels and targets live only in `src/content/navigation.js`. The menu is a placeholder (Product, Use cases, Download) until those sections exist.
+The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `SiteFooter`. Pages render a fragment or `<div>`, never their own `<main>`. Navigation labels and targets live only in `src/content/navigation.js`. The menu links to Product, Use cases, Pricing and Download.
 
 - **`SiteHeader`** (`src/components/header/site-header.jsx`, a client component):
-  - Layout: the logo, centred links, then "Sign in" and the mint "Open Keyfly" button. Both buttons go to the app.
+  - Layout: the logo, centred links (Product, Use cases, Integrations → `#tools`, Pricing, Download), then "Sign in" (`app.keyfly.si/login`) and the mint "Start free" (`app.keyfly.si/signup?plan=free`, the Free plan's own sign-up link; updated 2026-11-03).
   - At the top of the page it is an open bar. Once scrolled (`data-scrolled`), it gathers into a floating glass pill.
   - It slides away while scrolling down past 240px (`data-hidden`) and comes back on the way up.
   - A light slides under the hovered or focused link (`--lx`, `--lw`).
-  - At 860px and below the links fold into a menu panel behind a two-line button, which closes on Escape. Below 420px only the menu button remains.
+  - At 1000px and below (860px before Integrations was added, 2026-11-03) the links fold into a menu panel behind a two-line button, which closes on Escape. Below 420px only the menu button remains.
 
 ## Footer (added 2026-10-31, rebuilt the same day)
 
@@ -147,7 +150,7 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
 
 ## Homepage (step by step, from 2026-10-30)
 
-`src/app/page.jsx` renders, inside `Scene`, Hero → HowItWorks (`#product`) → OldWay (`#old-way`) → EditWithWords (`#edit`) → YourCall (`#control`) → EveryFormat (`#formats`) → OnBrand (`#brand`) → Anywhere (`#anywhere`) → Audience (`#audience`) → UseCases (`#use-cases`) → Prompts (`#prompts`) → Download (`#download`) → Pricing (`#pricing`) → Faq (`#faq`), with a `Divider` between every two sections after How it works. The planned sections and their order are in `PLAN.md` ("Homepage expansion"). All copy lives in `src/content/home.js`. Lines marked `PLACEHOLDER` wait for the confirmed product description, so the page is `noindex` until then.
+`src/app/page.jsx` renders, inside `Scene`, Hero → HowItWorks (`#product`) → Creates (`#makes`) → OldWay, "Your footage" (`#footage`) → EditWithWords (`#edit`) → YourCall (`#control`) → EveryFormat (`#formats`) → OnBrand (`#brand`) → Anywhere (`#anywhere`) → Tools (`#tools`) → Audience (`#audience`) → UseCases (`#use-cases`) → Prompts (`#prompts`) → Download (`#download`) → Pricing (`#pricing`) → Faq (`#faq`), with a `Divider` between every two sections after How it works. The planned sections and their order are in `PLAN.md` ("Homepage expansion"). All copy lives in `src/content/home.js`. Lines marked `PLACEHOLDER` wait for the confirmed product description, so the page is `noindex` until then.
 
 - **Scene** (`src/components/scene/`, added 2026-10-31 at the team's request: the page was flat black and the sections felt disconnected). It ties the sections together as one scroll:
   - **`SceneLight`:** a fixed light behind every section, so sections leave their own backgrounds transparent (the hero's backdrop fades out at its foot with a mask). Each section brings up its own layer as it fills the screen (`--w`), and the layers drift slowly:
@@ -169,14 +172,14 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
 
 - **Hero** (`src/components/hero/`): one full screen. It has the eyebrow, a two-line h1 (the second line is in the serif italic accent with a mint shimmer), a lead line and the prompt box.
   - **Words** arrive one by one out of a blur.
-  - **`PromptBox`** (client) is the app's box, working:
+  - **`PromptBox`** (client) is the app's "New video" box, working. Its controls were brought in line with the app on 2026-11-03 (the design is unchanged): the app's placeholder, + Add media, the aspect ratio (16:9 landscape, 9:16 vertical, 1:1 square, 4:5 portrait), Style (AI picks and the app's nine motion styles, each with its line), the brand kit picker ("No brand kit", with a link to add one in the app), Enhance and a labelled Create, plus "Blank project" under the box. The box is 760px wide to fit them; on narrower screens the longer words fold away, and on phones the pickers show their icons.
     - The field grows with its text. Enter sends; Shift+Enter starts a new line.
     - + opens a file picker, and files dropped anywhere on the page land as chips. A full-screen "Drop footage to start" frame shows while dragging.
-    - "Auto ⌄" opens a format list. Its options (Auto, 16:9, 9:16, 1:1) are a PLACEHOLDER until the app's list is confirmed.
-    - The sparkle button types a random preset prompt, and each chip types its own example prompt into the box.
-    - Send opens the app. The app does not read the prompt from the URL, so the prompt is not carried over.
-    - A conic comet of mint light circles the box's edge and speeds up on focus. The send button turns mint once there is something to send.
-  - **"or make it in ChatGPT · Claude":** the links render as plain text until their `href`s are set in `prompt.elsewhere`. Official icons are still to be supplied.
+    - **Enhance** can't call the app's AI here: with an empty box it types a preset's prompt; with a prompt, it rewrites it once to name the chosen ratio and style plus a hook, captions and music. Each chip types its own example prompt into the box.
+    - Create (and Blank project) open the app. The app does not read the prompt from the URL, so the prompt is not carried over.
+    - A conic comet of mint light circles the box's edge and speeds up on focus. Create turns mint once there is something to make.
+  - **"or make it in ChatGPT · Claude":** both link to `#anywhere` (Works where you work) until the apps have install links; the KeyFly app shows none yet (2026-11-03). Official icons are still to be supplied.
+  - **Preset chips:** centred under the box; on phones (≤760px) they scroll sideways with faded edges.
   - **`TimelineFloor`** (CSS only): an editing timeline laid flat and tipped toward the horizon (`rotateX`).
     - It has a ruler and title, video, effect and audio tracks. The clips come from a seeded random, so server and client match.
     - The tracks slide under a fixed mint playhead. Some clips are lit and breathe, and keyframe diamonds sit at the ends of video clips.
@@ -193,16 +196,28 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
   - **Step 3:** the frame tries 16:9, 9:16 and 1:1 (its width animates at a fixed height, using `cqw` of the viewer), and the export bar fills to "Ready".
   - **Fallback:** without JS or with reduced motion there is no pin, and the CSS defaults (all progress at 1) show the finished cut.
   - **Copy:** in `howItWorks` (content file), PLACEHOLDER.
-- **The old way** (`src/components/old-way/`, added 2026-11-03; picked "Hours vs one sentence" from three new sections): "Six steps by hand. *One sentence with Keyfly.*" Captioned "Illustrative". Qualitative only: no competitor names, no time savings. Dropped the same day: two aligned checklists, two stacked timelines, a comparison table (no box shapes, the team said), and two frameless flight paths (too simple; the purpose wasn't clear). The team then picked "six steps vs one, as a scroll story".
+- **What Keyfly makes** (`src/components/creates/`, added 2026-11-03; the team picked "Anatomy of the cut" from three): "Keyfly makes the pieces. *You keep the timeline.*"
+  - **The film is illustrative** (2026-11-03): a film made in the Keyfly app was tried first, but the app is still being built and its output was not good enough, so the team asked for a dummy film that explains the idea. It is labelled "Illustrative" in the frame and "Illustrative film" beneath.
+    - **What it shows:** 30 s, 8 scenes, in the site's look (Night, mint, Inter, the serif accent): "Describe a video.", the prompt typing into a prompt box, a five-scene storyboard, a voice-over waveform, kinetic motion graphics, clips landing on a timeline, "Make the intro faster" shortening a clip, and the unaltered lockup with "Describe it. Keyfly makes it." Each scene has a voice-over line (Windows' "Microsoft Hazel" voice, from `voice.ps1`; a placeholder until Keyfly's own AI voice) with a caption that lights word by word as it's spoken, over a soft synthesised music bed. Scenes are timed to their lines.
+    - **The files:** `public/video/keyfly-film.mp4` (1280×720, H.264 with AAC sound, 5.7 MB) and `keyfly-film.webp` (poster).
+    - **Its source:** `scripts/keyfly-film/` (a canvas animation in `film.js`, recorded by Chrome's MediaRecorder). To change it, edit `film.js` (and the lines in `voice.ps1`, then run it), run `node scripts/keyfly-film/record.mjs`, open `http://127.0.0.1:4417/?record` in Chrome for 30 s, then update the poster and the scenes and clips in `creates`. `?t=12.3` shows one frame.
+    - Replace it with a real Keyfly film once the app's output is ready.
+  - **`Anatomy`** (client), redesigned 2026-11-03 (the narrow film left empty space at its sides): the film fills two-thirds of the column (16:9, mint edge); beside it, a panel of the same height with the prompt (in the prompt box's glass), "Now 03 / 08" with the scene's name and the line its voice-over speaks, the five tracks (lit while they have a clip under the playhead), and the controls (play/pause, a mint "Sound on" (shown unless `video.audio` is false), the timecode). Below 900px the panel sits under the film.
+    - **The timeline:** full width beneath: a scene ruler (01–08) and the film's tracks (Storyboard, Voice-over, Motion graphics, Transitions, Music; the count sets `--tracks`) with clip times that match the film. The playhead's full-width strip is clipped sideways (`overflow-x: clip` on `.lanes`); it once widened the page as it moved. A playhead follows the video by `translate`. The clips under it, their chips and their labels light mint.
+    - Clicking the lanes seeks.
+    - It plays muted while on screen and pauses off it. With reduced motion it waits on the poster for play.
+  - **Copy:** `creates` in the content file. If the film changes, update the scenes and clips there.
+- **Your footage** (`src/components/old-way/`; built 2026-11-03 as "The old way", "Six steps by hand. *One sentence with KeyFly.*", and turned the same day into the footage section, since almost every other section shows making a video from a sentence; the file names keep "old-way"): "Got footage? *KeyFly does the chores.*" The lead names what the app's help says KeyFly does with a recording: cuts silences and filler words, adds captions, zooms on the focus area and adds callouts. Picked originally as "Hours vs one sentence" from three new sections. Captioned "Illustrative". Qualitative only: no competitor names, no time savings. Dropped the same day: two aligned checklists, two stacked timelines, a comparison table (no box shapes, the team said), and two frameless flight paths (too simple; the purpose wasn't clear). The team then picked "six steps vs one, as a scroll story".
   - **`Story`** (client): the same launch video made two ways, as **two mirrored columns on four shared rows** (head, line, picture, timeline; each side a `subgrid` of the stage), divided by a hairline with a serif-italic "vs", then **one strip of the six steps across both**. Pictures and timelines are the same size on both sides (`--pic`: the column, capped to 36svh × 16/9 while pinned), so everything sits level.
     - **By hand** (left): "By hand · Step 03 of 06"; the chore in play as a serif-italic title and a line; a raw, grey viewer; a timeline (V1, A1, A2, C1) whose playhead scrubs at step 1 and is parked after.
-    - **Each step acts out its chore**, and what it leaves stays: 1 the playhead scrubs and a timecode flickers; 2 a "★ Take 3" tag, and three clips get stars; 3 the voice's pauses (hatched) are cut out with razor lines; 4 a music track appears with its level keyed; 5 a caption types into the viewer and caption chips land on C1; 6 a 9:16 crop is dragged across the picture. One cursor in the viewer moves to each step's tool.
+    - **Each step acts out its chore**, and what it leaves stays: 1 the playhead scrubs and a timecode flickers; 2 the shot zooms in on the presenter (1.4×) with a "◆ Zoom 140%" tag, and three clips get keyframe diamonds; 3 the voice's silences (hatched) are cut out with razor lines; 4 a music track appears with its level keyed; 5 a caption types into the viewer and caption chips land on C1; 6 a 9:16 crop is dragged across the picture. One cursor in the viewer moves to each step's tool.
     - **With Keyfly** (right), the same rows finished: "With Keyfly · ● Done in one step", the sentence, the graded picture (lower third, serif-italic captions, "● First cut ready", a mint edge) and the finished timeline (coloured clips, the voice, the music keyed in mint, caption chips) with a mint playhead playing it.
     - **The strip:** six equal columns, each a bar, "0N chore" (by hand) and "✓ result" (Keyfly); done bars grey, the step in play white with its result in mint. They jump to a step.
   - **The stage** carries `data-step` and `data-reached` (every step so far, matched with `~=`).
   - **Scroll:** where the stage fits the screen (content + 96px ≤ the window's height) and motion is welcome, the track pins (100svh + 6 × 46svh) and the scroll picks the step. Otherwise (short laptops, phones) it moves on by itself every 2.8s while on screen. Reduced motion: step 6, still.
   - **Narrow screens** (≤900px): by hand, "vs", Keyfly stacked; the strip in rows of three (two on phones).
-  - **Copy:** `oldWay`. Keyfly's results are PLACEHOLDER until the team confirms them.
+  - **Copy:** `oldWay`. KeyFly's results follow the app's help (silences and filler words, captions, zooms and callouts, the music bed, frame shapes); "Footage reviewed" is illustrative.
+  - **Narrow screens:** the step results wrap instead of being cut off.
 - **Edit with words** (`src/components/edit-with-words/`, added 2026-10-31; the first of the new sections in `PLAN.md`): "Change anything *by saying it.*" The core differentiator, refining the first cut by asking. The heading is centred; the stage spans the full column. It is captioned "Illustrative interface".
   - **`CommandCut`** (client), redesigned 2026-10-31 as a **before and after**; the mock editor with a striped timeline looked dated. Three columns on wide screens (stacked below 900px):
     - **Before:** the first cut, dimmed, with its facts as mono chips (0:42 · 16:9 · 8 cuts) and a clean bar of its shots.
@@ -245,7 +260,7 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
   - **Copy:** `everyFormat`, PLACEHOLDER until the team confirms Keyfly's export options.
 - **On brand, every time** (`src/components/on-brand/`, added 2026-11-02; the team confirmed that day that Keyfly has a brand kit): "Your brand. *On every cut.*" Heading laid out like Use cases; captioned "Illustrative interface". Dropped the same day: an exploded 3D layer stack (not well aligned) and Plain cut | Kit | On brand (too like Edit with words). The team then picked "one brand, every video".
   - **`BrandReel`** (client):
-    - **Kit bar:** "Brand kit" and "N/4 applied · 6 videos" above an even bar of four cells between hairlines (index, sample, name, detail, a ring that becomes a mint check): Your logo, Your colours, Your font, Title style. The item just applied gets a mint line along its foot.
+    - **Kit bar:** "Brand kit" and "N/4 applied · 6 videos" above an even bar of four cells between hairlines (index, sample, name, detail, a ring that becomes a mint check): Your logo, Your colours, Your font, Your voice (the app's kit has no title style; voice replaced it on 2026-11-03 and shows as a voice-over waveform on each video, `data-voice`). The item just applied gets a mint line along its foot.
     - **Reel:** beneath, in the column with painted soft edges, six illustrative videos in their own shapes (Launch 16:9, UGC 9:16, Podcast 1:1, Explainer 16:9, Product Demo 4:5, Montage 16:9; the use-case `Preview`s, `bleed`) drift sideways as one track (two copies, `translate: -50%`, 64s). Each has a label and ratio beneath.
     - **What the kit changes,** set on `.reel` (`data-logo`, `data-colours`, `data-font`, `data-title`): the logo bug in the corner; a grade and a violet edge; the title in the serif italic with a mint first letter; the title's bar and weight.
     - **The scan:** each time an item applies, a mint scan line crosses the reel (0.9s), and each video changes as the line reaches it: just before the change, every tile gets `--delay` from where it stands, used as the transition delay (font family and style flip via `transition-behavior: allow-discrete`).
@@ -263,20 +278,32 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
   - **Self-running:** the next surface every 3.6s while on screen and not held, until one is picked. Reduced motion: no pulses, no self-running.
   - **Narrow screens:** list, project, then chat and browser side by side, desktop and history (one column on phones); wires hidden.
   - **Copy:** `anywhere`.
+- **Works with your tools** (`src/components/tools/`, added 2026-11-03; the team picked "Hand-off" from three): "Bring your own AI. *Take the timeline anywhere.*" Built from what the Keyfly app shows (read on 2026-11-03), so only the ask and reply in the middle are illustrative ("Illustrative interface").
+  - **The facts it uses:**
+    - the AI picker: **Cloud** ("picks the best model for each step", uses AI minutes) or **your own agents**;
+    - Settings → Agents: Claude Code, Codex, Cursor, Antigravity "and other ACP agents edit with your own plan, without using your AI minutes", connected through the desktop app;
+    - the export sheet's **Timeline for other editors**: FCPXML (Final Cut Pro, also DaVinci Resolve), EDL CMX 3600 (Premiere, Resolve, Avid), OpenTimelineIO;
+    - **Package for editing**: a .zip with the timeline and every file it uses.
+  - **`Handoff`** (client): three columns. Left, "01 Bring your AI": five hairline rows with a cost chip ("AI minutes" / mint "No AI minutes"). Middle, one Keyfly timeline window: "Editing with *{agent}*", the ask and reply, four tracks under a looping playhead, and "Hand off as {format} → {editor}". Right, "02 Take it anywhere": four editors with their formats.
+  - **Wires:** an SVG behind the columns, measured from the chosen rows (`ResizeObserver`), with a bright run along each wire when it moves. Hidden when the columns stack (≤980px), where the choices become two columns of chips.
+  - **Self-running** (2026-11-03, the team wanted it to keep playing): a continuous hand-off every 3.6s while on screen: a new AI (the light runs in along the left wire), then 1.2s later a new editor (out along the right). The mouse resting over it doesn't stop it; a click pauses it for 10s, keyboard focus inside holds it. Reduced motion: no self-running.
+  - **No official logos:** the agents and editors are named in text only.
+  - **Also seen in the app, not yet on the site:** real downloads at `app.keyfly.si/download/mac`, `/mac-intel` and `/windows` (version 1.1.7), while the Download section still says "Coming soon".
 - **FAQ, "Ask Keyfly"** (`src/components/faq/`, added 2026-11-02): "Ask Keyfly. *Anything.*" The team picked "Ask Keyfly" from three layouts, and chose to include the topics we don't have facts for yet, with placeholder answers.
   - **`Ask`** (client): two columns that share their top and bottom edges.
-    - **Left:** eight questions as numbered hairline rows; the one in play has a mint edge, a tint and an arrow.
-    - **Right:** a panel in the prompt box's glass (a mint line along its top): "● Ask Keyfly", "01 / 08", the question as sent (› …), the answer typing in with a mint caret (the rest is laid out but hidden, so the panel never jumps), and at its foot a link to the section that shows it (e.g. "Edit with words ↓") and "Next question →".
+    - **Left:** eleven questions as numbered hairline rows; the one in play has a mint edge, a tint and an arrow.
+    - **Right:** a panel in the prompt box's glass (a mint line along its top): "● Ask Keyfly", "01 / 11", the question as sent (› …), the answer typing in with a mint caret (the rest is laid out but hidden, so the panel never jumps), and at its foot a link to the section that shows it (e.g. "Edit with words ↓"; a link off the page, such as "Email help@keyfly.si", gets ↗) and "Next question →".
     - The first answer types when the panel first comes on screen. Nothing changes by itself after that: it is something to read.
   - **Accessibility and search:** every question and answer is also in the page as a visually hidden `<dl>`; the panel is decorative (`aria-hidden`, its controls out of the tab order).
   - **Narrow screens:** the panel sits above the list; asking scrolls it into view.
-  - **Copy:** `faq`. Answers come from confirmed facts where we have them. Changing the cut, formats, ownership and privacy, and pricing are PLACEHOLDER; ownership, privacy and pricing say the details are coming rather than guessing.
+  - **Copy:** `faq`. Every answer comes from the app, its help or the pricing API (2026-11-03). Added that day: "Can I use my own AI agents?" (Settings → Agents), "What are AI minutes?" (the pricing API's wording and packs) and "How do I get help?" (the app's Help and help@keyfly.si).
 - **Dividers** (`src/components/divider/`, added 2026-11-03 at the team's request; a scroll-played sweep was tried and dropped the same day, so it is still): between every two sections after How it works, a timeline ruler across the content column, in the middle of the gap (it takes no height). Not after the hero (its timeline floor is one) or before the footer (whose top edge is a ruler).
   - **Even gaps after pinned sections:** a pinned stage sits at the top of a pin as tall as the screen and leaves empty space below its content. `TrimPins` (`src/components/scene/trim-pins.jsx`, in `Scene`) measures that space for every `[data-live]` track and takes it off the track's bottom margin (re-measured on resize and whenever a track pins or unpins). How it works, which pins its own section, carries its padding as `margin-bottom: var(--section-pad)` while pinned.
 - **Prompt gallery** (`src/components/prompts/`, added 2026-11-03 after a review of what the page lacks against competitors, who lean on templates): "Start from *a prompt.*" Picked "hover-reveal list" from three structures.
   - **`PromptList`** (client): eight prompts as a frameless, numbered list (01–08, counting on across groups) under four goals (Launch, Social, Explain, Stories), with hairlines, no boxes. Each row: index, the prompt in large quoted type, its preset and format in mono, and a mint "Try it ↑" that appears on hover or focus (the line shifts right, its index turns mint).
   - **The floating preview** (fine pointers only): the prompt's `Preview` (16:9, or 9:16 narrower) floats above and right of the pointer (its foot at the pointer, so the line stays readable) and eases after it (rAF, only while hovering). Near the right edge it moves to the pointer's left, and it never rises off the top. It is **portalled into `<body>`**: the section is transformed while it dissolves (and filtered while out of focus), and either makes a fixed child position against the section, which threw the preview off to the side on the last rows and widened the page (fixed 2026-11-03).
   - **Choosing a prompt** dispatches `keyfly:prompt` with `{ text }`; `PromptBox` now accepts any prompt's text as well as a preset label, scrolls up and types it in.
+  - **Templates row** (2026-11-03): the list ends with a "Templates" row: "91 templates for launch films, UGC ads, … Pick one and the AI director fills it with your product", "Free and Premium" and a mint "Browse templates ↗" to `app.keyfly.si/templates` (it opens the signed-in workspace's Templates page). Gotcha: `.meta` takes a grid area on phones, so the row resets it.
   - **Copy:** `prompts`. Six are the app's own preset prompts; the two extra examples (a vertical teaser, an event recap) are PLACEHOLDER until the team reviews them, and use only confirmed capabilities.
 - **Who it's for** (`src/components/audience/`, added 2026-11-03): "Made for people *with a story to tell.*" A first version (a role index beside a preview) was dropped the same day as too like Use cases and the FAQ; the team then picked "expanding panels".
   - **`Roles`** (client): four tall panels side by side across the column (Marketers & founders, Creators, Educators, Podcasters), `clamp(440px, 62svh, 580px)` tall. The open one grows (`flex-grow` 5.2 to 1, 0.7s) with a mint edge; the others are slim strips with their index at the top and their name written up the side.
@@ -338,7 +365,8 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
   - **Below the flight:** platform tabs (plain text, mint underline, a "Your system" tag), the step, and the buttons.
   - **Platform:** detected with `useSyncExternalStore`. Phones get "On a phone? Keyfly runs in the browser."
   - **Destinations:** generic shapes, never an operating system's own artwork: an Applications folder (macOS) and a desktop monitor (Windows). Other systems, Linux included, see macOS until they pick.
-  - **Buttons:** each platform's `href` in `download.platforms` is `null` until its build is published.
+  - **Real builds** (2026-11-03, from `app.keyfly.si/download`): macOS `/download/mac` (Apple silicon, macOS 13+, with an "Intel Mac?" link to `/download/mac-intel`) and Windows `/download/windows` (10 and 11, 64-bit). The links serve the latest build. Each platform shows its requirements under its step.
+  - **Buttons:** a platform whose `href` is `null` would show "Coming soon".
     - With an `href`, the primary button is "Download for {platform}" and "Open in your browser" is secondary.
     - Without one, "Open in your browser" (`app.keyfly.si`) is primary, beside a "{platform} · Coming soon" chip.
   - **Fallback:** it pins only where the stage fits the screen (content + 96px ≤ the window's height) and motion is allowed; otherwise it shows landed. The server HTML shows it landed too.
@@ -360,5 +388,6 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
   - **Don't name a custom property `--a`:** the prompt box registers `--a` as an `<angle>`, which turns any other value into "0deg" and silently invalidates the declaration using it.
   - **Grid overflow:** grid containers that hold the scrolling chip row need `grid-template-columns: minmax(0, 1fr)`. Without it the row's `max-content` width widens the page on mobile.
   - **No large blur:** never put a large `filter: blur()` in a 3D, animated stage.
+  - **Translated strips widen the page:** anything moved sideways by `translate` (a playhead strip, a reel) needs `overflow-x: clip` on its container, or it adds a horizontal scrollbar as it moves. `clip` (not `hidden`) keeps vertical overhangs visible.
   - **Smooth scrolling:** `html` scrolls smoothly, so test scripts must pass `behavior: "instant"`.
 - **Verifying:** Playwright (pre-installed Chromium) screenshots at 1440×900 and 390×844, plus `reducedMotion: "reduce"`.

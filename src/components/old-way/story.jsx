@@ -11,21 +11,21 @@ const pad = (n) => String(n).padStart(2, "0");
 // The raw footage (V1), the voice (A1, with its pauses) and where things
 // happen on them, as % of the timeline.
 const RAW = [0, 9, 17, 28, 36, 47, 55, 66, 74, 86, 100];
-const STARS = [1, 4, 7]; // the best takes, by clip
+const ZOOMS = [1, 4, 7]; // the clips that get a zoom keyframe
 const PAUSES = [[24, 29], [51, 57], [79, 84]];
 const WAVE = Array.from({ length: 64 }, (_, i) => 0.25 + ((Math.sin(i * 0.8) + Math.sin(i * 0.33) + 2) / 4) * 0.75);
 const CAPTIONS = [4, 30, 56, 80];
-// With Keyfly: the finished cut.
+// With KeyFly: the finished cut.
 const CUT = [0, 18, 34, 50, 68, 84, 100];
 
 /**
- * The same launch video, made two ways, as two mirrored columns on four
+ * Your footage, edited two ways, as two mirrored columns on four
  * shared rows (head, line, picture, timeline) with a strip of the six
  * steps across both beneath. By hand (left), each step acts out one chore
- * (scrubbing, starring takes, razor cuts, music keyframes, typing
+ * (scrubbing, keyframing zooms, razor cuts, music keyframes, typing
  * captions, dragging a 9:16 crop), and what each chore leaves stays on
- * the timeline. With Keyfly (right): the sentence, the finished picture
- * and timeline. In the strip, each step pairs the chore with what Keyfly
+ * the timeline. With KeyFly (right): the sentence, the finished picture
+ * and timeline. In the strip, each step pairs the chore with what KeyFly
  * did; the one in play is lit.
  *
  * Where the stage fits the screen and motion is welcome, it pins and the
@@ -33,7 +33,7 @@ const CUT = [0, 18, 34, 50, 68, 84, 100];
  * moves on by itself every few seconds while on screen. Reduced motion:
  * step 6, still. The segments under the editor jump to a step.
  */
-export function Story({ hand, keyfly, ask, hint, steps }) {
+export function Story({ hand, keyfly, ask, zoom, hint, steps }) {
   const n = steps.length;
   const [step, setStep] = useState(1);
   const [live, setLive] = useState(false);
@@ -143,7 +143,7 @@ export function Story({ hand, keyfly, ask, hint, steps }) {
               <Shot />
               <span className={styles.rawWash} />
               <span className={styles.timecode}>00:00:12:04</span>
-              <span className={styles.star}>★ Take 3</span>
+              <span className={styles.zoom}>{zoom}</span>
               <span className={styles.typing}>
                 Built for launch<i />
               </span>
@@ -160,7 +160,7 @@ export function Story({ hand, keyfly, ask, hint, steps }) {
               <span className={styles.code}>V1</span>
               <div className={styles.lane}>
                 {RAW.slice(0, -1).map((at, i) => (
-                  <i key={at} className={styles.raw} data-star={STARS.includes(i) ? "" : undefined} style={{ left: `${at}%`, width: `${RAW[i + 1] - at}%` }} />
+                  <i key={at} className={styles.raw} data-zoom={ZOOMS.includes(i) ? "" : undefined} style={{ left: `${at}%`, width: `${RAW[i + 1] - at}%` }} />
                 ))}
               </div>
               <span className={styles.code}>A1</span>
@@ -197,7 +197,7 @@ export function Story({ hand, keyfly, ask, hint, steps }) {
             <i>vs</i>
           </span>
 
-          {/* With Keyfly: the same four rows, finished. */}
+          {/* With KeyFly: the same four rows, finished. */}
           <div className={`${styles.side} ${styles.keyfly}`}>
             <div className={styles.sideHead}>
               <p className={styles.sideName}>{keyfly.label}</p>
@@ -263,7 +263,7 @@ export function Story({ hand, keyfly, ask, hint, steps }) {
           </div>
 
           {/* The six steps, across both: the chore by hand above, what
-              Keyfly did below. They jump to a step. */}
+              KeyFly did below. They jump to a step. */}
           <ol className={styles.steps}>
             {steps.map((s, i) => (
               <li key={s.title}>

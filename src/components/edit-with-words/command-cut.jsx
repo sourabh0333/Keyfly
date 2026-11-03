@@ -78,7 +78,7 @@ function Facts({ facts, changed }) {
 /**
  * Edit with words, as a before and after: the first cut on the left, the
  * same cut with one ask applied on the right, and the ask itself between
- * them, typed into a prompt with Keyfly's reply beneath. Whatever the ask
+ * them, typed into a prompt with KeyFly's reply beneath. Whatever the ask
  * changed lights mint: the running time, the format (the picture narrows
  * to 9:16), the cuts, captions on the picture, a warm grade. Six tabs
  * below choose the ask; the one in play fills as it waits, and it moves on

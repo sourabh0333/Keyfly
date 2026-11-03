@@ -3,8 +3,9 @@ import { Logo } from "@/components/logo";
 import { footer } from "@/content/footer";
 import styles from "./site-footer.module.css";
 
+// Site paths go through Link; web and mail links are plain anchors.
 function FooterLink({ label, href, className }) {
-  return href.startsWith("http") ? (
+  return !href.startsWith("/") ? (
     <a href={href} className={className}>
       {label}
     </a>
@@ -35,7 +36,7 @@ function Arrow() {
  * with reduced motion, everything just shows.
  */
 export function SiteFooter() {
-  const { cta, about, platforms, columns, company, domain, top } = footer;
+  const { cta, about, platforms, columns, company, legal, domain, top } = footer;
   const year = new Date().getFullYear();
 
   return (
@@ -94,8 +95,15 @@ export function SiteFooter() {
           </div>
 
           <div className={styles.bottom} style={{ "--i": 5 }}>
-            <span>
-              © {year} {company}
+            <span className={styles.bottomLeft}>
+              <span>
+                © {year} {company}
+              </span>
+              {legal.map((link) => (
+                <Link key={link.href} href={link.href} className={styles.legal}>
+                  {link.label}
+                </Link>
+              ))}
             </span>
             <span className={styles.bottomRight}>
               <span className={styles.domain}>{domain}</span>

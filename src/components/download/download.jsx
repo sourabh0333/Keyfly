@@ -4,7 +4,7 @@ import { Landing } from "./landing";
 import styles from "./download.module.css";
 
 /**
- * "Download": the closing call to action. The scroll flies Keyfly onto the
+ * "Download": the closing call to action. The scroll flies KeyFly onto the
  * visitor's desktop, where the thread through the page lands too (see
  * Landing).
  */

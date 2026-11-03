@@ -48,7 +48,7 @@ function Arrow({ up }) {
 
 // Where the icon lands, drawn per platform around (770, 160). Generic
 // shapes: no operating system's own artwork. Other systems (and Linux,
-// which Keyfly doesn't ship for) see macOS until they pick.
+// which KeyFly doesn't ship for) see macOS until they pick.
 function Destination({ id }) {
   if (id === "windows") {
     return (
@@ -74,7 +74,7 @@ function Destination({ id }) {
 
 /**
  * The landing, played by the scroll: the stage pins (data-live on the
- * track) and scrolling flies a copy of the Keyfly app icon from the
+ * track) and scrolling flies a copy of the KeyFly app icon from the
  * source, one loop of the flight path, onto the visitor's platform. Runway
  * lights come on as it passes, the readout counts Download, Install, Open
  * to 100%, and on landing a ring goes out and the buttons light. The
@@ -204,7 +204,7 @@ export function Landing({ stages, status, hint, platformLabel, platforms, detect
             </span>
           </div>
 
-          <svg className={styles.flight} viewBox="40 20 880 290" role="img" aria-label={`Keyfly flying to ${active.target} on ${active.label}`}>
+          <svg className={styles.flight} viewBox="40 20 880 290" role="img" aria-label={`KeyFly flying to ${active.target} on ${active.label}`}>
             <defs>
               <radialGradient id="land-glow" cx="0.5" cy="0.5" r="0.5">
                 <stop offset="0" stopColor="#5fe0b0" stopOpacity="0.55" />
@@ -219,10 +219,10 @@ export function Landing({ stages, status, hint, platformLabel, platforms, detect
               <circle key={l.t} cx={l.x.toFixed(1)} cy={l.y.toFixed(1)} r="3" className={styles.light} style={{ "--t": l.t.toFixed(3) }} />
             ))}
 
-            {/* The source: Keyfly, as it ships. */}
+            {/* The source: KeyFly, as it ships. */}
             <image href={ICON} x="90" y="60" width="200" height="200" className={styles.source} />
             <text x="190" y="296" className={styles.label}>
-              Keyfly
+              KeyFly
             </text>
 
             <Destination id={active.id} />
@@ -250,6 +250,17 @@ export function Landing({ stages, status, hint, platformLabel, platforms, detect
             </div>
 
             <p className={styles.step}>{system.phone ? phoneNote : active.step}</p>
+            {!system.phone && active.needs ? (
+              <p className={styles.needs}>
+                {active.needs}
+                {active.alt ? (
+                  <>
+                    {" · "}
+                    <a href={active.alt.href}>{active.alt.label}</a>
+                  </>
+                ) : null}
+              </p>
+            ) : null}
 
             <div className={styles.actions}>
               {download ? (

@@ -156,7 +156,7 @@ function landing(parts, at, run, strong) {
       { duration: 900, delay: at, easing: OUT },
     );
   }
-  // A glint crosses "Keyfly".
+  // A glint crosses "KeyFly".
   run(parts.glint, [{ transform: "translateX(0)" }, { transform: "translateX(170px)" }], {
     duration: 1000,
     delay: at - 220,
@@ -195,7 +195,7 @@ function intro(parts) {
   animations.push(...sparks(parts.sparks, f.positions, SPARKS));
   landing(parts, f.totalMs - 40, run, true);
 
-  // "Keyfly" develops like a photograph: each letter flashes with a mint
+  // "KeyFly" develops like a photograph: each letter flashes with a mint
   // afterglow as it appears, then settles.
   parts.letters.forEach((letter, index) => {
     const at = LETTERS_AT + index * 60;
@@ -235,13 +235,13 @@ function relight(parts) {
 }
 
 /**
- * The Keyfly logo: the brand kit's symbol and wordmark, unchanged in shape
+ * The KeyFly logo: the brand kit's symbol and wordmark, unchanged in shape
  * and colour, set as in composition.js and animated as light painting.
  *
  * A glowing mint comet sweeps in and paints the symbol's line: a white-hot
  * core leads a burning mint tail that cools into the line, shedding sparks
  * that fall and die out. The comet becomes the point with a shockwave and a
- * bloom of light, "Keyfly" develops letter by letter with a mint
+ * bloom of light, "KeyFly" develops letter by letter with a mint
  * afterglow, and a glint crosses the word. Hovering relights the symbol.
  * About 2s.
  *
@@ -250,7 +250,7 @@ function relight(parts) {
  * Colours follow the surrounding tone: the kit's lockup-light pair on
  * Paper, lockup-dark on Night.
  */
-export function AnimatedLogo({ height = 32, play = "load", label = "Keyfly", className }) {
+export function AnimatedLogo({ height = 32, play = "load", label = "KeyFly", className }) {
   const id = useId().replace(/[^\w-]/g, "");
   const svgRef = useRef(null);
   const routeRef = useRef(null);
@@ -420,7 +420,7 @@ export function AnimatedLogo({ height = 32, play = "load", label = "Keyfly", cla
         <circle ref={pointRef} className={cx(styles.point, styles.part)} {...POINT} />
       </g>
 
-      {/* "Keyfly": the brand-kit letters, plus their mint afterglow. */}
+      {/* "KeyFly": the brand-kit letters, plus their mint afterglow. */}
       <g transform={`translate(${WORDMARK_SHIFT_X} 0)`}>
         <g ref={afterglowRef} className={styles.afterglow} filter={`url(#${id}-afterglow)`}>
           {WORDMARK_LETTERS.map((letter, index) => (

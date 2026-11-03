@@ -6,7 +6,7 @@ import { TimelineFloor } from "./timeline-floor";
 import styles from "./hero.module.css";
 
 /**
- * The homepage hero: a headline, the Keyfly prompt box (as it appears in the
+ * The homepage hero: a headline, the KeyFly prompt box (as it appears in the
  * app) and, below it, an editing timeline that runs away to the horizon
  * with a mint playhead, so the first screen already reads as video editing.
  */

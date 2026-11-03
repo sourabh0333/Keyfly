@@ -46,7 +46,7 @@ function Title({ lines }) {
 }
 
 /**
- * "How it works": three steps beside an illustrative Keyfly editor that
+ * "How it works": three steps beside an illustrative KeyFly editor that
  * plays them out as the page scrolls. The prompt types itself in, clips
  * land on the timeline and the playhead plays the cut, then the frame tries
  * each format and the export fills. Without JS or with reduced motion it is
@@ -91,7 +91,7 @@ export function HowItWorks() {
               </span>
               <span className={styles.file}>
                 {demo.file}
-                <span className={styles.fileMuted}> · Keyfly</span>
+                <span className={styles.fileMuted}> · KeyFly</span>
               </span>
               <span className={styles.timecode} data-timecode>
                 00:00:30:00

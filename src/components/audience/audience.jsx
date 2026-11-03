@@ -5,7 +5,7 @@ import { Roles } from "./roles";
 import styles from "./audience.module.css";
 
 /**
- * "Who it's for": Keyfly by role, with a preview of what each makes
+ * "Who it's for": KeyFly by role, with a preview of what each makes
  * (see Roles).
  */
 export function Audience() {

@@ -419,10 +419,22 @@
   letter-spacing: 0.08em;
 }
 
-.bottomRight {
+.bottomRight,
+.bottomLeft {
   display: inline-flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 24px;
+  gap: 8px 24px;
+}
+
+.legal {
+  color: rgb(244 241 234 / 0.6);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.legal:hover {
+  color: var(--soft-mint);
 }
 
 .domain {

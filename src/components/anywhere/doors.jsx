@@ -39,7 +39,7 @@ function Chat({ s }) {
             <Preview kind="launch" format="16:9" bleed />
           </span>
           <span className={styles.appText}>
-            <b>Keyfly</b>
+            <b>KeyFly</b>
             <span>Launch Video · 0:30</span>
           </span>
           <span className={styles.appButton}>{s.card}</span>
@@ -86,7 +86,7 @@ function Desktop({ s }) {
           <i />
           <i />
         </span>
-        <span className={styles.appName}>Keyfly</span>
+        <span className={styles.appName}>KeyFly</span>
       </p>
       <div className={styles.desk}>
         <span className={styles.side}>
@@ -111,7 +111,7 @@ function Desktop({ s }) {
 const SURFACE = { chat: Chat, browser: Browser, desktop: Desktop };
 
 /**
- * One project, three doors: the Keyfly project in the middle, the chat
+ * One project, three doors: the KeyFly project in the middle, the chat
  * (ChatGPT · Claude) to its left, the browser to its right and the desktop
  * app above, joined by straight wires. The surface in use sends a pulse
  * into the project, the project updates (its last change and version) and
