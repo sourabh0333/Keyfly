@@ -157,7 +157,6 @@ export function BrandReel({ kitLabel, applied, videosLabel, items, videos }) {
       <div
         ref={reelRef}
         className={styles.reel}
-        data-frame="On brand"
         aria-hidden="true"
         data-logo={on.logo ? "" : undefined}
         data-colours={on.colours ? "" : undefined}

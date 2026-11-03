@@ -85,7 +85,7 @@ export function Morph({ formats, formatLabel, madeFor, keeps, bar, captions }) {
         </div>
       </div>
 
-      <div className={styles.stage} aria-hidden="true" data-frame="Every format">
+      <div className={styles.stage} aria-hidden="true">
         <span className={styles.glow} />
         {formats.map((g) => (
           <span key={g.id} className={styles.guide} data-on={g.id === f.id ? "" : undefined} style={{ "--r": g.w / g.h }} />

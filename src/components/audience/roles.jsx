@@ -55,7 +55,6 @@ export function Roles({ roles, makes, formatsLabel, promptLabel, try: tryLabel }
     <div
       ref={rootRef}
       className={styles.panels}
-      data-frame="Who it's for"
       data-auto={auto ? "" : undefined}
       onPointerLeave={() => setHeld(false)}
       onFocus={() => setHeld(true)}

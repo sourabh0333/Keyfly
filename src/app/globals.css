@@ -272,3 +272,49 @@ a {
     transition: none;
   }
 }
+
+/* The dissolve between sections: as a section scrolls in it rises and
+   comes up from dim, and as it scrolls away it dims and settles back, so
+   one shot dissolves into the next. Tied to the scroll (view timeline),
+   transform and opacity only. Two animations, each applied only within
+   its range (no fill), so a section at rest has no transform at all
+   (fixed-position children inside it keep working). Not the hero. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    main [data-section]:not([data-section="Intro"]) {
+      animation:
+        dissolve-in linear none,
+        dissolve-out linear none;
+      animation-timeline: view(), view();
+      animation-range:
+        entry 0% entry 55vh,
+        exit 35vh exit 100%;
+    }
+  }
+}
+
+@keyframes dissolve-in {
+  from {
+    opacity: 0.15;
+    translate: 0 56px;
+    scale: 0.97;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+    scale: 1;
+  }
+}
+
+@keyframes dissolve-out {
+  from {
+    opacity: 1;
+    translate: 0 0;
+    scale: 1;
+  }
+  to {
+    opacity: 0.2;
+    translate: 0 -40px;
+    scale: 0.97;
+  }
+}

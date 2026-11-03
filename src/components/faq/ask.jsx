@@ -64,7 +64,7 @@ export function Ask({ panel, listLabel, next, items }) {
   }
 
   return (
-    <div className={styles.ask} data-frame="FAQ">
+    <div className={styles.ask}>
       <ol className={styles.list} aria-label={listLabel}>
         {items.map((it, i) => (
           <li key={it.q}>
