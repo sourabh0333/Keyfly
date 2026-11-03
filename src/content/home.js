@@ -212,6 +212,48 @@ export const anywhere = {
   ],
 };
 
+// "Start from a prompt": example prompts to try, grouped by goal. Each
+// uses only what Keyfly is confirmed to do (the presets, the formats,
+// captions, the brand kit); the preset prompts are the app's own.
+// PLACEHOLDER: the extra examples until the team reviews them.
+export const prompts = {
+  eyebrow: "Prompt gallery",
+  title: [{ text: "Start from" }, { text: "a prompt.", accent: true }],
+  lead: "Not sure what to ask for? Pick a prompt, send it to the box at the top, and change any word you like.",
+  note: "Illustrative previews",
+  try: "Try it",
+  groups: [
+    {
+      label: "Launch",
+      items: [
+        { text: presetPrompt("Launch Video"), preset: "Launch Video", kind: "launch", format: "16:9" },
+        { text: "A 15-second vertical teaser of our launch video, with captions and our brand kit.", preset: "Launch Video", kind: "launch", format: "9:16" },
+      ],
+    },
+    {
+      label: "Social",
+      items: [
+        { text: presetPrompt("UGC"), preset: "UGC", kind: "ugc", format: "9:16" },
+        { text: presetPrompt("Podcast"), preset: "Podcast", kind: "podcast", format: "9:16" },
+      ],
+    },
+    {
+      label: "Explain",
+      items: [
+        { text: presetPrompt("Explainer"), preset: "Explainer", kind: "explainer", format: "16:9" },
+        { text: presetPrompt("Product Demo"), preset: "Product Demo", kind: "demo", format: "16:9" },
+      ],
+    },
+    {
+      label: "Stories",
+      items: [
+        { text: presetPrompt("Montage"), preset: "Montage", kind: "montage", format: "16:9" },
+        { text: "A one-minute recap of our event from my footage, cut to the music, with our logo at the end.", preset: "Montage", kind: "montage", format: "16:9" },
+      ],
+    },
+  ],
+};
+
 export const useCases = {
   eyebrow: "Use cases",
   title: [{ text: "Made for" }, { text: "every kind of video.", accent: true }],

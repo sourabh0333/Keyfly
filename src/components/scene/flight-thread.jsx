@@ -72,10 +72,14 @@ function measure(page, path) {
   const across =
     Math.abs(cx - lx) > 4 && g > 60 ? `C${f(cx)} ${f(y0 + g * 0.5)} ${f(lx)} ${f(y0 + g * 0.35)} ${f(lx)} ${f(yS)}` : `V${f(yS)}`;
 
-  // 3. The loop, from the left margin to the right one.
-  const style = getComputedStyle(cases);
-  const casesEnd = y(cases) + cases.offsetHeight - parseFloat(style.paddingBottom);
-  const g0 = casesEnd + 16;
+  // 3. The loop, from the left margin to the right one. It starts below
+  // the last section before Download (Use cases, or what follows it, such
+  // as the prompt gallery), so it never crosses a section's copy; until
+  // then the line runs on down the left margin.
+  const sections = [...document.querySelectorAll("main [data-section]")];
+  const before = sections[sections.indexOf(land) - 1] ?? cases;
+  const beforeEnd = (el) => y(el) + el.offsetHeight - parseFloat(getComputedStyle(el).paddingBottom);
+  const g0 = Math.max(beforeEnd(cases), beforeEnd(before)) + 16;
   const g1 = landings[1].y;
   const X = (u) => f(lx + u * (rx - lx));
   const Y = (v) => f(g0 + v * (g1 - g0));

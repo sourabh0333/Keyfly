@@ -101,9 +101,14 @@ Copy for anything not yet confirmed is marked PLACEHOLDER in `src/content/home.j
 | 6 | **On brand, every time** (`#brand`) | ✅ built 2026-11-02 (brand kit confirmed) | Brand consistency: your fonts, colours and logo applied to every cut |
 | 7 | **Works where you work** (`#anywhere`) | ✅ built 2026-11-02 (chat app confirmed) | ChatGPT · Claude, desktop and browser; before Use cases so the thread's loop stays clear |
 | 8 | Use cases | ✅ | Six presets on the jog wheel |
+| 8b | **Prompt gallery** (`#prompts`) | ✅ built 2026-11-03 | Example prompts to try; competitors lean on templates |
 | 9 | Download | ✅ | Get the app |
 | 10 | **FAQ, "Ask Keyfly"** (`#faq`) | ✅ built 2026-11-02 | Formats, export, privacy, ownership, pricing |
 | 11 | Footer | ✅ | |
+
+### Still missing (review, 2026-11-03), waiting for facts from the team
+
+Against Descript, OpusClip, Submagic and VEED, the page still lacks: **social proof** (logos, testimonials, ratings, user numbers), **pricing** (plans or a free tier), **a showcase** (real videos made with Keyfly), **exports and integrations** (where it publishes, NLE export), **languages** (captions, translation, dubbing), **privacy and security** (ownership, training, storage), and **teams or an API**. The team said (2026-11-03) it can supply facts for social proof, pricing, and showcase/exports/languages. None of these is built until the facts arrive.
 
 A closing call-to-action section was built and removed on 2026-11-03; its ruler-and-playhead became the divider between every two sections.
 

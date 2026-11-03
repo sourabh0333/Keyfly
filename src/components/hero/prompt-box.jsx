@@ -124,15 +124,18 @@ export function PromptBox({ label, placeholder, action, accept, modes, presets, 
 
   useEffect(() => () => clearInterval(typer.current), []);
 
-  // Other sections can hand a preset to the box ("Try this prompt"): the
-  // page scrolls back up to it and the prompt types itself in.
+  // Other sections can hand a preset (by label) or any prompt (by text) to
+  // the box ("Try this prompt", the prompt gallery): the page scrolls back
+  // up to it and the prompt types itself in.
   const typeOutRef = useRef(null);
   useEffect(() => {
     typeOutRef.current = typeOut;
   });
   useEffect(() => {
     const onPrompt = (event) => {
-      const preset = presets.find((p) => p.label === event.detail?.label);
+      // A preset by its label, or any prompt's text (the prompt gallery).
+      const text = event.detail?.text;
+      const preset = text ? { label: null, prompt: text } : presets.find((p) => p.label === event.detail?.label);
       if (!preset) return;
       field.current?.scrollIntoView({ behavior: "smooth", block: "center" });
       setTimeout(() => typeOutRef.current?.(preset), 700);

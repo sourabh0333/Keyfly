@@ -4,6 +4,7 @@ import { Faq } from "@/components/faq/faq";
 import { EditWithWords } from "@/components/edit-with-words/edit-with-words";
 import { EveryFormat } from "@/components/every-format/every-format";
 import { OnBrand } from "@/components/on-brand/on-brand";
+import { Prompts } from "@/components/prompts/prompts";
 import { Anywhere } from "@/components/anywhere/anywhere";
 import { YourCall } from "@/components/your-call/your-call";
 import { Hero } from "@/components/hero/hero";
@@ -41,6 +42,8 @@ export default function Home() {
       <Anywhere />
       <Divider />
       <UseCases />
+      <Divider />
+      <Prompts />
       <Divider />
       <Download />
       <Divider />
