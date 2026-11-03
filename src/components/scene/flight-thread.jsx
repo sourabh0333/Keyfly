@@ -9,20 +9,21 @@ const HEAD = 0.62;
 const f = (n) => n.toFixed(1);
 const clamp = (n, lo, hi) => Math.min(hi, Math.max(lo, n));
 
-// Builds the line in page coordinates from the sections as laid out now.
-// It weaves down the page through the open space in each section, never
-// across the copy:
-//   1. from the hero's playhead it drops into How it works and runs down
-//      the channel between the steps and the editor;
-//   2. it S-curves out to the left margin before "Edit with words", runs
-//      down beside it, lands on the "Use cases" eyebrow and runs down
-//      beside the jog wheel;
-//   3. it flies one loop of the brand's flight path across to the right
-//      margin, lands on Download's line and runs down beside the landing;
-//   4. it sweeps back across to the footer's corner, turns onto the panel's
-//      top edge (its ruler) and runs along it to the playhead.
-// Where a section has no side-by-side channel (narrow screens) that run
-// falls back to the left margin.
+// Builds the line in page coordinates from the sections as laid out now,
+// in straight lanes joined by rounded corners, never across copy:
+//   1. from the hero's playhead it turns across How it works' top padding
+//      into the channel between the steps and the editor, and runs down it;
+//   2. it turns onto the first divider's ruler and runs along it to the
+//      left margin, then down the margin (a keyframe at every divider it
+//      passes), landing on the "Use cases" eyebrow;
+//   3. at the divider before Download it runs along that ruler to the right
+//      margin, flying one loop of the brand's flight path around the
+//      divider's playhead on the way, and lands on Download's line;
+//   4. it runs on down the right margin and turns onto the footer panel's
+//      top edge (its ruler) from its right-hand corner, ending at the
+//      playhead.
+// Where a section has no side-by-side channel (narrow screens) the first
+// run is the left margin.
 function measure(page, path) {
   const top0 = page.getBoundingClientRect().top + scrollY;
   const y = (el) => el.getBoundingClientRect().top + scrollY - top0;
@@ -57,56 +58,99 @@ function measure(page, path) {
     { px: rx, y: y(marks[1]) + lead.height / 2, from: rx - 7, to: lead.right + 3 },
   ];
 
-  // 1. How it works: in from the hero's playhead, into the channel.
+  // The route is drawn in straight lanes joined by rounded corners (R), and
+  // where it crosses between lanes it runs along a divider's ruler, the
+  // page's own timeline, as it finishes along the footer's ruler.
+  const R = Math.min(28, Math.max(12, (left - lx) * 1.2 + 6));
   const a = y(how);
-  const s = Math.min(240, vh * 0.26);
-  const swing = `C${f(w / 2)} ${f(a + s * 0.55)} ${f(cx)} ${f(a + s * 0.3)} ${f(cx)} ${f(a + s)}`;
+  const segs = [];
+  const runs = [];
+  let px = w / 2; // where the pen is
+  let py = a;
 
-  // 2. Out of the channel and across to the left margin: in the gap after
-  // How it works (before the next section's heading), then down the margin
-  // past any section in between, onto the Use cases eyebrow.
-  const y0 = Math.max(a + s + 40, y(how) + how.offsetHeight - 24);
-  const next = how.nextElementSibling;
-  const yS = next && next !== cases ? Math.max(y0 + 80, y(next) + parseFloat(getComputedStyle(next).paddingTop) * 0.7) : landings[0].y;
-  const g = yS - y0;
-  const across =
-    Math.abs(cx - lx) > 4 && g > 60 ? `C${f(cx)} ${f(y0 + g * 0.5)} ${f(lx)} ${f(y0 + g * 0.35)} ${f(lx)} ${f(yS)}` : `V${f(yS)}`;
+  // A vertical run down to `to` (key = the scroll height that finishes it).
+  const down = (to, name) => {
+    segs.push([`V${f(to)}`, to, name]);
+    py = to;
+  };
+  // A rounded turn from going down to going sideways towards `x2`, onto the
+  // line at height `yy`, then sideways to `x2 ∓ R`. Drawn while the scroll
+  // goes from yy - S/2 to yy + S/2, so the sideways run plays, not snaps.
+  const across = (yy, x2) => {
+    const dir = Math.sign(x2 - px) || 1;
+    const S = Math.min(240, Math.abs(x2 - px) * 0.3);
+    if (py < yy - R) down(yy - R);
+    segs.push([`Q${f(px)} ${f(yy)} ${f(px + dir * R)} ${f(yy)}`, Math.max(py + 1, yy - S / 2)]);
+    px += dir * R;
+    py = yy;
+    return { dir, S };
+  };
+  const sideways = (x2, endKey) => {
+    segs.push([`H${f(x2)}`, endKey]);
+    px = x2;
+  };
+  // A rounded turn from going sideways (dir) to going down.
+  const turnDown = (dir, key) => {
+    segs.push([`Q${f(px + dir * R)} ${f(py)} ${f(px + dir * R)} ${f(py + R)}`, key]);
+    px += dir * R;
+    py += R;
+  };
 
-  // 3. The loop, from the left margin to the right one. It starts below
-  // the last section before Download (Use cases, or what follows it, such
-  // as the prompt gallery), so it never crosses a section's copy; until
-  // then the line runs on down the left margin.
-  const sections = [...document.querySelectorAll("main [data-section]")];
-  const before = sections[sections.indexOf(land) - 1] ?? cases;
-  const beforeEnd = (el) => y(el) + el.offsetHeight - parseFloat(getComputedStyle(el).paddingBottom);
-  const g0 = Math.max(beforeEnd(cases), beforeEnd(before)) + 16;
-  const g1 = landings[1].y;
-  const X = (u) => f(lx + u * (rx - lx));
-  const Y = (v) => f(g0 + v * (g1 - g0));
-  const loop =
-    `C${X(0)} ${Y(0.3)} ${X(0.2)} ${Y(0.55)} ${X(0.42)} ${Y(0.5)}` +
-    `C${X(0.62)} ${Y(0.45)} ${X(0.7)} ${Y(0.08)} ${X(0.55)} ${Y(0.07)}` +
-    `C${X(0.4)} ${Y(0.06)} ${X(0.38)} ${Y(0.45)} ${X(0.55)} ${Y(0.6)}` +
-    `C${X(0.72)} ${Y(0.75)} ${X(1)} ${Y(0.6)} ${X(1)} ${Y(1)}`;
+  // A divider (the one before or after a section), with its playhead's x.
+  const divider = (el) => {
+    if (!el?.hasAttribute("data-divider")) return null;
+    const head = el.querySelector("[data-divider-head]");
+    return { y: y(el), x: head ? box(head).left + box(head).width / 2 : w / 2 };
+  };
 
-  const segs = [
-    [swing, a + s],
-    [`V${f(y0)}`, y0],
-    [across, yS],
-    [`V${f(landings[0].y)}`, landings[0].y, "land0"],
-    [`V${f(g0)}`, g0],
-    [loop, g1, "land1"],
-  ];
-  // The straight runs, where keyframes can sit on the line.
-  const runs = [
-    [a + s, y0, cx],
-    [landings[0].y, g0, lx],
-  ];
+  // 1. From the hero's playhead into How it works: across its top padding
+  // to the channel between the steps and the editor, then down it.
+  const lead1 = Math.min(64, vh * 0.08);
+  if (Math.abs(cx - px) > 2 * R) {
+    down(a + lead1);
+    const { dir } = across(a + lead1 + R, cx);
+    sideways(cx - dir * R, a + lead1 + R + 40);
+    turnDown(dir, a + lead1 + 2 * R + 40);
+  }
 
-  // 4. The footer: down the right margin, a sweep back across to the
-  // panel's corner, onto its top edge and along it to the playhead. The run
-  // along the edge gets its own stretch of scroll (as much as the page has
-  // left, up to 260px), so it plays, not snaps.
+  // 2. Out of the channel along the first divider's ruler to the left
+  // margin (or straight on where there is no channel), then down it.
+  const d1 = divider(how.nextElementSibling);
+  const y1 = d1 ? d1.y : y(how) + how.offsetHeight;
+  if (Math.abs(px - lx) > 2 * R) {
+    runs.push([py, y1 - R, px]);
+    const { dir, S } = across(y1, lx);
+    sideways(lx - dir * R, y1 + S / 2);
+    turnDown(dir, y1 + S / 2 + R);
+  }
+
+  // 3. Down the left margin, landing on the Use cases eyebrow, to the
+  // divider before Download.
+  const laneTop = py;
+  down(landings[0].y, "land0");
+  const dL = divider(land.previousElementSibling);
+  const yL = dL ? dL.y : y(land);
+  const xL = dL ? dL.x : (lx + rx) / 2;
+  runs.push([laneTop, yL - R, lx]);
+
+  // 4. Along that divider's ruler to the right margin, with one loop of
+  // the brand's flight path around its playhead on the way.
+  {
+    const { dir, S } = across(yL, rx);
+    const r = Math.min(34, Math.max(20, w * 0.022));
+    const loopAt = clamp(xL, px + 2 * R, rx - 2 * R);
+    sideways(loopAt, yL - S / 6);
+    segs.push([`A${f(r)} ${f(r)} 0 0 0 ${f(loopAt)} ${f(yL - 2 * r)}A${f(r)} ${f(r)} 0 0 0 ${f(loopAt)} ${f(yL)}`, yL + S / 6]);
+    sideways(rx - dir * R, yL + S / 2);
+    turnDown(dir, yL + S / 2 + R);
+  }
+  const rightTop = py;
+  down(landings[1].y, "land1");
+
+  // 5. The footer: on down the right margin, then a turn onto the panel's
+  // top edge (its ruler) from its right-hand corner, and along it to the
+  // playhead. That last run gets its own stretch of scroll, so it plays,
+  // not snaps.
   const panel = document.querySelector("[data-thread-end]");
   const stop = panel?.querySelector("[data-thread-stop]");
   let end = null;
@@ -115,27 +159,15 @@ function measure(page, path) {
     const pTop = y(panel);
     const stopX = box(stop).left + 1;
     const maxHead = document.documentElement.scrollHeight - top0 - (1 - HEAD) * vh;
-    const run = Math.max(60, Math.min(260, maxHead - pTop - 24));
-    // The sweep starts below the last section (Download, or what follows
-    // it, such as the FAQ), so it never crosses a section's copy.
-    const last = [...document.querySelectorAll("main [data-section]")].at(-1) ?? land;
-    const lastEnd = Math.max(
-      y(land) + land.offsetHeight - parseFloat(getComputedStyle(land).paddingBottom),
-      y(last) + last.offsetHeight - parseFloat(getComputedStyle(last).paddingBottom),
-    );
-    const yA = Math.min(lastEnd + 16, pTop - 60);
-    const gap = pTop - yA;
-    const into = Math.max(pr.left + 14, lx + 30);
-    segs.push(
-      [`V${f(yA)}`, yA],
-      [`C${f(rx)} ${f(yA + gap * 0.55)} ${f(lx + (rx - lx) * 0.3)} ${f(pTop - gap * 0.6)} ${f(lx)} ${f(pTop - gap * 0.25)}`, pTop - gap * 0.25],
-      [`C${f(lx)} ${f(pTop - gap * 0.08)} ${f(lx + 6)} ${f(pTop)} ${f(into)} ${f(pTop)}`, pTop],
-      [`H${f(stopX)}`, pTop + run],
-    );
-    runs.push([g1, yA, rx]);
+    const run = clamp(Math.abs(rx - stopX) * 1.6, 60, Math.max(60, Math.min(220, maxHead - pTop - 24)));
+    runs.push([rightTop, pTop - R, rx]);
+    down(pTop - R);
+    const dir = Math.sign(stopX - rx) || -1;
+    segs.push([`Q${f(rx)} ${f(pTop)} ${f(rx + dir * R)} ${f(pTop)}`, pTop]);
+    segs.push([`H${f(stopX)}`, pTop + run]);
     end = { panel, bottom: pr.bottom + scrollY - top0, stop: { x: stopX, y: pTop } };
   } else {
-    runs.push([g1, Infinity, rx]);
+    runs.push([rightTop, Infinity, rx]);
   }
 
   const keys = [[a, 0]];
@@ -161,6 +193,14 @@ function measure(page, path) {
       const lane = runs.find(([r0, r1]) => fy > r0 + 12 && fy < r1 - 12);
       if (lane) frames.push({ x: lane[2], y: fy, len: lengthAt(keys, fy) });
     }
+  }
+
+  // A keyframe wherever the line passes a divider on a lane (the ones it
+  // runs along are the crossings themselves).
+  for (const el of document.querySelectorAll("[data-divider]")) {
+    const fy = y(el);
+    const lane = runs.find(([r0, r1]) => fy > r0 + 12 && fy < r1 - 12);
+    if (lane) frames.push({ x: lane[2], y: fy, len: lengthAt(keys, fy) });
   }
 
   // A table of points along the line (every 4px), so the comet's position

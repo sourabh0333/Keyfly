@@ -8,9 +8,9 @@ import styles from "./divider.module.css";
  */
 export function Divider() {
   return (
-    <div className={styles.divider} aria-hidden="true">
+    <div className={styles.divider} data-divider="" aria-hidden="true">
       <div className={styles.ruler}>
-        <i />
+        <i data-divider-head="" />
       </div>
     </div>
   );

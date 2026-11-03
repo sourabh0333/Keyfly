@@ -155,13 +155,13 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
     - Use cases: the colours of the feed on air. `Switcher` sets `html[data-feed]`, and the colours cross-fade through registered `@property` colours.
     - Download: mint, where the thread lands.
   - **`FlightThread`** (reworked 2026-10-31: "the line is just moving along one side… lackluster"): one line of light in page coordinates (SVG over the page, `pointer-events: none`), laid out from the sections and re-measured with a `ResizeObserver` on the page and the footer. It speaks the logo intro's language.
-    - **Route** (re-routed 2026-10-31 at the team's request: it used to run only down the left margin). It weaves through three lanes, never across copy:
-      1. From the hero's playhead it drops into How it works and runs down the **channel between the steps and the editor** (the midpoint of the gap between the two columns).
-      2. It S-curves out to the **left margin**, lands on the Use cases eyebrow and runs down beside the jog wheel.
-      3. It flies one loop of the brand's flight path across to the **right margin**, lands on Download's lead (right-aligned; `data-landing` is on the lead, which brightens) and runs down beside the landing.
-      4. It **sweeps back across** the gap above the footer to the panel's left corner, turns onto its top edge (the ruler) and runs along it to the playhead (`[data-thread-end]`, `[data-thread-stop]`). That last run gets its own stretch of scroll (up to 260px).
-      - The margins sit halfway into the gutter (at most 26px out) from the content column. Where How it works has no side-by-side channel (narrow screens), that run falls back to the left margin.
-      - Keyframe diamonds sit on whichever lane their run is in.
+    - **Route** (re-routed 2026-11-03 at the team's request: after the dividers were added, its curves cut across their rulers and looked busy). It runs in **straight lanes joined by rounded corners** (`R` up to 28px), never across copy, and where it changes lane it **runs along a divider's ruler**, the page's own timeline, as it finishes along the footer's:
+      1. From the hero's playhead it turns across How it works' top padding into the **channel between the steps and the editor** and runs down it.
+      2. It turns onto **the first divider's ruler** (after How it works) and runs along it to the **left margin**, then down the margin, with a keyframe diamond at every divider it passes, landing on the Use cases eyebrow.
+      3. At **the divider before Download** it runs along that ruler to the **right margin**, flying **one loop of the brand's flight path around the divider's playhead** on the way, then lands on Download's lead.
+      4. It runs on down the right margin and turns onto **the footer panel's top edge from its right-hand corner**, ending at its playhead.
+      - Dividers are found by `data-divider` (the playhead by `data-divider-head`). Each sideways run is drawn while the scroll moves through a stretch around its height (`S`, up to 240px), so it plays rather than snaps; the footer run gets 60–220px.
+      - The margins sit halfway into the gutter (at most 26px out) from the content column. Where How it works has no side-by-side channel (narrow screens), the first run is the left margin.
     - **The comet:** the head rides 62% down the screen. A white-hot core leads a burning mint tail (three windows of the path, at 210, 110 and 34px, set by `stroke-dasharray` and `stroke-dashoffset`), which cools behind into the thin finished line (`.base`).
     - **Speed:** the tail stretches (up to 2.6×), brightens and the head grows with the scroll speed, measured from the line's own progress and smoothed.
     - **Sparks:** the head sheds sparks while it moves, on a fixed `<canvas>`, falling under gravity and carried with the page. There are bursts at keyframes, at each landing and at the footer's playhead.
