@@ -1,37 +1,55 @@
 import { oldWay } from "@/content/home";
+import { siteConfig } from "@/config/site";
 import wipe from "@/components/scene/wipe.module.css";
 import { PauseOffscreen } from "@/components/pause-offscreen";
+import { Shot } from "@/components/shot/shot";
 import { PlayOnView } from "./play-on-view";
 import styles from "./old-way.module.css";
 
 // By hand: raw footage in many small pieces (a fixed pattern, so server
-// and client match), and the chores' places along the timeline.
-const RAW = [3, 5, 2, 4, 6, 3, 2, 5, 4, 3, 6, 2, 4, 5, 3, 2, 6, 4, 3, 5, 4, 3, 2, 5];
+// and client match).
+const RAW = [3, 5, 2, 4, 6, 3, 2, 5, 4, 3, 6, 2, 4, 5, 3, 2, 6, 4, 3, 5];
 const RAW_TOTAL = RAW.reduce((a, b) => a + b, 0);
 const RAW_CLIPS = RAW.reduce((list, w) => {
   const left = list.length ? list.at(-1).left + list.at(-1).width : 0;
   return [...list, { left, width: (w / RAW_TOTAL) * 100 }];
 }, []);
-const CHORE_AT = [8, 22, 36, 52, 68, 84]; // % along the timeline
-const WAVE = Array.from({ length: 72 }, (_, i) => 0.2 + ((Math.sin(i * 0.9) + Math.sin(i * 0.37) + 2) / 4) * 0.8);
 
 // With Keyfly: the finished cut.
-const CUT = [0, 16, 31, 44, 60, 77, 100];
-const CAPTION_AT = [6, 30, 54, 76];
+const CUT = [0, 18, 34, 50, 68, 84, 100];
+const CAPTION_AT = [4, 28, 52, 76];
+
+function Check() {
+  return (
+    <svg className={styles.mark} viewBox="0 0 18 18" width="18" height="18" aria-hidden="true">
+      <circle cx="9" cy="9" r="9" />
+      <path d="M5 9.3 7.6 12 13 6.4" />
+    </svg>
+  );
+}
+
+function Dash() {
+  return (
+    <svg className={styles.mark} viewBox="0 0 18 18" width="18" height="18" aria-hidden="true">
+      <circle cx="9" cy="9" r="8.25" />
+      <path d="M6 9h6" />
+    </svg>
+  );
+}
 
 /**
- * "The old way": two editing timelines on one ruler. By hand, the
- * playhead crawls along a track of raw pieces, cutting as it goes and
- * reaching one chore after another; it is still editing when the loop
- * starts again. With Keyfly, one sentence is sent and the whole cut (title,
- * clips, music, captions) lands at once, and its playhead runs to the end.
+ * "The old way": a comparison table. Three columns (the question, by hand,
+ * with Keyfly) on one grid: the heads, then each side's editor (a viewer
+ * over its timeline), then six rows that compare them, and Keyfly's column
+ * on a mint-edged panel with a call to action at its foot.
  *
- * CSS only, one 12s loop that starts when the panel comes on screen
- * (PlayOnView). Without it (no JS, reduced motion) the CSS defaults show
- * the moment that says it: Keyfly finished, by hand three chores in.
+ * By hand, the viewer shows raw footage and the playhead crawls along raw
+ * pieces, cutting as it goes; with Keyfly, the finished cut plays. CSS
+ * only; the loops start when the table comes on screen (PlayOnView), and
+ * without them (no JS, reduced motion) both editors hold still.
  */
 export function OldWay() {
-  const { eyebrow, title, lead, note, hand, keyfly, ask, chores, tracks } = oldWay;
+  const { eyebrow, title, lead, note, hand, keyfly, rows, cta } = oldWay;
 
   return (
     <section id="old-way" className={styles.section} aria-labelledby="old-way-title" data-section="The old way">
@@ -55,135 +73,123 @@ export function OldWay() {
           <p className={styles.lead}>{lead}</p>
         </div>
 
-        <div className={styles.panel}>
+        <div className={styles.table} role="table" aria-label={`${hand.label} / ${keyfly.label}`}>
           <PlayOnView />
+          <span className={styles.panel} aria-hidden="true" />
 
-          {/* The shared ruler. */}
-          <div className={styles.ruler} aria-hidden="true">
-            {["0:00", "0:08", "0:15", "0:23", "0:30"].map((t, i) => (
-              <span key={t} style={{ left: `${i * 25}%` }}>
-                {t}
+          {/* Heads. */}
+          <div className={styles.row} role="row">
+            <span className={styles.corner} role="columnheader" />
+            <p className={`${styles.colHead} ${styles.handCol}`} role="columnheader">
+              {hand.label}
+              <span className={styles.busy}>
+                <i />
+                {hand.busy}
               </span>
-            ))}
-          </div>
-
-          {/* By hand. */}
-          <div className={`${styles.who} ${styles.handWho}`}>
-            <p className={styles.whoName}>{hand.label}</p>
-            <p className={styles.busy}>
-              <i />
-              {hand.busy}
             </p>
-            <p className={styles.whoNote}>{hand.note}</p>
-          </div>
-
-          <div className={`${styles.lane} ${styles.flags}`} style={{ "--r": 2 }} aria-hidden="true">
-            {chores.map((c, i) => (
-              <span key={c} className={styles.flag} data-n={i} style={{ left: `${CHORE_AT[i]}%` }}>
-                <i />
-                <b>{c}</b>
-                {/* The same flag, reached: laid over and faded in. */}
-                <span className={styles.reached}>
-                  <i />
-                  <b>{c}</b>
-                </span>
-              </span>
-            ))}
-          </div>
-          <span className={styles.code} style={{ "--r": 3 }} aria-hidden="true">
-            V1
-          </span>
-          <div className={`${styles.lane} ${styles.track}`} style={{ "--r": 3 }} aria-hidden="true">
-            {RAW_CLIPS.map((c, i) => (
-              <i key={i} className={styles.raw} style={{ left: `${c.left}%`, width: `${c.width}%` }} />
-            ))}
-            {/* What's been cut so far: revealed up to the playhead. */}
-            <span className={styles.worked}>
-              {RAW_CLIPS.map((c, i) => (
-                <i key={i} className={styles.cutPiece} style={{ left: `${c.left}%`, width: `${c.width}%` }} />
-              ))}
-            </span>
-          </div>
-          <span className={styles.code} style={{ "--r": 4 }} aria-hidden="true">
-            A1
-          </span>
-          <div className={`${styles.lane} ${styles.track} ${styles.wave}`} style={{ "--r": 4 }} aria-hidden="true">
-            {WAVE.map((h, i) => (
-              <i key={i} style={{ "--h": h.toFixed(2) }} />
-            ))}
-          </div>
-          <span className={`${styles.rail} ${styles.handRail}`} aria-hidden="true">
-            <i />
-          </span>
-
-          <span className={styles.divider} aria-hidden="true" />
-
-          {/* With Keyfly. */}
-          <div className={`${styles.who} ${styles.keyWho}`}>
-            <p className={styles.whoName}>{keyfly.label}</p>
-            <p className={styles.state}>
-              <span className={styles.editing}>
-                <i />
-                {keyfly.busy}
-              </span>
+            <p className={`${styles.colHead} ${styles.keyCol}`} role="columnheader">
+              {keyfly.label}
               <span className={styles.ready}>
                 <i />
                 {keyfly.done}
               </span>
             </p>
-            <p className={styles.whoNote}>{keyfly.note}</p>
           </div>
 
-          <div className={`${styles.lane} ${styles.k} ${styles.askLane}`} style={{ "--r": 8 }}>
-            <p className={styles.ask}>
-              <span className={styles.chevron} aria-hidden="true">
-                ›
+          {/* The two editors. */}
+          <div className={`${styles.row} ${styles.screens}`} aria-hidden="true">
+            <span className={`${styles.corner} ${styles.q}`}>{oldWay.editLabel}</span>
+            <div className={`${styles.editor} ${styles.handCol} ${styles.handEditor}`}>
+              <div className={styles.viewer}>
+                <Shot />
+                <span className={styles.rawWash} />
+                <span className={styles.tag}>{hand.clip}</span>
+              </div>
+              <div className={styles.timeline}>
+                <div className={styles.track}>
+                  {RAW_CLIPS.map((c, i) => (
+                    <i key={i} className={styles.raw} style={{ left: `${c.left}%`, width: `${c.width}%` }} />
+                  ))}
+                  <span className={styles.worked}>
+                    {RAW_CLIPS.map((c, i) => (
+                      <i key={i} className={styles.cutPiece} style={{ left: `${c.left}%`, width: `${c.width}%` }} />
+                    ))}
+                  </span>
+                </div>
+                <div className={`${styles.track} ${styles.empty}`} />
+                <span className={`${styles.rail} ${styles.handRail}`}>
+                  <i />
+                </span>
+              </div>
+            </div>
+
+            <div className={`${styles.editor} ${styles.keyCol} ${styles.keyEditor}`}>
+              <div className={styles.viewer}>
+                <Shot />
+                <span className={styles.lower}>
+                  <b>{keyfly.title}</b>
+                  <span>{keyfly.sub}</span>
+                </span>
+                <span className={styles.captions}>
+                  {keyfly.captions.map((w, i) => (
+                    <span key={w} style={{ "--i": i }}>
+                      {w}
+                    </span>
+                  ))}
+                </span>
+                <span className={`${styles.tag} ${styles.tagMint}`}>
+                  <i />
+                  {keyfly.clip}
+                </span>
+              </div>
+              <div className={styles.timeline}>
+                <div className={styles.track}>
+                  <i className={styles.titleClip} />
+                  {CUT.slice(0, -1).map((at, i) => (
+                    <i key={at} className={styles.clip} data-n={i % 3} style={{ left: `${at}%`, width: `${CUT[i + 1] - at}%` }} />
+                  ))}
+                </div>
+                <div className={styles.track}>
+                  {CAPTION_AT.map((at) => (
+                    <i key={at} className={styles.word} style={{ left: `${at}%` }} />
+                  ))}
+                </div>
+                <span className={`${styles.rail} ${styles.keyRail}`}>
+                  <i />
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* The comparison. */}
+          {rows.map((row) => (
+            <div key={row.q} className={styles.row} role="row">
+              <span className={styles.q} role="rowheader">
+                {row.q}
               </span>
-              <span className={styles.askText}>{ask}</span>
-              <span className={styles.send} aria-hidden="true">
-                <svg viewBox="0 0 16 16" width="12" height="12">
-                  <path d="M8 13V3M3.5 7.5 8 3l4.5 4.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+              <span className={`${styles.cell} ${styles.handCol}`} role="cell">
+                <Dash />
+                {row.hand}
+              </span>
+              <span className={`${styles.cell} ${styles.keyCol} ${styles.yes}`} role="cell">
+                <Check />
+                {row.keyfly}
+              </span>
+            </div>
+          ))}
+
+          <div className={`${styles.row} ${styles.foot}`}>
+            <span className={styles.corner} />
+            <span className={styles.handCol} />
+            <span className={styles.keyCol}>
+              <a className={styles.cta} href={siteConfig.appUrl}>
+                {cta}
+                <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true">
+                  <path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
-              </span>
-            </p>
+              </a>
+            </span>
           </div>
-          <span className={`${styles.code} ${styles.k}`} style={{ "--r": 9 }} aria-hidden="true">
-            T1
-          </span>
-          <div className={`${styles.lane} ${styles.k} ${styles.track}`} style={{ "--r": 9 }} aria-hidden="true">
-            <i className={styles.titleClip} style={{ "--k": 0 }}>
-              {tracks.title}
-            </i>
-          </div>
-          <span className={`${styles.code} ${styles.k}`} style={{ "--r": 10 }} aria-hidden="true">
-            V1
-          </span>
-          <div className={`${styles.lane} ${styles.k} ${styles.track}`} style={{ "--r": 10 }} aria-hidden="true">
-            {CUT.slice(0, -1).map((at, i) => (
-              <i key={at} className={styles.clip} data-n={i % 3} style={{ left: `${at}%`, width: `${CUT[i + 1] - at}%`, "--k": i + 1 }} />
-            ))}
-          </div>
-          <span className={`${styles.code} ${styles.k}`} style={{ "--r": 11 }} aria-hidden="true">
-            A1
-          </span>
-          <div className={`${styles.lane} ${styles.k} ${styles.track} ${styles.music}`} style={{ "--r": 11, "--k": 7 }} aria-hidden="true">
-            <svg viewBox="0 0 100 20" preserveAspectRatio="none">
-              <path d="M0 6H40L42 12H66L68 6H100" />
-            </svg>
-          </div>
-          <span className={`${styles.code} ${styles.k}`} style={{ "--r": 12 }} aria-hidden="true">
-            C1
-          </span>
-          <div className={`${styles.lane} ${styles.k} ${styles.track}`} style={{ "--r": 12 }} aria-hidden="true">
-            {CAPTION_AT.map((at, i) => (
-              <i key={at} className={styles.word} style={{ left: `${at}%`, "--k": 8 + i }}>
-                {tracks.captions[i]}
-              </i>
-            ))}
-          </div>
-          <span className={`${styles.rail} ${styles.keyRail}`} aria-hidden="true">
-            <i />
-          </span>
         </div>
 
         <p className={styles.footnote}>{note}</p>

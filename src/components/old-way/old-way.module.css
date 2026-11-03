@@ -1,18 +1,16 @@
 /*
- * "The old way": two editing timelines on one ruler, in one panel. A grid
- * of three columns (who, track code, lanes) and twelve rows: ruler; by
- * hand's flags, V1 and A1; a divider; Keyfly's sentence, T1, V1, A1, C1.
- * The playheads are rails laid over their rows, moved by translating a
- * full-width inner layer.
+ * "The old way": a comparison table. One grid of three columns (the
+ * question, by hand, with Keyfly); every row is a subgrid of it, so heads,
+ * editors, answers and the call to action line up down each column.
+ * Keyfly's column sits on a glass panel with a mint edge (laid behind it
+ * from the column's start, --q + 2 gaps + one column), and its cells keep
+ * 22px inside it.
  *
- * One 12s loop, CSS only, under [data-play] (set by PlayOnView):
- *   by hand   the playhead crawls to 40%, cutting the raw pieces behind it
- *             (clip-path), and reaches chores 1–3 at 19%, 53% and 87%;
- *   Keyfly    the sentence types (0–12%) and sends (13%), the cut drops in
- *             piece by piece (from 15%, 90ms apart by --k), the playhead
- *             runs to the end (24–34%), then "First cut ready".
- * Without [data-play] (no JS, reduced motion) the defaults show that
- * moment, still.
+ * Loops (CSS only, under [data-play], set by PlayOnView): by hand's
+ * playhead crawls to 45% over 12s, lighting the raw pieces it has cut
+ * (clip-path); Keyfly's plays the finished cut every 6s, and its captions
+ * light word by word. Without [data-play] (no JS, reduced motion) both
+ * hold still.
  */
 .section {
   position: relative;
@@ -91,105 +89,95 @@
 
 
 
-/* ---------- The panel ---------- */
+/* ---------- The table ---------- */
+
+.table {
+  --q: clamp(130px, 13vw, 180px);
+  --cg: clamp(20px, 2.6vw, 40px);
+  --col: calc((100% - var(--q) - 2 * var(--cg)) / 2);
+  --in: 22px;
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--q) minmax(0, 1fr) minmax(0, 1fr);
+  column-gap: var(--cg);
+}
 
 .panel {
-  --who: clamp(170px, 17vw, 230px);
-  position: relative;
-  display: grid;
-  grid-template-columns: var(--who) 26px minmax(0, 1fr);
-  grid-template-rows: auto 40px 28px 28px 26px 1px 26px auto 28px 28px 28px 28px;
-  column-gap: 12px;
-  row-gap: 6px;
-  padding: 26px clamp(18px, 2.4vw, 32px) 30px;
-  overflow: hidden;
+  position: absolute;
+  top: -20px;
+  bottom: -20px;
+  left: calc(var(--q) + 2 * var(--cg) + var(--col));
+  right: 0;
   border-radius: 22px;
   background:
-    radial-gradient(60% 50% at 75% 100%, rgb(95 224 176 / 0.07), transparent 70%),
-    linear-gradient(180deg, #15171b, #0f1013);
+    radial-gradient(80% 40% at 50% 0%, rgb(95 224 176 / 0.09), transparent 70%),
+    linear-gradient(180deg, #16181c, #101114);
   box-shadow:
-    0 0 0 1px rgb(244 241 234 / 0.09),
-    0 1px 0 rgb(244 241 234 / 0.07) inset,
+    0 0 0 1px rgb(95 224 176 / 0.38),
     0 40px 100px -40px rgb(0 0 0 / 0.95),
-    0 0 90px -40px rgb(95 224 176 / 0.3);
+    0 0 90px -40px rgb(95 224 176 / 0.4);
 }
 
-.ruler {
+.row {
   position: relative;
-  grid-column: 3;
-  grid-row: 1;
-  height: 26px;
-  background:
-    repeating-linear-gradient(to right, rgb(244 241 234 / 0.3) 0 1px, transparent 1px 12.5%) 0 100% / 100% 8px no-repeat,
-    repeating-linear-gradient(to right, rgb(244 241 234 / 0.13) 0 1px, transparent 1px 2.5%) 0 100% / 100% 4px no-repeat;
-}
-
-.ruler span {
-  position: absolute;
-  top: 0;
-  translate: -50% 0;
-  color: rgb(244 241 234 / 0.4);
-  font-family: var(--font-mono-stack);
-  font-size: 10px;
-}
-
-.ruler span:first-child {
-  translate: 0 0;
-}
-
-.ruler span:last-child {
-  translate: -100% 0;
-}
-
-/* Who: a name, a state and a note, beside their tracks. */
-.who {
-  grid-column: 1;
   display: grid;
-  align-content: center;
-  gap: 6px;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  align-items: center;
 }
 
-.handWho {
-  grid-row: 2 / 5;
+.corner {
+  grid-column: 1;
 }
 
-.keyWho {
-  grid-row: 8 / 13;
+/* Both answer columns keep the same inset, so the two editors are the
+   same size and every answer starts at the same distance from its edge. */
+.handCol {
+  grid-column: 2;
+  min-width: 0;
+  margin-inline: var(--in);
 }
 
-.whoName {
+.keyCol {
+  grid-column: 3;
+  min-width: 0;
+  margin-inline: var(--in);
+}
+
+/* Heads. */
+.colHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 16px;
   color: var(--paper);
-  font-size: 1.125rem;
+  font-size: 1.1875rem;
   font-weight: 600;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.015em;
 }
 
-.handWho .whoName {
-  color: rgb(244 241 234 / 0.72);
-}
-
-.whoNote {
-  color: rgb(244 241 234 / 0.42);
-  font-size: 0.8125rem;
+.colHead.handCol {
+  color: rgb(244 241 234 / 0.68);
 }
 
 .busy,
-.editing,
 .ready {
   display: inline-flex;
   align-items: center;
   gap: 7px;
   font-family: var(--font-mono-stack);
   font-size: 0.6875rem;
+  font-weight: 400;
   letter-spacing: 0.04em;
+  white-space: nowrap;
 }
 
 .busy {
-  color: rgb(244 241 234 / 0.5);
+  color: rgb(244 241 234 / 0.45);
 }
 
 .busy i,
-.editing i,
 .ready i {
   width: 6px;
   height: 6px;
@@ -197,26 +185,8 @@
 }
 
 .busy i {
-  background: rgb(244 241 234 / 0.5);
+  background: rgb(244 241 234 / 0.45);
   animation: blink 1.2s ease-in-out infinite;
-}
-
-.state {
-  display: grid;
-}
-
-.editing,
-.ready {
-  grid-area: 1 / 1;
-}
-
-.editing {
-  color: rgb(244 241 234 / 0.6);
-  opacity: 0;
-}
-
-.editing i {
-  background: rgb(244 241 234 / 0.6);
 }
 
 .ready {
@@ -228,198 +198,164 @@
   box-shadow: 0 0 8px var(--soft-mint);
 }
 
-.divider {
-  grid-column: 1 / -1;
-  grid-row: 6;
-  background: rgb(244 241 234 / 0.08);
+/* ---------- The two editors ---------- */
+
+.screens {
+  align-items: start;
+  padding-bottom: 26px;
 }
 
-.code {
-  grid-column: 2;
-  grid-row: var(--r);
-  align-self: center;
-  color: rgb(244 241 234 / 0.35);
+.screens .q {
+  padding-top: 4px;
+}
+
+.editor {
+  display: grid;
+  gap: 10px;
+}
+
+.viewer {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #050506;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.08);
+  container-type: inline-size;
+}
+
+.handEditor .viewer {
+  opacity: 0.8;
+}
+
+/* Raw footage: flat and grey, not graded yet. */
+.rawWash {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgb(60 62 70 / 0.55), rgb(30 31 36 / 0.55));
+}
+
+.tag {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 9px;
+  border-radius: 6px;
+  background: rgb(11 11 13 / 0.7);
+  color: rgb(244 241 234 / 0.75);
   font-family: var(--font-mono-stack);
   font-size: 10px;
+  letter-spacing: 0.06em;
 }
 
-.lane {
+.tagMint {
+  left: auto;
+  right: 10px;
+  color: var(--mint-text-dark);
+}
+
+.tagMint i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--soft-mint);
+  box-shadow: 0 0 6px var(--soft-mint);
+}
+
+.lower {
+  position: absolute;
+  top: 12%;
+  left: 5%;
+  display: grid;
+  gap: 0.4cqw;
+  padding: 1.2cqw 2.4cqw;
+  border-left: 0.6cqw solid #7b6cf0;
+  background: linear-gradient(90deg, rgb(11 11 13 / 0.82), rgb(11 11 13 / 0));
+}
+
+.lower b {
+  color: #fff;
+  font-size: 3.8cqw;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.lower span {
+  color: rgb(244 241 234 / 0.7);
+  font-family: var(--font-mono-stack);
+  font-size: 2cqw;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.captions {
+  position: absolute;
+  right: 8%;
+  bottom: 9%;
+  left: 8%;
+  display: flex;
+  justify-content: center;
+  gap: 0.28em;
+  color: #fff;
+  font-family: var(--font-accent-stack);
+  font-size: 6.4cqw;
+  font-style: italic;
+  line-height: 1.1;
+  text-shadow: 0 2px 12px rgb(0 0 0 / 0.6);
+}
+
+.captions span:nth-child(3) {
+  color: var(--soft-mint);
+}
+
+/* Timelines under the viewers. */
+.timeline {
   position: relative;
-  grid-column: 3;
-  grid-row: var(--r);
-  min-width: 0;
+  display: grid;
+  gap: 4px;
 }
 
 .track {
-  border-radius: 5px;
-  background: rgb(244 241 234 / 0.025);
-}
-
-/* ---------- By hand ---------- */
-
-.flags {
-  align-self: end;
-  height: 34px;
-}
-
-.flag {
-  position: absolute;
-  bottom: 0;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  translate: -4px 0;
-  color: rgb(244 241 234 / 0.32);
-  font-family: var(--font-mono-stack);
-  font-size: 10px;
-  white-space: nowrap;
-}
-
-.flag i {
-  flex: none;
-  width: 8px;
-  height: 8px;
-  border-radius: 1.5px;
-  rotate: 45deg;
-  box-shadow: 0 0 0 1.5px rgb(244 241 234 / 0.28);
-}
-
-.flag b {
-  font-weight: 400;
-}
-
-/* Chores reached by hand: a filled grey diamond, the label brighter,
-   as a layer over the flag that fades in (only for the first three). */
-.reached {
-  position: absolute;
-  inset: 0;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  color: rgb(244 241 234 / 0.8);
-  opacity: 0;
-}
-
-.reached i {
-  background: rgb(244 241 234 / 0.65);
-  box-shadow: 0 0 0 1.5px rgb(244 241 234 / 0.65);
-}
-
-.flag[data-n="0"] .reached,
-.flag[data-n="1"] .reached,
-.flag[data-n="2"] .reached {
-  opacity: 1;
+  position: relative;
+  height: 18px;
+  border-radius: 4px;
+  background: rgb(244 241 234 / 0.03);
 }
 
 .raw,
-.cutPiece {
+.cutPiece,
+.clip,
+.titleClip,
+.word {
   position: absolute;
-  top: 3px;
-  bottom: 3px;
+  top: 2px;
+  bottom: 2px;
   border-radius: 3px;
 }
 
 .raw {
   background: rgb(244 241 234 / 0.1);
-  box-shadow: 1px 0 0 #0f1013 inset, -1px 0 0 #0f1013 inset;
+  box-shadow: 1px 0 0 #0b0b0d inset, -1px 0 0 #0b0b0d inset;
 }
 
-/* Worked so far: the pieces lit, with a razor line at each cut. */
 .worked {
   position: absolute;
   inset: 0;
-  clip-path: inset(0 60% 0 0);
+  clip-path: inset(0 55% 0 0);
 }
 
 .cutPiece {
-  background: rgb(244 241 234 / 0.24);
+  background: rgb(244 241 234 / 0.26);
   box-shadow: -1.5px 0 0 rgb(244 241 234 / 0.85);
 }
 
-.wave {
-  display: flex;
-  align-items: center;
-  gap: 2px;
-  padding: 0 4px;
-}
-
-.wave i {
-  flex: 1;
-  height: calc(var(--h) * 80%);
-  border-radius: 2px;
-  background: rgb(244 241 234 / 0.16);
-}
-
-/* ---------- With Keyfly ---------- */
-
-.askLane {
-  align-self: center;
-}
-
-.ask {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  width: min(100%, 560px);
-  min-height: 46px;
-  padding: 0 7px 0 16px;
-  border-radius: var(--radius-round);
-  background: rgb(244 241 234 / 0.05);
-  box-shadow:
-    0 0 0 1px rgb(95 224 176 / 0.35) inset,
-    0 0 30px -12px rgb(95 224 176 / 0.5);
-  color: var(--paper);
-  font-size: 0.9375rem;
-  font-weight: 540;
-}
-
-.chevron {
-  color: var(--soft-mint);
-  font-family: var(--font-mono-stack);
-}
-
-.askText {
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-
-.send {
-  display: grid;
-  flex: none;
-  place-items: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: var(--soft-mint);
-  color: var(--mint-ink);
-}
-
-.titleClip,
-.clip,
-.word {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  border-radius: 5px;
-}
-
-.titleClip {
-  left: 0;
-  width: 22%;
-  display: grid;
-  align-items: center;
-  overflow: hidden;
-  padding-left: 8px;
-  border-left: 3px solid #7b6cf0;
-  background: rgb(244 241 234 / 0.09);
-  color: rgb(244 241 234 / 0.85);
-  font-size: 10.5px;
-  font-style: normal;
-  font-weight: 600;
-  white-space: nowrap;
+.empty {
+  background:
+    repeating-linear-gradient(90deg, rgb(244 241 234 / 0.05) 0 6px, transparent 6px 12px),
+    rgb(244 241 234 / 0.02);
 }
 
 .clip {
@@ -438,52 +374,25 @@
   background: #6aa3b3;
 }
 
-.music {
-  background: rgb(95 224 176 / 0.06);
-  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.2) inset;
-}
-
-.music svg {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
-.music path {
-  fill: none;
-  stroke: var(--soft-mint);
-  stroke-width: 1.5;
-  vector-effect: non-scaling-stroke;
+.titleClip {
+  z-index: 1;
+  left: 0;
+  width: 3px;
+  background: #7b6cf0;
 }
 
 .word {
-  display: grid;
-  align-items: center;
-  width: 17%;
-  padding-left: 8px;
-  background: rgb(244 241 234 / 0.08);
-  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.22) inset;
-  color: rgb(244 241 234 / 0.8);
-  font-size: 10.5px;
-  font-style: normal;
-  font-weight: 600;
+  width: 18%;
+  background: rgb(244 241 234 / 0.14);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.25) inset;
 }
 
-/* ---------- Playheads ---------- */
-
+/* Playheads: a rail as wide as the timeline, its inner layer translated. */
 .rail {
-  position: relative;
-  grid-column: 3;
+  position: absolute;
+  inset: -3px 0;
   overflow: hidden;
   pointer-events: none;
-}
-
-.handRail {
-  grid-row: 2 / 5;
-}
-
-.keyRail {
-  grid-row: 9 / 13;
 }
 
 .rail i {
@@ -502,25 +411,113 @@
 }
 
 .handRail i {
-  translate: 40% 0;
+  translate: 45% 0;
 }
 
 .handRail i::before {
-  background: rgb(244 241 234 / 0.7);
+  background: rgb(244 241 234 / 0.75);
 }
 
-/* Keyfly's playhead rests at the end; its last px stays in view. */
 .keyRail i {
-  translate: calc(100% - 2px) 0;
+  translate: 62% 0;
 }
 
 .keyRail i::before {
   background: var(--soft-mint);
-  box-shadow: 0 0 10px var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+}
+
+/* ---------- The comparison rows ---------- */
+
+.row + .row:not(.screens):not(.foot) {
+  border-top: 1px solid rgb(244 241 234 / 0.08);
+}
+
+.q {
+  color: rgb(244 241 234 / 0.5);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 58px;
+  font-size: 0.9875rem;
+  line-height: 1.35;
+}
+
+.cell.handCol {
+  color: rgb(244 241 234 / 0.55);
+}
+
+.yes {
+  color: var(--paper);
+  font-weight: 540;
+}
+
+.mark {
+  flex: none;
+}
+
+.handCol .mark circle {
+  fill: none;
+  stroke: rgb(244 241 234 / 0.25);
+  stroke-width: 1.5;
+}
+
+.handCol .mark path {
+  stroke: rgb(244 241 234 / 0.45);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+
+.yes .mark circle {
+  fill: var(--soft-mint);
+}
+
+.yes .mark path {
+  fill: none;
+  stroke: var(--mint-ink);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* The foot: a call to action under Keyfly's column. */
+.foot {
+  padding-top: 16px;
+}
+
+.cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 46px;
+  border-radius: var(--radius-round);
+  background: var(--soft-mint);
+  color: var(--mint-ink);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: box-shadow 0.3s ease;
+}
+
+.cta:hover {
+  box-shadow: 0 0 30px -4px rgb(95 224 176 / 0.7);
+}
+
+.cta:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 3px;
 }
 
 .footnote {
-  margin-top: 16px;
+  margin-top: 34px;
   color: rgb(244 241 234 / 0.38);
   font-family: var(--font-mono-stack);
   font-size: 0.6875rem;
@@ -529,54 +526,18 @@
   text-transform: uppercase;
 }
 
-/* ---------- The loop ---------- */
+/* ---------- The loops ---------- */
 
-.panel[data-play] .handRail i {
+.table[data-play] .handRail i {
   animation: handHead 12s linear infinite both;
 }
 
-.panel[data-play] .worked {
+.table[data-play] .worked {
   animation: worked 12s linear infinite both;
 }
 
-.panel[data-play] .flag[data-n="0"] .reached {
-  animation: reach1 12s linear infinite both;
-}
-
-.panel[data-play] .flag[data-n="1"] .reached {
-  animation: reach2 12s linear infinite both;
-}
-
-.panel[data-play] .flag[data-n="2"] .reached {
-  animation: reach3 12s linear infinite both;
-}
-
-.panel[data-play] .askText {
-  animation: type 12s steps(40) infinite both;
-}
-
-.panel[data-play] .send {
-  animation: send 12s ease infinite both;
-}
-
-.panel[data-play] .editing {
-  animation: editing 12s linear infinite both;
-}
-
-.panel[data-play] .ready {
-  animation: ready 12s linear infinite both;
-}
-
-.panel[data-play] .titleClip,
-.panel[data-play] .clip,
-.panel[data-play] .word,
-.panel[data-play] .music {
-  animation: drop 12s ease infinite both;
-  animation-delay: calc(var(--k) * 90ms);
-}
-
-.panel[data-play] .keyRail i {
-  animation: keyHead 12s ease-in-out infinite both;
+.table[data-play] .keyRail i {
+  animation: keyHead 6s linear infinite both;
 }
 
 @keyframes handHead {
@@ -584,7 +545,7 @@
     translate: 0 0;
   }
   97% {
-    translate: 40% 0;
+    translate: 45% 0;
   }
   100% {
     translate: 0 0;
@@ -596,141 +557,19 @@
     clip-path: inset(0 100% 0 0);
   }
   97% {
-    clip-path: inset(0 60% 0 0);
+    clip-path: inset(0 55% 0 0);
   }
   100% {
     clip-path: inset(0 100% 0 0);
-  }
-}
-
-/* The chores light as the playhead reaches them (8%, 22%, 36% of 40%). */
-@keyframes reach1 {
-  0%,
-  19% {
-    opacity: 0;
-  }
-  20%,
-  97% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-
-@keyframes reach2 {
-  0%,
-  53% {
-    opacity: 0;
-  }
-  54%,
-  97% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-
-@keyframes reach3 {
-  0%,
-  86% {
-    opacity: 0;
-  }
-  87%,
-  97% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-
-@keyframes type {
-  0%,
-  1% {
-    clip-path: inset(0 100% 0 0);
-  }
-  12%,
-  100% {
-    clip-path: inset(0 0 0 0);
-  }
-}
-
-@keyframes send {
-  0%,
-  12% {
-    opacity: 0.35;
-    scale: 1;
-  }
-  13.5% {
-    opacity: 1;
-    scale: 1.18;
-  }
-  16%,
-  100% {
-    opacity: 1;
-    scale: 1;
-  }
-}
-
-@keyframes editing {
-  0%,
-  12.9% {
-    opacity: 0;
-  }
-  13%,
-  33.9% {
-    opacity: 1;
-  }
-  34%,
-  100% {
-    opacity: 0;
-  }
-}
-
-@keyframes ready {
-  0%,
-  33.9% {
-    opacity: 0;
-  }
-  35%,
-  98% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-
-@keyframes drop {
-  0%,
-  14% {
-    opacity: 0;
-    translate: 0 -10px;
-  }
-  17%,
-  97% {
-    opacity: 1;
-    translate: 0 0;
-  }
-  100% {
-    opacity: 0;
-    translate: 0 0;
   }
 }
 
 @keyframes keyHead {
-  0%,
-  23% {
+  from {
     translate: 0 0;
   }
-  34%,
-  97% {
+  to {
     translate: calc(100% - 2px) 0;
-  }
-  100% {
-    translate: 0 0;
   }
 }
 
@@ -762,92 +601,60 @@
   }
 }
 
-/* Narrow: each side's name and state above its tracks; flags as dots. */
+/* Narrow: two columns; each question sits above its pair of answers. */
 @media (max-width: 760px) {
+  .table {
+    --q: 0px;
+    --cg: 12px;
+    --in: 10px;
+    grid-template-columns: 0 minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: 0;
+  }
+
   .panel {
-    grid-template-columns: 22px minmax(0, 1fr);
-    grid-template-rows: auto auto 22px 26px 26px 18px 1px 18px auto auto 26px 26px 26px 26px;
-    column-gap: 8px;
-    padding: 20px 14px 24px;
+    left: calc(50% + 6px);
+    top: -14px;
+    bottom: -14px;
   }
 
-  .ruler {
-    grid-column: 2;
-    grid-row: 1;
+  .handCol {
+    margin-inline: 0 calc(var(--in) + 12px);
   }
 
-  .who {
-    grid-column: 1 / -1;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 4px 12px;
-    margin: 14px 0 6px;
+  .row:not(.screens):not(.foot) {
+    grid-template-rows: auto auto;
   }
 
-  .handWho {
-    grid-row: 2;
+  .q {
+    grid-column: 2 / -1;
+    padding-top: 14px;
   }
 
-  .keyWho {
-    grid-row: 9;
-  }
-
-  .whoNote {
+  .corner {
     display: none;
   }
 
-  /* Each side's rows move down past its name: by hand by one, Keyfly
-     (.k) by two. */
-  .code {
-    grid-column: 1;
-    grid-row: calc(var(--r) + var(--shift, 1));
+  .colHead {
+    flex-direction: column;
+    gap: 4px;
+    font-size: 1rem;
   }
 
-  .lane {
-    grid-column: 2;
-    grid-row: calc(var(--r) + var(--shift, 1));
+  .cell {
+    align-items: flex-start;
+    gap: 8px;
+    min-height: 0;
+    padding: 6px 0 14px;
+    font-size: 0.875rem;
   }
 
-  .k {
-    --shift: 2;
+  .mark {
+    width: 16px;
+    height: 16px;
   }
 
-  .askLane {
-    grid-column: 1 / -1;
-    margin-bottom: 6px;
-  }
-
-  .askText {
-    white-space: normal;
-  }
-
-  .divider {
-    grid-row: 7;
-  }
-
-  .rail {
-    grid-column: 2;
-  }
-
-  .handRail {
-    grid-row: 3 / 6;
-  }
-
-  .keyRail {
-    grid-row: 11 / 15;
-  }
-
-  .flag b {
+  .tag {
     display: none;
-  }
-
-  .reached {
-    inset: auto;
-  }
-
-  .flags {
-    height: 22px;
   }
 }
 
