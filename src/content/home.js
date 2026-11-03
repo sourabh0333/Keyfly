@@ -409,6 +409,7 @@ export const pricing = {
     minSeats: "minimum {n} seats",
     packs: "Need more AI minutes?",
     min: "min",
+    axis: "AI minutes a month",
     note: "Prices in US dollars. AI minutes count only while Keyfly's AI is working.",
   },
   pending: {

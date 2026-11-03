@@ -1,9 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState, useSyncExternalStore } from "react";
 import styles from "./pricing.module.css";
 
-const MAIN = ["byo", "starter", "creator", "pro"];
+const NARROW = "(max-width: 640px)";
+function onNarrow(callback) {
+  const query = matchMedia(NARROW);
+  query.addEventListener("change", callback);
+  return () => query.removeEventListener("change", callback);
+}
+
+// The ruler's ticks, as fractions of its length.
+const TICKS = Array.from({ length: 49 }, (_, i) => i / 48);
 
 function Arrow() {
   return (
@@ -22,19 +30,85 @@ function Check() {
   );
 }
 
+// Where a plan sits on the ruler: the square root of its AI minutes over
+// the most, so small plans don't crowd at the start; kept at least 9%
+// apart.
+function placeStops(plans) {
+  const max = Math.max(1, ...plans.map((p) => p.aiMinutes));
+  const at = [];
+  plans.forEach((p, i) => {
+    const raw = Math.sqrt(p.aiMinutes / max);
+    at.push(i ? Math.max(raw, at[i - 1] + 0.09) : raw);
+  });
+  const top = at.at(-1) || 1;
+  return at.map((x) => x / top);
+}
+
 /**
- * The plans, from the pricing API (normalised in src/lib/pricing.js): a
- * Monthly / Yearly switch with the savings pill and the launch offer, the
- * four main plans side by side (the most popular raised on a mint edge),
- * a slim row for the others (Free, Team, Enterprise), and the AI-minute
- * packs. Every price, allowance, bullet and link is the API's own.
+ * The plans, from the pricing API (normalised in src/lib/pricing.js), as
+ * an editing timeline: a ruler of AI minutes a month with each plan that
+ * has an allowance as a stop on it, and a mint playhead that chooses one
+ * (drag it, click a stop, or use the arrow keys; it settles on the nearest
+ * stop). Beneath, an inspector shows the plan under the playhead: price,
+ * billing, AI minutes, what's included and its buttons. Per-seat and
+ * custom plans (Team, Enterprise) sit in a slim row beneath, then the
+ * AI-minute packs. Monthly / Yearly switch above. Every price, allowance,
+ * bullet and link is the API's own.
  */
 export function Plans({ data, copy }) {
   const [interval, setBilling] = useState("year");
   const key = interval === "year" ? "annual" : "monthly";
   const linkKey = interval === "year" ? "year" : "month";
-  const main = data.plans.filter((p) => MAIN.includes(p.id));
-  const others = data.plans.filter((p) => !MAIN.includes(p.id));
+
+  const stops = data.plans.filter((p) => p.aiMinutes !== null && !p.seats?.perSeat).sort((a, b) => a.aiMinutes - b.aiMinutes);
+  const others = data.plans.filter((p) => !stops.includes(p));
+  const narrow = useSyncExternalStore(onNarrow, () => matchMedia(NARROW).matches, () => false);
+  // On narrow screens the stops sit evenly spaced, so their labels fit.
+  const at = narrow ? stops.map((_, i) => (stops.length > 1 ? i / (stops.length - 1) : 0)) : placeStops(stops);
+  const start = Math.max(0, stops.findIndex((p) => p.mostPopular));
+
+  const [active, setActive] = useState(start);
+  const [drag, setDrag] = useState(null); // the playhead's position while dragging (0–1)
+  const rulerRef = useRef(null);
+
+  const p = stops[active];
+  const price = p ? p[key] || p.monthly : null;
+  const buy = p?.links?.[linkKey]?.checkout;
+  const head = drag ?? at[active];
+
+  const nearest = (x) => at.reduce((best, a, i) => (Math.abs(a - x) < Math.abs(at[best] - x) ? i : best), 0);
+  const fromPointer = (event) => {
+    const r = rulerRef.current.getBoundingClientRect();
+    return Math.min(1, Math.max(0, (event.clientX - r.left) / r.width));
+  };
+
+  function onPointerDown(event) {
+    if (event.button !== 0) return;
+    event.currentTarget.setPointerCapture(event.pointerId);
+    const x = fromPointer(event);
+    setDrag(x);
+    setActive(nearest(x));
+  }
+
+  function onPointerMove(event) {
+    if (drag === null) return;
+    const x = fromPointer(event);
+    setDrag(x);
+    setActive(nearest(x));
+  }
+
+  function onPointerUp() {
+    setDrag(null);
+  }
+
+  function onKeyDown(event) {
+    const next = { ArrowRight: active + 1, ArrowUp: active + 1, ArrowLeft: active - 1, ArrowDown: active - 1, Home: 0, End: stops.length - 1 }[event.key];
+    if (next === undefined) return;
+    event.preventDefault();
+    setActive(Math.min(stops.length - 1, Math.max(0, next)));
+  }
+
+  if (!p) return null;
 
   return (
     <div className={styles.plans}>
@@ -59,90 +133,144 @@ export function Plans({ data, copy }) {
         ) : null}
       </div>
 
-      {/* The main plans. */}
-      <div className={styles.cards}>
-        {main.map((p) => {
-          const price = p[key] || p.monthly;
-          const buy = p.links?.[linkKey]?.checkout;
-          return (
-            <article key={p.id} className={styles.card} data-popular={p.mostPopular ? "" : undefined}>
-              <header className={styles.cardHead}>
-                <h3 className={styles.planName}>{p.name}</h3>
-                {p.mostPopular ? <span className={styles.badge}>{copy.popular}</span> : null}
-              </header>
-              {p.tagline ? <p className={styles.tagline}>{p.tagline}</p> : null}
+      {/* The timeline: AI minutes a month, a stop per plan, the playhead. */}
+      <div className={styles.timeline}>
+        <p className={styles.axis}>
+          <span>{copy.axis}</span>
+          <span>
+            {stops.at(-1).aiMinutes}+ {copy.min}
+          </span>
+        </p>
+        <div
+          ref={rulerRef}
+          className={styles.ruler}
+          role="slider"
+          tabIndex={0}
+          aria-label={copy.axis}
+          aria-valuemin={0}
+          aria-valuemax={stops.length - 1}
+          aria-valuenow={active}
+          aria-valuetext={`${p.name}, ${p.aiMinutes} ${copy.aiMinutes}`}
+          data-dragging={drag !== null ? "" : undefined}
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={onPointerUp}
+          onPointerCancel={onPointerUp}
+          onKeyDown={onKeyDown}
+          style={{ "--at": head }}
+        >
+          <span className={styles.ticks} aria-hidden="true">
+            {TICKS.map((t) => (
+              <i key={t} style={{ left: `${t * 100}%` }} />
+            ))}
+          </span>
+          <span className={styles.track} aria-hidden="true" />
+          <span className={styles.filled} aria-hidden="true" />
+          {stops.map((s, i) => (
+            <span key={s.id} className={styles.stop} data-on={i === active ? "" : undefined} data-done={i < active ? "" : undefined} style={{ left: `${at[i] * 100}%` }} aria-hidden="true">
+              <i />
+            </span>
+          ))}
+          <span className={styles.playhead} aria-hidden="true">
+            <i />
+          </span>
+        </div>
+        <div className={styles.labels}>
+          {stops.map((s, i) => (
+            <button
+              key={s.id}
+              type="button"
+              tabIndex={-1}
+              className={styles.label}
+              data-on={i === active ? "" : undefined}
+              data-edge={i === 0 ? "start" : i === stops.length - 1 ? "end" : undefined}
+              style={{ left: `${at[i] * 100}%` }}
+              onClick={() => setActive(i)}
+            >
+              <b>{s.name}</b>
+              <span>
+                {s.aiMinutes} {copy.min}
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
 
-              <div className={styles.price}>
-                {price ? (
-                  <>
-                    {price.was ? <s className={styles.was}>{price.was}</s> : null}
-                    <span className={styles.amount}>{price.amount}</span>
-                    <span className={styles.per}>{copy.perMonth}</span>
-                  </>
-                ) : null}
+      {/* The inspector: the plan under the playhead. */}
+      <div className={styles.inspector} data-popular={p.mostPopular ? "" : undefined} aria-live="polite">
+        <div key={`${p.id}-${interval}`} className={styles.inspectorMain}>
+          <p className={styles.planLine}>
+            <span className={styles.planName}>{p.name}</span>
+            {p.mostPopular ? <span className={styles.badge}>{copy.popular}</span> : null}
+          </p>
+          {p.tagline ? <p className={styles.tagline}>{p.tagline}</p> : null}
+          <p className={styles.price}>
+            {price ? (
+              <>
+                {price.was ? <s className={styles.was}>{price.was}</s> : null}
+                <span className={styles.amount}>{price.amount}</span>
+                <span className={styles.per}>{copy.perMonth}</span>
+              </>
+            ) : (
+              <span className={styles.amount}>{copy.free}</span>
+            )}
+          </p>
+          <p className={styles.billed}>{price ? [price.billed, price.reason].filter(Boolean).join(" · ") : "\u00a0"}</p>
+          <p className={styles.minutes}>
+            <b>{p.aiMinutes}</b> {copy.aiMinutes}
+          </p>
+        </div>
+
+        <div key={`${p.id}-f`} className={styles.inspectorSide}>
+          {p.includes ? <p className={styles.includes}>{p.includes}</p> : null}
+          <ul className={styles.features}>
+            {p.features.map((f) => (
+              <li key={f}>
+                <Check />
+                {f}
+              </li>
+            ))}
+          </ul>
+          <dl className={styles.specs}>
+            {p.exportResolution ? (
+              <div>
+                <dt>{copy.export}</dt>
+                <dd>{p.exportResolution}</dd>
               </div>
-              <p className={styles.billed}>{price ? [price.billed, price.reason].filter(Boolean).join(" · ") : " "}</p>
-
-              {p.aiMinutes !== null ? (
-                <p className={styles.minutes}>
-                  <b>{p.aiMinutes}</b> {copy.aiMinutes}
-                </p>
-              ) : null}
-
-              <div className={styles.actions}>
-                {p.cta ? (
-                  <a className={p.mostPopular ? styles.primary : styles.secondary} href={p.cta.href}>
-                    {p.cta.label}
-                    <Arrow />
-                  </a>
-                ) : null}
-                {buy ? (
-                  <a className={styles.buy} href={buy}>
-                    {copy.buy}
-                  </a>
-                ) : null}
+            ) : null}
+            {p.storageGb !== null ? (
+              <div>
+                <dt>{copy.storage}</dt>
+                <dd>{p.storageGb} GB</dd>
               </div>
-              {/* Every card keeps this row, so the rows line up across. */}
-              <p className={styles.trial}>
-                {p.trial?.days ? `${copy.trial.replace("{days}", p.trial.days)}${p.trial.noCard ? ` · ${copy.noCard}` : ""}` : "\u00a0"}
-              </p>
-
-              <div className={styles.features}>
-                <p className={styles.includes}>{p.includes || "\u00a0"}</p>
-                <ul>
-                  {p.features.map((f) => (
-                    <li key={f}>
-                      <Check />
-                      {f}
-                    </li>
-                  ))}
-                </ul>
+            ) : null}
+            {p.watermark !== null ? (
+              <div>
+                <dt>{copy.watermark}</dt>
+                <dd>{p.watermark ? copy.yes : copy.no}</dd>
               </div>
-
-              <dl className={styles.specs}>
-                {/* Always rendered, so every card has the same rows. */}
-                {p.exportResolution ? (
-                  <div>
-                    <dt>{copy.export}</dt>
-                    <dd>{p.exportResolution}</dd>
-                  </div>
-                ) : null}
-                {p.storageGb !== null ? (
-                  <div>
-                    <dt>{copy.storage}</dt>
-                    <dd>{p.storageGb} GB</dd>
-                  </div>
-                ) : null}
-                {p.watermark !== null ? (
-                  <div>
-                    <dt>{copy.watermark}</dt>
-                    <dd>{p.watermark ? copy.yes : copy.no}</dd>
-                  </div>
-                ) : null}
-              </dl>
-            </article>
-          );
-        })}
+            ) : null}
+          </dl>
+          <div className={styles.actions}>
+            {p.cta ? (
+              <a className={styles.primary} href={p.cta.href}>
+                {p.cta.label}
+                <Arrow />
+              </a>
+            ) : null}
+            {buy ? (
+              <a className={styles.buy} href={buy}>
+                {copy.buy}
+              </a>
+            ) : null}
+            {p.trial?.days ? (
+              <span className={styles.trial}>
+                {copy.trial.replace("{days}", p.trial.days)}
+                {p.trial.noCard ? ` · ${copy.noCard}` : ""}
+              </span>
+            ) : null}
+          </div>
+        </div>
       </div>
 
       {/* The other plans, in a slim row. */}
