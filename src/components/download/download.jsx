@@ -29,7 +29,7 @@ export function Download() {
               ))}
             </h2>
           </div>
-          <p className={styles.lead} data-landing>
+          <p className={styles.lead}>
             {lead}
           </p>
         </div>

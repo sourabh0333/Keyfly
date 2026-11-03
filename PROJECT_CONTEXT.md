@@ -154,27 +154,9 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
     - How it works: dusk (violet-blue and peach, from its viewer's shots).
     - Use cases: the colours of the feed on air. `Switcher` sets `html[data-feed]`, and the colours cross-fade through registered `@property` colours.
     - Download: mint, where the thread lands.
-  - **`FlightThread`** (reworked 2026-10-31: "the line is just moving along one side… lackluster"): one line of light in page coordinates (SVG over the page, `pointer-events: none`), laid out from the sections and re-measured with a `ResizeObserver` on the page and the footer. It speaks the logo intro's language.
-    - **Route** (re-routed 2026-11-03 at the team's request: after the dividers were added, its curves cut across their rulers and looked busy). It runs in **straight lanes joined by rounded corners** (`R` up to 28px), never across copy, and where it changes lane it **runs along a divider's ruler**, the page's own timeline, as it finishes along the footer's:
-      1. From the hero's playhead it turns across How it works' top padding into the **channel between the steps and the editor** and runs down it.
-      2. It turns onto **the first divider's ruler** (after How it works) and runs along it to the **left margin**, then down the margin, with a keyframe diamond at every divider it passes, landing on the Use cases eyebrow.
-      3. At **the divider before Download** it runs along that ruler to the **right margin**, flying **one loop of the brand's flight path around the divider's playhead** on the way, then lands on Download's lead.
-      4. It runs on down the right margin and turns onto **the footer panel's top edge from its right-hand corner**, ending at its playhead.
-      - Dividers are found by `data-divider` (the playhead by `data-divider-head`). Each sideways run is drawn while the scroll moves through a stretch around its height (`S`, up to 240px), so it plays rather than snaps; the footer run gets 60–220px.
-      - The margins sit halfway into the gutter (at most 26px out) from the content column. Where How it works has no side-by-side channel (narrow screens), the first run is the left margin.
-    - **The comet:** the head rides 62% down the screen. A white-hot core leads a burning mint tail (three windows of the path, at 210, 110 and 34px, set by `stroke-dasharray` and `stroke-dashoffset`), which cools behind into the thin finished line (`.base`).
-    - **Speed:** the tail stretches (up to 2.6×), brightens and the head grows with the scroll speed, measured from the line's own progress and smoothed.
-    - **Sparks:** the head sheds sparks while it moves, on a fixed `<canvas>`, falling under gravity and carried with the page. There are bursts at keyframes, at each landing and at the footer's playhead.
-    - **Flowing light:** pulses of light (`.pulses`, a dashed copy masked to what is drawn) keep travelling along the finished line.
-    - **Keyframe diamonds** light (with a burst) wherever a pinned section changes. Each pinned track lists its stops as fractions of its scroll in `data-thread-stops`, and diamonds are only placed on the vertical runs:
-      - How it works: `0.333,0.667`;
-      - the jog wheel: one per preset;
-      - Download: lift-off and landing.
-    - **Landings** (`data-landing`, on the Use cases eyebrow and on Download's lead): the line lands as a point with a bloom, a ring and a reach towards the text, which lights in answer (`data-landed`).
-    - **Footer:** it has `data-thread` while the line is on its way and `data-arrived` once the line reaches the playhead. Scrolling back up resets it, so it replays.
-    - **Performance:** one rAF loop runs only while the line moves or sparks live.
-    - **Reduced motion:** the line is drawn whole and still, with no pulses or sparks, and everything has landed.
-  - The thread stays in margins and gaps; never route it across copy.
+  - **The flight thread was removed on 2026-11-03** (the team: not right, and poor on phones). Its role, tying the sections together as you scroll, passed to **living dividers** (see Dividers below): each cut between sections plays as you scroll, the same on every screen.
+  - **`SceneCuts`** (`scene-cuts.jsx`): one passive scroll listener. It marks each section `data-cut` once the divider before it has crossed the middle of the screen (unmarked on the way back), and plays the footer's arrival (`data-thread`, then `data-arrived` once the panel's top passes 75% of the screen). With reduced motion every section is marked and the footer simply shows.
+  - **Arrival** (`globals.css`): a section with `data-cut` draws its eyebrow's mint mark out to 34px with a glow (matched by `[class*="eyebrowMark"]`, since modules hash class names). Its heading wipe follows straight after, so the cut reads as one movement.
   - **`Scrubber`** (added 2026-10-31, "the page is an edit"; moved the same day to the right-hand margin because, at the foot of the screen, it covered content): a slim vertical timeline fixed in the right margin once the hero is left behind. It is hidden at 1024px and below, where there is no margin.
     - One clip per `[data-section]` (Intro, How it works, Use cases, Download), sized by its length, filled with its section's light, with film-frame lines.
     - A mint playhead bar at the scroll position.
@@ -198,7 +180,6 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
     - The floor turns slightly with the pointer.
   - **Also on the hero:** a pointer light (`PointerField`, fine pointers only) and film grain.
 - **How it works** (`src/components/how-it-works/`, added 2026-10-31): three steps beside an illustrative Keyfly editor window, captioned "Illustrative interface".
-  - **Continuity:** the flight thread (see Scene) picks up the hero's playhead at the top of the section.
   - **Steps:** Describe it, Keyfly edits, Export anywhere, on a rail that fills with the mint point at its tip. Only the current step shows its body. On narrow screens they become one row of three.
   - **Scroll progress:** `ScrollStage` (client) pins the section (`data-live`, 420svh, sticky 100svh stage). It writes to the DOM:
     - `--p`, `--s1`, `--s2`, `--s3` (one per step), `--asm` (assembly) and `--ph` (playhead);
@@ -216,10 +197,9 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
     - **With Keyfly** (right), the same rows finished: "With Keyfly · ● Done in one step", the sentence, the graded picture (lower third, serif-italic captions, "● First cut ready", a mint edge) and the finished timeline (coloured clips, the voice, the music keyed in mint, caption chips) with a mint playhead playing it.
     - **The strip:** six equal columns, each a bar, "0N chore" (by hand) and "✓ result" (Keyfly); done bars grey, the step in play white with its result in mint. They jump to a step.
   - **The stage** carries `data-step` and `data-reached` (every step so far, matched with `~=`).
-  - **Scroll:** where the stage fits the screen (content + 96px ≤ the window's height) and motion is welcome, the track pins (100svh + 6 × 46svh) and the scroll picks the step; it carries `data-thread-stops` for the flight thread's diamonds. Otherwise (short laptops, phones) it moves on by itself every 2.8s while on screen. Reduced motion: step 6, still.
+  - **Scroll:** where the stage fits the screen (content + 96px ≤ the window's height) and motion is welcome, the track pins (100svh + 6 × 46svh) and the scroll picks the step. Otherwise (short laptops, phones) it moves on by itself every 2.8s while on screen. Reduced motion: step 6, still.
   - **Narrow screens** (≤900px): by hand, "vs", Keyfly stacked; the strip in rows of three (two on phones).
   - **Copy:** `oldWay`. Keyfly's results are PLACEHOLDER until the team confirms them.
-  - **Flight thread:** it crosses from How it works' channel to the left margin before this section and runs down beside it.
 - **Edit with words** (`src/components/edit-with-words/`, added 2026-10-31; the first of the new sections in `PLAN.md`): "Change anything *by saying it.*" The core differentiator, refining the first cut by asking. The heading is centred; the stage spans the full column. It is captioned "Illustrative interface".
   - **`CommandCut`** (client), redesigned 2026-10-31 as a **before and after**; the mock editor with a striped timeline looked dated. Three columns on wide screens (stacked below 900px):
     - **Before:** the first cut, dimmed, with its facts as mono chips (0:42 · 16:9 · 8 cuts) and a clean bar of its shots.
@@ -240,7 +220,6 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
     - The six tabs form an even bar as wide as the comparison (three per row below 1180px; scrolling sideways below 900px).
     - The shot layout is computed in a pure function, so render doesn't reassign variables (React lint).
   - **Copy:** `editWithWords` in the content file, all PLACEHOLDER until the team confirms which follow-up edits are real.
-  - **Flight thread:** it crosses from How it works' channel to the left margin in the gap before this section and runs down beside it.
 - **You make the calls** (`src/components/your-call/`, added 2026-10-31; the answer to "black box" AI): "Keyfly decides. *You have the final say.*" Heading laid out like Use cases; captioned "Illustrative interface". Earlier versions were dropped as not matching the page: a timeline panel with cards, an annotated diagram, and an editable sentence. The team then picked this structure from three options.
   - **`Inspector`** (client): the Keyfly editor with its inspector open, in the same window language and values as How it works.
     - **Chrome:** "Launch Video · Keyfly", and "4 decisions · N changed" in mint.
@@ -271,7 +250,7 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
   - **Narrow screens:** the kit becomes 2 × 2 (names only on phones); the reel is shorter.
   - **Gotcha:** the heading uses `.title`, so the videos' titles are `.vidTitle`.
   - **Copy:** `onBrand`, PLACEHOLDER until the team confirms what the brand kit holds.
-- **Works where you work** (`src/components/anywhere/`, added 2026-11-02): "Start anywhere. *Finish anywhere.*" Heading laid out like Use cases; captioned "Illustrative interface". The team confirmed on 2026-11-02 that Keyfly runs as an app inside ChatGPT and Claude and the project then opens in Keyfly; browser–desktop sync and the example edits are PLACEHOLDER. Picked "one project, three doors" from three structures. It sits before Use cases because the flight thread's loop runs from Use cases straight to Download.
+- **Works where you work** (`src/components/anywhere/`, added 2026-11-02): "Start anywhere. *Finish anywhere.*" Heading laid out like Use cases; captioned "Illustrative interface". The team confirmed on 2026-11-02 that Keyfly runs as an app inside ChatGPT and Claude and the project then opens in Keyfly; browser–desktop sync and the example edits are PLACEHOLDER. Picked "one project, three doors" from three structures.
   - **`Doors`** (client): a 3 × 2 grid, `"tabs desktop log" / "chat hub browser"`.
     - **Top left, "Open it in":** the three surfaces as hairline rows (index, name, where); the one in use fills along its foot while it waits.
     - **Top right, "Project history":** v3 · v2 · v1, the current one lit, earlier ones read.
@@ -289,15 +268,15 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
   - **Accessibility and search:** every question and answer is also in the page as a visually hidden `<dl>`; the panel is decorative (`aria-hidden`, its controls out of the tab order).
   - **Narrow screens:** the panel sits above the list; asking scrolls it into view.
   - **Copy:** `faq`. Answers come from confirmed facts where we have them. Changing the cut, formats, ownership and privacy, and pricing are PLACEHOLDER; ownership, privacy and pricing say the details are coming rather than guessing.
-  - **Flight thread:** the sweep to the footer now starts below the last section (`main [data-section]`), so the line runs down the right margin beside the FAQ and never crosses it.
-- **Dividers** (`src/components/divider/`, added 2026-11-03 at the team's request, from the ruler of a closing section that was built and then removed the same day): between every two sections after How it works, a timeline ruler across the content column with the mint playhead (a stem and a diamond) in the middle. It takes no height, so it sits exactly in the middle of the gap (each section's `--section-pad`, top and bottom). None after the hero (its timeline floor already is one) or before the footer (whose top edge is a ruler with the playhead).
+- **Dividers** (`src/components/divider/`, added 2026-11-03 at the team's request; **living** from the same day): between every two sections after How it works, a timeline ruler across the content column, in the middle of the gap (it takes no height). Not after the hero (its timeline floor is one) or before the footer (whose top edge is a ruler).
+  - **The cut, played by the scroll (CSS only):** the ruler is its own view timeline (`view-timeline: --cut`); as it rises from the lower part of the screen to the middle (`animation-range: cover 18% cover 50%`) the registered `--cp` goes 0 → 1, moving the mint playhead (a stem and a diamond) across the ruler and lighting a mint line behind it. It scrubs both ways. When it reaches the middle, the next section arrives (`SceneCuts`, above).
+  - Without scroll-driven animation, or with reduced motion, the playhead stands still in the middle (`--cp: 0.5`).
   - **Even gaps after pinned sections:** a pinned stage sits at the top of a pin as tall as the screen and leaves empty space below its content. `TrimPins` (`src/components/scene/trim-pins.jsx`, in `Scene`) measures that space for every `[data-live]` track and takes it off the track's bottom margin (re-measured on resize and whenever a track pins or unpins). How it works, which pins its own section, carries its padding as `margin-bottom: var(--section-pad)` while pinned.
 - **Prompt gallery** (`src/components/prompts/`, added 2026-11-03 after a review of what the page lacks against competitors, who lean on templates): "Start from *a prompt.*" Picked "hover-reveal list" from three structures.
   - **`PromptList`** (client): eight prompts as a frameless, numbered list (01–08, counting on across groups) under four goals (Launch, Social, Explain, Stories), with hairlines, no boxes. Each row: index, the prompt in large quoted type, its preset and format in mono, and a mint "Try it ↑" that appears on hover or focus (the line shifts right, its index turns mint).
   - **The floating preview** (fine pointers only): the prompt's `Preview` (16:9, or 9:16 narrower) floats above and right of the pointer (its foot at the pointer, so the line stays readable) and eases after it (rAF, only while hovering).
   - **Choosing a prompt** dispatches `keyfly:prompt` with `{ text }`; `PromptBox` now accepts any prompt's text as well as a preset label, scrolls up and types it in.
   - **Copy:** `prompts`. Six are the app's own preset prompts; the two extra examples (a vertical teaser, an event recap) are PLACEHOLDER until the team reviews them, and use only confirmed capabilities.
-  - **Flight thread:** the loop to Download now starts below the last section before Download (here the gallery), so the line runs on down the left margin beside the gallery first.
 - **Who it's for** (`src/components/audience/`, added 2026-11-03): "Made for people *with a story to tell.*" A first version (a role index beside a preview) was dropped the same day as too like Use cases and the FAQ; the team then picked "expanding panels".
   - **`Roles`** (client): four tall panels side by side across the column (Marketers & founders, Creators, Educators, Podcasters), `clamp(440px, 62svh, 580px)` tall. The open one grows (`flex-grow` 5.2 to 1, 0.7s) with a mint edge; the others are slim strips with their index at the top and their name written up the side.
     - **Each panel:** the role's `Preview` in its top 54% (at the role's own shape; 9:16 stands centred), fading into night where the words sit; closed panels show it dimmed.
@@ -348,7 +327,7 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
     - Product demo: a cursor click, then a zoom.
     - Podcast: a speaker, a waveform and a quote.
   - **Copy:** in `useCases` (content file), PLACEHOLDER.
-- **Download** (`src/components/download/`, added 2026-10-31, redesigned twice the same day): "Land Keyfly *on your desktop.*" A **landing played by the scroll**, the page's finale, where the flight thread lands too. The installer-window version was dropped because the team wanted each section to be its own, yet match.
+- **Download** (`src/components/download/`, added 2026-10-31, redesigned twice the same day): "Land Keyfly *on your desktop.*" A **landing played by the scroll**, the page's finale. The installer-window version was dropped because the team wanted each section to be its own, yet match.
   - **Heading:** laid out like Use cases (eyebrow and h2 left, lead right).
   - **`Landing`** (client): the track (`data-live`, 260svh) pins a 100svh stage. The scroll then plays the flight:
     - Lift-off (first 12%): the icon rises off the source.
@@ -370,7 +349,7 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
   - **No masks or blend modes over moving content:**
     - the floor's edge fades are night painted over it (`.stage::after`), not a mask;
     - the hero grain uses a normal blend at 0.035, not `overlay`.
-  - **No filters on page-tall SVG paths** (the flight thread): a filter there repaints the whole page height on every scroll. The comet's glow comes from its wide soft stroke, and only the small head keeps a drop-shadow. The always-running light pulses were removed.
+  - **No filters on page-tall SVG paths:** a filter there repaints the whole page height on every scroll (learnt from the flight thread, since removed).
   - **Nothing runs out of sight:**
     - `PauseOffscreen` sets `data-offscreen` on a section once it leaves the screen, and `globals.css` pauses every animation inside it (hero, Use cases);
     - the background glows are still (no drift), and an unseen one is hidden (`data-off`).

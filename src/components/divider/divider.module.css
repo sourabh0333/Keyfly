@@ -1,11 +1,20 @@
-/* A ruler with the playhead in the middle, centred in the gap between
-   two sections (height 0, the ruler hung on its centre line). */
+/* A ruler with a playhead, centred in the gap between two sections
+   (height 0, the ruler hung on its centre line). */
 .divider {
   position: relative;
   height: 0;
 }
 
+/* --cp: how far the cut has played (0 to 1). Registered so it can be
+   animated by the scroll. */
+@property --cp {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0.5;
+}
+
 .ruler {
+  --cp: 0.5;
   position: absolute;
   top: 0;
   right: 0;
@@ -17,6 +26,7 @@
   translate: 0 -50%;
 }
 
+/* The ticks. */
 .ruler::before {
   content: "";
   position: absolute;
@@ -26,11 +36,32 @@
     repeating-linear-gradient(to right, rgb(244 241 234 / 0.1) 0 1px, transparent 1px 16px) 0 0 / 100% 5px no-repeat;
 }
 
-/* The playhead: a mint stem and a diamond, in the middle. */
-.ruler i {
+/* The ruler lit behind the playhead: a mint line along its foot. */
+.lit {
+  position: absolute;
+  right: var(--gutter);
+  bottom: -1px;
+  left: var(--gutter);
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, rgb(95 224 176 / 0.15), var(--soft-mint));
+  box-shadow: 0 0 10px rgb(95 224 176 / 0.55);
+  transform-origin: left;
+  scale: var(--cp) 1;
+}
+
+/* The playhead rides a rail as wide as the ruler. */
+.rail {
+  position: absolute;
+  inset: 0 var(--gutter);
+  overflow: visible;
+  pointer-events: none;
+}
+
+.rail i {
   position: absolute;
   top: -6px;
-  left: 50%;
+  left: calc(var(--cp) * 100%);
   width: 2px;
   height: 22px;
   translate: -50% 0;
@@ -39,7 +70,7 @@
   box-shadow: 0 0 12px var(--soft-mint);
 }
 
-.ruler i::before {
+.rail i::before {
   content: "";
   position: absolute;
   top: -5px;
@@ -50,4 +81,27 @@
   border-radius: 2px;
   background: var(--soft-mint);
   rotate: 45deg;
+}
+
+/* Played by the scroll, both ways: the sweep runs as the ruler rises from
+   the lower part of the screen and finishes as it reaches the middle,
+   where the next section arrives (SceneCuts). */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .ruler {
+      view-timeline: --cut block;
+      animation: cut linear both;
+      animation-timeline: --cut;
+      animation-range: cover 18% cover 50%;
+    }
+  }
+}
+
+@keyframes cut {
+  from {
+    --cp: 0;
+  }
+  to {
+    --cp: 1;
+  }
 }

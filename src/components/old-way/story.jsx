@@ -120,10 +120,6 @@ export function Story({ hand, keyfly, ask, hint, steps }) {
       ref={trackRef}
       className={styles.track}
       data-live={live ? "" : undefined}
-      data-thread-stops={steps
-        .slice(1)
-        .map((_, i) => ((i + 1) / n).toFixed(3))
-        .join(",")}
     >
       <div ref={pinRef} className={styles.pin}>
         {/* Two mirrored columns on four shared rows (head, line, picture,

@@ -61,12 +61,6 @@
     box-shadow 0.5s ease;
 }
 
-/* The flight thread lands on the lead (see FlightThread), which brightens
-   in answer. */
-.lead[data-landed] {
-  color: rgb(244 241 234 / 0.88);
-}
-
 .title {
   margin-top: 16px;
   font-size: clamp(2.1rem, 1.1rem + 2.2vw, 3.4rem);

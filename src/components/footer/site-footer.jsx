@@ -29,12 +29,10 @@ function Arrow() {
  * copyright. Its top edge is a timeline ruler with the mint playhead at the
  * end of the reel.
  *
- * The page's flight thread finishes here: it turns onto the ruler and runs
- * to the playhead (data-thread-end, data-thread-stop). While it is on its
- * way the footer has data-thread, and its contents wait, dimmed; when it
- * arrives (data-arrived) the playhead pulses, a comet of light runs round
- * the panel and the contents rise in. Without the thread, everything just
- * shows.
+ * As it scrolls in it arrives (set by SceneCuts): while it has data-thread
+ * its contents wait, dimmed; on data-arrived the playhead pulses, a comet
+ * of light runs round the panel and the contents rise in. Without JS, or
+ * with reduced motion, everything just shows.
  */
 export function SiteFooter() {
   const { cta, about, platforms, columns, company, domain, top } = footer;
