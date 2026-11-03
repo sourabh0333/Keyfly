@@ -79,21 +79,15 @@ export const howItWorks = {
 export const oldWay = {
   eyebrow: "The old way",
   title: [{ text: "Hours of editing." }, { text: "Or one sentence.", accent: true }],
-  lead: "By hand, a cut is a long list of chores worked through one at a time. With Keyfly you say what you want, and the whole cut lands at once.",
+  lead: "By hand, a cut is a long way round: one chore after another. With Keyfly you say what you want, and it flies straight to the first cut.",
   note: "Illustrative",
-  hand: { label: "By hand", busy: "Still editing", clip: "RAW · A001_C014" },
-  keyfly: { label: "With Keyfly", done: "First cut ready", clip: "First cut", title: "Launch day", sub: "Chapter 2", captions: ["Built", "for", "launch", "day"] },
-  // The comparison, row by row: the question, by hand, with Keyfly.
-  rows: [
-    { q: "How you start", hand: "Open the editor and import", keyfly: "Type one sentence" },
-    { q: "The chores", hand: "Scrub, cut and trim, all by you", keyfly: "Done for you" },
-    { q: "Captions", hand: "Typed and timed by hand", keyfly: "Added for you" },
-    { q: "Music", hand: "Laid in and balanced by hand", keyfly: "Set under the voice" },
-    { q: "Other formats", hand: "Re-edit and export each one", keyfly: "Made at once" },
-    { q: "Changes", hand: "Back into the timeline", keyfly: "Ask in plain words" },
-  ],
-  editLabel: "The edit",
-  cta: "Try it in Keyfly",
+  start: "Start",
+  finish: "First cut",
+  hand: { label: "By hand", busy: "Still editing" },
+  keyfly: { label: "With Keyfly", short: "One sentence", done: "First cut ready" },
+  ask: "Make a 30s launch video with captions, plus a 9:16 cut",
+  // The chores by hand, in order along the long way round.
+  chores: ["Scrub footage", "Pick takes", "Cut pauses", "Balance music", "Type captions", "Reframe 9:16"],
 };
 
 // "Use cases": the presets in the prompt box as six live feeds on a

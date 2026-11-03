@@ -1,16 +1,10 @@
 /*
- * "The old way": a comparison table. One grid of three columns (the
- * question, by hand, with Keyfly); every row is a subgrid of it, so heads,
- * editors, answers and the call to action line up down each column.
- * Keyfly's column sits on a glass panel with a mint edge (laid behind it
- * from the column's start, --q + 2 gaps + one column), and its cells keep
- * 22px inside it.
- *
- * Loops (CSS only, under [data-play], set by PlayOnView): by hand's
- * playhead crawls to 45% over 12s, lighting the raw pieces it has cut
- * (clip-path); Keyfly's plays the finished cut every 6s, and its captions
- * light word by word. Without [data-play] (no JS, reduced motion) both
- * hold still.
+ * "The old way": two flight paths, frameless. Race renders two layouts
+ * (across on wide screens, down on phones; CSS shows one) as an SVG with
+ * HTML labels laid over it in the same coordinates (left/top in % of the
+ * viewBox). Lines draw with pathLength="1" dashes; Race sets
+ * stroke-dashoffset, moves the comets, toggles data-done on stops and
+ * chores, and data-landed / data-fading on .race.
  */
 .section {
   position: relative;
@@ -89,435 +83,268 @@
 
 
 
-/* ---------- The table ---------- */
+/* ---------- The race ---------- */
 
-.table {
-  --q: clamp(130px, 13vw, 180px);
-  --cg: clamp(20px, 2.6vw, 40px);
-  --col: calc((100% - var(--q) - 2 * var(--cg)) / 2);
-  --in: 22px;
+.race {
   position: relative;
-  display: grid;
-  grid-template-columns: var(--q) minmax(0, 1fr) minmax(0, 1fr);
-  column-gap: var(--cg);
+  margin-top: clamp(28px, 4vw, 48px);
 }
 
-.panel {
+.layout {
+  position: relative;
+  width: 100%;
+}
+
+.layout[data-layout="down"] {
+  display: none;
+}
+
+.svg {
   position: absolute;
-  top: -20px;
-  bottom: -20px;
-  left: calc(var(--q) + 2 * var(--cg) + var(--col));
-  right: 0;
-  border-radius: 22px;
-  background:
-    radial-gradient(80% 40% at 50% 0%, rgb(95 224 176 / 0.09), transparent 70%),
-    linear-gradient(180deg, #16181c, #101114);
-  box-shadow:
-    0 0 0 1px rgb(95 224 176 / 0.38),
-    0 40px 100px -40px rgb(0 0 0 / 0.95),
-    0 0 90px -40px rgb(95 224 176 / 0.4);
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
 }
 
-.row {
-  position: relative;
-  display: grid;
-  grid-column: 1 / -1;
-  grid-template-columns: subgrid;
-  align-items: center;
+.guide {
+  stroke: rgb(244 241 234 / 0.1);
+  stroke-width: 1;
+  stroke-dasharray: 3 5;
 }
 
-.corner {
-  grid-column: 1;
+.route {
+  fill: none;
+  stroke: rgb(244 241 234 / 0.12);
+  stroke-width: 1.5;
+  stroke-dasharray: 2 6;
+  stroke-linecap: round;
 }
 
-/* Both answer columns keep the same inset, so the two editors are the
-   same size and every answer starts at the same distance from its edge. */
-.handCol {
-  grid-column: 2;
-  min-width: 0;
-  margin-inline: var(--in);
+.handLine,
+.keyLine {
+  fill: none;
+  stroke-dasharray: 1;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: opacity 0.4s ease;
 }
 
-.keyCol {
-  grid-column: 3;
-  min-width: 0;
-  margin-inline: var(--in);
+.handLine {
+  stroke: rgb(244 241 234 / 0.55);
+  stroke-width: 2;
 }
 
-/* Heads. */
-.colHead {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
-  padding-bottom: 16px;
-  color: var(--paper);
-  font-size: 1.1875rem;
-  font-weight: 600;
-  letter-spacing: -0.015em;
+.keyLine {
+  stroke: var(--soft-mint);
+  stroke-width: 3;
+  stroke-dashoffset: 0;
 }
 
-.colHead.handCol {
-  color: rgb(244 241 234 / 0.68);
+.stop {
+  fill: #0b0b0d;
+  stroke: rgb(244 241 234 / 0.35);
+  stroke-width: 1.5;
+  transition:
+    fill 0.3s ease,
+    stroke 0.3s ease;
 }
 
-.busy,
-.ready {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  font-family: var(--font-mono-stack);
-  font-size: 0.6875rem;
-  font-weight: 400;
-  letter-spacing: 0.04em;
+.stop[data-done] {
+  fill: rgb(244 241 234 / 0.75);
+  stroke: rgb(244 241 234 / 0.75);
+}
+
+.dot {
+  fill: var(--soft-mint);
+}
+
+.point {
+  fill: var(--soft-mint);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.ring {
+  fill: none;
+  stroke: var(--soft-mint);
+  stroke-width: 1.5;
+  opacity: 0;
+}
+
+.race[data-landed] .point {
+  opacity: 1;
+}
+
+.race[data-live][data-landed] .ring {
+  animation: ring 0.9s ease-out;
+}
+
+.headCore {
+  fill: #eafff6;
+}
+
+.headCoreDim {
+  fill: rgb(244 241 234 / 0.85);
+}
+
+.headHand,
+.headKey {
+  transition: opacity 0.4s ease;
+}
+
+/* Before JS the hand's comet has nowhere to be: hide it. */
+.race:not([data-live]) .headHand {
+  opacity: 0;
+}
+
+.race[data-fading] .handLine,
+.race[data-fading] .keyLine,
+.race[data-fading] .headHand,
+.race[data-fading] .headKey {
+  opacity: 0;
+}
+
+/* ---------- Labels ---------- */
+
+.label {
+  position: absolute;
   white-space: nowrap;
 }
 
-.busy {
-  color: rgb(244 241 234 / 0.45);
+.edge {
+  color: rgb(244 241 234 / 0.4);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  translate: -50% -100%;
 }
 
-.busy i,
-.ready i {
+/* Who: in a column of its own, left of each path's start, as a track's
+   name sits left of its track. */
+.who {
+  display: grid;
+  justify-items: end;
+  gap: 5px;
+  color: rgb(244 241 234 / 0.7);
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-align: right;
+  translate: calc(-100% - 26px) -50%;
+}
+
+.who i {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: rgb(244 241 234 / 0.45);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+}
+
+.who i b {
   width: 6px;
   height: 6px;
   border-radius: 50%;
-}
-
-.busy i {
   background: rgb(244 241 234 / 0.45);
   animation: blink 1.2s ease-in-out infinite;
 }
 
-.ready {
+.whoKey {
+  color: var(--paper);
+}
+
+.whoKey i {
   color: var(--mint-text-dark);
 }
 
-.ready i {
+.whoKey i b {
   background: var(--soft-mint);
-  box-shadow: 0 0 8px var(--soft-mint);
+  animation: none;
 }
 
-/* ---------- The two editors ---------- */
-
-.screens {
-  align-items: start;
-  padding-bottom: 26px;
-}
-
-.screens .q {
-  padding-top: 4px;
-}
-
-.editor {
-  display: grid;
-  gap: 10px;
-}
-
-.viewer {
-  position: relative;
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
-  border-radius: 12px;
-  background: #050506;
-  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.08);
-  container-type: inline-size;
-}
-
-.handEditor .viewer {
-  opacity: 0.8;
-}
-
-/* Raw footage: flat and grey, not graded yet. */
-.rawWash {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgb(60 62 70 / 0.55), rgb(30 31 36 / 0.55));
-}
-
-.tag {
-  position: absolute;
-  top: 10px;
-  left: 10px;
+/* The sentence, above Keyfly's line where it starts. */
+.ask {
   display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 9px;
-  border-radius: 6px;
-  background: rgb(11 11 13 / 0.7);
-  color: rgb(244 241 234 / 0.75);
-  font-family: var(--font-mono-stack);
-  font-size: 10px;
-  letter-spacing: 0.06em;
+  gap: 8px;
+  color: rgb(244 241 234 / 0.85);
+  font-size: 0.9375rem;
+  translate: -2px calc(-100% - 18px);
 }
 
-.tagMint {
-  left: auto;
-  right: 10px;
-  color: var(--mint-text-dark);
-}
-
-.tagMint i {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--soft-mint);
-  box-shadow: 0 0 6px var(--soft-mint);
-}
-
-.lower {
-  position: absolute;
-  top: 12%;
-  left: 5%;
-  display: grid;
-  gap: 0.4cqw;
-  padding: 1.2cqw 2.4cqw;
-  border-left: 0.6cqw solid #7b6cf0;
-  background: linear-gradient(90deg, rgb(11 11 13 / 0.82), rgb(11 11 13 / 0));
-}
-
-.lower b {
-  color: #fff;
-  font-size: 3.8cqw;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-}
-
-.lower span {
-  color: rgb(244 241 234 / 0.7);
-  font-family: var(--font-mono-stack);
-  font-size: 2cqw;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-
-.captions {
-  position: absolute;
-  right: 8%;
-  bottom: 9%;
-  left: 8%;
-  display: flex;
-  justify-content: center;
-  gap: 0.28em;
-  color: #fff;
-  font-family: var(--font-accent-stack);
-  font-size: 6.4cqw;
-  font-style: italic;
-  line-height: 1.1;
-  text-shadow: 0 2px 12px rgb(0 0 0 / 0.6);
-}
-
-.captions span:nth-child(3) {
-  color: var(--soft-mint);
-}
-
-/* Timelines under the viewers. */
-.timeline {
-  position: relative;
-  display: grid;
-  gap: 4px;
-}
-
-.track {
-  position: relative;
-  height: 18px;
-  border-radius: 4px;
-  background: rgb(244 241 234 / 0.03);
-}
-
-.raw,
-.cutPiece,
-.clip,
-.titleClip,
-.word {
-  position: absolute;
-  top: 2px;
-  bottom: 2px;
-  border-radius: 3px;
-}
-
-.raw {
-  background: rgb(244 241 234 / 0.1);
-  box-shadow: 1px 0 0 #0b0b0d inset, -1px 0 0 #0b0b0d inset;
-}
-
-.worked {
-  position: absolute;
-  inset: 0;
-  clip-path: inset(0 55% 0 0);
-}
-
-.cutPiece {
-  background: rgb(244 241 234 / 0.26);
-  box-shadow: -1.5px 0 0 rgb(244 241 234 / 0.85);
-}
-
-.empty {
-  background:
-    repeating-linear-gradient(90deg, rgb(244 241 234 / 0.05) 0 6px, transparent 6px 12px),
-    rgb(244 241 234 / 0.02);
-}
-
-.clip {
-  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.55) inset;
-}
-
-.clip[data-n="0"] {
-  background: #4f6b8c;
-}
-
-.clip[data-n="1"] {
-  background: #8a5a78;
-}
-
-.clip[data-n="2"] {
-  background: #6aa3b3;
-}
-
-.titleClip {
-  z-index: 1;
-  left: 0;
-  width: 3px;
-  background: #7b6cf0;
-}
-
-.word {
-  width: 18%;
-  background: rgb(244 241 234 / 0.14);
-  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.25) inset;
-}
-
-/* Playheads: a rail as wide as the timeline, its inner layer translated. */
-.rail {
-  position: absolute;
-  inset: -3px 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.rail i {
-  position: absolute;
-  inset: 0;
-}
-
-.rail i::before {
+.ask::after {
   content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
   width: 2px;
-  border-radius: 2px;
-}
-
-.handRail i {
-  translate: 45% 0;
-}
-
-.handRail i::before {
-  background: rgb(244 241 234 / 0.75);
-}
-
-.keyRail i {
-  translate: 62% 0;
-}
-
-.keyRail i::before {
+  height: 1.1em;
+  margin-left: -6px;
   background: var(--soft-mint);
-  box-shadow: 0 0 8px var(--soft-mint);
+  animation: blink 1s steps(1) infinite;
 }
 
-/* ---------- The comparison rows ---------- */
-
-.row + .row:not(.screens):not(.foot) {
-  border-top: 1px solid rgb(244 241 234 / 0.08);
+.chevron {
+  color: var(--soft-mint);
+  font-family: var(--font-mono-stack);
 }
 
-.q {
-  color: rgb(244 241 234 / 0.5);
+/* Chores: under a stop whose loop rises, over one whose loop dips. */
+.chore {
+  color: rgb(244 241 234 / 0.4);
+  font-size: 0.8125rem;
+  transition: color 0.3s ease;
+}
+
+.chore em {
+  margin-right: 4px;
+  color: rgb(244 241 234 / 0.3);
   font-family: var(--font-mono-stack);
   font-size: 0.6875rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  font-style: normal;
 }
 
-.cell {
-  display: flex;
+.chore[data-side="1"] {
+  translate: -50% 20px;
+}
+
+.chore[data-side="-1"] {
+  translate: -50% calc(-100% - 20px);
+}
+
+.chore[data-done] {
+  color: rgb(244 241 234 / 0.85);
+}
+
+.done {
+  display: inline-flex;
   align-items: center;
-  gap: 12px;
-  min-height: 58px;
-  font-size: 0.9875rem;
-  line-height: 1.35;
-}
-
-.cell.handCol {
-  color: rgb(244 241 234 / 0.55);
-}
-
-.yes {
-  color: var(--paper);
-  font-weight: 540;
-}
-
-.mark {
-  flex: none;
-}
-
-.handCol .mark circle {
-  fill: none;
-  stroke: rgb(244 241 234 / 0.25);
-  stroke-width: 1.5;
-}
-
-.handCol .mark path {
-  stroke: rgb(244 241 234 / 0.45);
-  stroke-width: 1.6;
-  stroke-linecap: round;
-}
-
-.yes .mark circle {
-  fill: var(--soft-mint);
-}
-
-.yes .mark path {
-  fill: none;
-  stroke: var(--mint-ink);
-  stroke-width: 1.8;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-/* The foot: a call to action under Keyfly's column. */
-.foot {
-  padding-top: 16px;
-}
-
-.cta {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   gap: 8px;
-  min-height: 46px;
-  border-radius: var(--radius-round);
+  color: var(--mint-text-dark);
+  font-family: var(--font-mono-stack);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  opacity: 0;
+  translate: -100% 22px;
+  transition: opacity 0.4s ease;
+}
+
+.done i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
   background: var(--soft-mint);
-  color: var(--mint-ink);
-  font-size: 0.9375rem;
-  font-weight: 600;
-  text-decoration: none;
-  transition: box-shadow 0.3s ease;
+  box-shadow: 0 0 8px var(--soft-mint);
 }
 
-.cta:hover {
-  box-shadow: 0 0 30px -4px rgb(95 224 176 / 0.7);
-}
-
-.cta:focus-visible {
-  outline: 2px solid var(--soft-mint);
-  outline-offset: 3px;
+.race[data-landed] .done {
+  opacity: 1;
 }
 
 .footnote {
-  margin-top: 34px;
+  margin-top: 20px;
   color: rgb(244 241 234 / 0.38);
   font-family: var(--font-mono-stack);
   font-size: 0.6875rem;
@@ -526,50 +353,14 @@
   text-transform: uppercase;
 }
 
-/* ---------- The loops ---------- */
-
-.table[data-play] .handRail i {
-  animation: handHead 12s linear infinite both;
-}
-
-.table[data-play] .worked {
-  animation: worked 12s linear infinite both;
-}
-
-.table[data-play] .keyRail i {
-  animation: keyHead 6s linear infinite both;
-}
-
-@keyframes handHead {
-  0% {
-    translate: 0 0;
-  }
-  97% {
-    translate: 45% 0;
-  }
-  100% {
-    translate: 0 0;
-  }
-}
-
-@keyframes worked {
-  0% {
-    clip-path: inset(0 100% 0 0);
-  }
-  97% {
-    clip-path: inset(0 55% 0 0);
-  }
-  100% {
-    clip-path: inset(0 100% 0 0);
-  }
-}
-
-@keyframes keyHead {
+@keyframes ring {
   from {
-    translate: 0 0;
+    opacity: 0.9;
+    scale: 0.6;
   }
   to {
-    translate: calc(100% - 2px) 0;
+    opacity: 0;
+    scale: 3;
   }
 }
 
@@ -601,65 +392,60 @@
   }
 }
 
-/* Narrow: two columns; each question sits above its pair of answers. */
+/* Phones: the paths run down; Keyfly's on the left, by hand's beside it. */
 @media (max-width: 760px) {
-  .table {
-    --q: 0px;
-    --cg: 12px;
-    --in: 10px;
-    grid-template-columns: 0 minmax(0, 1fr) minmax(0, 1fr);
-    column-gap: 0;
-  }
-
-  .panel {
-    left: calc(50% + 6px);
-    top: -14px;
-    bottom: -14px;
-  }
-
-  .handCol {
-    margin-inline: 0 calc(var(--in) + 12px);
-  }
-
-  .row:not(.screens):not(.foot) {
-    grid-template-rows: auto auto;
-  }
-
-  .q {
-    grid-column: 2 / -1;
-    padding-top: 14px;
-  }
-
-  .corner {
+  .layout[data-layout="across"] {
     display: none;
   }
 
-  .colHead {
-    flex-direction: column;
-    gap: 4px;
+  .layout[data-layout="down"] {
+    display: block;
+    margin-top: 70px;
+  }
+
+  /* Start and finish sit at the right end of their guides. */
+  .edge {
+    translate: -100% calc(-100% - 4px);
+  }
+
+  .who {
+    justify-items: center;
+    gap: 3px;
     font-size: 1rem;
+    text-align: center;
+    translate: -50% calc(-100% - 18px);
   }
 
-  .cell {
-    align-items: flex-start;
-    gap: 8px;
-    min-height: 0;
-    padding: 6px 0 14px;
-    font-size: 0.875rem;
+  .whoKey {
+    justify-items: start;
+    text-align: left;
+    translate: -14px calc(-100% - 18px);
   }
 
-  .mark {
-    width: 16px;
-    height: 16px;
-  }
-
-  .tag {
+  .ask {
     display: none;
+  }
+
+  .chore[data-side="1"] {
+    translate: 16px -50%;
+  }
+
+  .chore[data-side="-1"] {
+    translate: calc(-100% - 16px) -50%;
+  }
+
+  .chore {
+    font-size: 0.75rem;
+  }
+
+  .done {
+    translate: 16px -50%;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .busy i {
+  .who i b,
+  .ask::after {
     animation: none;
   }
 }
