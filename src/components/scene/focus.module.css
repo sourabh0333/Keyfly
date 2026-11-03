@@ -1,0 +1,93 @@
+/*
+ * Autofocus brackets: four mint corners placed by SceneCuts around a
+ * section's main content as it racks into focus. They snap in from a wider
+ * box (transform, width and height ease), flash, and fade. Absolute in the
+ * page, so they scroll with the content; never in the pointer's way.
+ */
+.af {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 20;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform 0.55s var(--ease-land),
+    width 0.55s var(--ease-land),
+    height 0.55s var(--ease-land),
+    opacity 0.5s ease;
+}
+
+.af[data-wide] {
+  transition: none;
+}
+
+.af[data-on] {
+  opacity: 1;
+  transition:
+    transform 0.55s var(--ease-land),
+    width 0.55s var(--ease-land),
+    height 0.55s var(--ease-land),
+    opacity 0.15s ease;
+}
+
+.af i {
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  border: 0 solid var(--soft-mint);
+  filter: drop-shadow(0 0 6px rgb(95 224 176 / 0.8));
+}
+
+/* A double flash as focus locks. */
+.af[data-on] i {
+  animation: lock 0.7s steps(1) 0.45s 1;
+}
+
+.af i[data-c="tl"] {
+  top: 0;
+  left: 0;
+  border-width: 2px 0 0 2px;
+  border-top-left-radius: 16px;
+}
+
+.af i[data-c="tr"] {
+  top: 0;
+  right: 0;
+  border-width: 2px 2px 0 0;
+  border-top-right-radius: 16px;
+}
+
+.af i[data-c="bl"] {
+  bottom: 0;
+  left: 0;
+  border-width: 0 0 2px 2px;
+  border-bottom-left-radius: 16px;
+}
+
+.af i[data-c="br"] {
+  right: 0;
+  bottom: 0;
+  border-width: 0 2px 2px 0;
+  border-bottom-right-radius: 16px;
+}
+
+@keyframes lock {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  25%,
+  75% {
+    opacity: 0.25;
+  }
+}
+
+@media (max-width: 640px) {
+  .af i {
+    width: 18px;
+    height: 18px;
+  }
+}
