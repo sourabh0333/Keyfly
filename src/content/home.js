@@ -79,19 +79,15 @@ export const howItWorks = {
 export const oldWay = {
   eyebrow: "The old way",
   title: [{ text: "Hours of editing." }, { text: "Or one sentence.", accent: true }],
-  lead: "Editing by hand is a list of chores you work through one at a time. With Keyfly you say what you want, and the whole list is done in one go.",
+  lead: "By hand, a cut is a long list of chores worked through one at a time. With Keyfly you say what you want, and the whole cut lands at once.",
   note: "Illustrative",
-  hand: { label: "By hand", busy: "Still editing", start: "Open the editor and start scrubbing" },
-  keyfly: { label: "With Keyfly", busy: "Editing", done: "First cut ready" },
+  hand: { label: "By hand", busy: "Still editing", note: "Six chores, one at a time" },
+  keyfly: { label: "With Keyfly", busy: "Editing", done: "First cut ready", note: "One sentence, the whole cut" },
   ask: "Make a 30s launch video with captions, plus a 9:16 cut",
-  rows: [
-    { hand: "Scrub through all your footage", keyfly: "Footage reviewed" },
-    { hand: "Find the best takes", keyfly: "Best takes picked" },
-    { hand: "Cut the pauses and mistakes", keyfly: "Pauses and mistakes cut" },
-    { hand: "Lay in music and balance it", keyfly: "Music set under the voice" },
-    { hand: "Type out every caption", keyfly: "Captions added" },
-    { hand: "Reframe and export again for 9:16", keyfly: "16:9 and 9:16 ready" },
-  ],
+  // The chores by hand, in order along the timeline.
+  chores: ["Scrub footage", "Find best takes", "Cut pauses", "Balance music", "Type captions", "Reframe 9:16"],
+  // Keyfly's tracks, top to bottom.
+  tracks: { title: "Launch day", captions: ["Built", "for", "launch", "day"] },
 };
 
 // "Use cases": the presets in the prompt box as six live feeds on a

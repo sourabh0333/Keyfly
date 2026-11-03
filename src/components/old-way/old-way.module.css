@@ -1,17 +1,18 @@
 /*
- * "The old way": by hand | with Keyfly on one grid of four rows (header,
- * start, the six chores, the bar) that both columns share; the six rows
- * have a fixed height, so each chore sits level with Keyfly doing it.
+ * "The old way": two editing timelines on one ruler, in one panel. A grid
+ * of three columns (who, track code, lanes) and twelve rows: ruler; by
+ * hand's flags, V1 and A1; a divider; Keyfly's sentence, T1, V1, A1, C1.
+ * The playheads are rails laid over their rows, moved by translating a
+ * full-width inner layer.
  *
  * One 12s loop, CSS only, under [data-play] (set by PlayOnView):
- *   0–14%   the sentence types in (clip-path, steps);
- *   15%     it sends; Keyfly is "Editing";
- *   16–24%  Keyfly ticks the six rows (staggered 150ms) and its bar fills;
- *   24%–    "First cut ready";
- *   by hand ticks one chore at 25%, 50% and 75%, its bar crawls to half,
- *   and it is still editing when the loop starts again.
- * Without [data-play] (no JS, reduced motion) the rules below show that
- * moment, finished: Keyfly done, by hand three chores in.
+ *   by hand   the playhead crawls to 40%, cutting the raw pieces behind it
+ *             (clip-path), and reaches chores 1–3 at 19%, 53% and 87%;
+ *   Keyfly    the sentence types (0–12%) and sends (13%), the cut drops in
+ *             piece by piece (from 15%, 90ms apart by --k), the playhead
+ *             runs to the end (24–34%), then "First cut ready".
+ * Without [data-play] (no JS, reduced motion) the defaults show that
+ * moment, still.
  */
 .section {
   position: relative;
@@ -90,89 +91,86 @@
 
 
 
-/* ---------- The table ---------- */
+/* ---------- The panel ---------- */
 
-.table {
-  --row: 58px;
-  --cg: clamp(40px, 6vw, 96px);
+.panel {
+  --who: clamp(170px, 17vw, 230px);
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  grid-template-rows: auto auto auto auto;
-  column-gap: var(--cg);
-}
-
-.left {
-  grid-column: 1;
-  grid-row: var(--r);
-}
-
-/* Keyfly's cells sit inside its panel, which keeps to the column. */
-.right {
-  grid-column: 2;
-  grid-row: var(--r);
-  margin-inline: 22px;
-}
-
-/* Keyfly's side sits on a glass panel with a mint edge. */
-.panel {
-  grid-column: 2;
-  grid-row: 1 / -1;
-  margin: -18px 0;
+  grid-template-columns: var(--who) 26px minmax(0, 1fr);
+  grid-template-rows: auto 40px 28px 28px 26px 1px 26px auto 28px 28px 28px 28px;
+  column-gap: 12px;
+  row-gap: 6px;
+  padding: 26px clamp(18px, 2.4vw, 32px) 30px;
+  overflow: hidden;
   border-radius: 22px;
   background:
-    radial-gradient(80% 50% at 50% 0%, rgb(95 224 176 / 0.08), transparent 70%),
-    linear-gradient(180deg, #16181c, #101114);
+    radial-gradient(60% 50% at 75% 100%, rgb(95 224 176 / 0.07), transparent 70%),
+    linear-gradient(180deg, #15171b, #0f1013);
   box-shadow:
-    0 0 0 1px rgb(95 224 176 / 0.35),
+    0 0 0 1px rgb(244 241 234 / 0.09),
+    0 1px 0 rgb(244 241 234 / 0.07) inset,
     0 40px 100px -40px rgb(0 0 0 / 0.95),
-    0 0 90px -40px rgb(95 224 176 / 0.4);
+    0 0 90px -40px rgb(95 224 176 / 0.3);
 }
 
-/* A hairline down the middle of the gap, with "vs" on it. */
-.table::before {
-  content: "";
+.ruler {
+  position: relative;
+  grid-column: 3;
+  grid-row: 1;
+  height: 26px;
+  background:
+    repeating-linear-gradient(to right, rgb(244 241 234 / 0.3) 0 1px, transparent 1px 12.5%) 0 100% / 100% 8px no-repeat,
+    repeating-linear-gradient(to right, rgb(244 241 234 / 0.13) 0 1px, transparent 1px 2.5%) 0 100% / 100% 4px no-repeat;
+}
+
+.ruler span {
   position: absolute;
   top: 0;
-  bottom: 0;
-  left: 50%;
-  width: 1px;
-  background: linear-gradient(180deg, transparent, rgb(244 241 234 / 0.12) 15%, rgb(244 241 234 / 0.12) 85%, transparent);
+  translate: -50% 0;
+  color: rgb(244 241 234 / 0.4);
+  font-family: var(--font-mono-stack);
+  font-size: 10px;
 }
 
-.versus {
-  position: absolute;
-  top: 50%;
-  left: 50%;
+.ruler span:first-child {
+  translate: 0 0;
+}
+
+.ruler span:last-child {
+  translate: -100% 0;
+}
+
+/* Who: a name, a state and a note, beside their tracks. */
+.who {
+  grid-column: 1;
   display: grid;
-  place-items: center;
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  translate: -50% -50%;
-  background: #0e0f12;
-  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.14);
-  color: rgb(244 241 234 / 0.55);
-  font-family: var(--font-accent-stack);
-  font-size: 1.05rem;
-  font-style: italic;
+  align-content: center;
+  gap: 6px;
 }
 
-/* Row 1: the column heads. */
-.colHead {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
-  padding-bottom: 16px;
+.handWho {
+  grid-row: 2 / 5;
+}
+
+.keyWho {
+  grid-row: 8 / 13;
+}
+
+.whoName {
   color: var(--paper);
   font-size: 1.125rem;
   font-weight: 600;
   letter-spacing: -0.01em;
 }
 
-.colHead.left {
-  color: rgb(244 241 234 / 0.7);
+.handWho .whoName {
+  color: rgb(244 241 234 / 0.72);
+}
+
+.whoNote {
+  color: rgb(244 241 234 / 0.42);
+  font-size: 0.8125rem;
 }
 
 .busy,
@@ -183,12 +181,11 @@
   gap: 7px;
   font-family: var(--font-mono-stack);
   font-size: 0.6875rem;
-  font-weight: 400;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.04em;
 }
 
 .busy {
-  color: rgb(244 241 234 / 0.45);
+  color: rgb(244 241 234 / 0.5);
 }
 
 .busy i,
@@ -200,7 +197,7 @@
 }
 
 .busy i {
-  background: rgb(244 241 234 / 0.45);
+  background: rgb(244 241 234 / 0.5);
   animation: blink 1.2s ease-in-out infinite;
 }
 
@@ -211,7 +208,6 @@
 .editing,
 .ready {
   grid-area: 1 / 1;
-  justify-self: end;
 }
 
 .editing {
@@ -232,47 +228,142 @@
   box-shadow: 0 0 8px var(--soft-mint);
 }
 
-/* Row 2: how each side starts. */
-.start,
+.divider {
+  grid-column: 1 / -1;
+  grid-row: 6;
+  background: rgb(244 241 234 / 0.08);
+}
+
+.code {
+  grid-column: 2;
+  grid-row: var(--r);
+  align-self: center;
+  color: rgb(244 241 234 / 0.35);
+  font-family: var(--font-mono-stack);
+  font-size: 10px;
+}
+
+.lane {
+  position: relative;
+  grid-column: 3;
+  grid-row: var(--r);
+  min-width: 0;
+}
+
+.track {
+  border-radius: 5px;
+  background: rgb(244 241 234 / 0.025);
+}
+
+/* ---------- By hand ---------- */
+
+.flags {
+  align-self: end;
+  height: 34px;
+}
+
+.flag {
+  position: absolute;
+  bottom: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  translate: -4px 0;
+  color: rgb(244 241 234 / 0.32);
+  font-family: var(--font-mono-stack);
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.flag i {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 1.5px;
+  rotate: 45deg;
+  box-shadow: 0 0 0 1.5px rgb(244 241 234 / 0.28);
+}
+
+.flag b {
+  font-weight: 400;
+}
+
+/* Chores reached by hand: a filled grey diamond, the label brighter,
+   as a layer over the flag that fades in (only for the first three). */
+.reached {
+  position: absolute;
+  inset: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: rgb(244 241 234 / 0.8);
+  opacity: 0;
+}
+
+.reached i {
+  background: rgb(244 241 234 / 0.65);
+  box-shadow: 0 0 0 1.5px rgb(244 241 234 / 0.65);
+}
+
+.flag[data-n="0"] .reached,
+.flag[data-n="1"] .reached,
+.flag[data-n="2"] .reached {
+  opacity: 1;
+}
+
+.raw,
+.cutPiece {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  border-radius: 3px;
+}
+
+.raw {
+  background: rgb(244 241 234 / 0.1);
+  box-shadow: 1px 0 0 #0f1013 inset, -1px 0 0 #0f1013 inset;
+}
+
+/* Worked so far: the pieces lit, with a razor line at each cut. */
+.worked {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(0 60% 0 0);
+}
+
+.cutPiece {
+  background: rgb(244 241 234 / 0.24);
+  box-shadow: -1.5px 0 0 rgb(244 241 234 / 0.85);
+}
+
+.wave {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0 4px;
+}
+
+.wave i {
+  flex: 1;
+  height: calc(var(--h) * 80%);
+  border-radius: 2px;
+  background: rgb(244 241 234 / 0.16);
+}
+
+/* ---------- With Keyfly ---------- */
+
+.askLane {
+  align-self: center;
+}
+
 .ask {
   display: flex;
   align-items: center;
   gap: 12px;
-  min-height: 52px;
-  margin-bottom: 14px;
-  padding: 0 16px;
-  border-radius: 14px;
-}
-
-.start {
-  background: rgb(244 241 234 / 0.03);
-  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.07) inset;
-  color: rgb(244 241 234 / 0.5);
-  font-family: var(--font-mono-stack);
-  font-size: 0.75rem;
-}
-
-/* A scrubbing playhead, going back and forth. */
-.scrub {
-  position: relative;
-  flex: none;
-  width: 54px;
-  height: 14px;
-  border-radius: 3px;
-  background: repeating-linear-gradient(90deg, rgb(244 241 234 / 0.18) 0 5px, transparent 5px 7px);
-}
-
-.scrub i {
-  position: absolute;
-  top: -3px;
-  bottom: -3px;
-  left: 0;
-  width: 2px;
-  background: rgb(244 241 234 / 0.7);
-  animation: scrub 2.4s ease-in-out infinite alternate;
-}
-
-.ask {
+  width: min(100%, 560px);
+  min-height: 46px;
+  padding: 0 7px 0 16px;
+  border-radius: var(--radius-round);
   background: rgb(244 241 234 / 0.05);
   box-shadow:
     0 0 0 1px rgb(95 224 176 / 0.35) inset,
@@ -299,232 +390,268 @@
   display: grid;
   flex: none;
   place-items: center;
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   background: var(--soft-mint);
   color: var(--mint-ink);
 }
 
-/* Row 3: the six chores, level across. */
-.list {
-  margin-block: 0;
-  padding: 0;
-  border-top: 1px solid rgb(244 241 234 / 0.1);
-  list-style: none;
-}
-
-.list li {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  height: var(--row);
-  padding: 0 4px;
-  border-bottom: 1px solid rgb(244 241 234 / 0.08);
-}
-
-.index {
-  width: 20px;
-  color: rgb(244 241 234 / 0.3);
-  font-family: var(--font-mono-stack);
-  font-size: 0.6875rem;
-}
-
-.text {
-  position: relative;
-  min-width: 0;
-  overflow: hidden;
-  font-size: 0.9875rem;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-
-/* By hand: a plain box that gets a grey tick, and the chore crossed out. */
-.handRow .text {
-  color: rgb(244 241 234 / 0.72);
-}
-
-.box,
-.check {
-  position: relative;
-  flex: none;
-  width: 18px;
-  height: 18px;
-}
-
-.box {
+.titleClip,
+.clip,
+.word {
+  position: absolute;
+  top: 0;
+  bottom: 0;
   border-radius: 5px;
-  box-shadow: 0 0 0 1.5px rgb(244 241 234 / 0.25) inset;
 }
 
-.box i,
-.check i {
+.titleClip {
+  left: 0;
+  width: 22%;
+  display: grid;
+  align-items: center;
+  overflow: hidden;
+  padding-left: 8px;
+  border-left: 3px solid #7b6cf0;
+  background: rgb(244 241 234 / 0.09);
+  color: rgb(244 241 234 / 0.85);
+  font-size: 10.5px;
+  font-style: normal;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.clip {
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.55) inset;
+}
+
+.clip[data-n="0"] {
+  background: #4f6b8c;
+}
+
+.clip[data-n="1"] {
+  background: #8a5a78;
+}
+
+.clip[data-n="2"] {
+  background: #6aa3b3;
+}
+
+.music {
+  background: rgb(95 224 176 / 0.06);
+  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.2) inset;
+}
+
+.music svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.music path {
+  fill: none;
+  stroke: var(--soft-mint);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}
+
+.word {
+  display: grid;
+  align-items: center;
+  width: 17%;
+  padding-left: 8px;
+  background: rgb(244 241 234 / 0.08);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.22) inset;
+  color: rgb(244 241 234 / 0.8);
+  font-size: 10.5px;
+  font-style: normal;
+  font-weight: 600;
+}
+
+/* ---------- Playheads ---------- */
+
+.rail {
+  position: relative;
+  grid-column: 3;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.handRail {
+  grid-row: 2 / 5;
+}
+
+.keyRail {
+  grid-row: 9 / 13;
+}
+
+.rail i {
   position: absolute;
   inset: 0;
-  border-radius: inherit;
-  opacity: 0;
 }
 
-.box i {
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Cpath d='M5 9.3 7.6 12 13 6.4' fill='none' stroke='%23F4F1EA' stroke-opacity='.7' stroke-width='1.7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 18px no-repeat,
-    rgb(244 241 234 / 0.1);
-}
-
-.handRow .text::after {
+.rail i::before {
   content: "";
   position: absolute;
-  top: 52%;
-  right: 0;
+  top: 0;
+  bottom: 0;
   left: 0;
-  height: 1px;
-  background: rgb(244 241 234 / 0.45);
-  transform-origin: left;
-  scale: 0 1;
+  width: 2px;
+  border-radius: 2px;
 }
 
-/* The finished moment: three chores done by hand. */
-.handRow:nth-child(-n + 3) .box i {
-  opacity: 1;
+.handRail i {
+  translate: 40% 0;
 }
 
-.handRow:nth-child(-n + 3) .text {
-  color: rgb(244 241 234 / 0.4);
+.handRail i::before {
+  background: rgb(244 241 234 / 0.7);
 }
 
-.handRow:nth-child(-n + 3) .text::after {
-  scale: 1 1;
+/* Keyfly's playhead rests at the end; its last px stays in view. */
+.keyRail i {
+  translate: calc(100% - 2px) 0;
 }
 
-/* With Keyfly: a ring that becomes a mint check. */
-.keyRow .text {
-  color: var(--paper);
-}
-
-.check {
-  border-radius: 50%;
-  box-shadow: 0 0 0 1.5px rgb(244 241 234 / 0.25) inset;
-}
-
-.check i {
-  background:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 18 18'%3E%3Cpath d='M5 9.3 7.6 12 13 6.4' fill='none' stroke='%2306231A' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 18px no-repeat,
-    var(--soft-mint);
-  box-shadow: 0 0 10px rgb(95 224 176 / 0.6);
-  opacity: 1;
-}
-
-/* Row 4: the bars. */
-.barRow {
-  padding-top: 22px;
-}
-
-.bar {
-  display: block;
-  height: 4px;
-  overflow: hidden;
-  border-radius: 4px;
-  background: rgb(244 241 234 / 0.08);
-}
-
-.bar i {
-  display: block;
-  height: 100%;
-  border-radius: inherit;
-  transform-origin: left;
-}
-
-.handFill {
-  background: rgb(244 241 234 / 0.4);
-  scale: 0.5 1;
-}
-
-.keyFill {
-  background: linear-gradient(90deg, var(--mint-text-dark), var(--soft-mint));
+.keyRail i::before {
+  background: var(--soft-mint);
   box-shadow: 0 0 10px var(--soft-mint);
 }
 
 .footnote {
-  margin-top: 30px;
+  margin-top: 16px;
   color: rgb(244 241 234 / 0.38);
   font-family: var(--font-mono-stack);
   font-size: 0.6875rem;
   letter-spacing: 0.1em;
-  text-align: center;
+  text-align: right;
   text-transform: uppercase;
 }
 
 /* ---------- The loop ---------- */
 
-.table[data-play] .askText {
+.panel[data-play] .handRail i {
+  animation: handHead 12s linear infinite both;
+}
+
+.panel[data-play] .worked {
+  animation: worked 12s linear infinite both;
+}
+
+.panel[data-play] .flag[data-n="0"] .reached {
+  animation: reach1 12s linear infinite both;
+}
+
+.panel[data-play] .flag[data-n="1"] .reached {
+  animation: reach2 12s linear infinite both;
+}
+
+.panel[data-play] .flag[data-n="2"] .reached {
+  animation: reach3 12s linear infinite both;
+}
+
+.panel[data-play] .askText {
   animation: type 12s steps(40) infinite both;
 }
 
-.table[data-play] .send {
+.panel[data-play] .send {
   animation: send 12s ease infinite both;
 }
 
-.table[data-play] .editing {
+.panel[data-play] .editing {
   animation: editing 12s linear infinite both;
 }
 
-.table[data-play] .ready {
+.panel[data-play] .ready {
   animation: ready 12s linear infinite both;
 }
 
-.table[data-play] .check i {
-  animation: tick 12s ease infinite both;
-  animation-delay: calc(var(--i) * 150ms);
+.panel[data-play] .titleClip,
+.panel[data-play] .clip,
+.panel[data-play] .word,
+.panel[data-play] .music {
+  animation: drop 12s ease infinite both;
+  animation-delay: calc(var(--k) * 90ms);
 }
 
-.table[data-play] .keyRow .text {
-  animation: lit 12s ease infinite both;
-  animation-delay: calc(var(--i) * 150ms);
+.panel[data-play] .keyRail i {
+  animation: keyHead 12s ease-in-out infinite both;
 }
 
-.table[data-play] .keyFill {
-  animation: keyFill 12s ease-out infinite both;
+@keyframes handHead {
+  0% {
+    translate: 0 0;
+  }
+  97% {
+    translate: 40% 0;
+  }
+  100% {
+    translate: 0 0;
+  }
 }
 
-.table[data-play] .handFill {
-  animation: handFill 12s linear infinite both;
+@keyframes worked {
+  0% {
+    clip-path: inset(0 100% 0 0);
+  }
+  97% {
+    clip-path: inset(0 60% 0 0);
+  }
+  100% {
+    clip-path: inset(0 100% 0 0);
+  }
 }
 
-.table[data-play] .handRow[data-n="0"] .box i {
-  animation: hand1 12s ease infinite both;
+/* The chores light as the playhead reaches them (8%, 22%, 36% of 40%). */
+@keyframes reach1 {
+  0%,
+  19% {
+    opacity: 0;
+  }
+  20%,
+  97% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
-.table[data-play] .handRow[data-n="1"] .box i {
-  animation: hand2 12s ease infinite both;
+@keyframes reach2 {
+  0%,
+  53% {
+    opacity: 0;
+  }
+  54%,
+  97% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
-.table[data-play] .handRow[data-n="2"] .box i {
-  animation: hand3 12s ease infinite both;
-}
-
-.table[data-play] .handRow[data-n="0"] .text::after {
-  animation: strike1 12s ease infinite both;
-}
-
-.table[data-play] .handRow[data-n="1"] .text::after {
-  animation: strike2 12s ease infinite both;
-}
-
-.table[data-play] .handRow[data-n="2"] .text::after {
-  animation: strike3 12s ease infinite both;
-}
-
-/* While playing, struck chores keep their colour; the strike says it. */
-.table[data-play] .handRow:nth-child(-n + 3) .text {
-  color: rgb(244 241 234 / 0.72);
+@keyframes reach3 {
+  0%,
+  86% {
+    opacity: 0;
+  }
+  87%,
+  97% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
 @keyframes type {
   0%,
-  2% {
+  1% {
     clip-path: inset(0 100% 0 0);
   }
-  14%,
+  12%,
   100% {
     clip-path: inset(0 0 0 0);
   }
@@ -532,15 +659,15 @@
 
 @keyframes send {
   0%,
-  14% {
+  12% {
     opacity: 0.35;
     scale: 1;
   }
-  15.5% {
+  13.5% {
     opacity: 1;
     scale: 1.18;
   }
-  18%,
+  16%,
   100% {
     opacity: 1;
     scale: 1;
@@ -549,14 +676,14 @@
 
 @keyframes editing {
   0%,
-  14.9% {
+  12.9% {
     opacity: 0;
   }
-  15%,
-  23.9% {
+  13%,
+  33.9% {
     opacity: 1;
   }
-  24%,
+  34%,
   100% {
     opacity: 0;
   }
@@ -564,10 +691,10 @@
 
 @keyframes ready {
   0%,
-  23.9% {
+  33.9% {
     opacity: 0;
   }
-  25%,
+  35%,
   98% {
     opacity: 1;
   }
@@ -576,159 +703,40 @@
   }
 }
 
-@keyframes tick {
+@keyframes drop {
   0%,
-  16% {
+  14% {
     opacity: 0;
-    scale: 0.6;
+    translate: 0 -10px;
   }
-  17.5% {
+  17%,
+  97% {
     opacity: 1;
-    scale: 1.15;
-  }
-  19%,
-  98% {
-    opacity: 1;
-    scale: 1;
+    translate: 0 0;
   }
   100% {
     opacity: 0;
+    translate: 0 0;
   }
 }
 
-@keyframes lit {
+@keyframes keyHead {
   0%,
-  16% {
-    opacity: 0.35;
+  23% {
+    translate: 0 0;
   }
-  18%,
-  98% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0.35;
-  }
-}
-
-@keyframes keyFill {
-  0%,
-  15% {
-    scale: 0 1;
-  }
-  24%,
-  98% {
-    scale: 1 1;
+  34%,
+  97% {
+    translate: calc(100% - 2px) 0;
   }
   100% {
-    scale: 0 1;
-  }
-}
-
-@keyframes handFill {
-  0% {
-    scale: 0 1;
-  }
-  98% {
-    scale: 0.5 1;
-  }
-  100% {
-    scale: 0 1;
-  }
-}
-
-@keyframes hand1 {
-  0%,
-  24% {
-    opacity: 0;
-  }
-  26%,
-  98% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-
-@keyframes hand2 {
-  0%,
-  49% {
-    opacity: 0;
-  }
-  51%,
-  98% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-
-@keyframes hand3 {
-  0%,
-  74% {
-    opacity: 0;
-  }
-  76%,
-  98% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0;
-  }
-}
-
-@keyframes strike1 {
-  0%,
-  25% {
-    scale: 0 1;
-  }
-  28%,
-  98% {
-    scale: 1 1;
-  }
-  100% {
-    scale: 0 1;
-  }
-}
-
-@keyframes strike2 {
-  0%,
-  50% {
-    scale: 0 1;
-  }
-  53%,
-  98% {
-    scale: 1 1;
-  }
-  100% {
-    scale: 0 1;
-  }
-}
-
-@keyframes strike3 {
-  0%,
-  75% {
-    scale: 0 1;
-  }
-  78%,
-  98% {
-    scale: 1 1;
-  }
-  100% {
-    scale: 0 1;
+    translate: 0 0;
   }
 }
 
 @keyframes blink {
   50% {
     opacity: 0.3;
-  }
-}
-
-@keyframes scrub {
-  to {
-    translate: 52px 0;
   }
 }
 
@@ -754,53 +762,97 @@
   }
 }
 
-/* Stacked: by hand, then Keyfly on its panel. */
+/* Narrow: each side's name and state above its tracks; flags as dots. */
 @media (max-width: 760px) {
-  .table {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: repeat(4, auto) 56px repeat(4, auto);
-  }
-
-  .left {
-    grid-column: 1;
-  }
-
-  .right {
-    grid-column: 1;
-    grid-row: calc(var(--r) + 5);
-    margin-inline: 14px;
-  }
-
   .panel {
-    grid-column: 1;
-    grid-row: 6 / -1;
-    margin: -16px 0;
+    grid-template-columns: 22px minmax(0, 1fr);
+    grid-template-rows: auto auto 22px 26px 26px 18px 1px 18px auto auto 26px 26px 26px 26px;
+    column-gap: 8px;
+    padding: 20px 14px 24px;
   }
 
-  .table::before {
+  .ruler {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .who {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 12px;
+    margin: 14px 0 6px;
+  }
+
+  .handWho {
+    grid-row: 2;
+  }
+
+  .keyWho {
+    grid-row: 9;
+  }
+
+  .whoNote {
     display: none;
   }
 
-  .versus {
-    position: static;
+  /* Each side's rows move down past its name: by hand by one, Keyfly
+     (.k) by two. */
+  .code {
     grid-column: 1;
-    grid-row: 5;
-    place-self: center;
-    translate: none;
+    grid-row: calc(var(--r) + var(--shift, 1));
   }
 
-  .text {
-    font-size: 0.9375rem;
+  .lane {
+    grid-column: 2;
+    grid-row: calc(var(--r) + var(--shift, 1));
+  }
+
+  .k {
+    --shift: 2;
+  }
+
+  .askLane {
+    grid-column: 1 / -1;
+    margin-bottom: 6px;
   }
 
   .askText {
     white-space: normal;
   }
+
+  .divider {
+    grid-row: 7;
+  }
+
+  .rail {
+    grid-column: 2;
+  }
+
+  .handRail {
+    grid-row: 3 / 6;
+  }
+
+  .keyRail {
+    grid-row: 11 / 15;
+  }
+
+  .flag b {
+    display: none;
+  }
+
+  .reached {
+    inset: auto;
+  }
+
+  .flags {
+    height: 22px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .busy i,
-  .scrub i {
+  .busy i {
     animation: none;
   }
 }
