@@ -134,13 +134,14 @@
   box-shadow: 0 0 8px var(--soft-mint);
 }
 
-/* The picture keeps a 16:9 box; After narrows to 9:16, centred, when
+/* The picture keeps a 16:10 box (a little taller than 16:9, at the
+   team's request, 2026-11-03); After narrows to 9:16, centred, when
    reframed. (No container units here: a size container can't share its
    parent's rows, which keeps the three columns aligned.) */
 .screen {
   display: grid;
   justify-items: center;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 16 / 10;
 }
 
 .frame {
@@ -169,9 +170,9 @@
     0 0 70px -24px rgb(95 224 176 / 0.45);
 }
 
-/* 9:16 at the same height: (9/16) × (9/16) of the width. */
+/* 9:16 at the same height: (10/16) × (9/16) of the width. */
 .stage[data-edit="vertical"] .side[data-after] .frame {
-  width: 31.64%;
+  width: 35.16%;
 }
 
 /* A warm grade over the picture. */
