@@ -379,16 +379,46 @@ export const faq = {
   ],
 };
 
-// Pricing: not decided yet (the team, 2026-11-03), so the section says so,
-// as an export still rendering. No prices, plans or "free" claims.
+// Pricing. Plans, prices, allowances, bullets and links come only from
+// the pricing API (src/lib/pricing.js); this is the section's own copy.
+// `pending` is the fallback while there has never been a good fetch.
 export const pricing = {
   eyebrow: "Pricing",
-  title: [{ text: "Plans," }, { text: "still rendering.", accent: true }],
-  lead: "We're still working out Keyfly's plans, so there are no prices here yet. They'll appear on this page when they're ready.",
-  file: "Pricing.mov",
-  status: "Rendering",
-  statusNote: "plans coming soon",
-  until: "Until then",
-  primary: "Open Keyfly in your browser",
-  secondary: "Download",
+  title: [{ text: "Start free." }, { text: "Grow when you need to.", accent: true }],
+  lead: "Every plan edits with Keyfly. Paid plans add AI minutes: the time Keyfly's AI spends building and editing your videos.",
+  plans: {
+    billing: "Billing",
+    monthly: "Monthly",
+    yearly: "Yearly",
+    save: "Save ~{n}%",
+    popular: "Most popular",
+    perMonth: "/ month",
+    perSeat: "/ seat / month",
+    aiMinutes: "AI minutes a month",
+    aiMinutesSeat: "AI minutes per seat",
+    buy: "Buy now",
+    trial: "{days}-day free trial",
+    noCard: "no card needed",
+    export: "Export",
+    storage: "Storage",
+    watermark: "Keyfly mark",
+    yes: "Yes",
+    no: "No",
+    free: "$0",
+    custom: "Custom",
+    minSeats: "minimum {n} seats",
+    packs: "Need more AI minutes?",
+    min: "min",
+    note: "Prices in US dollars. AI minutes count only while Keyfly's AI is working.",
+  },
+  pending: {
+    title: [{ text: "Plans," }, { text: "still rendering.", accent: true }],
+    lead: "We're still working out Keyfly's plans, so there are no prices here yet. They'll appear on this page when they're ready.",
+    file: "Pricing.mov",
+    status: "Rendering",
+    statusNote: "plans coming soon",
+    until: "Until then",
+    primary: "Open Keyfly in your browser",
+    secondary: "Download",
+  },
 };
