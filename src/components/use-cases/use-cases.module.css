@@ -124,13 +124,16 @@
   margin-top: clamp(24px, 4vw, 48px);
 }
 
-/* The stage sits at the top of the pin, just clear of the header, so it
-   follows the heading without a gap. */
+/* The stage is centred in the pin, below a band the header can occupy
+   (14px + its 56px bar + 18px), so the header never covers the dial or
+   the preview, whether it is showing (scrolling up) or not. */
 .track[data-live] .pin {
   position: sticky;
   top: 0;
+  display: grid;
+  align-content: center;
   height: 100svh;
-  padding-top: clamp(64px, 10vh, 84px);
+  padding: 88px 0 20px;
 }
 
 .stage {
@@ -148,8 +151,10 @@
   min-width: 0;
 }
 
+/* As big as the column allows, and as the screen's height leaves room
+   for under the header band (with the hint beneath). */
 .dial {
-  --d: min(500px, 100%, 64svh);
+  --d: min(580px, 100%, calc(100svh - 160px));
   --turn: 0deg;
   --base: 0deg;
   position: relative;

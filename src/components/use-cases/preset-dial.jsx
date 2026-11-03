@@ -117,7 +117,7 @@ export function PresetDial({ items, cta, dialLabel, promptLabel, hint }) {
     const check = () => {
       frame = 0;
       const content = stageRef.current.firstElementChild.offsetHeight;
-      setLive(!reducedRef.current && content + 96 <= innerHeight);
+      setLive(!reducedRef.current && content + 108 <= innerHeight); // the pin's padding
     };
     const schedule = () => (frame ||= requestAnimationFrame(check));
     // Re-check whenever the stage's own size settles or changes, and on

@@ -317,7 +317,8 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
     - A mint arc around the hub shows how far through the six the wheel has turned. A hint under it reads "Scroll or drag to turn".
     - **Fallback:** it pins only where the stage fits the screen (content + 96px ≤ the window's height; re-checked by a `ResizeObserver` and on resize) and motion is allowed. Otherwise the wheel turns by drag, click and keys with a JS ease-out, and the hint reads "Drag or click to turn".
   - **Right:** the preset up, at its format. The frame keeps a 16:9 height, capped at 46svh, and takes the preset's width from the left edge, so the change animates. Below it are the title (serif italic mint), its line, its real prompt from `prompt.presets` typing in, and the mint "Try this prompt" button.
-  - **Short screens:** the dial is capped at 64svh. Below 780px of height (wider than 860px) the frame caps at 38svh and the caption and prompt tighten, so the stage still pins on a 1366×553 laptop.
+  - **Pin and size (2026-11-03, after the header covered the dial when scrolling up on a 1352×633 laptop):** the stage is centred in the pin below an 88px band the header can occupy (`padding: 88px 0 20px`), and pins only if content + 108px fits. The dial is as big as its column allows, up to 580px and `100svh − 160px`.
+  - **Short screens:** Below 780px of height (wider than 860px) the frame caps at 38svh and the caption and prompt tighten, so the stage still pins on a 1366×553 laptop.
   - **Narrow screens (≤860px):** the order becomes viewer, wheel, then caption. The wheel lies on its side with only its top showing, the notch at the top and the names upright (46° apart). The hub hides.
   - **"Try this prompt":** dispatches `keyfly:prompt` with the preset's label. `PromptBox` listens, scrolls back to the hero and types that preset in.
   - **`Preview`:** a CSS-drawn loop at the use case's format, sized in `cqw`/`cqh` of its screen. `bleed` fills its parent edge to edge with no backing or corner marks, and stands 9:16 in the middle.
@@ -342,7 +343,7 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
     - With an `href`, the primary button is "Download for {platform}" and "Open in your browser" is secondary.
     - Without one, "Open in your browser" (`app.keyfly.si`) is primary, beside a "{platform} · Coming soon" chip.
   - **Fallback:** it pins only where the stage fits the screen (content + 96px ≤ the window's height) and motion is allowed; otherwise it shows landed. The server HTML shows it landed too.
-  - **Pinned stages** (here and in Use cases) sit at the top of the pin (padding `clamp(64px, 10vh, 84px)`, clear of the header), not centred, so they follow their heading without a gap.
+  - **Pinned stages** (here) sit at the top of the pin (padding `clamp(64px, 10vh, 84px)`, clear of the header), so they follow their heading without a gap. Use cases differs (below).
   - **Copy:** the Windows step is PLACEHOLDER. The macOS step and the footnote ("Keyfly.si is a Cevrynt Inc. product") come from the installer art.
 - **Performance rules** (2026-10-31, after the hero lagged; measured frame by frame, the hero went from about 9 to 26 fps in a GPU-less test browser, How it works from 18 to 28, Use cases from 27 to 47):
   - **Animate only `transform` and `opacity`.** Animating borders, backgrounds or shadows (as the timeline floor's breathing clips did) repaints everything around them every frame.
