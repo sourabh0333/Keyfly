@@ -28,8 +28,12 @@
   pointer-events: none;
 }
 
+/* Pinned, a section's padding becomes its bottom margin; TrimPins then
+   takes off the empty space under the pinned stage, so the gap to the
+   next section matches the others. */
 .section[data-live] {
   height: 420svh;
+  margin-bottom: var(--section-pad);
 }
 
 .stage {

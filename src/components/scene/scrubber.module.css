@@ -142,10 +142,6 @@
   --clip: linear-gradient(180deg, #12805b, #2fae82);
 }
 
-.clip[data-key="start"] {
-  --clip: linear-gradient(180deg, #12261f, #5fe0b0);
-}
-
 .clip[data-key="faq"] {
   --clip: linear-gradient(180deg, #1c3a30, #12261f);
 }

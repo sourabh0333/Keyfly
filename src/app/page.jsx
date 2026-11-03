@@ -1,6 +1,6 @@
+import { Divider } from "@/components/divider/divider";
 import { Download } from "@/components/download/download";
 import { Faq } from "@/components/faq/faq";
-import { Closing } from "@/components/closing/closing";
 import { EditWithWords } from "@/components/edit-with-words/edit-with-words";
 import { EveryFormat } from "@/components/every-format/every-format";
 import { OnBrand } from "@/components/on-brand/on-brand";
@@ -27,16 +27,24 @@ export default function Home() {
     <Scene>
       <Hero />
       <HowItWorks />
+      <Divider />
       <OldWay />
+      <Divider />
       <EditWithWords />
+      <Divider />
       <YourCall />
+      <Divider />
       <EveryFormat />
+      <Divider />
       <OnBrand />
+      <Divider />
       <Anywhere />
+      <Divider />
       <UseCases />
+      <Divider />
       <Download />
+      <Divider />
       <Faq />
-      <Closing />
     </Scene>
   );
 }

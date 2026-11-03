@@ -128,7 +128,7 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
 `src/components/footer/`, with its copy in `src/content/footer.js`. The first version, "end credits", didn't read as a footer and was dropped. This one is a conventional footer in the site's style: one night panel (`#101114`, radius 26) in the 1320px column.
 
 - **Top edge:** a timeline ruler, with the mint playhead parked at the end of the reel.
-- **Call to action:** removed 2026-11-03; the homepage's closing section (above the footer) carries it now.
+- **Call to action:** "Your next video / *starts with a sentence.*" with the mint "Open Keyfly" (the app) and the ghost "Download" (`/#download`).
 - **Main row:**
   - Brand: the logo (30px, intro on scroll), the site description (PLACEHOLDER, from `siteConfig`) and a "macOS · Windows" pill.
   - Three link columns: Product (How it works, Use cases, Download); Use cases (the six presets); Keyfly (Open Keyfly, Sign in, Keyfly for macOS, Keyfly for Windows).
@@ -139,7 +139,7 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
     - the playhead sends out a pulse ring;
     - a conic comet of mint light (`@property --sweep`) runs once round the panel's edge;
     - the panel's mint edge and glow come up;
-    - the brand, three columns and bottom bar rise in, staggered by `--i`.
+    - the CTA, brand, three columns and bottom bar rise in, staggered by `--i`.
   - Without JS the footer simply shows. With reduced motion the line arrives at once and nothing animates.
 - **No inventions:** no social links, no legal pages and no newsletter until they exist.
 - **Narrow screens:** the brand sits above the columns. On phones the columns become two, and the CTA buttons share the row.
@@ -147,7 +147,7 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
 
 ## Homepage (step by step, from 2026-10-30)
 
-`src/app/page.jsx` renders, inside `Scene`, Hero → HowItWorks (`#product`) → OldWay (`#old-way`) → EditWithWords (`#edit`) → YourCall (`#control`) → EveryFormat (`#formats`) → OnBrand (`#brand`) → Anywhere (`#anywhere`) → UseCases (`#use-cases`) → Download (`#download`) → Faq (`#faq`) → Closing (`#start`). The planned sections and their order are in `PLAN.md` ("Homepage expansion"). All copy lives in `src/content/home.js`. Lines marked `PLACEHOLDER` wait for the confirmed product description, so the page is `noindex` until then.
+`src/app/page.jsx` renders, inside `Scene`, Hero → HowItWorks (`#product`) → OldWay (`#old-way`) → EditWithWords (`#edit`) → YourCall (`#control`) → EveryFormat (`#formats`) → OnBrand (`#brand`) → Anywhere (`#anywhere`) → UseCases (`#use-cases`) → Download (`#download`) → Faq (`#faq`), with a `Divider` between every two sections after How it works. The planned sections and their order are in `PLAN.md` ("Homepage expansion"). All copy lives in `src/content/home.js`. Lines marked `PLACEHOLDER` wait for the confirmed product description, so the page is `noindex` until then.
 
 - **Scene** (`src/components/scene/`, added 2026-10-31 at the team's request: the page was flat black and the sections felt disconnected). It ties the sections together as one scroll:
   - **`SceneLight`:** a fixed light behind every section, so sections leave their own backgrounds transparent (the hero's backdrop fades out at its foot with a mask). Each section brings up its own layer as it fills the screen (`--w`), and the layers drift slowly:
@@ -290,11 +290,8 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
   - **Narrow screens:** the panel sits above the list; asking scrolls it into view.
   - **Copy:** `faq`. Answers come from confirmed facts where we have them. Changing the cut, formats, ownership and privacy, and pricing are PLACEHOLDER; ownership, privacy and pricing say the details are coming rather than guessing.
   - **Flight thread:** the sweep to the footer now starts below the last section (`main [data-section]`), so the line runs down the right margin beside the FAQ and never crosses it.
-- **Closing call to action** (`src/components/closing/`, added 2026-11-03; the team picked it from three next sections): "Your next video *starts with a sentence.*" Centred like the hero: the "● Start now" eyebrow with its recording light, the big two-line heading, a lead, the hero's working **`PromptBox`** again, and "Or get the desktop app ↓" (to `#download`); a still pool of mint light behind, and a ruler across the foot with the mint playhead under the box (the hero's horizon, echoed).
-  - **A second `PromptBox`:** `id="closing-prompt"` and `primary={false}`, so only the hero's box takes page-wide drops and "Try this prompt" (`keyfly:prompt`); the chips, sparkle, format menu and send work here as there. `PromptBox` takes `id` (default `hero-prompt`) and `primary` (default true).
-  - **The footer's own CTA row was removed** the same day (it would repeat this); the footer now opens with the brand and link columns.
-  - **Gotcha:** the column is `grid-template-columns: minmax(0, 1fr)`, or the chips' row widens the page on phones.
-  - **Flight thread:** it runs down the right margin beside it and sweeps to the footer below it (the sweep starts below the last section).
+- **Dividers** (`src/components/divider/`, added 2026-11-03 at the team's request, from the ruler of a closing section that was built and then removed the same day): between every two sections after How it works, a timeline ruler across the content column with the mint playhead (a stem and a diamond) in the middle. It takes no height, so it sits exactly in the middle of the gap (each section's `--section-pad`, top and bottom). None after the hero (its timeline floor already is one) or before the footer (whose top edge is a ruler with the playhead).
+  - **Even gaps after pinned sections:** a pinned stage sits at the top of a pin as tall as the screen and leaves empty space below its content. `TrimPins` (`src/components/scene/trim-pins.jsx`, in `Scene`) measures that space for every `[data-live]` track and takes it off the track's bottom margin (re-measured on resize and whenever a track pins or unpins). How it works, which pins its own section, carries its padding as `margin-bottom: var(--section-pad)` while pinned.
 - **`Shot`** (`src/components/shot/`): the CSS-drawn illustrative shot (dusk through a window, a presenter at 62% across), used by One edit, every format.
 - **Use cases** (`src/components/use-cases/`, added 2026-10-31, redesigned four times the same day): the six prompt-box presets on a **jog wheel**, the dial editors spin to move through footage. Captioned "Illustrative previews". It is not pinned, so it fits any height. Earlier versions were dropped:
   - a pinned reel (broke on short laptop screens);

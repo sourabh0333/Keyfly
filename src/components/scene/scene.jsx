@@ -4,12 +4,14 @@ import { useRef } from "react";
 import { FlightThread } from "./flight-thread";
 import { SceneLight } from "./scene-light";
 import { Scrubber } from "./scrubber";
+import { TrimPins } from "./trim-pins";
 import styles from "./scene.module.css";
 
 /**
  * Holds the homepage's sections in one scene: the light behind them, the
  * flight thread that runs through them and the page timeline at the foot
- * of the screen (see SceneLight, FlightThread and Scrubber).
+ * of the screen (see SceneLight, FlightThread and Scrubber); TrimPins
+ * evens out the gaps after pinned sections.
  */
 export function Scene({ children }) {
   const pageRef = useRef(null);
@@ -20,6 +22,7 @@ export function Scene({ children }) {
       {children}
       <FlightThread pageRef={pageRef} />
       <Scrubber />
+      <TrimPins pageRef={pageRef} />
     </div>
   );
 }

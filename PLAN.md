@@ -103,8 +103,9 @@ Copy for anything not yet confirmed is marked PLACEHOLDER in `src/content/home.j
 | 8 | Use cases | ✅ | Six presets on the jog wheel |
 | 9 | Download | ✅ | Get the app |
 | 10 | **FAQ, "Ask Keyfly"** (`#faq`) | ✅ built 2026-11-02 | Formats, export, privacy, ownership, pricing |
-| 10b | **Closing call to action** (`#start`) | ✅ built 2026-11-03 | The prompt box again, where the page ends; the footer's CTA row moved here |
 | 11 | Footer | ✅ | |
+
+A closing call-to-action section was built and removed on 2026-11-03; its ruler-and-playhead became the divider between every two sections.
 
 Proof (logos, numbers, reviews), before/after footage and pricing are added once real material exists.
 

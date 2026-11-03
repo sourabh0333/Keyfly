@@ -1,0 +1,53 @@
+/* A ruler with the playhead in the middle, centred in the gap between
+   two sections (height 0, the ruler hung on its centre line). */
+.divider {
+  position: relative;
+  height: 0;
+}
+
+.ruler {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  max-width: 1320px;
+  height: 10px;
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+  translate: 0 -50%;
+}
+
+.ruler::before {
+  content: "";
+  position: absolute;
+  inset: 0 var(--gutter);
+  background:
+    repeating-linear-gradient(to right, rgb(244 241 234 / 0.22) 0 1px, transparent 1px 64px) 0 0 / 100% 10px no-repeat,
+    repeating-linear-gradient(to right, rgb(244 241 234 / 0.1) 0 1px, transparent 1px 16px) 0 0 / 100% 5px no-repeat;
+}
+
+/* The playhead: a mint stem and a diamond, in the middle. */
+.ruler i {
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  width: 2px;
+  height: 22px;
+  translate: -50% 0;
+  border-radius: 2px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 12px var(--soft-mint);
+}
+
+.ruler i::before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  width: 9px;
+  height: 9px;
+  translate: -50% 0;
+  border-radius: 2px;
+  background: var(--soft-mint);
+  rotate: 45deg;
+}

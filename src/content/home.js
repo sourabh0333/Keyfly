@@ -315,12 +315,3 @@ export const faq = {
     },
   ],
 };
-
-// The closing call to action, just above the footer: the prompt box again,
-// so people can start where they finish reading.
-export const closing = {
-  eyebrow: "Start now",
-  title: [{ text: "Your next video" }, { text: "starts with a sentence.", accent: true }],
-  lead: "Describe it, or drop in your footage. Keyfly makes the first cut, and you take it from there.",
-  alt: { label: "Or get the desktop app", href: "#download" },
-};
