@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { Preview } from "@/components/use-cases/preview";
 import styles from "./prompts.module.css";
 
@@ -12,6 +13,11 @@ const pad = (n) => String(n).padStart(2, "0");
  * preview, which floats beside the cursor and follows it (eased, one rAF
  * loop while it moves). Choosing a prompt sends its text to the hero's
  * prompt box (the keyfly:prompt event), which scrolls up and types it in.
+ *
+ * The preview is portalled into <body>: the section is transformed while
+ * it dissolves (and filtered while out of focus), and either would make a
+ * fixed element inside it position against the section instead of the
+ * screen, throwing it off to the side and widening the page.
  */
 export function PromptList({ groups, try: tryLabel }) {
   const [hover, setHover] = useState(null); // the prompt under the pointer
@@ -19,6 +25,10 @@ export function PromptList({ groups, try: tryLabel }) {
   const target = useRef({ x: 0, y: 0 });
   const at = useRef({ x: 0, y: 0 });
   const frame = useRef(0);
+  const [mounted, setMounted] = useState(false);
+
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- portal target exists only after mount
+  useEffect(() => setMounted(true), []);
 
   // Ease the preview towards the pointer.
   useEffect(() => {
@@ -36,8 +46,15 @@ export function PromptList({ groups, try: tryLabel }) {
 
   function move(event) {
     // The preview sits above and right of the pointer (its foot at the
-    // pointer), so the line being read stays clear.
-    target.current = { x: event.clientX + 24, y: event.clientY - 24 };
+    // pointer), so the line being read stays clear; near the right edge it
+    // moves to the left of the pointer, and it never rises off the top.
+    const w = floatRef.current?.firstElementChild?.offsetWidth || 260;
+    const h = floatRef.current?.firstElementChild?.offsetHeight || 146;
+    const right = event.clientX + 24 + w > innerWidth - 16;
+    target.current = {
+      x: right ? event.clientX - 24 - w : event.clientX + 24,
+      y: Math.max(h + 16, event.clientY - 24),
+    };
   }
 
   function enter(item, event) {
@@ -91,14 +108,17 @@ export function PromptList({ groups, try: tryLabel }) {
         </div>
       ))}
 
-      {/* The floating preview (decorative). */}
+      {/* The floating preview (decorative), in <body> once mounted. */}
+      {mounted ? createPortal(
       <div ref={floatRef} className={styles.float} data-on={hover ? "" : undefined} data-format={hover?.format} aria-hidden="true">
         {hover ? (
           <span key={hover.text} className={styles.floatScreen}>
             <Preview kind={hover.kind} format={hover.format === "9:16" ? "9:16" : "16:9"} bleed />
           </span>
         ) : null}
-      </div>
+      </div>,
+      document.body,
+      ) : null}
     </div>
   );
 }
