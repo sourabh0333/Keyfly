@@ -104,7 +104,7 @@ Copy for anything not yet confirmed is marked PLACEHOLDER in `src/content/home.j
 | 8 | Use cases | ✅ | Six presets on the jog wheel |
 | 8b | **Prompt gallery** (`#prompts`) | ✅ built 2026-11-03 | Example prompts to try; competitors lean on templates |
 | 9 | Download | ✅ | Get the app |
-| 9b | **Pricing** | next | The team: plans not decided yet, so "Pricing coming soon", no invented prices |
+| 9b | **Pricing** (`#pricing`) | ✅ built 2026-11-03 ("still rendering") | Plans not decided yet; no invented prices. Replace with real plans when decided |
 | 10 | **FAQ, "Ask Keyfly"** (`#faq`) | ✅ built 2026-11-02 | Formats, export, privacy, ownership, pricing |
 | 11 | Footer | ✅ | |
 

@@ -150,6 +150,10 @@
   --clip: linear-gradient(180deg, #12805b, #2fae82);
 }
 
+.clip[data-key="pricing"] {
+  --clip: linear-gradient(90deg, #5fe0b0 0 87%, #2a2b30 0);
+}
+
 .clip[data-key="faq"] {
   --clip: linear-gradient(180deg, #1c3a30, #12261f);
 }

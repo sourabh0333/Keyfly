@@ -374,6 +374,21 @@ export const faq = {
       // PLACEHOLDER until the team confirms pricing.
       q: "How much does Keyfly cost?",
       a: "Pricing hasn't been announced yet. We'll share the plans here soon.",
+      link: { label: "Pricing", href: "#pricing" },
     },
   ],
+};
+
+// Pricing: not decided yet (the team, 2026-11-03), so the section says so,
+// as an export still rendering. No prices, plans or "free" claims.
+export const pricing = {
+  eyebrow: "Pricing",
+  title: [{ text: "Plans," }, { text: "still rendering.", accent: true }],
+  lead: "We're still working out Keyfly's plans, so there are no prices here yet. They'll appear on this page when they're ready.",
+  file: "Pricing.mov",
+  status: "Rendering",
+  statusNote: "plans coming soon",
+  until: "Until then",
+  primary: "Open Keyfly in your browser",
+  secondary: "Download",
 };

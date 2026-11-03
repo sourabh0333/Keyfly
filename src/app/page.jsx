@@ -5,6 +5,7 @@ import { EditWithWords } from "@/components/edit-with-words/edit-with-words";
 import { EveryFormat } from "@/components/every-format/every-format";
 import { OnBrand } from "@/components/on-brand/on-brand";
 import { Prompts } from "@/components/prompts/prompts";
+import { Pricing } from "@/components/pricing/pricing";
 import { Anywhere } from "@/components/anywhere/anywhere";
 import { Audience } from "@/components/audience/audience";
 import { YourCall } from "@/components/your-call/your-call";
@@ -49,6 +50,8 @@ export default function Home() {
       <Prompts />
       <Divider />
       <Download />
+      <Divider />
+      <Pricing />
       <Divider />
       <Faq />
     </Scene>

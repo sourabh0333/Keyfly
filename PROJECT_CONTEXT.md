@@ -147,7 +147,7 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
 
 ## Homepage (step by step, from 2026-10-30)
 
-`src/app/page.jsx` renders, inside `Scene`, Hero → HowItWorks (`#product`) → OldWay (`#old-way`) → EditWithWords (`#edit`) → YourCall (`#control`) → EveryFormat (`#formats`) → OnBrand (`#brand`) → Anywhere (`#anywhere`) → Audience (`#audience`) → UseCases (`#use-cases`) → Prompts (`#prompts`) → Download (`#download`) → Faq (`#faq`), with a `Divider` between every two sections after How it works. The planned sections and their order are in `PLAN.md` ("Homepage expansion"). All copy lives in `src/content/home.js`. Lines marked `PLACEHOLDER` wait for the confirmed product description, so the page is `noindex` until then.
+`src/app/page.jsx` renders, inside `Scene`, Hero → HowItWorks (`#product`) → OldWay (`#old-way`) → EditWithWords (`#edit`) → YourCall (`#control`) → EveryFormat (`#formats`) → OnBrand (`#brand`) → Anywhere (`#anywhere`) → Audience (`#audience`) → UseCases (`#use-cases`) → Prompts (`#prompts`) → Download (`#download`) → Pricing (`#pricing`) → Faq (`#faq`), with a `Divider` between every two sections after How it works. The planned sections and their order are in `PLAN.md` ("Homepage expansion"). All copy lives in `src/content/home.js`. Lines marked `PLACEHOLDER` wait for the confirmed product description, so the page is `noindex` until then.
 
 - **Scene** (`src/components/scene/`, added 2026-10-31 at the team's request: the page was flat black and the sections felt disconnected). It ties the sections together as one scroll:
   - **`SceneLight`:** a fixed light behind every section, so sections leave their own backgrounds transparent (the hero's backdrop fades out at its foot with a mask). Each section brings up its own layer as it fills the screen (`--w`), and the layers drift slowly:
@@ -305,6 +305,11 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
   - **Turning:** hovering a panel with a mouse opens it (and holds the self-running); clicking opens it and stops the self-running; otherwise the next opens every 5s while on screen, the open panel filling along its foot. Reduced motion: no self-running, no easing.
   - **Phones** (≤760px): the panels stack; closed ones are slim rows with the name along them and no video, the open one tall with its video above.
   - **Copy:** `audience`. Built only from the confirmed presets and their prompts; the roles and lines are PLACEHOLDER until the team confirms the audience.
+- **Pricing** (`src/components/pricing/`, added 2026-11-03): "Plans, *still rendering.*" The team said the plans aren't decided yet, so the section says so honestly: **no prices, plans or "free" claims**. Picked "rendering export" from three designs.
+  - **`Render`** (client), frameless between hairlines: "● Pricing.mov" with a recording light, a big mono percentage (mint gradient), a ruler with the rendered part in mint and a white playhead riding its edge, then "Rendering · plans coming soon" and a running timecode. While on screen the percentage creeps towards 96% (`96 × (1 − e^(−t/9s))`), never finishing; written straight to the DOM (`--p` on `.render`), paused off screen. Reduced motion and before JS: 87%, still. Decorative (`aria-hidden`); the heading and lead say it.
+  - **Beneath:** "Until then" with the mint "Open Keyfly in your browser ↗" (the app) and "Download" (`#download`).
+  - **Gotcha:** `.bar` has `overflow-x: clip` (the playhead's rail is a full-width layer translated by its own width).
+  - The FAQ's pricing answer now links to it. Replace the section with real plans once they're decided.
 - **`Shot`** (`src/components/shot/`): the CSS-drawn illustrative shot (dusk through a window, a presenter at 62% across), used by One edit, every format.
 - **Use cases** (`src/components/use-cases/`, added 2026-10-31, redesigned four times the same day): the six prompt-box presets on a **jog wheel**, the dial editors spin to move through footage. Captioned "Illustrative previews". It is not pinned, so it fits any height. Earlier versions were dropped:
   - a pinned reel (broke on short laptop screens);
