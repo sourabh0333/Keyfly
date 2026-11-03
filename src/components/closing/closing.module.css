@@ -1,0 +1,201 @@
+/*
+ * The closing call to action: centred, as the hero is, with its prompt
+ * box; a soft mint light behind it and a ruler across the foot with the
+ * playhead under the box.
+ */
+.section {
+  position: relative;
+  padding: clamp(96px, 14vw, 180px) 0 clamp(80px, 10vw, 140px);
+  overflow-x: clip;
+  color: var(--paper);
+}
+
+/* A still pool of light behind the box (no drift: it costs nothing). */
+.glow {
+  position: absolute;
+  top: 34%;
+  left: 50%;
+  width: min(1100px, 120vw);
+  height: 640px;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(95 224 176 / 0.11), transparent 72%);
+  pointer-events: none;
+}
+
+/* minmax(0, 1fr): the preset chips scroll sideways, and their row's
+   max-content width must not widen the column (see Gotchas). */
+.inner {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+  text-align: center;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 26px;
+  padding: 6px 14px 6px 10px;
+  border-radius: var(--radius-round);
+  background: rgb(244 241 234 / 0.04);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.09) inset;
+  color: rgb(244 241 234 / 0.72);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.rec {
+  position: relative;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--soft-mint);
+  box-shadow: 0 0 10px var(--soft-mint);
+}
+
+.rec::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1px solid var(--soft-mint);
+  animation: ping 2s var(--ease-land) infinite;
+}
+
+.title {
+  font-size: clamp(2.4rem, 0.9rem + 4.4vw, 4.75rem);
+  font-weight: 560;
+  letter-spacing: -0.05em;
+  line-height: 0.98;
+}
+
+.plain,
+.accent {
+  display: block;
+}
+
+.accent {
+  padding-bottom: 0.08em;
+  background: linear-gradient(100deg, var(--mint-text-dark), #eafff6 50%, var(--soft-mint));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-family: var(--font-accent-stack);
+  font-size: 1.08em;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.lead {
+  max-width: 46ch;
+  margin-top: 22px;
+  color: rgb(244 241 234 / 0.62);
+  font-size: var(--text-lead);
+  line-height: 1.5;
+}
+
+/* The box, as wide as the hero's. */
+.box {
+  width: 100%;
+  max-width: 680px;
+  margin-top: 40px;
+  text-align: left;
+}
+
+.alt {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 28px;
+  color: rgb(244 241 234 / 0.6);
+  font-size: 0.9375rem;
+  font-weight: 540;
+  text-decoration: none;
+  transition: color 0.25s ease;
+}
+
+.alt:hover {
+  color: var(--paper);
+}
+
+.alt:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+.horizon {
+  position: relative;
+  max-width: 1320px;
+  height: 12px;
+  margin: clamp(56px, 7vw, 88px) auto 0;
+  padding: 0 var(--gutter);
+}
+
+.horizon::before {
+  content: "";
+  position: absolute;
+  inset: 0 var(--gutter);
+  background:
+    repeating-linear-gradient(to right, rgb(244 241 234 / 0.22) 0 1px, transparent 1px 64px) 0 0 / 100% 10px no-repeat,
+    repeating-linear-gradient(to right, rgb(244 241 234 / 0.1) 0 1px, transparent 1px 16px) 0 0 / 100% 5px no-repeat;
+}
+
+/* The playhead, in the middle, under the box. */
+.horizon i {
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  width: 2px;
+  height: 22px;
+  translate: -50% 0;
+  border-radius: 2px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 12px var(--soft-mint);
+}
+
+.horizon i::before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  width: 9px;
+  height: 9px;
+  translate: -50% 0;
+  border-radius: 2px;
+  background: var(--soft-mint);
+  rotate: 45deg;
+}
+
+@keyframes ping {
+  from {
+    opacity: 0.8;
+    scale: 0.6;
+  }
+  to {
+    opacity: 0;
+    scale: 1.8;
+  }
+}
+
+@media (max-width: 560px) {
+  .plain,
+  .accent {
+    display: inline;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rec::after {
+    animation: none;
+  }
+}

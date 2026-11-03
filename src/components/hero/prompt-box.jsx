@@ -52,7 +52,7 @@ const hasFiles = (event) => Array.from(event.dataTransfer?.types || []).includes
  * page), pick a format, or start from one of the presets, which types its
  * example prompt into the box. Sending opens the app.
  */
-export function PromptBox({ label, placeholder, action, accept, modes, presets, elsewhere }) {
+export function PromptBox({ label, placeholder, action, accept, modes, presets, elsewhere, id = "hero-prompt", primary = true }) {
   const [text, setText] = useState("");
   const [files, setFiles] = useState([]);
   const [mode, setMode] = useState(modes[0]);
@@ -75,8 +75,10 @@ export function PromptBox({ label, placeholder, action, accept, modes, presets, 
     el.style.height = `${Math.min(el.scrollHeight, 220)}px`;
   }, [text]);
 
-  // Footage can be dropped anywhere on the page.
+  // Footage can be dropped anywhere on the page (the primary box only, so
+  // a second box on the page doesn't take the same drop).
   useEffect(() => {
+    if (!primary) return;
     let depth = 0;
     const enter = (event) => {
       if (!hasFiles(event)) return;
@@ -107,7 +109,7 @@ export function PromptBox({ label, placeholder, action, accept, modes, presets, 
       window.removeEventListener("dragleave", leave);
       window.removeEventListener("drop", drop);
     };
-  }, []);
+  }, [primary]);
 
   // Close the format menu on an outside click or Escape.
   useEffect(() => {
@@ -131,6 +133,7 @@ export function PromptBox({ label, placeholder, action, accept, modes, presets, 
     typeOutRef.current = typeOut;
   });
   useEffect(() => {
+    if (!primary) return;
     const onPrompt = (event) => {
       const preset = presets.find((p) => p.label === event.detail?.label);
       if (!preset) return;
@@ -139,7 +142,7 @@ export function PromptBox({ label, placeholder, action, accept, modes, presets, 
     };
     window.addEventListener("keyfly:prompt", onPrompt);
     return () => window.removeEventListener("keyfly:prompt", onPrompt);
-  }, [presets]);
+  }, [presets, primary]);
 
   function addFiles(list) {
     const added = Array.from(list || []).map((file) => ({ id: `${file.name}-${file.size}-${file.lastModified}`, name: file.name }));
@@ -204,12 +207,12 @@ export function PromptBox({ label, placeholder, action, accept, modes, presets, 
           </ul>
         ) : null}
 
-        <label htmlFor="hero-prompt" className="visually-hidden">
+        <label htmlFor={id} className="visually-hidden">
           {label}
         </label>
         <textarea
           ref={field}
-          id="hero-prompt"
+          id={id}
           className={styles.field}
           rows={2}
           placeholder={placeholder}
