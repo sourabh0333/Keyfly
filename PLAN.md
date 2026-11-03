@@ -100,9 +100,11 @@ Copy for anything not yet confirmed is marked PLACEHOLDER in `src/content/home.j
 | 5 | **One edit, every format** (`#formats`) | ✅ built 2026-10-31, rebuilt 2026-11-02 | The 16:9 → 9:16 → 1:1 pain: one cut reframes, captions follow |
 | 6 | **On brand, every time** (`#brand`) | ✅ built 2026-11-02 (brand kit confirmed) | Brand consistency: your fonts, colours and logo applied to every cut |
 | 7 | **Works where you work** (`#anywhere`) | ✅ built 2026-11-02 (chat app confirmed) | ChatGPT · Claude, desktop and browser; before Use cases so the thread's loop stays clear |
+| 7b | **Who it's for** (`#audience`) | ✅ built 2026-11-03 | Keyfly by role, from the confirmed presets |
 | 8 | Use cases | ✅ | Six presets on the jog wheel |
 | 8b | **Prompt gallery** (`#prompts`) | ✅ built 2026-11-03 | Example prompts to try; competitors lean on templates |
 | 9 | Download | ✅ | Get the app |
+| 9b | **Pricing** | next | The team: plans not decided yet, so "Pricing coming soon", no invented prices |
 | 10 | **FAQ, "Ask Keyfly"** (`#faq`) | ✅ built 2026-11-02 | Formats, export, privacy, ownership, pricing |
 | 11 | Footer | ✅ | |
 

@@ -1,0 +1,462 @@
+/*
+ * "Who it's for": a numbered index of roles in large type (hairlines, no
+ * boxes) beside a preview of what the open role makes. Roles sets data-on
+ * on the open role (its body opens with a grid-rows transition) and
+ * data-auto on .roles while it runs by itself (the open row fills along
+ * its foot).
+ */
+.section {
+  position: relative;
+  padding: var(--section-pad) 0;
+  color: var(--paper);
+}
+
+.inner {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* ---------- Heading (as in Use cases and Download) ---------- */
+
+.head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+  margin-bottom: clamp(32px, 4vw, 56px);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: rgb(244 241 234 / 0.62);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.eyebrowMark {
+  width: 18px;
+  height: 1px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+}
+
+.title {
+  margin-top: 16px;
+  font-size: clamp(2.1rem, 1.1rem + 2.2vw, 3.4rem);
+  font-weight: 560;
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+
+.plain,
+.accent {
+  display: block;
+}
+
+.accent {
+  padding-bottom: 0.06em;
+  background: linear-gradient(100deg, var(--mint-text-dark), #eafff6 50%, var(--soft-mint));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-family: var(--font-accent-stack);
+  font-size: 1.1em;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.lead {
+  max-width: 38ch;
+  color: rgb(244 241 234 / 0.62);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  text-align: right;
+}
+
+
+
+
+/* ---------- Index beside preview ---------- */
+
+.roles {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: start;
+  gap: clamp(32px, 5vw, 80px);
+}
+
+.index {
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid rgb(244 241 234 / 0.1);
+  list-style: none;
+}
+
+.role {
+  position: relative;
+  border-bottom: 1px solid rgb(244 241 234 / 0.1);
+}
+
+.roleHead {
+  position: relative;
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) 16px;
+  align-items: baseline;
+  gap: 14px;
+  width: 100%;
+  padding: 22px 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.roleHead:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 4px;
+  border-radius: 6px;
+}
+
+.roleIndex {
+  color: rgb(244 241 234 / 0.3);
+  font-family: var(--font-mono-stack);
+  font-size: 0.75rem;
+  transition: color 0.3s ease;
+}
+
+.roleName {
+  color: rgb(244 241 234 / 0.5);
+  font-size: clamp(1.5rem, 1rem + 1.4vw, 2.25rem);
+  font-weight: 560;
+  letter-spacing: -0.035em;
+  line-height: 1.1;
+  transition: color 0.3s ease;
+}
+
+.arrow {
+  align-self: center;
+  color: var(--soft-mint);
+  opacity: 0;
+  translate: -6px 0;
+  transition:
+    opacity 0.3s ease,
+    translate 0.3s var(--ease-land);
+}
+
+.roleHead:hover .roleName {
+  color: rgb(244 241 234 / 0.8);
+}
+
+.role[data-on] .roleIndex {
+  color: var(--soft-mint);
+}
+
+.role[data-on] .roleName {
+  color: var(--paper);
+}
+
+.role[data-on] .arrow {
+  opacity: 1;
+  translate: 0 0;
+}
+
+/* While it runs by itself, the open role fills along its foot (the
+   row's hairline). */
+.fill {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 1px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+  transform-origin: left;
+  scale: 0 1;
+}
+
+.roles[data-auto] .role[data-on] .fill {
+  animation: fill 5s linear forwards;
+}
+
+/* The open role's body: a grid row that opens from 0fr to 1fr. */
+.roleBody {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.5s var(--ease-land);
+}
+
+.role[data-on] .roleBody {
+  grid-template-rows: 1fr;
+}
+
+.roleInner {
+  display: grid;
+  gap: 16px;
+  min-height: 0;
+  overflow: hidden;
+  padding-left: 54px;
+}
+
+.role[data-on] .roleInner {
+  padding-bottom: 24px;
+}
+
+.roleLine {
+  max-width: 44ch;
+  color: rgb(244 241 234 / 0.62);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 32px;
+  margin: 0;
+}
+
+.facts div {
+  display: grid;
+  gap: 8px;
+}
+
+.facts dt {
+  color: rgb(244 241 234 / 0.4);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.facts dd {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+}
+
+.chip {
+  padding: 4px 11px;
+  border-radius: var(--radius-round);
+  background: rgb(95 224 176 / 0.08);
+  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.35) inset;
+  color: var(--mint-text-dark);
+  font-size: 0.8125rem;
+  font-weight: 540;
+}
+
+.mono {
+  align-items: center;
+  color: rgb(244 241 234 / 0.75);
+  font-family: var(--font-mono-stack);
+  font-size: 0.8125rem;
+}
+
+/* ---------- The preview ---------- */
+
+.show {
+  display: grid;
+  gap: 18px;
+}
+
+.screen {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-radius: 16px;
+  background: #050506;
+  box-shadow:
+    0 0 0 1px rgb(95 224 176 / 0.4),
+    0 0 70px -24px rgb(95 224 176 / 0.45),
+    0 30px 80px -36px rgb(0 0 0 / 0.95);
+}
+
+.shot {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.shot[data-on] {
+  opacity: 1;
+}
+
+.tag {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 10px;
+  border-radius: 7px;
+  background: rgb(11 11 13 / 0.72);
+  color: rgb(244 241 234 / 0.85);
+  font-family: var(--font-mono-stack);
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+  animation: rise 0.4s var(--ease-land);
+}
+
+.tag i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--soft-mint);
+  box-shadow: 0 0 6px var(--soft-mint);
+}
+
+.try {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 20px;
+  padding-top: 16px;
+  border-top: 1px solid rgb(244 241 234 / 0.1);
+}
+
+.prompt {
+  display: grid;
+  gap: 6px;
+  min-height: 4.6em;
+  color: rgb(244 241 234 / 0.8);
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  animation: rise 0.4s var(--ease-land);
+}
+
+.prompt span {
+  color: rgb(244 241 234 / 0.4);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.tryButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 44px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: var(--radius-round);
+  background: var(--soft-mint);
+  box-shadow:
+    0 1px 0 rgb(255 255 255 / 0.45) inset,
+    0 10px 30px -12px rgb(95 224 176 / 0.9);
+  color: var(--mint-ink);
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    box-shadow 0.3s ease,
+    translate 0.3s var(--ease-land);
+}
+
+.tryButton:hover {
+  box-shadow:
+    0 1px 0 rgb(255 255 255 / 0.45) inset,
+    0 12px 36px -8px rgb(95 224 176 / 0.95);
+  translate: 0 -1px;
+}
+
+.tryButton:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 3px;
+}
+
+.footnote {
+  margin-top: 16px;
+  color: rgb(244 241 234 / 0.38);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+@keyframes fill {
+  to {
+    scale: 1 1;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    translate: 0 6px;
+  }
+}
+
+/* ---------- Smaller screens ---------- */
+
+@media (max-width: 860px) {
+  .head {
+    display: grid;
+    gap: 14px;
+  }
+
+  .lead {
+    text-align: left;
+  }
+
+  .plain,
+  .accent {
+    display: inline;
+  }
+
+  .title {
+    font-size: clamp(1.9rem, 1.2rem + 3vw, 2.75rem);
+  }
+
+  /* The preview above the index. */
+  .roles {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
+
+  .show {
+    order: -1;
+  }
+
+  .roleInner {
+    padding-left: 40px;
+  }
+
+  .roleHead {
+    grid-template-columns: 30px minmax(0, 1fr) 16px;
+    padding: 18px 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .try {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .roleBody,
+  .shot,
+  .arrow {
+    transition: none;
+  }
+
+  .tag,
+  .prompt,
+  .roles[data-auto] .role[data-on] .fill {
+    animation: none;
+  }
+}

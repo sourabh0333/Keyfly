@@ -6,6 +6,7 @@ import { EveryFormat } from "@/components/every-format/every-format";
 import { OnBrand } from "@/components/on-brand/on-brand";
 import { Prompts } from "@/components/prompts/prompts";
 import { Anywhere } from "@/components/anywhere/anywhere";
+import { Audience } from "@/components/audience/audience";
 import { YourCall } from "@/components/your-call/your-call";
 import { Hero } from "@/components/hero/hero";
 import { Scene } from "@/components/scene/scene";
@@ -40,6 +41,8 @@ export default function Home() {
       <OnBrand />
       <Divider />
       <Anywhere />
+      <Divider />
+      <Audience />
       <Divider />
       <UseCases />
       <Divider />

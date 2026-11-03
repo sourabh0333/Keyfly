@@ -254,6 +254,26 @@ export const prompts = {
   ],
 };
 
+// "Who it's for": Keyfly by role, built only from the confirmed presets
+// and their real prompts. The roles and lines are PLACEHOLDER until the
+// team confirms the audience.
+export const audience = {
+  eyebrow: "Who it's for",
+  title: [{ text: "Made for people" }, { text: "with a story to tell.", accent: true }],
+  lead: "Whatever you make, you start the same way: say what you want, or drop in your footage.",
+  note: "Illustrative previews",
+  makes: "Makes",
+  formatsLabel: "Formats",
+  promptLabel: "Try",
+  try: "Try this prompt",
+  roles: [
+    { id: "marketers", name: "Marketers & founders", line: "Launch videos and product demos, cut from your footage and screen recordings.", presets: ["Launch Video", "Product Demo"], formats: ["16:9", "9:16"], kind: "launch", format: "16:9", prompt: presetPrompt("Launch Video") },
+    { id: "creators", name: "Creators", line: "Selfie-style ads and fast montages, cut to the beat and captioned.", presets: ["UGC", "Montage"], formats: ["9:16", "16:9"], kind: "ugc", format: "9:16", prompt: presetPrompt("UGC") },
+    { id: "educators", name: "Educators", line: "Explainers that walk people through an idea, step by step.", presets: ["Explainer"], formats: ["16:9"], kind: "explainer", format: "16:9", prompt: presetPrompt("Explainer") },
+    { id: "podcasters", name: "Podcasters", line: "Long episodes turned into vertical clips with the strongest quotes.", presets: ["Podcast"], formats: ["9:16"], kind: "podcast", format: "9:16", prompt: presetPrompt("Podcast") },
+  ],
+};
+
 export const useCases = {
   eyebrow: "Use cases",
   title: [{ text: "Made for" }, { text: "every kind of video.", accent: true }],
