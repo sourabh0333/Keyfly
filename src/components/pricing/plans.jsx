@@ -62,8 +62,8 @@ function placeStops(plans) {
  * billing, AI minutes, what's included and its buttons. Per-seat and
  * custom plans (Team, Enterprise) sit in a slim row beneath, then the
  * AI-minute packs. Monthly / Yearly switch above. It starts on the first
- * plan and moves on by itself every 3.2s while on screen and not held
- * (hovered or focused), until a plan is chosen; not with reduced motion. Every price, allowance,
+ * plan and moves on by itself every 3.2s while on screen (hovering doesn't
+ * pause it), until a plan is chosen; not with reduced motion. Every price, allowance,
  * bullet and link is the API's own.
  */
 export function Plans({ data, copy }) {
@@ -80,7 +80,6 @@ export function Plans({ data, copy }) {
   const [active, setActive] = useState(0);
   const [touched, setTouched] = useState(false);
   const [visible, setVisible] = useState(false);
-  const [held, setHeld] = useState(false);
   const reduced = useSyncExternalStore(onMotion, () => matchMedia(MOTION).matches, () => false);
   const rootRef = useRef(null);
   const [drag, setDrag] = useState(null); // the playhead's position while dragging (0–1)
@@ -97,16 +96,16 @@ export function Plans({ data, copy }) {
     return Math.min(1, Math.max(0, (event.clientX - r.left) / r.width));
   };
 
-  const auto = visible && !held && !touched && !reduced && drag === null;
+  const auto = visible && !touched && !reduced && drag === null;
 
   useEffect(() => {
-    const observer = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting), { threshold: 0.3 });
+    const observer = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting), { threshold: 0.15 });
     observer.observe(rootRef.current);
     return () => observer.disconnect();
   }, []);
 
   // Self-running: the next plan every few seconds, round again after the
-  // last, while on screen and not held, until someone chooses a plan.
+  // last, while on screen, until someone chooses a plan.
   useEffect(() => {
     if (!auto || stops.length < 2) return;
     const timer = setTimeout(() => setActive((a) => (a + 1) % stops.length), HOLD);
@@ -152,10 +151,6 @@ export function Plans({ data, copy }) {
       ref={rootRef}
       className={styles.plans}
       data-auto={auto ? "" : undefined}
-      onPointerEnter={(event) => event.pointerType === "mouse" && setHeld(true)}
-      onPointerLeave={() => setHeld(false)}
-      onFocus={() => setHeld(true)}
-      onBlur={(event) => !event.currentTarget.contains(event.relatedTarget) && setHeld(false)}
     >
       {/* The switch and the offer. */}
       <div className={styles.controls}>
