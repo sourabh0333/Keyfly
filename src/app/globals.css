@@ -287,7 +287,7 @@ a {
         dissolve-out linear none;
       animation-timeline: view(), view();
       animation-range:
-        entry 0% entry 55vh,
+        entry 0% entry 30vh,
         exit 35vh exit 100%;
     }
   }
@@ -316,5 +316,34 @@ a {
     opacity: 0.2;
     translate: 0 -40px;
     scale: 0.97;
+  }
+}
+
+/* A section's main content lighting up as the link from the section above
+   reaches it (data-lit, set by SceneCuts): a mint ring (an outline, so it
+   never fights the element's own shadow) snaps in around it and fades.
+   Once per arrival; replays after scrolling back. */
+[data-main][data-lit] {
+  animation: main-lit 1.8s ease-out;
+}
+
+@keyframes main-lit {
+  0% {
+    outline: 1.5px solid rgb(95 224 176 / 0);
+    outline-offset: 18px;
+  }
+  20% {
+    outline: 1.5px solid rgb(95 224 176 / 0.9);
+    outline-offset: 8px;
+  }
+  100% {
+    outline: 1.5px solid rgb(95 224 176 / 0);
+    outline-offset: 8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-main][data-lit] {
+    animation: none;
   }
 }

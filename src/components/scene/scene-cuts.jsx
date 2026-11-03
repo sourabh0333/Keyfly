@@ -3,7 +3,9 @@
 import { useEffect } from "react";
 
 /**
- * Marks each section as arrived (data-cut) once the divider before it has
+ * Draws the links between sections as you scroll (see Divider) and lights
+ * each section's main content when its link arrives. Marks each section as
+ * arrived (data-cut) once the divider before it has
  * crossed the middle of the screen, and unmarks it on the way back up, so
  * its eyebrow lights as the divider's playhead finishes its sweep (see
  * Divider and globals.css), and plays the footer's arrival as it scrolls
@@ -22,9 +24,25 @@ export function SceneCuts({ pageRef }) {
     const footer = document.querySelector("footer");
     if (!reduced) footer?.setAttribute("data-thread", "");
 
+    // The links between sections: drawn up to a tip riding 62% down the
+    // screen; when one is drawn whole, the next section's main content
+    // lights (and unlights on the way back, so it replays).
+    const links = [...page.querySelectorAll("[data-link]")].map((el) => ({
+      line: el.querySelector("[data-link-line]"),
+      main: el.nextElementSibling?.querySelector("[data-main]"),
+    }));
+
     function update() {
       frame = 0;
       const middle = innerHeight * 0.5;
+      const tip = innerHeight * 0.62;
+      for (const { line, main } of links) {
+        const r = line.getBoundingClientRect();
+        const d = reduced ? 1 : Math.min(1, Math.max(0, (tip - r.top) / Math.max(1, r.height)));
+        line.style.setProperty("--d", d.toFixed(4));
+        line.toggleAttribute("data-done", d >= 1);
+        if (main && !reduced) main.toggleAttribute("data-lit", d >= 1);
+      }
       const panel = footer?.querySelector("[data-thread-end]");
       if (panel && !reduced) footer.toggleAttribute("data-arrived", panel.getBoundingClientRect().top < innerHeight * 0.75);
       for (const divider of page.querySelectorAll("[data-divider]")) {

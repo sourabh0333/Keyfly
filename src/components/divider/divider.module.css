@@ -5,8 +5,55 @@
   height: 0;
 }
 
+/* The link: a line down the middle of the gap (the content column's
+   middle, where the playhead stands), --d of it drawn. */
+.link {
+  --d: 0;
+  position: absolute;
+  top: calc(-1 * var(--up, var(--section-pad)));
+  left: 50%;
+  width: 2px;
+  height: calc(var(--up, var(--section-pad)) + var(--down, var(--section-pad)));
+  translate: -50% 0;
+  border-radius: 2px;
+  background: rgb(244 241 234 / 0.06);
+  pointer-events: none;
+}
+
+.linkFill {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(180deg, rgb(95 224 176 / 0.2), var(--soft-mint));
+  box-shadow: 0 0 10px rgb(95 224 176 / 0.6);
+  transform-origin: top;
+  scale: 1 var(--d);
+}
+
+/* The tip: a bright point riding the end of what's drawn. */
+.linkHead {
+  position: absolute;
+  top: calc(var(--d) * 100%);
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: #eafff6;
+  box-shadow:
+    0 0 8px 2px var(--soft-mint),
+    0 0 24px 6px rgb(95 224 176 / 0.45);
+  opacity: calc(var(--d) * 40);
+}
+
+.link[data-done] .linkHead {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
 .ruler {
   position: absolute;
+  z-index: 1;
   top: 0;
   right: 0;
   left: 0;

@@ -33,6 +33,7 @@ export default function Home() {
   return (
     <Scene>
       <Hero />
+      <Divider ruler={false} up="120px" down="84px" />
       <HowItWorks />
       <Divider />
       <OldWay />

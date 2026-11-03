@@ -124,7 +124,7 @@ export function Story({ hand, keyfly, ask, hint, steps }) {
       <div ref={pinRef} className={styles.pin}>
         {/* Two mirrored columns on four shared rows (head, line, picture,
             timeline), then the six steps across both. */}
-        <div className={styles.stage} data-step={shown} data-reached={reached}>
+        <div className={styles.stage} data-step={shown} data-reached={reached} data-main="">
           {/* By hand. */}
           <div className={`${styles.side} ${styles.hand}`}>
             <div className={styles.sideHead}>

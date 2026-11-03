@@ -81,7 +81,7 @@ export function HowItWorks() {
           </ol>
         </div>
 
-        <figure className={styles.demo}>
+        <figure className={styles.demo} data-main="">
           <div className={styles.window} aria-hidden="true">
             <div className={styles.chrome}>
               <span className={styles.dots}>
