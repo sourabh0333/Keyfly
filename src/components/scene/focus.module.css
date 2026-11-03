@@ -33,6 +33,33 @@
     opacity 0.15s ease;
 }
 
+/* The ring: a hairline frame with the brackets' own rounded corners,
+   which flares as focus locks and fades. */
+.af::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border: 1.5px solid rgb(95 224 176 / 0.85);
+  border-radius: 16px;
+  opacity: 0;
+}
+
+.af[data-on]::before {
+  animation: ring 1.3s ease-out;
+}
+
+@keyframes ring {
+  0% {
+    opacity: 0;
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
 .af i {
   position: absolute;
   width: 26px;

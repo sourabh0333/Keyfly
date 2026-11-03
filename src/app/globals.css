@@ -322,8 +322,8 @@ a {
 /* The focus pull. While the page is ready for it (data-focus-ready, set by
    SceneCuts), a section's main content waits out of focus, soft and dim;
    when the link from the section above reaches it (data-lit) it racks
-   into focus, a mint ring flares round it, and SceneCuts' autofocus
-   brackets snap in. Scrolling back resets it, so it replays. */
+   into focus and SceneCuts' autofocus brackets (with a mint ring of the
+   same rounded corners) snap in. Scrolling back resets it, so it replays. */
 @media (prefers-reduced-motion: no-preference) {
   [data-focus-ready] [data-main] {
     filter: blur(6px) brightness(0.62) saturate(0.7);
@@ -332,21 +332,6 @@ a {
 
   [data-focus-ready] [data-main][data-lit] {
     filter: none;
-    animation: main-lit 1.6s ease-out;
   }
 }
 
-@keyframes main-lit {
-  0% {
-    outline: 1.5px solid rgb(95 224 176 / 0);
-    outline-offset: 22px;
-  }
-  30% {
-    outline: 1.5px solid rgb(95 224 176 / 0.85);
-    outline-offset: 10px;
-  }
-  100% {
-    outline: 1.5px solid rgb(95 224 176 / 0);
-    outline-offset: 10px;
-  }
-}
