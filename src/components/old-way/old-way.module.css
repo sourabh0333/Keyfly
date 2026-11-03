@@ -98,6 +98,10 @@
   margin-top: clamp(24px, 4vw, 48px);
 }
 
+.track[data-live] .stage {
+  --pic: min(100%, calc(36svh * 16 / 9));
+}
+
 .track[data-live] .pin {
   position: sticky;
   top: 0;
@@ -105,29 +109,44 @@
   padding-top: clamp(72px, 11vh, 96px);
 }
 
+/* ---------- The stage: two mirrored columns, then the steps ---------- */
+
+/* Pictures fill their column; pinned, they also keep the stage within
+   the screen's height. */
 .stage {
-  --ed: min(100%, calc(40svh * 16 / 9));
+  --pic: 100%;
   display: grid;
-  grid-template-columns: minmax(0, 1.45fr) 1px minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) 1px minmax(0, 1fr);
+  grid-template-rows: auto auto auto auto auto auto;
   column-gap: clamp(28px, 4vw, 64px);
-  align-items: start;
 }
 
-/* ---------- Sides ---------- */
-
-.hand,
-.keyfly {
+/* Each side shares the stage's four rows, so heads, lines, pictures and
+   timelines sit level across. */
+.side {
   display: grid;
-  gap: 16px;
+  grid-row: 1 / span 4;
+  grid-template-rows: subgrid;
+  justify-items: start;
+  row-gap: 14px;
   min-width: 0;
 }
 
-/* Both heads, the chore and the sentence share heights, so the two
-   pictures start level. */
+.hand {
+  grid-column: 1;
+}
+
+.keyfly {
+  grid-column: 3;
+}
+
+.side > * {
+  width: var(--pic);
+}
+
 .sideHead {
   display: flex;
   align-items: flex-end;
-  height: 48px;
   justify-content: space-between;
   gap: 16px;
   padding-bottom: 12px;
@@ -139,6 +158,7 @@
   font-size: 1.125rem;
   font-weight: 600;
   letter-spacing: -0.01em;
+  line-height: 1;
 }
 
 .keyfly .sideName {
@@ -153,14 +173,15 @@
   font-family: var(--font-mono-stack);
   font-size: 0.75rem;
   letter-spacing: 0.08em;
+  line-height: 1;
   text-transform: uppercase;
 }
 
 .counter b {
   color: var(--paper);
-  font-size: 1.75rem;
+  font-size: 1.125rem;
   font-weight: 500;
-  letter-spacing: -0.04em;
+  letter-spacing: 0;
 }
 
 .doneBadge {
@@ -171,6 +192,7 @@
   font-family: var(--font-mono-stack);
   font-size: 0.75rem;
   letter-spacing: 0.04em;
+  line-height: 1;
 }
 
 .doneBadge i {
@@ -181,39 +203,46 @@
   box-shadow: 0 0 8px var(--soft-mint);
 }
 
-/* The chore in play: a title and a line, a fixed height so nothing jumps. */
-.chore {
+/* Row 2: the chore in play, or the sentence; one fixed height. */
+.line {
   display: grid;
   align-content: start;
   gap: 4px;
-  height: 76px;
+  height: 64px;
+}
+
+.hand .line {
   animation: rise 0.45s var(--ease-land);
 }
 
-.choreTitle {
+.lineTitle {
   color: var(--paper);
   font-family: var(--font-accent-stack);
-  font-size: clamp(1.5rem, 1.1rem + 1vw, 2rem);
+  font-size: clamp(1.4rem, 1.05rem + 0.9vw, 1.8rem);
   font-style: italic;
   line-height: 1.1;
 }
 
-.choreBody {
+.lineBody {
   color: rgb(244 241 234 / 0.55);
   font-size: 0.9375rem;
 }
 
-/* ---------- The editor, by hand ---------- */
-
-.editor {
-  position: relative;
-  display: grid;
+.ask {
+  display: flex;
   gap: 10px;
-  width: var(--ed);
+  color: var(--paper);
+  font-size: 1rem;
+  line-height: 1.45;
 }
 
-.viewer,
-.cut {
+.ask span {
+  color: var(--soft-mint);
+  font-family: var(--font-mono-stack);
+}
+
+/* Row 3: the pictures, the same size. */
+.viewer {
   position: relative;
   aspect-ratio: 16 / 9;
   overflow: hidden;
@@ -221,6 +250,12 @@
   background: #050506;
   box-shadow: 0 0 0 1px rgb(244 241 234 / 0.08);
   container-type: inline-size;
+}
+
+.cut {
+  box-shadow:
+    0 0 0 1px rgb(95 224 176 / 0.45),
+    0 0 60px -20px rgb(95 224 176 / 0.5);
 }
 
 .rawWash {
@@ -452,8 +487,10 @@
   opacity: 1;
 }
 
-/* The playhead: scrubbing back and forth at step 1, parked after. */
-.scrub {
+/* Playheads: a rail over the lanes, its inner layer translated. By hand,
+   it scrubs back and forth at step 1 and is parked after; with Keyfly it
+   plays the finished cut. */
+.rail {
   position: absolute;
   top: -3px;
   bottom: -3px;
@@ -463,13 +500,12 @@
   pointer-events: none;
 }
 
-.scrub i {
+.rail i {
   position: absolute;
   inset: 0;
-  translate: 46% 0;
 }
 
-.scrub i::before {
+.rail i::before {
   content: "";
   position: absolute;
   top: 0;
@@ -477,14 +513,74 @@
   left: 0;
   width: 2px;
   border-radius: 2px;
+}
+
+.handRail i {
+  translate: 46% 0;
+}
+
+.handRail i::before {
   background: rgb(244 241 234 / 0.8);
 }
 
-.stage[data-step="1"] .scrub i {
+.stage[data-step="1"] .handRail i {
   animation: scrub 1.6s ease-in-out infinite alternate;
 }
 
-/* The hand at work: one cursor, moved to each step's tool. */
+.keyRail i {
+  translate: 62% 0;
+  animation: play 6s linear infinite;
+}
+
+.keyRail i::before {
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+}
+
+/* With Keyfly's finished tracks. */
+.clip {
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  border-radius: 3px;
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.55) inset;
+}
+
+.clip[data-n="0"] {
+  background: #4f6b8c;
+}
+
+.clip[data-n="1"] {
+  background: #8a5a78;
+}
+
+.clip[data-n="2"] {
+  background: #6aa3b3;
+}
+
+.keyfly .voice i {
+  background: rgb(244 241 234 / 0.32);
+}
+
+.musicDone {
+  opacity: 1;
+  background: rgb(95 224 176 / 0.05);
+}
+
+.musicDone path {
+  stroke: var(--soft-mint);
+}
+
+.wordDone {
+  opacity: 1;
+  background: rgb(95 224 176 / 0.12);
+  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.4) inset;
+  transition: none;
+}
+
+/* The hand at work: one cursor in the viewer, moved to each step's tool
+   (steps 1, 3 and 4 work on the timeline, so it waits at the viewer's
+   foot, just above it). */
 .cursor {
   position: absolute;
   z-index: 2;
@@ -507,8 +603,8 @@
 }
 
 .stage[data-step="1"] .cursor {
-  left: 34%;
-  top: 76%;
+  left: 40%;
+  top: 88%;
 }
 
 .stage[data-step="2"] .cursor {
@@ -517,13 +613,13 @@
 }
 
 .stage[data-step="3"] .cursor {
-  left: 30%;
-  top: 80%;
+  left: 27%;
+  top: 88%;
 }
 
 .stage[data-step="4"] .cursor {
-  left: 30%;
-  top: 87%;
+  left: 24%;
+  top: 88%;
 }
 
 .stage[data-step="5"] .cursor {
@@ -534,105 +630,6 @@
 .stage[data-step="6"] .cursor {
   left: 64%;
   top: 30%;
-}
-
-/* Progress: six segments under the editor; they jump to a step. */
-.segments {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr)) auto;
-  align-items: center;
-  gap: 6px;
-  width: var(--ed);
-}
-
-.segment {
-  height: 18px;
-  padding: 7px 0;
-  border: 0;
-  background: none;
-  cursor: pointer;
-}
-
-.segment i {
-  display: block;
-  height: 4px;
-  border-radius: 4px;
-  background: rgb(244 241 234 / 0.12);
-  transition: background-color 0.3s ease;
-}
-
-.segment[data-done] i {
-  background: rgb(244 241 234 / 0.5);
-}
-
-.segment[aria-current] i {
-  background: var(--paper);
-}
-
-.segment:focus-visible {
-  outline: 2px solid var(--soft-mint);
-  outline-offset: 2px;
-  border-radius: 4px;
-}
-
-.hint {
-  margin-left: 10px;
-  color: rgb(244 241 234 / 0.35);
-  font-family: var(--font-mono-stack);
-  font-size: 0.6875rem;
-  white-space: nowrap;
-}
-
-.track:not([data-live]) .hint {
-  display: none;
-}
-
-/* ---------- The divide ---------- */
-
-.divide {
-  position: relative;
-  align-self: stretch;
-  background: linear-gradient(180deg, transparent, rgb(244 241 234 / 0.12) 12%, rgb(244 241 234 / 0.12) 88%, transparent);
-}
-
-.divide i {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  display: grid;
-  place-items: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  translate: -50% -50%;
-  background: #0b0b0d;
-  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.14);
-  color: rgb(244 241 234 / 0.55);
-  font-family: var(--font-accent-stack);
-  font-size: 1rem;
-  font-style: italic;
-}
-
-/* ---------- With Keyfly ---------- */
-
-.ask {
-  display: flex;
-  gap: 10px;
-  height: 76px;
-  color: var(--paper);
-  font-size: 1rem;
-  line-height: 1.45;
-}
-
-.ask span {
-  color: var(--soft-mint);
-  font-family: var(--font-mono-stack);
-}
-
-.cut {
-  box-shadow:
-    0 0 0 1px rgb(95 224 176 / 0.45),
-    0 0 60px -20px rgb(95 224 176 / 0.5);
 }
 
 .lower {
@@ -703,57 +700,149 @@
   background: var(--soft-mint);
 }
 
-.results {
+/* ---------- The divide ---------- */
+
+.divide {
+  position: relative;
+  grid-column: 2;
+  grid-row: 1 / span 4;
+  align-self: stretch;
+  background: linear-gradient(180deg, transparent, rgb(244 241 234 / 0.12) 12%, rgb(244 241 234 / 0.12) 88%, transparent);
+}
+
+.divide i {
+  position: absolute;
+  top: 50%;
+  left: 50%;
   display: grid;
-  margin: 0;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  translate: -50% -50%;
+  background: #0b0b0d;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.14);
+  color: rgb(244 241 234 / 0.55);
+  font-family: var(--font-accent-stack);
+  font-size: 1rem;
+  font-style: italic;
+}
+
+
+/* ---------- The six steps, across both ---------- */
+
+.steps {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-row: 5;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0 12px;
+  margin: 26px 0 0;
   padding: 0;
   list-style: none;
 }
 
-.results li {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 11px;
-  padding: 8px 0 8px 12px;
-  border-bottom: 1px solid rgb(244 241 234 / 0.07);
-  color: rgb(244 241 234 / 0.7);
-  font-size: 0.9375rem;
+.stepBtn {
+  display: grid;
+  gap: 8px;
+  width: 100%;
+  padding: 0 0 4px;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.stepBtn:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+.stepBar {
+  height: 3px;
+  border-radius: 3px;
+  background: rgb(244 241 234 / 0.12);
+  transition: background-color 0.3s ease;
+}
+
+.stepBtn[data-done] .stepBar {
+  background: rgb(244 241 234 / 0.5);
+}
+
+.stepBtn[aria-current] .stepBar {
+  background: var(--paper);
+}
+
+.stepHand {
+  overflow: hidden;
+  color: rgb(244 241 234 / 0.5);
+  font-size: 0.875rem;
+  font-weight: 540;
+  white-space: nowrap;
+  text-overflow: ellipsis;
   transition: color 0.3s ease;
 }
 
-.results li::before {
-  content: "";
-  position: absolute;
-  top: 8px;
-  bottom: 8px;
-  left: 0;
-  width: 2px;
-  border-radius: 2px;
-  background: var(--soft-mint);
-  box-shadow: 0 0 8px var(--soft-mint);
-  opacity: 0;
-  transition: opacity 0.3s ease;
+.stepHand em {
+  margin-right: 6px;
+  color: rgb(244 241 234 / 0.32);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  font-style: normal;
 }
 
-.results li[data-on] {
+.stepBtn[data-done] .stepHand,
+.stepBtn[aria-current] .stepHand {
   color: var(--paper);
 }
 
-.results li[data-on]::before {
-  opacity: 1;
+.stepKey {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  overflow: hidden;
+  color: rgb(244 241 234 / 0.45);
+  font-size: 0.8125rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  transition: color 0.3s ease;
 }
 
-.results circle {
+.stepKey svg {
+  flex: none;
+}
+
+.stepKey circle {
   fill: var(--soft-mint);
 }
 
-.results path {
+.stepKey path {
   fill: none;
   stroke: var(--mint-ink);
   stroke-width: 1.8;
   stroke-linecap: round;
   stroke-linejoin: round;
+}
+
+.stepBtn[aria-current] .stepKey {
+  color: var(--mint-text-dark);
+}
+
+.hint {
+  grid-column: 1 / -1;
+  grid-row: 6;
+  margin-top: 12px;
+  color: rgb(244 241 234 / 0.35);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  text-align: center;
+}
+
+.track:not([data-live]) .hint {
+  display: none;
 }
 
 .footnote {
@@ -821,6 +910,15 @@
   }
 }
 
+@keyframes play {
+  from {
+    translate: 0 0;
+  }
+  to {
+    translate: calc(100% - 2px) 0;
+  }
+}
+
 /* ---------- Smaller screens ---------- */
 
 @media (max-width: 860px) {
@@ -843,30 +941,57 @@
   }
 }
 
-/* Stacked: by hand, then "vs", then Keyfly. */
+/* Stacked: by hand, "vs", Keyfly; the steps in two rows of three. */
 @media (max-width: 900px) {
   .stage {
-    --ed: 100%;
+    --pic: 100%;
     grid-template-columns: minmax(0, 1fr);
-    row-gap: 28px;
+    grid-template-rows: none;
+    row-gap: 24px;
+  }
+
+  .side {
+    grid-row: auto;
+    grid-column: 1;
+    grid-template-rows: none;
   }
 
   .divide {
+    grid-column: 1;
+    grid-row: auto;
     height: 1px;
     background: linear-gradient(90deg, transparent, rgb(244 241 234 / 0.12) 12%, rgb(244 241 234 / 0.12) 88%, transparent);
   }
 
-  .ask {
+  .line {
     height: auto;
+  }
+
+  .steps {
+    grid-row: auto;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px 12px;
+    margin-top: 6px;
+  }
+
+  .hint {
+    grid-row: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .chore,
+  .hand .line,
   .stage .timecode,
   .stage .typing,
   .stage .crop,
-  .stage .scrub i,
+  .handRail i,
+  .keyRail i,
   .cursor svg,
   .typing i {
     animation: none;

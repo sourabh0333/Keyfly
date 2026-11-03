@@ -15,13 +15,18 @@ const STARS = [1, 4, 7]; // the best takes, by clip
 const PAUSES = [[24, 29], [51, 57], [79, 84]];
 const WAVE = Array.from({ length: 64 }, (_, i) => 0.25 + ((Math.sin(i * 0.8) + Math.sin(i * 0.33) + 2) / 4) * 0.75);
 const CAPTIONS = [4, 30, 56, 80];
+// With Keyfly: the finished cut.
+const CUT = [0, 18, 34, 50, 68, 84, 100];
 
 /**
- * The same launch video, made two ways. By hand (left): an editor where
- * each step acts out one chore (scrubbing, starring takes, razor cuts,
- * music keyframes, typing captions, dragging a 9:16 crop), and what each
- * chore leaves behind stays on the timeline. With Keyfly (right): one
- * sentence, the first cut, and all six done, the one by hand is on lit.
+ * The same launch video, made two ways, as two mirrored columns on four
+ * shared rows (head, line, picture, timeline) with a strip of the six
+ * steps across both beneath. By hand (left), each step acts out one chore
+ * (scrubbing, starring takes, razor cuts, music keyframes, typing
+ * captions, dragging a 9:16 crop), and what each chore leaves stays on
+ * the timeline. With Keyfly (right): the sentence, the finished picture
+ * and timeline. In the strip, each step pairs the chore with what Keyfly
+ * did; the one in play is lit.
  *
  * Where the stage fits the screen and motion is welcome, it pins and the
  * scroll moves through the steps (data-live on the track); otherwise it
@@ -121,71 +126,32 @@ export function Story({ hand, keyfly, ask, hint, steps }) {
         .join(",")}
     >
       <div ref={pinRef} className={styles.pin}>
+        {/* Two mirrored columns on four shared rows (head, line, picture,
+            timeline), then the six steps across both. */}
         <div className={styles.stage} data-step={shown} data-reached={reached}>
           {/* By hand. */}
-          <div className={styles.hand}>
+          <div className={`${styles.side} ${styles.hand}`}>
             <div className={styles.sideHead}>
               <p className={styles.sideName}>{hand.label}</p>
               <p className={styles.counter} aria-live="polite">
-                <span>{hand.step}</span> <b>{pad(shown)}</b> <span>
-                  {hand.of} {pad(n)}
-                </span>
+                {hand.step} <b>{pad(shown)}</b> {hand.of} {pad(n)}
               </p>
             </div>
 
-            <div key={shown} className={styles.chore}>
-              <p className={styles.choreTitle}>{current.title}</p>
-              <p className={styles.choreBody}>{current.body}</p>
+            <div key={shown} className={styles.line}>
+              <p className={styles.lineTitle}>{current.title}</p>
+              <p className={styles.lineBody}>{current.body}</p>
             </div>
 
-            <div className={styles.editor} aria-hidden="true">
-              <div className={styles.viewer}>
-                <Shot />
-                <span className={styles.rawWash} />
-                <span className={styles.timecode}>00:00:12:04</span>
-                <span className={styles.star}>★ Take 3</span>
-                <span className={styles.typing}>
-                  Built for launch<i />
-                </span>
-                <span className={styles.crop} />
-              </div>
-
-              <div className={styles.timeline}>
-                <span className={styles.code}>V1</span>
-                <div className={styles.lane}>
-                  {RAW.slice(0, -1).map((at, i) => (
-                    <i key={at} className={styles.raw} data-star={STARS.includes(i) ? "" : undefined} style={{ left: `${at}%`, width: `${RAW[i + 1] - at}%` }} />
-                  ))}
-                </div>
-                <span className={styles.code}>A1</span>
-                <div className={`${styles.lane} ${styles.voice}`}>
-                  {WAVE.map((h, i) => (
-                    <i key={i} style={{ "--h": h.toFixed(2) }} />
-                  ))}
-                  {PAUSES.map(([a, b]) => (
-                    <span key={a} className={styles.pause} style={{ left: `${a}%`, width: `${b - a}%` }} />
-                  ))}
-                </div>
-                <span className={styles.code}>A2</span>
-                <div className={`${styles.lane} ${styles.music}`}>
-                  <svg viewBox="0 0 100 20" preserveAspectRatio="none">
-                    <path d="M0 5H22L25 13H58L61 5H100" />
-                  </svg>
-                  {[22, 25, 58, 61].map((x) => (
-                    <i key={x} className={styles.key} style={{ left: `${x}%` }} />
-                  ))}
-                </div>
-                <span className={styles.code}>C1</span>
-                <div className={styles.lane}>
-                  {CAPTIONS.map((at, i) => (
-                    <i key={at} className={styles.word} style={{ left: `${at}%`, "--i": i }} />
-                  ))}
-                </div>
-                <span className={styles.scrub}>
-                  <i />
-                </span>
-              </div>
-
+            <div className={styles.viewer} aria-hidden="true">
+              <Shot />
+              <span className={styles.rawWash} />
+              <span className={styles.timecode}>00:00:12:04</span>
+              <span className={styles.star}>★ Take 3</span>
+              <span className={styles.typing}>
+                Built for launch<i />
+              </span>
+              <span className={styles.crop} />
               {/* The hand doing the work: one cursor, at each step's tool. */}
               <span className={styles.cursor}>
                 <svg viewBox="0 0 12 16" width="15" height="20">
@@ -194,13 +160,40 @@ export function Story({ hand, keyfly, ask, hint, steps }) {
               </span>
             </div>
 
-            <div className={styles.segments}>
-              {steps.map((s, i) => (
-                <button key={s.title} type="button" className={styles.segment} aria-label={s.title} aria-current={i + 1 === shown ? "step" : undefined} data-done={i + 1 <= shown ? "" : undefined} onClick={() => go(i + 1)}>
-                  <i />
-                </button>
-              ))}
-              <span className={styles.hint}>{hint}</span>
+            <div className={styles.timeline} aria-hidden="true">
+              <span className={styles.code}>V1</span>
+              <div className={styles.lane}>
+                {RAW.slice(0, -1).map((at, i) => (
+                  <i key={at} className={styles.raw} data-star={STARS.includes(i) ? "" : undefined} style={{ left: `${at}%`, width: `${RAW[i + 1] - at}%` }} />
+                ))}
+              </div>
+              <span className={styles.code}>A1</span>
+              <div className={`${styles.lane} ${styles.voice}`}>
+                {WAVE.map((h, i) => (
+                  <i key={i} style={{ "--h": h.toFixed(2) }} />
+                ))}
+                {PAUSES.map(([a, b]) => (
+                  <span key={a} className={styles.pause} style={{ left: `${a}%`, width: `${b - a}%` }} />
+                ))}
+              </div>
+              <span className={styles.code}>A2</span>
+              <div className={`${styles.lane} ${styles.music}`}>
+                <svg viewBox="0 0 100 20" preserveAspectRatio="none">
+                  <path d="M0 5H22L25 13H58L61 5H100" />
+                </svg>
+                {[22, 25, 58, 61].map((x) => (
+                  <i key={x} className={styles.key} style={{ left: `${x}%` }} />
+                ))}
+              </div>
+              <span className={styles.code}>C1</span>
+              <div className={styles.lane}>
+                {CAPTIONS.map((at, i) => (
+                  <i key={at} className={styles.word} style={{ left: `${at}%`, "--i": i }} />
+                ))}
+              </div>
+              <span className={`${styles.rail} ${styles.handRail}`}>
+                <i />
+              </span>
             </div>
           </div>
 
@@ -208,8 +201,8 @@ export function Story({ hand, keyfly, ask, hint, steps }) {
             <i>vs</i>
           </span>
 
-          {/* With Keyfly. */}
-          <div className={styles.keyfly}>
+          {/* With Keyfly: the same four rows, finished. */}
+          <div className={`${styles.side} ${styles.keyfly}`}>
             <div className={styles.sideHead}>
               <p className={styles.sideName}>{keyfly.label}</p>
               <p className={styles.doneBadge}>
@@ -218,12 +211,14 @@ export function Story({ hand, keyfly, ask, hint, steps }) {
               </p>
             </div>
 
-            <p className={styles.ask}>
-              <span>›</span>
-              {ask}
-            </p>
+            <div className={styles.line}>
+              <p className={styles.ask}>
+                <span>›</span>
+                {ask}
+              </p>
+            </div>
 
-            <div className={styles.cut} aria-hidden="true">
+            <div className={`${styles.viewer} ${styles.cut}`} aria-hidden="true">
               <Shot />
               <span className={styles.lower}>
                 <b>{keyfly.title}</b>
@@ -240,18 +235,66 @@ export function Story({ hand, keyfly, ask, hint, steps }) {
               </span>
             </div>
 
-            <ol className={styles.results}>
-              {steps.map((s, i) => (
-                <li key={s.title} data-on={i + 1 === shown ? "" : undefined}>
-                  <svg viewBox="0 0 18 18" width="16" height="16" aria-hidden="true">
-                    <circle cx="9" cy="9" r="9" />
-                    <path d="M5 9.3 7.6 12 13 6.4" />
-                  </svg>
-                  {s.keyfly}
-                </li>
-              ))}
-            </ol>
+            <div className={styles.timeline} aria-hidden="true">
+              <span className={styles.code}>V1</span>
+              <div className={styles.lane}>
+                {CUT.slice(0, -1).map((at, i) => (
+                  <i key={at} className={styles.clip} data-n={i % 3} style={{ left: `${at}%`, width: `${CUT[i + 1] - at}%` }} />
+                ))}
+              </div>
+              <span className={styles.code}>A1</span>
+              <div className={`${styles.lane} ${styles.voice}`}>
+                {WAVE.slice(0, 52).map((h, i) => (
+                  <i key={i} style={{ "--h": h.toFixed(2) }} />
+                ))}
+              </div>
+              <span className={styles.code}>A2</span>
+              <div className={`${styles.lane} ${styles.music} ${styles.musicDone}`}>
+                <svg viewBox="0 0 100 20" preserveAspectRatio="none">
+                  <path d="M0 5H18L21 13H70L73 5H100" />
+                </svg>
+              </div>
+              <span className={styles.code}>C1</span>
+              <div className={styles.lane}>
+                {CAPTIONS.map((at) => (
+                  <i key={at} className={`${styles.word} ${styles.wordDone}`} style={{ left: `${at}%` }} />
+                ))}
+              </div>
+              <span className={`${styles.rail} ${styles.keyRail}`}>
+                <i />
+              </span>
+            </div>
           </div>
+
+          {/* The six steps, across both: the chore by hand above, what
+              Keyfly did below. They jump to a step. */}
+          <ol className={styles.steps}>
+            {steps.map((s, i) => (
+              <li key={s.title}>
+                <button
+                  type="button"
+                  className={styles.stepBtn}
+                  aria-current={i + 1 === shown ? "step" : undefined}
+                  data-done={i + 1 < shown ? "" : undefined}
+                  onClick={() => go(i + 1)}
+                >
+                  <span className={styles.stepBar} />
+                  <span className={styles.stepHand}>
+                    <em>{pad(i + 1)}</em>
+                    {s.title}
+                  </span>
+                  <span className={styles.stepKey}>
+                    <svg viewBox="0 0 18 18" width="14" height="14" aria-hidden="true">
+                      <circle cx="9" cy="9" r="9" />
+                      <path d="M5 9.3 7.6 12 13 6.4" />
+                    </svg>
+                    {s.keyfly}
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ol>
+          <p className={styles.hint}>{hint}</p>
         </div>
       </div>
     </div>
