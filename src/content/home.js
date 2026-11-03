@@ -78,16 +78,22 @@ export const howItWorks = {
 // the team confirms them.
 export const oldWay = {
   eyebrow: "The old way",
-  title: [{ text: "Hours of editing." }, { text: "Or one sentence.", accent: true }],
-  lead: "By hand, a cut is a long way round: one chore after another. With Keyfly you say what you want, and it flies straight to the first cut.",
+  title: [{ text: "Six steps by hand." }, { text: "One sentence with Keyfly.", accent: true }],
+  lead: "The same launch video, made two ways. By hand, you work through every chore yourself. With Keyfly, it's done after the first.",
   note: "Illustrative",
-  start: "Start",
-  finish: "First cut",
-  hand: { label: "By hand", busy: "Still editing" },
-  keyfly: { label: "With Keyfly", short: "One sentence", done: "First cut ready" },
+  hand: { label: "By hand", step: "Step", of: "of" },
+  keyfly: { label: "With Keyfly", done: "Done in one step", ready: "First cut ready", title: "Launch day", sub: "Chapter 2", captions: ["Built", "for", "launch", "day"] },
   ask: "Make a 30s launch video with captions, plus a 9:16 cut",
-  // The chores by hand, in order along the long way round.
-  chores: ["Scrub footage", "Pick takes", "Cut pauses", "Balance music", "Type captions", "Reframe 9:16"],
+  hint: "Scroll to work through it by hand",
+  // The chores by hand, one per step, and what Keyfly did for each.
+  steps: [
+    { title: "Scrub the footage", body: "Watch every clip to find the good parts.", keyfly: "Footage reviewed" },
+    { title: "Pick the takes", body: "Mark the best take of every line.", keyfly: "Best takes picked" },
+    { title: "Cut the pauses", body: "Find each pause and slip, and cut it out.", keyfly: "Pauses and slips cut" },
+    { title: "Balance the music", body: "Lay in a track and duck it under the voice.", keyfly: "Music set under the voice" },
+    { title: "Type the captions", body: "Type every word and time it to the voice.", keyfly: "Captions added" },
+    { title: "Reframe for 9:16", body: "Re-crop every shot for vertical and export again.", keyfly: "9:16 version made" },
+  ],
 };
 
 // "Use cases": the presets in the prompt box as six live feeds on a

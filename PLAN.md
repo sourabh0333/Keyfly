@@ -94,7 +94,7 @@ Copy for anything not yet confirmed is marked PLACEHOLDER in `src/content/home.j
 |---|---|---|---|
 | 1 | Hero | ✅ | The promise and the prompt box |
 | 2 | How it works | ✅ | Describe → Keyfly edits → Export |
-| 2b | **The old way** (`#old-way`) | ✅ built 2026-11-03, rebuilt as two flight paths the same day | Hours of chores by hand vs one sentence to Keyfly; no names, no numbers |
+| 2b | **The old way** (`#old-way`) | ✅ built 2026-11-03, rebuilt as a six-step scroll story the same day | Hours of chores by hand vs one sentence to Keyfly; no names, no numbers |
 | 3 | **Edit with words** (`#edit`) | ✅ built 2026-10-31 | The core differentiator: refine the cut by asking, with the timeline following |
 | 4 | **You make the calls** (`#control`) | ✅ built 2026-10-31 | Against black-box generators: every AI decision lands on a real timeline you can adjust |
 | 5 | **One edit, every format** (`#formats`) | ✅ built 2026-10-31, rebuilt 2026-11-02 | The 16:9 → 9:16 → 1:1 pain: one cut reframes, captions follow |

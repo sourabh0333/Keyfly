@@ -1,10 +1,11 @@
 /*
- * "The old way": two flight paths, frameless. Race renders two layouts
- * (across on wide screens, down on phones; CSS shows one) as an SVG with
- * HTML labels laid over it in the same coordinates (left/top in % of the
- * viewBox). Lines draw with pathLength="1" dashes; Race sets
- * stroke-dashoffset, moves the comets, toggles data-done on stops and
- * chores, and data-landed / data-fading on .race.
+ * "The old way": the same launch video made two ways. Story pins the
+ * stage (data-live on .track) and the scroll moves through six steps;
+ * .stage carries data-step (the chore in play) and data-reached (every
+ * step so far, space-separated, matched with ~=), so what each chore
+ * leaves behind stays on the timeline. One cursor moves to each step's
+ * tool. Keyfly's side is done from the start; its row for the chore in
+ * play lights.
  */
 .section {
   position: relative;
@@ -83,242 +84,86 @@
 
 
 
-/* ---------- The race ---------- */
+/* ---------- Pin ---------- */
 
-.race {
+.track {
   position: relative;
-  margin-top: clamp(28px, 4vw, 48px);
 }
 
-.layout {
-  position: relative;
-  width: 100%;
+.track[data-live] {
+  height: calc(100svh + 6 * 46svh);
 }
 
-.layout[data-layout="down"] {
-  display: none;
+.track:not([data-live]) {
+  margin-top: clamp(24px, 4vw, 48px);
 }
 
-.svg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  overflow: visible;
+.track[data-live] .pin {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  padding-top: clamp(72px, 11vh, 96px);
 }
 
-.guide {
-  stroke: rgb(244 241 234 / 0.1);
-  stroke-width: 1;
-  stroke-dasharray: 3 5;
-}
-
-.route {
-  fill: none;
-  stroke: rgb(244 241 234 / 0.12);
-  stroke-width: 1.5;
-  stroke-dasharray: 2 6;
-  stroke-linecap: round;
-}
-
-.handLine,
-.keyLine {
-  fill: none;
-  stroke-dasharray: 1;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  transition: opacity 0.4s ease;
-}
-
-.handLine {
-  stroke: rgb(244 241 234 / 0.55);
-  stroke-width: 2;
-}
-
-.keyLine {
-  stroke: var(--soft-mint);
-  stroke-width: 3;
-  stroke-dashoffset: 0;
-}
-
-.stop {
-  fill: #0b0b0d;
-  stroke: rgb(244 241 234 / 0.35);
-  stroke-width: 1.5;
-  transition:
-    fill 0.3s ease,
-    stroke 0.3s ease;
-}
-
-.stop[data-done] {
-  fill: rgb(244 241 234 / 0.75);
-  stroke: rgb(244 241 234 / 0.75);
-}
-
-.dot {
-  fill: var(--soft-mint);
-}
-
-.point {
-  fill: var(--soft-mint);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.ring {
-  fill: none;
-  stroke: var(--soft-mint);
-  stroke-width: 1.5;
-  opacity: 0;
-}
-
-.race[data-landed] .point {
-  opacity: 1;
-}
-
-.race[data-live][data-landed] .ring {
-  animation: ring 0.9s ease-out;
-}
-
-.headCore {
-  fill: #eafff6;
-}
-
-.headCoreDim {
-  fill: rgb(244 241 234 / 0.85);
-}
-
-.headHand,
-.headKey {
-  transition: opacity 0.4s ease;
-}
-
-/* Before JS the hand's comet has nowhere to be: hide it. */
-.race:not([data-live]) .headHand {
-  opacity: 0;
-}
-
-.race[data-fading] .handLine,
-.race[data-fading] .keyLine,
-.race[data-fading] .headHand,
-.race[data-fading] .headKey {
-  opacity: 0;
-}
-
-/* ---------- Labels ---------- */
-
-.label {
-  position: absolute;
-  white-space: nowrap;
-}
-
-.edge {
-  color: rgb(244 241 234 / 0.4);
-  font-family: var(--font-mono-stack);
-  font-size: 0.6875rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  translate: -50% -100%;
-}
-
-/* Who: in a column of its own, left of each path's start, as a track's
-   name sits left of its track. */
-.who {
+.stage {
+  --ed: min(100%, calc(40svh * 16 / 9));
   display: grid;
-  justify-items: end;
-  gap: 5px;
+  grid-template-columns: minmax(0, 1.45fr) 1px minmax(0, 1fr);
+  column-gap: clamp(28px, 4vw, 64px);
+  align-items: start;
+}
+
+/* ---------- Sides ---------- */
+
+.hand,
+.keyfly {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+
+/* Both heads, the chore and the sentence share heights, so the two
+   pictures start level. */
+.sideHead {
+  display: flex;
+  align-items: flex-end;
+  height: 48px;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgb(244 241 234 / 0.1);
+}
+
+.sideName {
   color: rgb(244 241 234 / 0.7);
   font-size: 1.125rem;
   font-weight: 600;
   letter-spacing: -0.01em;
-  text-align: right;
-  translate: calc(-100% - 26px) -50%;
 }
 
-.who i {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  color: rgb(244 241 234 / 0.45);
-  font-family: var(--font-mono-stack);
-  font-size: 0.6875rem;
-  font-style: normal;
-  font-weight: 400;
-  letter-spacing: 0.04em;
-}
-
-.who i b {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: rgb(244 241 234 / 0.45);
-  animation: blink 1.2s ease-in-out infinite;
-}
-
-.whoKey {
+.keyfly .sideName {
   color: var(--paper);
 }
 
-.whoKey i {
-  color: var(--mint-text-dark);
-}
-
-.whoKey i b {
-  background: var(--soft-mint);
-  animation: none;
-}
-
-/* The sentence, above Keyfly's line where it starts. */
-.ask {
+.counter {
   display: inline-flex;
+  align-items: baseline;
   gap: 8px;
-  color: rgb(244 241 234 / 0.85);
-  font-size: 0.9375rem;
-  translate: -2px calc(-100% - 18px);
-}
-
-.ask::after {
-  content: "";
-  width: 2px;
-  height: 1.1em;
-  margin-left: -6px;
-  background: var(--soft-mint);
-  animation: blink 1s steps(1) infinite;
-}
-
-.chevron {
-  color: var(--soft-mint);
+  color: rgb(244 241 234 / 0.45);
   font-family: var(--font-mono-stack);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
-/* Chores: under a stop whose loop rises, over one whose loop dips. */
-.chore {
-  color: rgb(244 241 234 / 0.4);
-  font-size: 0.8125rem;
-  transition: color 0.3s ease;
+.counter b {
+  color: var(--paper);
+  font-size: 1.75rem;
+  font-weight: 500;
+  letter-spacing: -0.04em;
 }
 
-.chore em {
-  margin-right: 4px;
-  color: rgb(244 241 234 / 0.3);
-  font-family: var(--font-mono-stack);
-  font-size: 0.6875rem;
-  font-style: normal;
-}
-
-.chore[data-side="1"] {
-  translate: -50% 20px;
-}
-
-.chore[data-side="-1"] {
-  translate: -50% calc(-100% - 20px);
-}
-
-.chore[data-done] {
-  color: rgb(244 241 234 / 0.85);
-}
-
-.done {
+.doneBadge {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -326,12 +171,9 @@
   font-family: var(--font-mono-stack);
   font-size: 0.75rem;
   letter-spacing: 0.04em;
-  opacity: 0;
-  translate: -100% 22px;
-  transition: opacity 0.4s ease;
 }
 
-.done i {
+.doneBadge i {
   width: 7px;
   height: 7px;
   border-radius: 50%;
@@ -339,12 +181,583 @@
   box-shadow: 0 0 8px var(--soft-mint);
 }
 
-.race[data-landed] .done {
+/* The chore in play: a title and a line, a fixed height so nothing jumps. */
+.chore {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  height: 76px;
+  animation: rise 0.45s var(--ease-land);
+}
+
+.choreTitle {
+  color: var(--paper);
+  font-family: var(--font-accent-stack);
+  font-size: clamp(1.5rem, 1.1rem + 1vw, 2rem);
+  font-style: italic;
+  line-height: 1.1;
+}
+
+.choreBody {
+  color: rgb(244 241 234 / 0.55);
+  font-size: 0.9375rem;
+}
+
+/* ---------- The editor, by hand ---------- */
+
+.editor {
+  position: relative;
+  display: grid;
+  gap: 10px;
+  width: var(--ed);
+}
+
+.viewer,
+.cut {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #050506;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.08);
+  container-type: inline-size;
+}
+
+.rawWash {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgb(60 62 70 / 0.55), rgb(30 31 36 / 0.55));
+}
+
+/* Overlays in the viewer, each shown at its step. */
+.timecode,
+.star,
+.typing,
+.crop {
+  position: absolute;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+
+.timecode {
+  top: 10px;
+  left: 10px;
+  padding: 4px 9px;
+  border-radius: 6px;
+  background: rgb(11 11 13 / 0.7);
+  color: rgb(244 241 234 / 0.8);
+  font-family: var(--font-mono-stack);
+  font-size: 11px;
+}
+
+.stage[data-step="1"] .timecode {
+  opacity: 1;
+  animation: flicker 0.5s steps(2) infinite;
+}
+
+.star {
+  top: 10px;
+  left: 10px;
+  padding: 4px 9px;
+  border-radius: 6px;
+  background: rgb(244 241 234 / 0.9);
+  color: #141416;
+  font-family: var(--font-mono-stack);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.stage[data-step="2"] .star {
   opacity: 1;
 }
 
+.typing {
+  right: 10%;
+  bottom: 10%;
+  left: 10%;
+  color: #fff;
+  font-size: 5cqw;
+  font-weight: 600;
+  text-align: center;
+  text-shadow: 0 2px 10px rgb(0 0 0 / 0.6);
+}
+
+.typing i {
+  display: inline-block;
+  width: 2px;
+  height: 1em;
+  margin: 0 0 -0.12em 3px;
+  background: #fff;
+  animation: blink 1s steps(1) infinite;
+}
+
+.stage[data-reached~="5"] .typing {
+  opacity: 1;
+}
+
+.stage[data-step="5"] .typing {
+  animation: typeIn 1.6s steps(16) both;
+}
+
+/* The 9:16 crop, dragged across the frame. */
+.crop {
+  top: 0;
+  bottom: 0;
+  left: 34%;
+  width: 31.64%;
+  border: 1.5px solid rgb(244 241 234 / 0.9);
+  box-shadow: 0 0 0 200vmax rgb(5 5 6 / 0.6);
+}
+
+.stage[data-step="6"] .crop {
+  opacity: 1;
+  animation: drag 2.4s ease-in-out infinite alternate;
+}
+
+/* Timeline: four tracks, each with its code. */
+.timeline {
+  position: relative;
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  grid-auto-rows: 18px;
+  align-items: center;
+  gap: 4px 8px;
+}
+
+.code {
+  color: rgb(244 241 234 / 0.35);
+  font-family: var(--font-mono-stack);
+  font-size: 10px;
+}
+
+.lane {
+  position: relative;
+  height: 100%;
+  border-radius: 4px;
+  background: rgb(244 241 234 / 0.03);
+}
+
+.raw {
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  border-radius: 3px;
+  background: rgb(244 241 234 / 0.12);
+  box-shadow: 1px 0 0 #0b0b0d inset, -1px 0 0 #0b0b0d inset;
+}
+
+/* Step 2 on: the best takes carry a star. */
+.raw[data-star]::after {
+  content: "★";
+  position: absolute;
+  top: 50%;
+  left: 6px;
+  color: rgb(244 241 234 / 0.9);
+  font-size: 9px;
+  translate: 0 -50%;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.stage[data-reached~="2"] .raw[data-star] {
+  background: rgb(244 241 234 / 0.24);
+}
+
+.stage[data-reached~="2"] .raw[data-star]::after {
+  opacity: 1;
+}
+
+.voice {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0 3px;
+}
+
+.voice i {
+  flex: 1;
+  height: calc(var(--h) * 80%);
+  border-radius: 2px;
+  background: rgb(244 241 234 / 0.2);
+}
+
+/* Pauses: marked until step 3, then cut out (razor lines either side). */
+.pause {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: repeating-linear-gradient(135deg, rgb(244 241 234 / 0.12) 0 3px, transparent 3px 6px);
+  transition:
+    background-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.stage[data-reached~="3"] .pause {
+  background: #0b0b0d;
+  box-shadow:
+    -1.5px 0 0 rgb(244 241 234 / 0.9),
+    1.5px 0 0 rgb(244 241 234 / 0.9);
+}
+
+/* Step 4 on: a music track, its level keyed under the voice. */
+.music {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.music svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.music path {
+  fill: none;
+  stroke: rgb(244 241 234 / 0.6);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}
+
+.key {
+  position: absolute;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  border-radius: 1px;
+  background: #0b0b0d;
+  box-shadow: 0 0 0 1.5px rgb(244 241 234 / 0.8);
+  translate: -50% -50%;
+  rotate: 45deg;
+}
+
+.stage[data-reached~="4"] .music {
+  opacity: 1;
+}
+
+/* Step 5 on: caption chips, one per line. */
+.word {
+  position: absolute;
+  top: 2px;
+  bottom: 2px;
+  width: 16%;
+  border-radius: 3px;
+  background: rgb(244 241 234 / 0.16);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.3) inset;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  transition-delay: calc(var(--i) * 0.25s);
+}
+
+.stage[data-reached~="5"] .word {
+  opacity: 1;
+}
+
+/* The playhead: scrubbing back and forth at step 1, parked after. */
+.scrub {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  left: 30px;
+  right: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.scrub i {
+  position: absolute;
+  inset: 0;
+  translate: 46% 0;
+}
+
+.scrub i::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 2px;
+  border-radius: 2px;
+  background: rgb(244 241 234 / 0.8);
+}
+
+.stage[data-step="1"] .scrub i {
+  animation: scrub 1.6s ease-in-out infinite alternate;
+}
+
+/* The hand at work: one cursor, moved to each step's tool. */
+.cursor {
+  position: absolute;
+  z-index: 2;
+  left: 30%;
+  top: 80%;
+  color: #fff;
+  filter: drop-shadow(0 2px 4px rgb(0 0 0 / 0.6));
+  transition:
+    left 0.6s var(--ease-land),
+    top 0.6s var(--ease-land);
+  pointer-events: none;
+}
+
+.cursor svg {
+  display: block;
+  fill: #fff;
+  stroke: #0b0b0d;
+  stroke-width: 0.8;
+  animation: work 0.9s ease-in-out infinite alternate;
+}
+
+.stage[data-step="1"] .cursor {
+  left: 34%;
+  top: 76%;
+}
+
+.stage[data-step="2"] .cursor {
+  left: 14%;
+  top: 6%;
+}
+
+.stage[data-step="3"] .cursor {
+  left: 30%;
+  top: 80%;
+}
+
+.stage[data-step="4"] .cursor {
+  left: 30%;
+  top: 87%;
+}
+
+.stage[data-step="5"] .cursor {
+  left: 62%;
+  top: 56%;
+}
+
+.stage[data-step="6"] .cursor {
+  left: 64%;
+  top: 30%;
+}
+
+/* Progress: six segments under the editor; they jump to a step. */
+.segments {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr)) auto;
+  align-items: center;
+  gap: 6px;
+  width: var(--ed);
+}
+
+.segment {
+  height: 18px;
+  padding: 7px 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.segment i {
+  display: block;
+  height: 4px;
+  border-radius: 4px;
+  background: rgb(244 241 234 / 0.12);
+  transition: background-color 0.3s ease;
+}
+
+.segment[data-done] i {
+  background: rgb(244 241 234 / 0.5);
+}
+
+.segment[aria-current] i {
+  background: var(--paper);
+}
+
+.segment:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.hint {
+  margin-left: 10px;
+  color: rgb(244 241 234 / 0.35);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  white-space: nowrap;
+}
+
+.track:not([data-live]) .hint {
+  display: none;
+}
+
+/* ---------- The divide ---------- */
+
+.divide {
+  position: relative;
+  align-self: stretch;
+  background: linear-gradient(180deg, transparent, rgb(244 241 234 / 0.12) 12%, rgb(244 241 234 / 0.12) 88%, transparent);
+}
+
+.divide i {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  translate: -50% -50%;
+  background: #0b0b0d;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.14);
+  color: rgb(244 241 234 / 0.55);
+  font-family: var(--font-accent-stack);
+  font-size: 1rem;
+  font-style: italic;
+}
+
+/* ---------- With Keyfly ---------- */
+
+.ask {
+  display: flex;
+  gap: 10px;
+  height: 76px;
+  color: var(--paper);
+  font-size: 1rem;
+  line-height: 1.45;
+}
+
+.ask span {
+  color: var(--soft-mint);
+  font-family: var(--font-mono-stack);
+}
+
+.cut {
+  box-shadow:
+    0 0 0 1px rgb(95 224 176 / 0.45),
+    0 0 60px -20px rgb(95 224 176 / 0.5);
+}
+
+.lower {
+  position: absolute;
+  top: 10%;
+  left: 5%;
+  display: grid;
+  gap: 0.4cqw;
+  padding: 1.2cqw 2.4cqw;
+  border-left: 0.7cqw solid #7b6cf0;
+  background: linear-gradient(90deg, rgb(11 11 13 / 0.82), rgb(11 11 13 / 0));
+}
+
+.lower b {
+  color: #fff;
+  font-size: 4.4cqw;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.lower span {
+  color: rgb(244 241 234 / 0.7);
+  font-family: var(--font-mono-stack);
+  font-size: 2.3cqw;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.captions {
+  position: absolute;
+  right: 6%;
+  bottom: 9%;
+  left: 6%;
+  display: flex;
+  justify-content: center;
+  gap: 0.28em;
+  color: #fff;
+  font-family: var(--font-accent-stack);
+  font-size: 7.4cqw;
+  font-style: italic;
+  line-height: 1.1;
+  text-shadow: 0 2px 12px rgb(0 0 0 / 0.6);
+}
+
+.captions span:nth-child(3) {
+  color: var(--soft-mint);
+}
+
+.ready {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 9px;
+  border-radius: 6px;
+  background: rgb(11 11 13 / 0.7);
+  color: var(--mint-text-dark);
+  font-family: var(--font-mono-stack);
+  font-size: 10px;
+}
+
+.ready i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--soft-mint);
+}
+
+.results {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.results li {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 8px 0 8px 12px;
+  border-bottom: 1px solid rgb(244 241 234 / 0.07);
+  color: rgb(244 241 234 / 0.7);
+  font-size: 0.9375rem;
+  transition: color 0.3s ease;
+}
+
+.results li::before {
+  content: "";
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  left: 0;
+  width: 2px;
+  border-radius: 2px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.results li[data-on] {
+  color: var(--paper);
+}
+
+.results li[data-on]::before {
+  opacity: 1;
+}
+
+.results circle {
+  fill: var(--soft-mint);
+}
+
+.results path {
+  fill: none;
+  stroke: var(--mint-ink);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 .footnote {
-  margin-top: 20px;
+  margin-top: 18px;
   color: rgb(244 241 234 / 0.38);
   font-family: var(--font-mono-stack);
   font-size: 0.6875rem;
@@ -353,20 +766,58 @@
   text-transform: uppercase;
 }
 
-@keyframes ring {
+@keyframes rise {
   from {
-    opacity: 0.9;
-    scale: 0.6;
-  }
-  to {
     opacity: 0;
-    scale: 3;
+    translate: 0 6px;
+  }
+}
+
+@keyframes flicker {
+  50% {
+    opacity: 0.6;
   }
 }
 
 @keyframes blink {
   50% {
-    opacity: 0.3;
+    opacity: 0;
+  }
+}
+
+@keyframes typeIn {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@keyframes drag {
+  from {
+    translate: -60% 0;
+  }
+  to {
+    translate: 60% 0;
+  }
+}
+
+@keyframes scrub {
+  from {
+    translate: 4% 0;
+  }
+  to {
+    translate: 80% 0;
+  }
+}
+
+@keyframes work {
+  from {
+    translate: 0 0;
+  }
+  to {
+    translate: 4px 3px;
   }
 }
 
@@ -392,60 +843,36 @@
   }
 }
 
-/* Phones: the paths run down; Keyfly's on the left, by hand's beside it. */
-@media (max-width: 760px) {
-  .layout[data-layout="across"] {
-    display: none;
+/* Stacked: by hand, then "vs", then Keyfly. */
+@media (max-width: 900px) {
+  .stage {
+    --ed: 100%;
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 28px;
   }
 
-  .layout[data-layout="down"] {
-    display: block;
-    margin-top: 70px;
-  }
-
-  /* Start and finish sit at the right end of their guides. */
-  .edge {
-    translate: -100% calc(-100% - 4px);
-  }
-
-  .who {
-    justify-items: center;
-    gap: 3px;
-    font-size: 1rem;
-    text-align: center;
-    translate: -50% calc(-100% - 18px);
-  }
-
-  .whoKey {
-    justify-items: start;
-    text-align: left;
-    translate: -14px calc(-100% - 18px);
+  .divide {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgb(244 241 234 / 0.12) 12%, rgb(244 241 234 / 0.12) 88%, transparent);
   }
 
   .ask {
-    display: none;
-  }
-
-  .chore[data-side="1"] {
-    translate: 16px -50%;
-  }
-
-  .chore[data-side="-1"] {
-    translate: calc(-100% - 16px) -50%;
-  }
-
-  .chore {
-    font-size: 0.75rem;
-  }
-
-  .done {
-    translate: 16px -50%;
+    height: auto;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .who i b,
-  .ask::after {
+  .chore,
+  .stage .timecode,
+  .stage .typing,
+  .stage .crop,
+  .stage .scrub i,
+  .cursor svg,
+  .typing i {
     animation: none;
+  }
+
+  .cursor {
+    transition: none;
   }
 }
