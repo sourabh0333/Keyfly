@@ -1,9 +1,9 @@
 /*
- * "Who it's for": a numbered index of roles in large type (hairlines, no
- * boxes) beside a preview of what the open role makes. Roles sets data-on
- * on the open role (its body opens with a grid-rows transition) and
- * data-auto on .roles while it runs by itself (the open row fills along
- * its foot).
+ * "Who it's for": four expanding panels, one per role, each filled with
+ * what its role makes. Roles sets data-on on the open panel (it grows,
+ * flex-grow 5 to 1, and shows its body; the others show their name up the
+ * side) and data-auto on .panels while it runs by itself (the open panel
+ * fills along its foot).
  */
 .section {
   position: relative;
@@ -82,237 +82,199 @@
 
 
 
-/* ---------- Index beside preview ---------- */
+/* ---------- Panels ---------- */
 
-.roles {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  align-items: start;
-  gap: clamp(32px, 5vw, 80px);
+.panels {
+  display: flex;
+  gap: 10px;
+  height: clamp(440px, 62svh, 580px);
 }
 
-.index {
+.panel {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 18px;
+  background: #0e0f12;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.09);
+  cursor: pointer;
+  transition:
+    flex-grow 0.7s var(--ease-land),
+    box-shadow 0.4s ease;
+}
+
+.panel[data-on] {
+  flex-grow: 5.2;
+  cursor: default;
+  box-shadow:
+    0 0 0 1px rgb(95 224 176 / 0.45),
+    0 0 70px -24px rgb(95 224 176 / 0.45),
+    0 40px 90px -40px rgb(0 0 0 / 0.95);
+}
+
+/* The video takes the panel's top half and fades into night below, where
+   the words sit; closed panels show it dimmed. */
+.media {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 54%;
+  opacity: 0.35;
+  transition: opacity 0.5s ease;
+}
+
+.panel:hover .media {
+  opacity: 0.5;
+}
+
+.panel[data-on] .media {
+  opacity: 1;
+}
+
+.shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 30%, #0e0f12 54%);
+  pointer-events: none;
+}
+
+/* Closed: the index at the top, the name up the side. */
+.strip {
+  position: absolute;
+  inset: 20px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  transition: opacity 0.3s ease;
+}
+
+.stripIndex {
+  color: rgb(244 241 234 / 0.5);
+  font-family: var(--font-mono-stack);
+  font-size: 0.75rem;
+}
+
+.stripName {
+  color: rgb(244 241 234 / 0.85);
+  font-size: 1.25rem;
+  font-weight: 560;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+  writing-mode: vertical-rl;
+  rotate: 180deg;
+}
+
+.panel[data-on] .strip {
+  opacity: 0;
+}
+
+/* Open: the role in full, at the panel's foot. */
+.body {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  display: grid;
+  gap: 12px;
+  width: min(100%, 640px);
+  padding: clamp(20px, 2.4vw, 32px);
+  opacity: 0;
+  translate: 0 10px;
+  transition:
+    opacity 0.3s ease,
+    translate 0.3s ease;
+}
+
+.panel[data-on] .body {
+  opacity: 1;
+  translate: 0 0;
+  transition:
+    opacity 0.5s ease 0.35s,
+    translate 0.6s var(--ease-land) 0.35s;
+}
+
+.name {
   margin: 0;
-  padding: 0;
-  border-top: 1px solid rgb(244 241 234 / 0.1);
-  list-style: none;
 }
 
-.role {
-  position: relative;
-  border-bottom: 1px solid rgb(244 241 234 / 0.1);
-}
-
-.roleHead {
-  position: relative;
-  display: grid;
-  grid-template-columns: 40px minmax(0, 1fr) 16px;
+.nameButton {
+  display: flex;
   align-items: baseline;
   gap: 14px;
-  width: 100%;
-  padding: 22px 0;
+  padding: 0;
   border: 0;
   background: none;
-  color: inherit;
+  color: var(--paper);
   font: inherit;
+  font-size: clamp(1.75rem, 1.2rem + 1.6vw, 2.6rem);
+  font-weight: 560;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
   text-align: left;
-  cursor: pointer;
+  white-space: nowrap;
+  cursor: default;
 }
 
-.roleHead:focus-visible {
+.nameButton:focus-visible {
   outline: 2px solid var(--soft-mint);
   outline-offset: 4px;
   border-radius: 6px;
 }
 
-.roleIndex {
-  color: rgb(244 241 234 / 0.3);
+.index {
+  color: var(--soft-mint);
   font-family: var(--font-mono-stack);
   font-size: 0.75rem;
-  transition: color 0.3s ease;
+  font-weight: 400;
+  letter-spacing: 0;
 }
 
-.roleName {
-  color: rgb(244 241 234 / 0.5);
-  font-size: clamp(1.5rem, 1rem + 1.4vw, 2.25rem);
-  font-weight: 560;
-  letter-spacing: -0.035em;
-  line-height: 1.1;
-  transition: color 0.3s ease;
-}
-
-.arrow {
-  align-self: center;
-  color: var(--soft-mint);
-  opacity: 0;
-  translate: -6px 0;
-  transition:
-    opacity 0.3s ease,
-    translate 0.3s var(--ease-land);
-}
-
-.roleHead:hover .roleName {
-  color: rgb(244 241 234 / 0.8);
-}
-
-.role[data-on] .roleIndex {
-  color: var(--soft-mint);
-}
-
-.role[data-on] .roleName {
-  color: var(--paper);
-}
-
-.role[data-on] .arrow {
-  opacity: 1;
-  translate: 0 0;
-}
-
-/* While it runs by itself, the open role fills along its foot (the
-   row's hairline). */
-.fill {
-  position: absolute;
-  right: 0;
-  bottom: -1px;
-  left: 0;
-  height: 1px;
-  background: var(--soft-mint);
-  box-shadow: 0 0 8px var(--soft-mint);
-  transform-origin: left;
-  scale: 0 1;
-}
-
-.roles[data-auto] .role[data-on] .fill {
-  animation: fill 5s linear forwards;
-}
-
-/* The open role's body: a grid row that opens from 0fr to 1fr. */
-.roleBody {
-  display: grid;
-  grid-template-rows: 0fr;
-  transition: grid-template-rows 0.5s var(--ease-land);
-}
-
-.role[data-on] .roleBody {
-  grid-template-rows: 1fr;
-}
-
-.roleInner {
-  display: grid;
-  gap: 16px;
-  min-height: 0;
-  overflow: hidden;
-  padding-left: 54px;
-}
-
-.role[data-on] .roleInner {
-  padding-bottom: 24px;
-}
-
-.roleLine {
-  max-width: 44ch;
-  color: rgb(244 241 234 / 0.62);
+.line {
+  max-width: 46ch;
+  color: rgb(244 241 234 / 0.72);
   font-size: 1rem;
   line-height: 1.5;
 }
 
-.facts {
+.meta {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px 32px;
-  margin: 0;
-}
-
-.facts div {
-  display: grid;
+  align-items: center;
   gap: 8px;
 }
 
-.facts dt {
-  color: rgb(244 241 234 / 0.4);
+.metaLabel {
+  color: rgb(244 241 234 / 0.42);
   font-family: var(--font-mono-stack);
   font-size: 0.6875rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
 }
 
-.facts dd {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin: 0;
+.metaLabel + .chip {
+  margin-left: 2px;
+}
+
+.mono + .metaLabel,
+.chip + .metaLabel {
+  margin-left: 14px;
 }
 
 .chip {
   padding: 4px 11px;
   border-radius: var(--radius-round);
-  background: rgb(95 224 176 / 0.08);
-  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.35) inset;
+  background: rgb(95 224 176 / 0.1);
+  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.4) inset;
   color: var(--mint-text-dark);
   font-size: 0.8125rem;
   font-weight: 540;
 }
 
 .mono {
-  align-items: center;
-  color: rgb(244 241 234 / 0.75);
+  color: rgb(244 241 234 / 0.8);
   font-family: var(--font-mono-stack);
   font-size: 0.8125rem;
-}
-
-/* ---------- The preview ---------- */
-
-.show {
-  display: grid;
-  gap: 18px;
-}
-
-.screen {
-  position: relative;
-  aspect-ratio: 16 / 10;
-  overflow: hidden;
-  border-radius: 16px;
-  background: #050506;
-  box-shadow:
-    0 0 0 1px rgb(95 224 176 / 0.4),
-    0 0 70px -24px rgb(95 224 176 / 0.45),
-    0 30px 80px -36px rgb(0 0 0 / 0.95);
-}
-
-.shot {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  transition: opacity 0.5s ease;
-}
-
-.shot[data-on] {
-  opacity: 1;
-}
-
-.tag {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  padding: 4px 10px;
-  border-radius: 7px;
-  background: rgb(11 11 13 / 0.72);
-  color: rgb(244 241 234 / 0.85);
-  font-family: var(--font-mono-stack);
-  font-size: 10.5px;
-  letter-spacing: 0.06em;
-  animation: rise 0.4s var(--ease-land);
-}
-
-.tag i {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--soft-mint);
-  box-shadow: 0 0 6px var(--soft-mint);
 }
 
 .try {
@@ -320,22 +282,21 @@
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: center;
   gap: 20px;
-  padding-top: 16px;
-  border-top: 1px solid rgb(244 241 234 / 0.1);
+  margin-top: 4px;
+  padding-top: 14px;
+  border-top: 1px solid rgb(244 241 234 / 0.12);
 }
 
 .prompt {
   display: grid;
-  gap: 6px;
-  min-height: 4.6em;
-  color: rgb(244 241 234 / 0.8);
-  font-size: 0.9375rem;
+  gap: 4px;
+  color: rgb(244 241 234 / 0.85);
+  font-size: 0.875rem;
   line-height: 1.45;
-  animation: rise 0.4s var(--ease-land);
 }
 
 .prompt span {
-  color: rgb(244 241 234 / 0.4);
+  color: rgb(244 241 234 / 0.42);
   font-family: var(--font-mono-stack);
   font-size: 0.6875rem;
   letter-spacing: 0.12em;
@@ -377,6 +338,23 @@
   outline-offset: 3px;
 }
 
+/* While it runs by itself, the open panel fills along its foot. */
+.fill {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+  transform-origin: left;
+  scale: 0 1;
+}
+
+.panels[data-auto] .panel[data-on] .fill {
+  animation: fill 5s linear forwards;
+}
+
 .footnote {
   margin-top: 16px;
   color: rgb(244 241 234 / 0.38);
@@ -390,13 +368,6 @@
 @keyframes fill {
   to {
     scale: 1 1;
-  }
-}
-
-@keyframes rise {
-  from {
-    opacity: 0;
-    translate: 0 6px;
   }
 }
 
@@ -420,43 +391,78 @@
   .title {
     font-size: clamp(1.9rem, 1.2rem + 3vw, 2.75rem);
   }
-
-  /* The preview above the index. */
-  .roles {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 28px;
-  }
-
-  .show {
-    order: -1;
-  }
-
-  .roleInner {
-    padding-left: 40px;
-  }
-
-  .roleHead {
-    grid-template-columns: 30px minmax(0, 1fr) 16px;
-    padding: 18px 0;
-  }
 }
 
-@media (max-width: 480px) {
+/* Phones: the panels stack; closed ones are slim rows with the name
+   along them, the open one tall. */
+@media (max-width: 760px) {
+  .panels {
+    flex-direction: column;
+    height: 760px;
+  }
+
+  .panel {
+    flex-basis: 0;
+  }
+
+  .panel[data-on] {
+    flex-grow: 6;
+  }
+
+  .strip {
+    inset: 0 18px;
+    flex-direction: row;
+    justify-content: flex-start;
+    gap: 14px;
+  }
+
+  .stripName {
+    font-size: 1.0625rem;
+    writing-mode: horizontal-tb;
+    rotate: none;
+  }
+
+  .nameButton {
+    white-space: normal;
+  }
+
   .try {
     grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .tryButton {
+    justify-content: center;
+  }
+
+  .prompt {
+    display: none;
+  }
+
+  /* Closed rows show no video, just the name. */
+  .panel:not([data-on]) .media {
+    opacity: 0;
+  }
+
+  .media {
+    height: 42%;
+  }
+
+  .shade {
+    background: linear-gradient(180deg, transparent 22%, #0e0f12 42%);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .roleBody,
-  .shot,
-  .arrow {
+  .panel,
+  .media,
+  .body,
+  .panel[data-on] .body,
+  .strip {
     transition: none;
   }
 
-  .tag,
-  .prompt,
-  .roles[data-auto] .role[data-on] .fill {
+  .panels[data-auto] .panel[data-on] .fill {
     animation: none;
   }
 }
