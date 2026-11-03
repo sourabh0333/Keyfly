@@ -145,7 +145,7 @@ export function CommandCut({ edits, barLabel }) {
       onFocus={() => setHeld(true)}
       onBlur={(event) => !event.currentTarget.contains(event.relatedTarget) && setHeld(false)}
     >
-      <div className={styles.diff}>
+      <div className={styles.diff} data-frame="Edit with words">
         <figure className={styles.side}>
           <figcaption className={styles.sideLabel}>Before</figcaption>
           <div className={styles.screen} aria-hidden="true">

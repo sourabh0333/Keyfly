@@ -5,16 +5,7 @@
   height: 0;
 }
 
-/* --cp: how far the cut has played (0 to 1). Registered so it can be
-   animated by the scroll. */
-@property --cp {
-  syntax: "<number>";
-  inherits: true;
-  initial-value: 0.5;
-}
-
 .ruler {
-  --cp: 0.5;
   position: absolute;
   top: 0;
   right: 0;
@@ -36,20 +27,6 @@
     repeating-linear-gradient(to right, rgb(244 241 234 / 0.1) 0 1px, transparent 1px 16px) 0 0 / 100% 5px no-repeat;
 }
 
-/* The ruler lit behind the playhead: a mint line along its foot. */
-.lit {
-  position: absolute;
-  right: var(--gutter);
-  bottom: -1px;
-  left: var(--gutter);
-  height: 2px;
-  border-radius: 2px;
-  background: linear-gradient(90deg, rgb(95 224 176 / 0.15), var(--soft-mint));
-  box-shadow: 0 0 10px rgb(95 224 176 / 0.55);
-  transform-origin: left;
-  scale: var(--cp) 1;
-}
-
 /* The playhead rides a rail as wide as the ruler. */
 .rail {
   position: absolute;
@@ -61,7 +38,7 @@
 .rail i {
   position: absolute;
   top: -6px;
-  left: calc(var(--cp) * 100%);
+  left: 50%;
   width: 2px;
   height: 22px;
   translate: -50% 0;
@@ -81,27 +58,4 @@
   border-radius: 2px;
   background: var(--soft-mint);
   rotate: 45deg;
-}
-
-/* Played by the scroll, both ways: the sweep runs as the ruler rises from
-   the lower part of the screen and finishes as it reaches the middle,
-   where the next section arrives (SceneCuts). */
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .ruler {
-      view-timeline: --cut block;
-      animation: cut linear both;
-      animation-timeline: --cut;
-      animation-range: cover 18% cover 50%;
-    }
-  }
-}
-
-@keyframes cut {
-  from {
-    --cp: 0;
-  }
-  to {
-    --cp: 1;
-  }
 }

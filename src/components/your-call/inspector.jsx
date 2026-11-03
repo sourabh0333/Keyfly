@@ -102,6 +102,7 @@ export function Inspector({ file, inspector, inspectorSub, decisions, why, pickL
     <div
       ref={rootRef}
       className={styles.window}
+      data-frame="You make the calls"
       data-active={decisions[active].id}
       data-paused={visible ? undefined : ""}
       onPointerEnter={(event) => event.pointerType === "mouse" && setHeld(true)}

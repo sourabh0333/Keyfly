@@ -245,7 +245,7 @@ export function PresetDial({ items, cta, dialLabel, promptLabel, hint }) {
       style={{ "--count": items.length }}
     >
       <div ref={stageRef} className={styles.pin}>
-        <div className={styles.stage} data-format={item.format} onKeyDown={onKeyDown}>
+        <div className={styles.stage} data-format={item.format} onKeyDown={onKeyDown} data-frame="Use cases">
           <div className={styles.dialWrap}>
             <div
               ref={dialRef}

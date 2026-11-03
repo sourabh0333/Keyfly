@@ -158,6 +158,7 @@ export function Doors({ openIn, history, project, surfaces }) {
     <div
       ref={rootRef}
       className={styles.doors}
+      data-frame="Anywhere"
       data-active={current.id}
       data-auto={auto ? "" : undefined}
       data-paused={visible ? undefined : ""}

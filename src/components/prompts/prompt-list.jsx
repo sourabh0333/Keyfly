@@ -55,7 +55,7 @@ export function PromptList({ groups, try: tryLabel }) {
   const starts = groups.reduce((list, g, i) => [...list, i ? list[i - 1] + groups[i - 1].items.length : 0], []);
 
   return (
-    <div className={styles.list} onPointerLeave={() => setHover(null)}>
+    <div className={styles.list} onPointerLeave={() => setHover(null)} data-frame="Prompts">
       {groups.map((group, g) => (
         <div key={group.label} className={styles.group}>
           <p className={styles.goal}>{group.label}</p>

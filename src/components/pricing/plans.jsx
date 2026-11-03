@@ -237,7 +237,7 @@ export function Plans({ data, copy }) {
       </div>
 
       {/* The inspector: the plan under the playhead. */}
-      <div className={styles.inspector} data-popular={p.mostPopular ? "" : undefined} aria-live="polite">
+      <div className={styles.inspector} data-frame="Pricing" data-popular={p.mostPopular ? "" : undefined} aria-live="polite">
         <div key={`${p.id}-${interval}`} className={styles.inspectorMain}>
           <p className={styles.planLine}>
             <span className={styles.planName}>{p.name}</span>
