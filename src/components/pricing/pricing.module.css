@@ -595,85 +595,125 @@
   color: var(--mint-text-dark);
 }
 
-/* ---------- The inspector ---------- */
+/* ---------- Every plan, a column under its stop ---------- */
 
-.inspector {
-  display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-  gap: clamp(24px, 4vw, 64px);
-  margin-top: 18px;
-  padding: clamp(24px, 3vw, 36px);
-  border-radius: 20px;
-  background: linear-gradient(180deg, #15171b, #101114);
-  box-shadow:
-    0 0 0 1px rgb(244 241 234 / 0.09),
-    0 30px 80px -40px rgb(0 0 0 / 0.95);
-  transition: box-shadow 0.4s ease;
+/* The ruler and its labels span the columns exactly (no side margin), so
+   each stop sits over the middle of its column. */
+.ruler,
+.labels {
+  margin-inline: 0;
 }
 
-.inspector[data-popular] {
+.label[data-edge] {
+  justify-items: center;
+  translate: -50% 0;
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+  grid-template-rows: repeat(8, auto);
+  gap: 0 10px;
+  margin-top: 10px;
+}
+
+.column {
+  position: relative;
+  display: grid;
+  grid-row: span 8;
+  grid-template-rows: subgrid;
+  align-content: start;
+  margin: 0;
+  padding: 20px 18px 22px;
+  border-radius: 18px;
+  background: rgb(244 241 234 / 0.02);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.07);
+  transition:
+    background-color 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+/* The plan under the playhead. */
+.column[data-on] {
   background:
-    radial-gradient(70% 60% at 15% 0%, rgb(95 224 176 / 0.1), transparent 70%),
+    radial-gradient(90% 40% at 50% 0%, rgb(95 224 176 / 0.12), transparent 70%),
     linear-gradient(180deg, #16191c, #101114);
   box-shadow:
     0 0 0 1.5px var(--soft-mint),
-    0 0 80px -28px rgb(95 224 176 / 0.55),
-    0 30px 80px -40px rgb(0 0 0 / 0.95);
+    0 0 70px -24px rgb(95 224 176 / 0.55),
+    0 30px 70px -40px rgb(0 0 0 / 0.95);
 }
 
-.inspectorMain,
-.inspectorSide {
-  display: grid;
-  align-content: start;
-  animation: rise 0.45s var(--ease-land);
+/* A notch at the top of the lit column, pointing up to its stop. */
+.column::before {
+  content: "";
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  translate: -50% 0;
+  rotate: 45deg;
+  background: #16191c;
+  box-shadow: -1.5px -1.5px 0 0 var(--soft-mint);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
-.planLine {
+.column[data-on]::before {
+  opacity: 1;
+}
+
+.colHead {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 12px;
+  gap: 6px 8px;
 }
 
 .planName {
+  margin: 0;
   color: var(--paper);
-  font-size: clamp(1.5rem, 1.1rem + 1vw, 2rem);
+  font-size: 1.125rem;
   font-weight: 600;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.02em;
 }
 
 .badge {
-  padding: 3px 10px;
+  padding: 2px 8px;
   border-radius: var(--radius-round);
   background: var(--soft-mint);
   color: var(--mint-ink);
-  font-size: 0.6875rem;
+  font-size: 0.625rem;
   font-weight: 700;
   white-space: nowrap;
 }
 
 .tagline {
   margin-top: 6px;
-  color: rgb(244 241 234 / 0.58);
-  font-size: 0.9375rem;
+  color: rgb(244 241 234 / 0.52);
+  font-size: 0.8125rem;
   line-height: 1.45;
 }
 
 .price {
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
-  gap: 10px;
-  margin-top: 24px;
+  gap: 4px 6px;
+  margin-top: 18px;
+  animation: rise 0.4s var(--ease-land);
 }
 
 .amount {
   color: var(--paper);
-  font-size: clamp(3.4rem, 2.4rem + 3vw, 5.25rem);
+  font-size: clamp(1.9rem, 1.3rem + 1.4vw, 2.6rem);
   font-weight: 600;
-  letter-spacing: -0.05em;
-  line-height: 0.95;
+  letter-spacing: -0.045em;
+  line-height: 1;
 }
 
-.inspector[data-popular] .amount {
+.column[data-on] .amount {
   background: linear-gradient(100deg, var(--mint-text-dark), #eafff6 55%, var(--soft-mint));
   -webkit-background-clip: text;
   background-clip: text;
@@ -681,48 +721,119 @@
 }
 
 .was {
-  color: rgb(244 241 234 / 0.38);
-  font-size: 1.5rem;
+  color: rgb(244 241 234 / 0.36);
+  font-size: 0.9375rem;
 }
 
 .per {
-  color: rgb(244 241 234 / 0.5);
-  font-size: 1rem;
-}
-
-.billed {
-  margin-top: 8px;
   color: rgb(244 241 234 / 0.48);
   font-size: 0.8125rem;
 }
 
+.billed {
+  margin-top: 6px;
+  color: rgb(244 241 234 / 0.44);
+  font-size: 0.6875rem;
+  line-height: 1.4;
+}
+
 .minutes {
-  margin-top: 22px;
-  padding-top: 16px;
+  margin-top: 14px;
+  padding: 9px 0;
   border-top: 1px solid rgb(244 241 234 / 0.08);
-  color: rgb(244 241 234 / 0.6);
-  font-size: 0.875rem;
+  border-bottom: 1px solid rgb(244 241 234 / 0.08);
+  color: rgb(244 241 234 / 0.58);
+  font-size: 0.75rem;
 }
 
 .minutes b {
-  margin-right: 6px;
-  color: var(--soft-mint);
+  margin-right: 4px;
+  color: var(--paper);
   font-family: var(--font-mono-stack);
-  font-size: 1.5rem;
+  font-size: 1.125rem;
   font-weight: 500;
 }
 
-.includes {
-  margin-bottom: 12px;
-  color: rgb(244 241 234 / 0.5);
+.column[data-on] .minutes b {
+  color: var(--soft-mint);
+}
+
+.actions {
+  display: grid;
+  gap: 6px;
+  margin-top: 14px;
+}
+
+.primary,
+.secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 42px;
+  padding: 0 10px;
+  border-radius: var(--radius-round);
   font-size: 0.8125rem;
+  font-weight: 600;
+  text-align: center;
+  text-decoration: none;
+  transition:
+    background-color 0.3s ease,
+    box-shadow 0.3s ease,
+    color 0.3s ease;
+}
+
+.primary {
+  background: var(--soft-mint);
+  box-shadow:
+    0 1px 0 rgb(255 255 255 / 0.45) inset,
+    0 10px 30px -12px rgb(95 224 176 / 0.9);
+  color: var(--mint-ink);
+}
+
+.secondary {
+  background: rgb(244 241 234 / 0.07);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.12) inset;
+  color: var(--paper);
+}
+
+.secondary:hover {
+  background: rgb(244 241 234 / 0.12);
+}
+
+.subAction {
+  min-height: 1.4em;
+  text-align: center;
+}
+
+.buy {
+  color: rgb(244 241 234 / 0.55);
+  font-size: 0.75rem;
+  text-decoration: none;
+}
+
+.buy:hover {
+  color: var(--paper);
+}
+
+.trial {
+  color: var(--mint-text-dark);
+  font-size: 0.6875rem;
+}
+
+.featureBlock {
+  margin-top: 16px;
+}
+
+.includes {
+  margin-bottom: 10px;
+  color: rgb(244 241 234 / 0.48);
+  font-size: 0.6875rem;
   font-weight: 600;
 }
 
 .features {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 11px 24px;
+  gap: 8px;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -730,9 +841,9 @@
 
 .features li {
   display: flex;
-  gap: 9px;
-  color: rgb(244 241 234 / 0.82);
-  font-size: 0.875rem;
+  gap: 8px;
+  color: rgb(244 241 234 / 0.78);
+  font-size: 0.75rem;
   line-height: 1.4;
 }
 
@@ -754,84 +865,37 @@
 }
 
 .specs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px 28px;
-  margin: 20px 0 0;
-  padding-top: 14px;
+  display: grid;
+  align-content: end;
+  gap: 5px;
+  margin: 16px 0 0;
+  padding-top: 12px;
   border-top: 1px solid rgb(244 241 234 / 0.08);
 }
 
 .specs div {
   display: flex;
-  align-items: baseline;
-  gap: 10px;
+  justify-content: space-between;
+  gap: 8px;
 }
 
 .specs dt {
-  color: rgb(244 241 234 / 0.42);
+  color: rgb(244 241 234 / 0.4);
   font-family: var(--font-mono-stack);
-  font-size: 0.6875rem;
+  font-size: 0.625rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
 
 .specs dd {
   margin: 0;
-  color: rgb(244 241 234 / 0.85);
+  color: rgb(244 241 234 / 0.82);
   font-family: var(--font-mono-stack);
-  font-size: 0.8125rem;
-}
-
-.actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px 18px;
-  margin-top: 24px;
-}
-
-.primary {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  height: 46px;
-  padding: 0 22px;
-  border-radius: var(--radius-round);
-  background: var(--soft-mint);
-  box-shadow:
-    0 1px 0 rgb(255 255 255 / 0.45) inset,
-    0 10px 30px -12px rgb(95 224 176 / 0.9);
-  color: var(--mint-ink);
-  font-size: 0.9375rem;
-  font-weight: 600;
-  text-decoration: none;
-  white-space: nowrap;
-  transition: box-shadow 0.3s ease;
-}
-
-.primary:hover {
-  box-shadow:
-    0 1px 0 rgb(255 255 255 / 0.45) inset,
-    0 12px 36px -8px rgb(95 224 176 / 0.95);
-}
-
-.buy {
-  color: rgb(244 241 234 / 0.6);
-  font-size: 0.875rem;
-  text-decoration: none;
-}
-
-.buy:hover {
-  color: var(--paper);
-}
-
-.trial {
-  color: var(--mint-text-dark);
-  font-size: 0.8125rem;
+  font-size: 0.6875rem;
 }
 
 .primary:focus-visible,
+.secondary:focus-visible,
 .buy:focus-visible,
 .label:focus-visible,
 .otherLink:focus-visible,
@@ -1002,23 +1066,36 @@
   }
 }
 
-@media (max-width: 900px) {
-  .inspector {
-    grid-template-columns: minmax(0, 1fr);
+/* Narrower: three columns a row; the ruler hides (its stops no longer
+   sit over their columns), and the lit column still marks the choice. */
+@media (max-width: 1100px) {
+  .timeline {
+    display: none;
+  }
+
+  .columns {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: none;
+    gap: 12px;
+  }
+
+  .column {
+    grid-row: span 8;
+  }
+
+  .column::before {
+    display: none;
   }
 }
 
 @media (max-width: 640px) {
-  .features {
+  .columns {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .label span {
-    display: none;
-  }
-
-  .label b {
-    font-size: 0.8125rem;
+  .column {
+    grid-row: auto;
+    grid-template-rows: none;
   }
 
   .other + .other {
@@ -1066,8 +1143,7 @@
 
 @media (prefers-reduced-motion: reduce) {
   .file i::after,
-  .inspectorMain,
-  .inspectorSide {
+  .price {
     animation: none;
   }
 

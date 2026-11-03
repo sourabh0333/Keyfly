@@ -1,14 +1,7 @@
 "use client";
 
-import { useRef, useState, useSyncExternalStore } from "react";
+import { useRef, useState } from "react";
 import styles from "./pricing.module.css";
-
-const NARROW = "(max-width: 640px)";
-function onNarrow(callback) {
-  const query = matchMedia(NARROW);
-  query.addEventListener("change", callback);
-  return () => query.removeEventListener("change", callback);
-}
 
 // The ruler's ticks, as fractions of its length.
 const TICKS = Array.from({ length: 49 }, (_, i) => i / 48);
@@ -30,27 +23,13 @@ function Check() {
   );
 }
 
-// Where a plan sits on the ruler: the square root of its AI minutes over
-// the most, so small plans don't crowd at the start; kept at least 9%
-// apart.
-function placeStops(plans) {
-  const max = Math.max(1, ...plans.map((p) => p.aiMinutes));
-  const at = [];
-  plans.forEach((p, i) => {
-    const raw = Math.sqrt(p.aiMinutes / max);
-    at.push(i ? Math.max(raw, at[i - 1] + 0.09) : raw);
-  });
-  const top = at.at(-1) || 1;
-  return at.map((x) => x / top);
-}
-
 /**
  * The plans, from the pricing API (normalised in src/lib/pricing.js), as
- * an editing timeline: a ruler of AI minutes a month with each plan that
- * has an allowance as a stop on it, and a mint playhead that chooses one
- * (drag it, click a stop, or use the arrow keys; it settles on the nearest
- * stop). Beneath, an inspector shows the plan under the playhead: price,
- * billing, AI minutes, what's included and its buttons. Per-seat and
+ * an editing timeline: a ruler of AI minutes a month with a stop per plan
+ * (over the middle of its column) and a mint playhead. Beneath, every plan
+ * at once as a column under its stop, on shared rows; the one under the
+ * playhead is lit. Drag the playhead, click a label, use the arrow keys, or
+ * hover / focus a column to move it; it starts on the most popular plan. Per-seat and
  * custom plans (Team, Enterprise) sit in a slim row beneath, then the
  * AI-minute packs. Monthly / Yearly switch above. Every price, allowance,
  * bullet and link is the API's own.
@@ -62,9 +41,8 @@ export function Plans({ data, copy }) {
 
   const stops = data.plans.filter((p) => p.aiMinutes !== null && !p.seats?.perSeat).sort((a, b) => a.aiMinutes - b.aiMinutes);
   const others = data.plans.filter((p) => !stops.includes(p));
-  const narrow = useSyncExternalStore(onNarrow, () => matchMedia(NARROW).matches, () => false);
-  // On narrow screens the stops sit evenly spaced, so their labels fit.
-  const at = narrow ? stops.map((_, i) => (stops.length > 1 ? i / (stops.length - 1) : 0)) : placeStops(stops);
+  // Each stop sits over the middle of its plan's column.
+  const at = stops.map((_, i) => (i + 0.5) / stops.length);
   const start = Math.max(0, stops.findIndex((p) => p.mostPopular));
 
   const [active, setActive] = useState(start);
@@ -72,8 +50,6 @@ export function Plans({ data, copy }) {
   const rulerRef = useRef(null);
 
   const p = stops[active];
-  const price = p ? p[key] || p.monthly : null;
-  const buy = p?.links?.[linkKey]?.checkout;
   const head = drag ?? at[active];
 
   const nearest = (x) => at.reduce((best, a, i) => (Math.abs(a - x) < Math.abs(at[best] - x) ? i : best), 0);
@@ -196,81 +172,91 @@ export function Plans({ data, copy }) {
         </div>
       </div>
 
-      {/* The inspector: the plan under the playhead. */}
-      <div className={styles.inspector} data-popular={p.mostPopular ? "" : undefined} aria-live="polite">
-        <div key={`${p.id}-${interval}`} className={styles.inspectorMain}>
-          <p className={styles.planLine}>
-            <span className={styles.planName}>{p.name}</span>
-            {p.mostPopular ? <span className={styles.badge}>{copy.popular}</span> : null}
-          </p>
-          {p.tagline ? <p className={styles.tagline}>{p.tagline}</p> : null}
-          <p className={styles.price}>
-            {price ? (
-              <>
-                {price.was ? <s className={styles.was}>{price.was}</s> : null}
-                <span className={styles.amount}>{price.amount}</span>
-                <span className={styles.per}>{copy.perMonth}</span>
-              </>
-            ) : (
-              <span className={styles.amount}>{copy.free}</span>
-            )}
-          </p>
-          <p className={styles.billed}>{price ? [price.billed, price.reason].filter(Boolean).join(" · ") : "\u00a0"}</p>
-          <p className={styles.minutes}>
-            <b>{p.aiMinutes}</b> {copy.aiMinutes}
-          </p>
-        </div>
-
-        <div key={`${p.id}-f`} className={styles.inspectorSide}>
-          {p.includes ? <p className={styles.includes}>{p.includes}</p> : null}
-          <ul className={styles.features}>
-            {p.features.map((f) => (
-              <li key={f}>
-                <Check />
-                {f}
-              </li>
-            ))}
-          </ul>
-          <dl className={styles.specs}>
-            {p.exportResolution ? (
-              <div>
-                <dt>{copy.export}</dt>
-                <dd>{p.exportResolution}</dd>
+      {/* Every plan at once, a column under its stop; the one under the
+          playhead is lit. Rows are shared (subgrid), so they line up. */}
+      <div className={styles.columns} style={{ "--n": stops.length }}>
+        {stops.map((s, i) => {
+          const pr = s[key] || s.monthly;
+          const buyLink = s.links?.[linkKey]?.checkout;
+          const on = i === active;
+          return (
+            <article
+              key={s.id}
+              className={styles.column}
+              data-on={on ? "" : undefined}
+              data-popular={s.mostPopular ? "" : undefined}
+              onPointerEnter={(event) => event.pointerType === "mouse" && setActive(i)}
+              onFocus={() => setActive(i)}
+            >
+              <header className={styles.colHead}>
+                <h3 className={styles.planName}>{s.name}</h3>
+                {s.mostPopular ? <span className={styles.badge}>{copy.popular}</span> : null}
+              </header>
+              <p className={styles.tagline}>{s.tagline || "\u00a0"}</p>
+              <p key={`${s.id}-${interval}`} className={styles.price}>
+                {pr ? (
+                  <>
+                    {pr.was ? <s className={styles.was}>{pr.was}</s> : null}
+                    <span className={styles.amount}>{pr.amount}</span>
+                    <span className={styles.per}>{copy.perMonth}</span>
+                  </>
+                ) : (
+                  <span className={styles.amount}>{copy.free}</span>
+                )}
+              </p>
+              <p className={styles.billed}>{pr ? [pr.billed, pr.reason].filter(Boolean).join(" · ") : "\u00a0"}</p>
+              <p className={styles.minutes}>
+                <b>{s.aiMinutes}</b> {copy.aiMinutes}
+              </p>
+              <div className={styles.actions}>
+                {s.cta ? (
+                  <a className={on ? styles.primary : styles.secondary} href={s.cta.href}>
+                    {s.cta.label}
+                  </a>
+                ) : null}
+                <span className={styles.subAction}>
+                  {s.trial?.days ? (
+                    <span className={styles.trial}>
+                      {copy.trial.replace("{days}", s.trial.days)}
+                      {s.trial.noCard ? ` · ${copy.noCard}` : ""}
+                    </span>
+                  ) : buyLink ? (
+                    <a className={styles.buy} href={buyLink}>
+                      {copy.buy}
+                    </a>
+                  ) : (
+                    "\u00a0"
+                  )}
+                </span>
               </div>
-            ) : null}
-            {p.storageGb !== null ? (
-              <div>
-                <dt>{copy.storage}</dt>
-                <dd>{p.storageGb} GB</dd>
+              <div className={styles.featureBlock}>
+                <p className={styles.includes}>{s.includes || "\u00a0"}</p>
+                <ul className={styles.features}>
+                  {s.features.map((f) => (
+                    <li key={f}>
+                      <Check />
+                      {f}
+                    </li>
+                  ))}
+                </ul>
               </div>
-            ) : null}
-            {p.watermark !== null ? (
-              <div>
-                <dt>{copy.watermark}</dt>
-                <dd>{p.watermark ? copy.yes : copy.no}</dd>
-              </div>
-            ) : null}
-          </dl>
-          <div className={styles.actions}>
-            {p.cta ? (
-              <a className={styles.primary} href={p.cta.href}>
-                {p.cta.label}
-                <Arrow />
-              </a>
-            ) : null}
-            {buy ? (
-              <a className={styles.buy} href={buy}>
-                {copy.buy}
-              </a>
-            ) : null}
-            {p.trial?.days ? (
-              <span className={styles.trial}>
-                {copy.trial.replace("{days}", p.trial.days)}
-                {p.trial.noCard ? ` · ${copy.noCard}` : ""}
-              </span>
-            ) : null}
-          </div>
-        </div>
+              <dl className={styles.specs}>
+                <div>
+                  <dt>{copy.export}</dt>
+                  <dd>{s.exportResolution || "—"}</dd>
+                </div>
+                <div>
+                  <dt>{copy.storage}</dt>
+                  <dd>{s.storageGb !== null ? `${s.storageGb} GB` : "—"}</dd>
+                </div>
+                <div>
+                  <dt>{copy.watermark}</dt>
+                  <dd>{s.watermark === null ? "—" : s.watermark ? copy.yes : copy.no}</dd>
+                </div>
+              </dl>
+            </article>
+          );
+        })}
       </div>
 
       {/* The other plans, in a slim row. */}
