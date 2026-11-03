@@ -147,7 +147,7 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
 
 ## Homepage (step by step, from 2026-10-30)
 
-`src/app/page.jsx` renders, inside `Scene`, Hero → HowItWorks (`#product`) → EditWithWords (`#edit`) → YourCall (`#control`) → EveryFormat (`#formats`) → OnBrand (`#brand`) → Anywhere (`#anywhere`) → UseCases (`#use-cases`) → Download (`#download`) → Faq (`#faq`). The planned sections and their order are in `PLAN.md` ("Homepage expansion"). All copy lives in `src/content/home.js`. Lines marked `PLACEHOLDER` wait for the confirmed product description, so the page is `noindex` until then.
+`src/app/page.jsx` renders, inside `Scene`, Hero → HowItWorks (`#product`) → OldWay (`#old-way`) → EditWithWords (`#edit`) → YourCall (`#control`) → EveryFormat (`#formats`) → OnBrand (`#brand`) → Anywhere (`#anywhere`) → UseCases (`#use-cases`) → Download (`#download`) → Faq (`#faq`). The planned sections and their order are in `PLAN.md` ("Homepage expansion"). All copy lives in `src/content/home.js`. Lines marked `PLACEHOLDER` wait for the confirmed product description, so the page is `noindex` until then.
 
 - **Scene** (`src/components/scene/`, added 2026-10-31 at the team's request: the page was flat black and the sections felt disconnected). It ties the sections together as one scroll:
   - **`SceneLight`:** a fixed light behind every section, so sections leave their own backgrounds transparent (the hero's backdrop fades out at its foot with a mask). Each section brings up its own layer as it fills the screen (`--w`), and the layers drift slowly:
@@ -209,6 +209,16 @@ The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `Sit
   - **Step 3:** the frame tries 16:9, 9:16 and 1:1 (its width animates at a fixed height, using `cqw` of the viewer), and the export bar fills to "Ready".
   - **Fallback:** without JS or with reduced motion there is no pin, and the CSS defaults (all progress at 1) show the finished cut.
   - **Copy:** in `howItWorks` (content file), PLACEHOLDER.
+- **The old way** (`src/components/old-way/`, added 2026-11-03; picked "Hours vs one sentence" from three new sections): "Hours of editing. *Or one sentence.*" Captioned "Illustrative". Qualitative only: no competitor names, no time savings or other numbers.
+  - **One grid, two columns, four shared rows** (head, how it starts, six chores, a bar). The six chore rows have a fixed height (`--row`), so each chore by hand sits level with Keyfly doing it.
+    - **By hand** (plain, left): "Still editing" with a blinking grey dot, "Open the editor and start scrubbing" with a scrubbing playhead, six numbered chores with plain boxes, and a grey bar.
+    - **With Keyfly** (on a glass panel with a mint edge that keeps to the column; its cells sit 22px inside it): the one sentence in a prompt pill with a mint send button, six results with rings that become mint checks, and a mint bar.
+    - A hairline runs down the middle of the gap with a serif-italic "vs" on it.
+  - **The loop** (CSS only, 12s, under `[data-play]`, which `PlayOnView` sets the first time the table is on screen): the sentence types in (clip-path steps) and sends; Keyfly is "Editing", ticks all six (150ms apart) and its bar fills, then "First cut ready"; by hand ticks and strikes one chore at 25%, 50% and 75% while its bar crawls to half, and it is still editing when the loop restarts.
+  - **Without the loop** (no JS, reduced motion) the CSS defaults show that moment: Keyfly done, three chores by hand.
+  - **Narrow screens** (≤760px): by hand, then "vs", then Keyfly's panel (grid rows offset by 5); the sentence wraps.
+  - **Copy:** `oldWay`. The chores Keyfly handles are PLACEHOLDER until the team confirms them.
+  - **Flight thread:** it crosses from How it works' channel to the left margin before this section and runs down beside it.
 - **Edit with words** (`src/components/edit-with-words/`, added 2026-10-31; the first of the new sections in `PLAN.md`): "Change anything *by saying it.*" The core differentiator, refining the first cut by asking. The heading is centred; the stage spans the full column. It is captioned "Illustrative interface".
   - **`CommandCut`** (client), redesigned 2026-10-31 as a **before and after**; the mock editor with a striped timeline looked dated. Three columns on wide screens (stacked below 900px):
     - **Before:** the first cut, dimmed, with its facts as mono chips (0:42 · 16:9 · 8 cuts) and a clean bar of its shots.

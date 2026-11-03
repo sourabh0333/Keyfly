@@ -72,6 +72,28 @@ export const howItWorks = {
   },
 };
 
+// "The old way": the chores of editing by hand beside one sentence to
+// Keyfly. Qualitative only: no competitor names, no time savings or other
+// numbers. The chores Keyfly handles are PLACEHOLDER (illustrative) until
+// the team confirms them.
+export const oldWay = {
+  eyebrow: "The old way",
+  title: [{ text: "Hours of editing." }, { text: "Or one sentence.", accent: true }],
+  lead: "Editing by hand is a list of chores you work through one at a time. With Keyfly you say what you want, and the whole list is done in one go.",
+  note: "Illustrative",
+  hand: { label: "By hand", busy: "Still editing", start: "Open the editor and start scrubbing" },
+  keyfly: { label: "With Keyfly", busy: "Editing", done: "First cut ready" },
+  ask: "Make a 30s launch video with captions, plus a 9:16 cut",
+  rows: [
+    { hand: "Scrub through all your footage", keyfly: "Footage reviewed" },
+    { hand: "Find the best takes", keyfly: "Best takes picked" },
+    { hand: "Cut the pauses and mistakes", keyfly: "Pauses and mistakes cut" },
+    { hand: "Lay in music and balance it", keyfly: "Music set under the voice" },
+    { hand: "Type out every caption", keyfly: "Captions added" },
+    { hand: "Reframe and export again for 9:16", keyfly: "16:9 and 9:16 ready" },
+  ],
+};
+
 // "Use cases": the presets in the prompt box as six live feeds on a
 // multicam switcher. The one on air plays on the program monitor, and
 // "Try this prompt" hands its preset back to the hero's prompt box.

@@ -8,6 +8,7 @@ import { YourCall } from "@/components/your-call/your-call";
 import { Hero } from "@/components/hero/hero";
 import { Scene } from "@/components/scene/scene";
 import { HowItWorks } from "@/components/how-it-works/how-it-works";
+import { OldWay } from "@/components/old-way/old-way";
 import { UseCases } from "@/components/use-cases/use-cases";
 import { siteConfig } from "@/config/site";
 
@@ -25,6 +26,7 @@ export default function Home() {
     <Scene>
       <Hero />
       <HowItWorks />
+      <OldWay />
       <EditWithWords />
       <YourCall />
       <EveryFormat />

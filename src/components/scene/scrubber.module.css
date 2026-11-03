@@ -110,6 +110,10 @@
   --clip: linear-gradient(180deg, #343a64, #6b5466 55%, #b98a6a);
 }
 
+.clip[data-key="the-old-way"] {
+  --clip: linear-gradient(180deg, #3a3b44, #5fe0b0);
+}
+
 .clip[data-key="edit-with-words"] {
   --clip: linear-gradient(180deg, #2c4a6a, #3a2b52 50%, #5fe0b0);
 }
