@@ -1,11 +1,20 @@
 "use client";
 
-import { useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import styles from "./pricing.module.css";
 
 const NARROW = "(max-width: 640px)";
 function onNarrow(callback) {
   const query = matchMedia(NARROW);
+  query.addEventListener("change", callback);
+  return () => query.removeEventListener("change", callback);
+}
+
+const HOLD = 3200; // ms each plan stays under the playhead while it runs by itself
+
+const MOTION = "(prefers-reduced-motion: reduce)";
+function onMotion(callback) {
+  const query = matchMedia(MOTION);
   query.addEventListener("change", callback);
   return () => query.removeEventListener("change", callback);
 }
@@ -52,7 +61,9 @@ function placeStops(plans) {
  * stop). Beneath, an inspector shows the plan under the playhead: price,
  * billing, AI minutes, what's included and its buttons. Per-seat and
  * custom plans (Team, Enterprise) sit in a slim row beneath, then the
- * AI-minute packs. Monthly / Yearly switch above. Every price, allowance,
+ * AI-minute packs. Monthly / Yearly switch above. It starts on the first
+ * plan and moves on by itself every 3.2s while on screen and not held
+ * (hovered or focused), until a plan is chosen; not with reduced motion. Every price, allowance,
  * bullet and link is the API's own.
  */
 export function Plans({ data, copy }) {
@@ -65,9 +76,13 @@ export function Plans({ data, copy }) {
   const narrow = useSyncExternalStore(onNarrow, () => matchMedia(NARROW).matches, () => false);
   // On narrow screens the stops sit evenly spaced, so their labels fit.
   const at = narrow ? stops.map((_, i) => (stops.length > 1 ? i / (stops.length - 1) : 0)) : placeStops(stops);
-  const start = Math.max(0, stops.findIndex((p) => p.mostPopular));
-
-  const [active, setActive] = useState(start);
+  // It starts on the first plan and moves through them by itself.
+  const [active, setActive] = useState(0);
+  const [touched, setTouched] = useState(false);
+  const [visible, setVisible] = useState(false);
+  const [held, setHeld] = useState(false);
+  const reduced = useSyncExternalStore(onMotion, () => matchMedia(MOTION).matches, () => false);
+  const rootRef = useRef(null);
   const [drag, setDrag] = useState(null); // the playhead's position while dragging (0–1)
   const rulerRef = useRef(null);
 
@@ -82,12 +97,34 @@ export function Plans({ data, copy }) {
     return Math.min(1, Math.max(0, (event.clientX - r.left) / r.width));
   };
 
+  const auto = visible && !held && !touched && !reduced && drag === null;
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting), { threshold: 0.3 });
+    observer.observe(rootRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  // Self-running: the next plan every few seconds, round again after the
+  // last, while on screen and not held, until someone chooses a plan.
+  useEffect(() => {
+    if (!auto || stops.length < 2) return;
+    const timer = setTimeout(() => setActive((a) => (a + 1) % stops.length), HOLD);
+    return () => clearTimeout(timer);
+  }, [auto, active, stops.length]);
+
+  // Choosing a plan by hand stops the self-running.
+  function choose(i) {
+    setTouched(true);
+    setActive(i);
+  }
+
   function onPointerDown(event) {
     if (event.button !== 0) return;
     event.currentTarget.setPointerCapture(event.pointerId);
     const x = fromPointer(event);
     setDrag(x);
-    setActive(nearest(x));
+    choose(nearest(x));
   }
 
   function onPointerMove(event) {
@@ -105,13 +142,21 @@ export function Plans({ data, copy }) {
     const next = { ArrowRight: active + 1, ArrowUp: active + 1, ArrowLeft: active - 1, ArrowDown: active - 1, Home: 0, End: stops.length - 1 }[event.key];
     if (next === undefined) return;
     event.preventDefault();
-    setActive(Math.min(stops.length - 1, Math.max(0, next)));
+    choose(Math.min(stops.length - 1, Math.max(0, next)));
   }
 
   if (!p) return null;
 
   return (
-    <div className={styles.plans}>
+    <div
+      ref={rootRef}
+      className={styles.plans}
+      data-auto={auto ? "" : undefined}
+      onPointerEnter={(event) => event.pointerType === "mouse" && setHeld(true)}
+      onPointerLeave={() => setHeld(false)}
+      onFocus={() => setHeld(true)}
+      onBlur={(event) => !event.currentTarget.contains(event.relatedTarget) && setHeld(false)}
+    >
       {/* The switch and the offer. */}
       <div className={styles.controls}>
         <div className={styles.toggle} role="group" aria-label={copy.billing}>
@@ -185,7 +230,7 @@ export function Plans({ data, copy }) {
               data-on={i === active ? "" : undefined}
               data-edge={i === 0 ? "start" : i === stops.length - 1 ? "end" : undefined}
               style={{ left: `${at[i] * 100}%` }}
-              onClick={() => setActive(i)}
+              onClick={() => choose(i)}
             >
               <b>{s.name}</b>
               <span>
