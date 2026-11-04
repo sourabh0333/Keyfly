@@ -1,0 +1,812 @@
+/*
+ * Product page, "Direct": the heading as on the homepage's sections; the
+ * AI director's reply as one glass panel (its header, "Built …" and its
+ * actions, the note in play, the cut's timeline with a diamond per note,
+ * the chat box), the playhead running from the note down to its moment
+ * (DirectorTimeline sets --at, the note's place across the lanes); then
+ * three ways to steer, as a bar of three cells between hairlines.
+ */
+.section {
+  position: relative;
+  padding: var(--section-pad) 0;
+  color: var(--paper);
+}
+
+.inner {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* ---------- Heading (as on the homepage's sections) ---------- */
+
+.head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+  margin-bottom: clamp(32px, 4vw, 56px);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: rgb(244 241 234 / 0.62);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.eyebrowMark {
+  width: 18px;
+  height: 1px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+}
+
+.title {
+  margin-top: 16px;
+  font-size: clamp(2.1rem, 1.1rem + 2.2vw, 3.4rem);
+  font-weight: 560;
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+
+.plain,
+.accent {
+  display: block;
+}
+
+.accent {
+  padding-bottom: 0.06em;
+  background: linear-gradient(100deg, var(--mint-text-dark), #eafff6 50%, var(--soft-mint));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-family: var(--font-accent-stack);
+  font-size: 1.1em;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.lead {
+  max-width: 40ch;
+  color: rgb(244 241 234 / 0.62);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  text-align: right;
+}
+
+/* ---------- The panel: the reply, pinned to its cut ---------- */
+
+.panel {
+  --lab: 92px; /* the track labels' column */
+  --gap: 16px;
+  --zone: 196px; /* the note's room above the timeline */
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-window);
+  background:
+    radial-gradient(70% 40% at 50% 0%, rgb(95 224 176 / 0.08), transparent 70%),
+    linear-gradient(180deg, #15171b, #0f1013);
+  box-shadow:
+    0 0 0 1px rgb(244 241 234 / 0.1),
+    0 1px 0 rgb(244 241 234 / 0.08) inset,
+    0 50px 110px -40px rgb(0 0 0 / 0.95),
+    0 0 120px -40px rgb(95 224 176 / 0.3);
+}
+
+/* A mint line along the top, as on the prompt box and the FAQ panel. */
+.panel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 16%;
+  left: 16%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--soft-mint), transparent);
+}
+
+.chrome {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  border-bottom: 1px solid rgb(244 241 234 / 0.07);
+  font-size: 0.8125rem;
+}
+
+.from {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 8px;
+  color: rgb(244 241 234 / 0.82);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.from i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+}
+
+.engine {
+  flex: none;
+  padding: 2px 8px;
+  border-radius: var(--radius-round);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.16) inset;
+  color: rgb(244 241 234 / 0.55);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.asked {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  color: rgb(244 241 234 / 0.62);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.asked b {
+  color: var(--soft-mint);
+  font-weight: 400;
+}
+
+.worked {
+  flex: none;
+  color: rgb(244 241 234 / 0.4);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+}
+
+/* "Built …" with the reply's actions. */
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 12px;
+  padding: 16px 20px 0;
+}
+
+.built {
+  margin-right: auto;
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.built em {
+  color: var(--mint-text-dark);
+  font-family: var(--font-accent-stack);
+  font-size: 1.12em;
+  font-style: italic;
+  font-weight: 400;
+}
+
+.action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 11px;
+  border-radius: 8px;
+  background: rgb(244 241 234 / 0.05);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.12) inset;
+  color: rgb(244 241 234 / 0.85);
+  font-size: 0.8125rem;
+  font-weight: 560;
+}
+
+.used {
+  color: rgb(244 241 234 / 0.42);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+}
+
+.pause {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 11px;
+  border: 0;
+  border-radius: var(--radius-round);
+  background: none;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.12) inset;
+  color: rgb(244 241 234 / 0.6);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.pause:hover {
+  color: var(--paper);
+}
+
+.pause:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 3px;
+}
+
+/* The cut: the note's room, then the timeline, the playhead through both. */
+.cut {
+  position: relative;
+  padding: 0 20px 22px;
+}
+
+.noteZone {
+  position: relative;
+  height: var(--zone);
+  margin-left: calc(var(--lab) + var(--gap));
+}
+
+/* The note in play: a card on the playhead, kept inside the panel. */
+.note {
+  position: absolute;
+  bottom: 14px;
+  left: clamp(0px, calc(var(--at) * 1% - 190px), calc(100% - 380px));
+  display: grid;
+  gap: 7px;
+  width: 380px;
+  padding: 14px 16px 15px;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #1c1f24, #15171b);
+  box-shadow:
+    0 0 0 1px rgb(95 224 176 / 0.45),
+    0 20px 50px -20px rgb(0 0 0 / 0.9),
+    0 0 40px -16px rgb(95 224 176 / 0.45);
+  transition: left 0.7s var(--ease-land);
+  animation: lift 0.45s var(--ease-land);
+}
+
+.noteKicker {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--mint-text-dark);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.noteKicker span {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--soft-mint);
+  color: var(--mint-ink);
+  font-size: 0.5625rem;
+  letter-spacing: 0;
+}
+
+.noteKicker em {
+  margin-left: auto;
+  color: rgb(244 241 234 / 0.42);
+  font-style: normal;
+  letter-spacing: 0.04em;
+}
+
+.noteValue {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.3;
+}
+
+.noteBody {
+  color: rgb(244 241 234 / 0.6);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  margin-top: 2px;
+}
+
+.chips em {
+  margin-right: 3px;
+  color: rgb(244 241 234 / 0.42);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  font-style: normal;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.chips span {
+  padding: 3px 10px;
+  border-radius: var(--radius-round);
+  background: rgb(244 241 234 / 0.05);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.14) inset;
+  font-size: 0.75rem;
+}
+
+.meter {
+  display: flex;
+  gap: 3px;
+}
+
+/* Each of the five segments fills by its share of the score. */
+.meter i {
+  --fill: clamp(0, calc(var(--f) * 5 - var(--i)), 1);
+  width: 26px;
+  height: 5px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--soft-mint) calc(var(--fill) * 100%), rgb(244 241 234 / 0.14) 0);
+}
+
+/* The timeline: a labels column, then the ruler and four tracks. */
+.timeline {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--lab) minmax(0, 1fr);
+  gap: 8px var(--gap);
+  align-items: center;
+}
+
+.row {
+  display: contents;
+}
+
+.trackLabel {
+  overflow: hidden;
+  color: rgb(244 241 234 / 0.45);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.08em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.ruler {
+  position: relative;
+  height: 26px;
+  background:
+    repeating-linear-gradient(90deg, rgb(244 241 234 / 0.2) 0 1px, transparent 1px 2.8%) 0 100% / 100% 6px no-repeat,
+    linear-gradient(rgb(244 241 234 / 0.14), rgb(244 241 234 / 0.14)) 0 100% / 100% 1px no-repeat;
+}
+
+.time,
+.endMark {
+  position: absolute;
+  top: 0;
+  left: calc(var(--x) * 1%);
+  color: rgb(244 241 234 / 0.42);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  translate: 4px 0;
+}
+
+/* The end of the cut: a mint line down the ruler, its label beside it,
+   clear of the self-check's diamond. */
+.endMark {
+  color: var(--soft-mint);
+  translate: 16px 0;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.endMark::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: -14px;
+  left: -16px;
+  width: 1px;
+  background: var(--soft-mint);
+}
+
+.lane {
+  position: relative;
+  height: 34px;
+  border-radius: 7px;
+  background: rgb(244 241 234 / 0.03);
+}
+
+.clip {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: 6px;
+  background: linear-gradient(180deg, #343a64, #6b5466 60%, #b98a6a);
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.5) inset;
+  opacity: 0.85;
+}
+
+.wave,
+.bars {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0 6px;
+}
+
+.wave i {
+  flex: 1;
+  height: calc(var(--h) * 78%);
+  border-radius: 1px;
+  background: rgb(95 224 176 / 0.75);
+}
+
+.bars {
+  align-items: flex-end;
+  padding-bottom: 6px;
+}
+
+.bars i {
+  flex: 1;
+  height: calc(var(--h) * 60%);
+  border-radius: 1px;
+  background: rgb(217 160 110 / 0.75);
+}
+
+.grade {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  border-radius: 6px;
+  background: linear-gradient(90deg, #0b0b0d, #12261f 55%, rgb(95 224 176 / 0.5));
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.08) inset;
+}
+
+/* After the end: a dashed area for the clips not yet made. */
+.after {
+  position: absolute;
+  top: 34px;
+  right: 0;
+  bottom: 0;
+  left: calc(var(--lab) + var(--gap) + (100% - var(--lab) - var(--gap)) * var(--x) / 100 + 6px);
+  border: 1px dashed rgb(244 241 234 / 0.2);
+  border-radius: 8px;
+  background: repeating-linear-gradient(135deg, rgb(244 241 234 / 0.03) 0 6px, transparent 6px 12px);
+  pointer-events: none;
+}
+
+.after em {
+  position: absolute;
+  bottom: 6px;
+  left: 0;
+  right: 0;
+  color: rgb(244 241 234 / 0.38);
+  font-family: var(--font-mono-stack);
+  font-size: 0.5625rem;
+  font-style: normal;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+/* The notes' diamonds, on their tracks at their times. */
+.pin {
+  position: absolute;
+  top: 50%;
+  left: calc(var(--x) * 1%);
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: #0b0b0d;
+  box-shadow: 0 0 0 1.5px rgb(244 241 234 / 0.45);
+  color: rgb(244 241 234 / 0.8);
+  font-family: var(--font-mono-stack);
+  font-size: 0.5625rem;
+  rotate: 45deg;
+  translate: -50% -50%;
+  cursor: pointer;
+  transition:
+    background-color 0.3s ease,
+    box-shadow 0.3s ease,
+    color 0.3s ease;
+}
+
+/* The number reads upright inside the turned square. */
+.pin span {
+  rotate: -45deg;
+}
+
+.pin[aria-pressed="true"] {
+  background: var(--soft-mint);
+  box-shadow:
+    0 0 0 1.5px var(--soft-mint),
+    0 0 16px rgb(95 224 176 / 0.7);
+  color: var(--mint-ink);
+}
+
+.pin:hover {
+  box-shadow: 0 0 0 1.5px var(--soft-mint);
+}
+
+.pin:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 4px;
+}
+
+.ruler .pin {
+  top: auto;
+  bottom: -12px;
+}
+
+/* The playhead: a rail over the lanes, slid by its own width to the note
+   in play; its line runs from the note down through every track. */
+.playhead {
+  position: absolute;
+  top: calc(var(--zone) - 14px);
+  right: 20px;
+  bottom: 18px;
+  left: calc(20px + var(--lab) + var(--gap));
+  pointer-events: none;
+  translate: calc(var(--at) * 1%) 0;
+  transition: translate 0.7s var(--ease-land);
+}
+
+.playhead::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -1px;
+  width: 2px;
+  background: linear-gradient(to bottom, var(--soft-mint), rgb(95 224 176 / 0.35));
+  box-shadow: 0 0 10px rgb(95 224 176 / 0.55);
+}
+
+/* The chat box. */
+.composer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 20px 20px;
+  padding: 11px 12px 11px 16px;
+  border-radius: 14px;
+  background: rgb(244 241 234 / 0.05);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.12) inset;
+  color: rgb(244 241 234 / 0.42);
+  font-size: 0.875rem;
+}
+
+.composer span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.composer i {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  margin-left: auto;
+  border-radius: 50%;
+  background: var(--soft-mint);
+}
+
+@keyframes lift {
+  from {
+    opacity: 0;
+    translate: 0 8px;
+  }
+}
+
+/* ---------- Three ways to steer ---------- */
+
+.steer {
+  display: grid;
+  grid-template-columns: clamp(110px, 12vw, 180px) minmax(0, 1fr);
+  gap: 16px clamp(16px, 3vw, 48px);
+  margin-top: clamp(32px, 4vw, 56px);
+  padding-top: 26px;
+  border-top: 1px solid rgb(244 241 234 / 0.1);
+}
+
+.steerLabel {
+  color: rgb(244 241 234 / 0.6);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.steerList {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.steerList li {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  padding: 0 24px 6px;
+}
+
+.steerList li:first-child {
+  padding-left: 0;
+}
+
+.steerList li + li {
+  border-left: 1px solid rgb(244 241 234 / 0.08);
+}
+
+.steerIndex {
+  color: var(--soft-mint);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+}
+
+.steerList h3 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.steerList p {
+  color: rgb(244 241 234 / 0.58);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.footnote {
+  margin-top: 28px;
+  color: rgb(244 241 234 / 0.38);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+/* ---------- Narrower screens ---------- */
+
+/* The note goes under the timeline; the playhead spans the tracks only. */
+@media (max-width: 860px) {
+  .head {
+    display: grid;
+    gap: 14px;
+  }
+
+  .lead {
+    text-align: left;
+  }
+
+  .plain,
+  .accent {
+    display: inline;
+  }
+
+  .title {
+    font-size: clamp(1.9rem, 1.2rem + 3vw, 2.75rem);
+  }
+
+  .panel {
+    --lab: 62px;
+    --gap: 10px;
+  }
+
+  .worked {
+    display: none;
+  }
+
+  .cut {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px 14px 18px;
+  }
+
+  .timeline {
+    order: -1;
+  }
+
+  .noteZone {
+    height: auto;
+    margin-left: 0;
+  }
+
+  .note {
+    position: static;
+    width: auto;
+  }
+
+  .playhead {
+    top: 16px;
+    right: 14px;
+    bottom: auto;
+    left: calc(14px + var(--lab) + var(--gap));
+    height: 194px;
+  }
+
+  .bar {
+    padding: 14px 14px 0;
+  }
+
+  .composer {
+    margin: 0 14px 14px;
+  }
+
+  .steer {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .steerList {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+
+  .steerList li,
+  .steerList li:first-child {
+    padding: 0;
+  }
+
+  .steerList li + li {
+    padding-top: 20px;
+    border-top: 1px solid rgb(244 241 234 / 0.08);
+    border-left: 0;
+  }
+}
+
+@media (max-width: 560px) {
+  .asked {
+    display: none;
+  }
+
+  .from {
+    margin-right: auto;
+  }
+
+  .pin {
+    width: 20px;
+    height: 20px;
+  }
+
+  .after em {
+    display: none;
+  }
+
+  /* No room for the end's label: just its line. */
+  .endMark {
+    font-size: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .note,
+  .playhead,
+  .pin {
+    transition: none;
+  }
+
+  .note {
+    animation: none;
+  }
+}

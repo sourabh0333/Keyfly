@@ -128,3 +128,20 @@ Proof (logos, numbers, reviews), before/after footage and pricing are added once
 6. Is there pricing or a free tier?
 7. Any real numbers, customers or reviews we may show?
 8. Can we have real footage or screen recordings (for before/after and the feature visuals)?
+
+## Product page (`/product`)
+
+Planned from `reports/AI video editor product pages.md`. Built one section at a time.
+
+| # | Section | Status | Notes |
+|---|---|---|---|
+| 0 | Hero | ✅ built 2026-11-04, rebuilt the same day as a real hero | Centred promise; the annotated editor (six callouts wired to its parts, touring), tilting flat on scroll; facts row |
+| 1 | Make (`#make`) | ✅ built 2026-11-04 | Three starts (sentence, footage, template) → seven layers built one by one; motion styles and templates strip |
+| 2 | Direct (`#direct`) | ✅ built 2026-11-04, redesigned the same day | The AI director's notes pinned to its own cut's timeline, a playhead touring them; three ways to steer |
+| 3 | Footage (`#footage`) | ✅ built 2026-11-04 | One recording cleaned in four passes (picture, transcript, log); where footage goes |
+| 4 | Brand (`#brand`) | ✅ built 2026-11-04 | habitly.io read into a brand kit field by field; every new video on-brand; the app's suggestions |
+| 5 | Deliver (`#deliver`) | next | Spec sheet; review link; format-by-editor table |
+| 6 | Your way (`#your-way`) | planned | Platform, AI, ownership, data, teams |
+| 7 | AI minutes (`#minutes`) | planned | One explanation; links to pricing |
+| 8 | Close | planned | One action |
+

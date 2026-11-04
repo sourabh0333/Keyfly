@@ -1,0 +1,1056 @@
+/*
+ * Product page, "Brand": the heading as on the homepage's sections; then
+ * KitScan's stage: the website being read (left) and the brand kit filling
+ * (right), joined by a mint connector, over the strip of new videos. The
+ * stage carries data-step (the step in play) and data-reached (every step
+ * so far, "1 2 …" matched with ~=): 1 the scan, 2 logo, 3 colours, 4 font,
+ * 5 tone, 6 voice-over, 7 done. The illustrative brand's colours come in
+ * as --c on the elements that wear them.
+ */
+.section {
+  position: relative;
+  padding: var(--section-pad) 0;
+  color: var(--paper);
+}
+
+.inner {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* ---------- Heading (as on the homepage's sections) ---------- */
+
+.head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+  margin-bottom: clamp(32px, 4vw, 56px);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: rgb(244 241 234 / 0.62);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.eyebrowMark {
+  width: 18px;
+  height: 1px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+}
+
+.title {
+  margin-top: 16px;
+  font-size: clamp(2.1rem, 1.1rem + 2.2vw, 3.4rem);
+  font-weight: 560;
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+
+.plain,
+.accent {
+  display: block;
+}
+
+.accent {
+  padding-bottom: 0.06em;
+  background: linear-gradient(100deg, var(--mint-text-dark), #eafff6 50%, var(--soft-mint));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-family: var(--font-accent-stack);
+  font-size: 1.1em;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.lead {
+  max-width: 40ch;
+  color: rgb(244 241 234 / 0.62);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  text-align: right;
+}
+
+.kicker {
+  color: rgb(244 241 234 / 0.5);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.kicker span {
+  color: var(--soft-mint);
+}
+
+/* ---------- The stage ---------- */
+
+.stage {
+  display: grid;
+  gap: clamp(36px, 4.5vw, 56px);
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) 64px minmax(0, 0.95fr);
+  align-items: center;
+}
+
+.siteCol,
+.kitCol {
+  display: grid;
+  gap: 12px;
+}
+
+/* ---------- The website (illustrative) ---------- */
+
+.browser {
+  overflow: hidden;
+  border-radius: var(--radius-window);
+  background: #17181c;
+  box-shadow:
+    0 0 0 1px rgb(244 241 234 / 0.1),
+    0 40px 90px -40px rgb(0 0 0 / 0.95);
+  container-type: inline-size;
+}
+
+.chrome {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-bottom: 1px solid rgb(244 241 234 / 0.07);
+}
+
+.dots {
+  display: flex;
+  gap: 6px;
+}
+
+.dots i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgb(244 241 234 / 0.16);
+}
+
+.url {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  min-width: 0;
+  padding: 6px 12px;
+  border-radius: var(--radius-round);
+  background: rgb(244 241 234 / 0.06);
+  color: rgb(244 241 234 / 0.85);
+  font-family: var(--font-mono-stack);
+  font-size: 0.75rem;
+}
+
+/* The address types in at the start. */
+.urlText {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 0;
+}
+
+.stage[data-step="0"] .urlText {
+  animation: type 0.8s steps(10) 0.1s forwards;
+}
+
+.stage[data-reached~="1"] .urlText {
+  max-width: 12ch;
+}
+
+.caret {
+  width: 1.5px;
+  height: 1em;
+  margin-left: 2px;
+  background: var(--soft-mint);
+  animation: blink 1s steps(1) infinite;
+}
+
+.stage[data-reached~="1"] .caret {
+  display: none;
+}
+
+.analyze {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--radius-round);
+  background: rgb(244 241 234 / 0.08);
+  color: rgb(244 241 234 / 0.75);
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+.stage[data-reached~="1"] .analyze {
+  background: var(--soft-mint);
+  color: var(--mint-ink);
+}
+
+/* The page: the illustrative brand's own colours. */
+.page {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  padding: 4cqw 5cqw;
+  background: var(--c);
+  color: #1e2a4a;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brandName {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.2cqw;
+  font-size: 2.6cqw;
+  font-weight: 750;
+  letter-spacing: -0.03em;
+}
+
+.mark {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  width: 1.15em;
+  height: 1.15em;
+  border-radius: 50%;
+  background: #ff7a59;
+}
+
+.mark::after {
+  content: "";
+  position: absolute;
+  inset: 28%;
+  border: 0.12em solid #fff4e6;
+  border-top-color: transparent;
+  border-radius: 50%;
+  rotate: -45deg;
+}
+
+.navLinks {
+  display: flex;
+  gap: 3cqw;
+  font-size: 1.6cqw;
+  opacity: 0.7;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
+  align-items: center;
+  gap: 4cqw;
+  margin-top: 5cqw;
+}
+
+.headline {
+  font-family: var(--font-accent-stack);
+  font-size: 6cqw;
+  font-style: italic;
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+
+.sub {
+  margin-top: 2cqw;
+  font-size: 1.8cqw;
+  line-height: 1.4;
+  opacity: 0.75;
+}
+
+.cta {
+  display: inline-block;
+  margin-top: 3cqw;
+  padding: 1.4cqw 2.6cqw;
+  border-radius: 99px;
+  background: var(--c);
+  color: #fff4e6;
+  font-size: 1.7cqw;
+  font-weight: 700;
+}
+
+.phone {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 1.2cqw;
+  aspect-ratio: 9 / 16;
+  max-height: 34cqw;
+  justify-self: center;
+  padding: 2cqw;
+  border-radius: 3cqw;
+  background: var(--c);
+  color: #fff4e6;
+}
+
+.streak {
+  display: flex;
+  gap: 0.8cqw;
+}
+
+.streak i {
+  width: 1.6cqw;
+  height: 1.6cqw;
+  border-radius: 50%;
+  background: var(--c);
+}
+
+.phone b {
+  font-family: var(--font-accent-stack);
+  font-size: 7cqw;
+  font-style: italic;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.phone em {
+  font-size: 1.4cqw;
+  font-style: normal;
+  opacity: 0.75;
+}
+
+/* The scan: a mint beam across the page while it is read. */
+.scan {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+  width: 18%;
+  background: linear-gradient(90deg, transparent, rgb(95 224 176 / 0.28), transparent);
+  box-shadow: inset -2px 0 0 rgb(95 224 176 / 0.8);
+  opacity: 0;
+  translate: -100% 0;
+  pointer-events: none;
+}
+
+.stage[data-step="1"] .scan {
+  opacity: 1;
+  animation: sweep 1.4s var(--ease-land) forwards;
+}
+
+.reading {
+  position: absolute;
+  right: 2cqw;
+  bottom: 2cqw;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 1cqw;
+  padding: 0.8cqw 1.6cqw;
+  border-radius: 99px;
+  background: rgb(11 11 13 / 0.82);
+  color: var(--mint-text-dark);
+  font-family: var(--font-mono-stack);
+  font-size: 1.35cqw;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.reading i {
+  width: 1cqw;
+  height: 1cqw;
+  border-radius: 50%;
+  background: var(--soft-mint);
+  animation: blink 0.8s steps(1) infinite;
+}
+
+.stage[data-step="1"] .reading,
+.stage[data-step="2"] .reading,
+.stage[data-step="3"] .reading,
+.stage[data-step="4"] .reading,
+.stage[data-step="5"] .reading {
+  opacity: 1;
+}
+
+/* What each field is read from: a mint ring, bright while it is read. */
+.page [data-ring] {
+  position: relative;
+}
+
+.page [data-ring]::after,
+.pick {
+  content: "";
+  position: absolute;
+  inset: -1.2cqw;
+  z-index: 2;
+  border-radius: 1.4cqw;
+  box-shadow:
+    0 0 0 2px var(--soft-mint),
+    0 0 18px rgb(95 224 176 / 0.6);
+  opacity: 0;
+  scale: 1.08;
+  transition:
+    opacity 0.35s ease,
+    scale 0.45s var(--ease-land);
+  pointer-events: none;
+}
+
+.stage[data-step="2"] [data-ring="logo"]::after,
+.stage[data-step="3"] [data-ring="colour"]::after,
+.stage[data-step="3"] .pick,
+.stage[data-step="4"] [data-ring="font"]::after,
+.stage[data-step="5"] [data-ring="tone"]::after {
+  opacity: 1;
+  scale: 1;
+}
+
+/* A colour picked from the page's background and the streak's dots. */
+.pick {
+  inset: auto;
+  width: 4cqw;
+  height: 4cqw;
+  border: 0.5cqw solid #fff;
+  border-radius: 50%;
+  background: var(--c);
+  translate: -50% -50%;
+}
+
+/* ---------- The connector ---------- */
+
+.connector {
+  position: relative;
+  align-self: stretch;
+}
+
+.connector::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  left: 10px;
+  height: 1px;
+  background: linear-gradient(90deg, rgb(95 224 176 / 0.2), var(--soft-mint));
+}
+
+.connector::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  width: 7px;
+  height: 7px;
+  border-top: 1.5px solid var(--soft-mint);
+  border-right: 1.5px solid var(--soft-mint);
+  rotate: 45deg;
+  translate: 0 -50%;
+}
+
+.connector i {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  left: 10px;
+  height: 3px;
+  overflow: hidden;
+  translate: 0 -50%;
+}
+
+.connector i::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 40%;
+  background: linear-gradient(90deg, transparent, #eafff6, transparent);
+  animation: run 1.8s ease-in-out infinite;
+}
+
+/* ---------- The brand kit ---------- */
+
+.kitHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.pause {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 11px;
+  border: 0;
+  border-radius: var(--radius-round);
+  background: none;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.12) inset;
+  color: rgb(244 241 234 / 0.6);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.pause:hover {
+  color: var(--paper);
+}
+
+.pause:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 3px;
+}
+
+/* The kit, in the prompt box's glass. */
+.kit {
+  position: relative;
+  padding: 18px 20px 18px;
+  border-radius: 18px;
+  background:
+    radial-gradient(80% 50% at 50% 0%, rgb(95 224 176 / 0.07), transparent 70%),
+    linear-gradient(180deg, #16181c, #101114);
+  box-shadow:
+    0 0 0 1px rgb(244 241 234 / 0.1),
+    0 40px 90px -40px rgb(0 0 0 / 0.95);
+}
+
+.kit::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 16%;
+  left: 16%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--soft-mint), transparent);
+}
+
+.kitTitle {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgb(244 241 234 / 0.08);
+}
+
+.kitTitle span {
+  color: rgb(244 241 234 / 0.5);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.kitTitle b {
+  font-size: 1.25rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.kitTitle em {
+  margin-left: auto;
+  padding: 2px 9px;
+  border-radius: var(--radius-round);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.16) inset;
+  color: rgb(244 241 234 / 0.4);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  font-style: normal;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition:
+    background-color 0.4s ease,
+    color 0.4s ease,
+    box-shadow 0.4s ease;
+}
+
+.stage[data-reached~="7"] .kitTitle em {
+  background: var(--soft-mint);
+  box-shadow: none;
+  color: var(--mint-ink);
+}
+
+.fields {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.field {
+  display: grid;
+  grid-template-columns: 24px 76px minmax(0, 1fr) 20px;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 0;
+  border-bottom: 1px solid rgb(244 241 234 / 0.06);
+  opacity: 0.28;
+  transition:
+    opacity 0.4s ease,
+    translate 0.5s var(--ease-land);
+}
+
+/* Each field fills as the scan finds it. */
+.stage[data-reached~="2"] [data-field="logo"],
+.stage[data-reached~="3"] [data-field="colours"],
+.stage[data-reached~="4"] [data-field="font"],
+.stage[data-reached~="5"] [data-field="tone"],
+.stage[data-reached~="6"] [data-field="voice"] {
+  opacity: 1;
+}
+
+.fieldIndex {
+  color: rgb(244 241 234 / 0.35);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+}
+
+.sample {
+  display: flex;
+  align-items: center;
+  height: 30px;
+}
+
+.sLogo {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 1.4rem;
+}
+
+/* A logo version and a banner, in the brand's colours. */
+.version {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  background: #1e2a4a;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.2) inset;
+}
+
+.version + .version {
+  width: 26px;
+  height: 10px;
+  border-radius: 2px;
+  background: #ff7a59;
+}
+
+.sColours {
+  display: flex;
+  gap: 3px;
+}
+
+.sColours i {
+  width: 12px;
+  height: 22px;
+  border-radius: 4px;
+  background: var(--c);
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.3) inset;
+}
+
+.stage[data-step="3"] .sColours i {
+  animation: pop 0.4s var(--ease-land) calc(var(--i) * 0.08s) backwards;
+}
+
+.sFont {
+  color: var(--paper);
+  font-family: var(--font-accent-stack);
+  font-size: 1.6rem;
+  font-style: italic;
+  line-height: 1;
+}
+
+.sTone {
+  color: rgb(244 241 234 / 0.7);
+  font-family: var(--font-accent-stack);
+  font-size: 1.5rem;
+  font-style: italic;
+}
+
+.sVoice {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  width: 70px;
+  height: 22px;
+}
+
+.sVoice i {
+  flex: 1;
+  height: calc(var(--h) * 100%);
+  border-radius: 1px;
+  background: var(--soft-mint);
+}
+
+.fieldBody {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.fieldLabel {
+  color: rgb(244 241 234 / 0.5);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.fieldValue {
+  overflow: hidden;
+  font-size: 0.9375rem;
+  font-weight: 560;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.check {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.25) inset;
+  color: transparent;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+.stage[data-reached~="2"] [data-field="logo"] .check,
+.stage[data-reached~="3"] [data-field="colours"] .check,
+.stage[data-reached~="4"] [data-field="font"] .check,
+.stage[data-reached~="5"] [data-field="tone"] .check,
+.stage[data-reached~="6"] [data-field="voice"] .check {
+  background: var(--soft-mint);
+  box-shadow: none;
+  color: var(--mint-ink);
+}
+
+.done {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding-top: 14px;
+  color: rgb(244 241 234 / 0.35);
+  font-size: 0.875rem;
+  transition: color 0.4s ease;
+}
+
+.done i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgb(244 241 234 / 0.25);
+  transition:
+    background-color 0.4s ease,
+    box-shadow 0.4s ease;
+}
+
+.stage[data-reached~="7"] .done {
+  color: var(--paper);
+}
+
+.stage[data-reached~="7"] .done i {
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+}
+
+/* ---------- Every new video ---------- */
+
+.every {
+  display: grid;
+  grid-template-columns: clamp(110px, 12vw, 180px) minmax(0, 1fr) minmax(0, 0.8fr);
+  align-items: center;
+  gap: 20px clamp(16px, 3vw, 48px);
+  padding: 24px 0;
+  border-block: 1px solid rgb(244 241 234 / 0.1);
+}
+
+.everyLabel {
+  color: rgb(244 241 234 / 0.6);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.videos {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  height: 150px;
+}
+
+.video {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 6px;
+  height: 100%;
+}
+
+.video em {
+  color: rgb(244 241 234 / 0.4);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  font-style: normal;
+}
+
+/* Generic until the kit is done; then on-brand: its colours, font and
+   logo, a moment apart. */
+.frame {
+  position: relative;
+  display: grid;
+  align-content: end;
+  aspect-ratio: var(--r);
+  height: 100%;
+  overflow: hidden;
+  padding: 10px;
+  border-radius: 10px;
+  background: #2a2c33;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.1) inset;
+  color: rgb(244 241 234 / 0.6);
+  container-type: size;
+  transition:
+    background-color 0.6s ease,
+    box-shadow 0.6s ease;
+}
+
+.frame b {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.05;
+  transition: color 0.6s ease;
+}
+
+.frame .bar {
+  width: 40%;
+  height: 3px;
+  margin-top: 6px;
+  border-radius: 2px;
+  background: rgb(244 241 234 / 0.25);
+  transition: background-color 0.6s ease;
+}
+
+.frame .mark {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 13px;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+
+.stage[data-reached~="7"] .frame {
+  background: var(--c);
+  box-shadow: 0 0 0 1.5px var(--soft-mint);
+  color: var(--light);
+}
+
+.stage[data-reached~="7"] .frame b {
+  font-family: var(--font-accent-stack);
+  font-size: 17px;
+  font-style: italic;
+  font-weight: 400;
+}
+
+.stage[data-reached~="7"] .frame .bar {
+  background: var(--accent);
+}
+
+.stage[data-reached~="7"] .frame .mark {
+  opacity: 1;
+}
+
+.stage[data-reached~="7"] .video:nth-child(2) .frame,
+.stage[data-reached~="7"] .video:nth-child(2) .frame * {
+  transition-delay: 0.15s;
+}
+
+.stage[data-reached~="7"] .video:nth-child(3) .frame,
+.stage[data-reached~="7"] .video:nth-child(3) .frame * {
+  transition-delay: 0.3s;
+}
+
+.suggested {
+  display: grid;
+  gap: 10px;
+}
+
+.suggested > p:first-child {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.suggested > p:first-child span {
+  color: rgb(244 241 234 / 0.45);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  font-weight: 400;
+}
+
+.suggested ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.suggested li {
+  padding: 4px 11px;
+  border-radius: var(--radius-round);
+  background: rgb(244 241 234 / 0.05);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.12) inset;
+  font-size: 0.8125rem;
+}
+
+.team {
+  color: rgb(244 241 234 / 0.5);
+  font-size: 0.8125rem;
+}
+
+.footnote {
+  margin-top: 16px;
+  color: rgb(244 241 234 / 0.38);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+@keyframes type {
+  to {
+    max-width: 12ch;
+  }
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes sweep {
+  to {
+    translate: 560% 0;
+  }
+}
+
+@keyframes run {
+  from {
+    translate: -100% 0;
+  }
+
+  to {
+    translate: 260% 0;
+  }
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    scale: 0.4;
+  }
+}
+
+/* ---------- Narrower screens ---------- */
+
+@media (max-width: 980px) {
+  .columns {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+  }
+
+  .connector {
+    display: none;
+  }
+
+  .every {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 860px) {
+  .head {
+    display: grid;
+    gap: 14px;
+  }
+
+  .lead {
+    text-align: left;
+  }
+
+  .plain,
+  .accent {
+    display: inline;
+  }
+
+  .title {
+    font-size: clamp(1.9rem, 1.2rem + 3vw, 2.75rem);
+  }
+}
+
+@media (max-width: 480px) {
+  .analyze {
+    font-size: 0;
+    gap: 0;
+    padding: 6px 8px;
+  }
+
+  .field {
+    grid-template-columns: 20px 60px minmax(0, 1fr) 20px;
+    gap: 10px;
+  }
+
+  .fieldValue {
+    white-space: normal;
+  }
+
+  .videos {
+    height: 120px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .urlText {
+    max-width: 12ch;
+  }
+
+  .stage .urlText,
+  .stage .scan,
+  .caret,
+  .reading i,
+  .connector i::before,
+  .stage .sColours i {
+    animation: none;
+  }
+
+  .caret {
+    display: none;
+  }
+
+  .field,
+  .check,
+  .frame,
+  .frame *,
+  .page [data-ring]::after,
+  .pick {
+    transition: none;
+  }
+}

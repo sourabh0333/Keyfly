@@ -16,6 +16,7 @@ export const footer = {
     {
       title: "Product",
       links: [
+        { label: "Overview", href: "/product" },
         { label: "How it works", href: "/#product" },
         { label: "Use cases", href: "/#use-cases" },
         { label: "Integrations", href: "/#tools" },

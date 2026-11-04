@@ -1,0 +1,899 @@
+/*
+ * The Product page's hero. Centred, oversized type; then the product
+ * itself (Anatomy): an illustrative KeyFly editor between two columns of
+ * callouts, one per stage of the page, each wired to the part of the
+ * editor it explains. The stage is tipped back and settles flat as the
+ * page scrolls (a view timeline, no fill once flat). Anatomy marks the
+ * stage in play with data-on on its callout, wire and part ([data-spot]).
+ * A bar of facts between hairlines closes the hero.
+ */
+.hero {
+  position: relative;
+  isolation: isolate;
+  padding: calc(var(--header-h) + clamp(44px, 7vh, 88px)) 0 clamp(72px, 8vw, 120px);
+  overflow-x: clip;
+  color: var(--paper);
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* The editor's light spills up behind it; dusk violet at the edges. */
+.glow {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(42% 34% at 50% 58%, rgb(95 224 176 / 0.16), transparent 72%),
+    radial-gradient(30% 30% at 12% 70%, rgb(107 84 140 / 0.16), transparent 72%),
+    radial-gradient(30% 30% at 88% 70%, rgb(107 84 140 / 0.12), transparent 72%),
+    radial-gradient(60% 30% at 50% 0%, rgb(95 224 176 / 0.06), transparent 70%);
+}
+
+.grain {
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+  opacity: 0.035;
+}
+
+.inner {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* ---------- Heading ---------- */
+
+.head {
+  display: grid;
+  justify-items: center;
+  max-width: 1000px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 14px 6px 10px;
+  border-radius: var(--radius-round);
+  background: rgb(244 241 234 / 0.04);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.09) inset;
+  color: rgb(244 241 234 / 0.72);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  animation: rise 0.9s var(--ease-land) 0.1s backwards;
+}
+
+.rec {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--soft-mint);
+  box-shadow: 0 0 10px var(--soft-mint);
+}
+
+.title {
+  margin-top: 26px;
+  font-size: clamp(2.9rem, 1.2rem + 4.8vw, 6.1rem);
+  font-weight: 560;
+  letter-spacing: -0.055em;
+  line-height: 0.95;
+  animation: rise 1s var(--ease-land) 0.25s backwards;
+}
+
+.plain,
+.accent {
+  display: block;
+}
+
+.accent {
+  padding-bottom: 0.08em;
+  background: linear-gradient(100deg, var(--mint-text-dark), #eafff6 50%, var(--soft-mint));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-family: var(--font-accent-stack);
+  font-size: 1.1em;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.lead {
+  max-width: 54ch;
+  margin-top: 24px;
+  color: rgb(244 241 234 / 0.64);
+  font-size: var(--text-lead);
+  line-height: 1.5;
+  animation: rise 1s var(--ease-land) 0.45s backwards;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 30px;
+  animation: rise 1s var(--ease-land) 0.6s backwards;
+}
+
+/* ---------- The anatomy ---------- */
+
+.anatomy {
+  display: grid;
+  margin-top: clamp(56px, 7vw, 100px);
+  perspective: 2200px;
+  animation: rise 1.2s var(--ease-land) 0.75s backwards;
+}
+
+.stage {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 3.8fr) minmax(0, 0.9fr);
+  column-gap: clamp(40px, 4.4vw, 72px);
+  transform-origin: 50% 0;
+}
+
+/* Tipped back, it settles flat as it scrolls up the screen. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .stage {
+      animation: settle linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 42%;
+    }
+  }
+}
+
+/* The callouts: three each side, at the top, middle and foot of the editor. */
+.side {
+  display: grid;
+  align-content: space-between;
+  gap: 20px;
+  padding: 4% 0;
+}
+
+.callout {
+  display: grid;
+  gap: 6px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgb(244 241 234 / 0.025);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.08) inset;
+  color: inherit;
+  text-decoration: none;
+  opacity: 0.62;
+  transition:
+    opacity 0.4s ease,
+    background-color 0.4s ease,
+    box-shadow 0.4s ease;
+}
+
+.sideLeft .callout {
+  text-align: right;
+}
+
+.callout[data-on] {
+  background: linear-gradient(to bottom, rgb(95 224 176 / 0.08), rgb(244 241 234 / 0.02));
+  box-shadow:
+    0 0 0 1.5px var(--soft-mint) inset,
+    0 18px 40px -24px rgb(95 224 176 / 0.6);
+  opacity: 1;
+}
+
+.callout:hover {
+  opacity: 1;
+}
+
+.callout:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 3px;
+}
+
+.calloutHead {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+.sideLeft .calloutHead {
+  justify-content: flex-end;
+}
+
+.calloutHead em {
+  color: rgb(244 241 234 / 0.38);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  font-style: normal;
+  font-weight: 400;
+  transition: color 0.35s ease;
+}
+
+.callout[data-on] .calloutHead em {
+  color: var(--soft-mint);
+}
+
+.calloutLine {
+  color: rgb(244 241 234 / 0.6);
+  font-size: 0.8125rem;
+  line-height: 1.45;
+}
+
+/* The wires: faint for every stage, drawn in mint for the one in play. */
+.wires {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.wires path {
+  fill: none;
+  stroke: rgb(244 241 234 / 0.1);
+  stroke-width: 1;
+}
+
+.wires circle {
+  fill: #0b0b0d;
+  stroke: rgb(244 241 234 / 0.3);
+  stroke-width: 1;
+}
+
+.wires g[data-on] path {
+  stroke: var(--soft-mint);
+  stroke-width: 1.5;
+  stroke-dasharray: 1;
+  animation: draw 0.7s var(--ease-land) both;
+}
+
+.wires g[data-on] circle {
+  fill: var(--soft-mint);
+  stroke: var(--soft-mint);
+}
+
+/* ---------- The editor (illustrative), sized in its own width ---------- */
+
+.window {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  overflow: hidden;
+  border-radius: 16px;
+  background: #111215;
+  box-shadow:
+    0 0 0 1px rgb(244 241 234 / 0.1),
+    0 1px 0 rgb(244 241 234 / 0.08) inset,
+    0 60px 120px -40px rgb(0 0 0 / 0.95),
+    0 0 140px -30px rgb(95 224 176 / 0.35);
+  /* Its parts are sized in cqw of the window (a container's own cqw
+     would refer to the page, so nothing here uses them). */
+  container-type: inline-size;
+}
+
+.chrome {
+  display: flex;
+  align-items: center;
+  gap: 1.4cqw;
+  height: 4.8cqw;
+  padding: 0 1.6cqw;
+  border-bottom: 1px solid rgb(244 241 234 / 0.07);
+  background: #17181c;
+  font-size: 1.3cqw;
+}
+
+.dots {
+  display: flex;
+  gap: 0.8cqw;
+}
+
+.dots i {
+  width: 1.1cqw;
+  height: 1.1cqw;
+  border-radius: 50%;
+  background: rgb(244 241 234 / 0.16);
+}
+
+.platforms {
+  padding: 0.4cqw 1.1cqw;
+  border-radius: var(--radius-round);
+  background: rgb(244 241 234 / 0.05);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.1) inset;
+  color: rgb(244 241 234 / 0.7);
+  font-family: var(--font-mono-stack);
+  font-size: 1.05cqw;
+  white-space: nowrap;
+}
+
+.file {
+  flex: 1;
+  color: rgb(244 241 234 / 0.88);
+  font-weight: 560;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.file span {
+  color: rgb(244 241 234 / 0.42);
+  font-weight: 450;
+}
+
+.export {
+  padding: 0.6cqw 1.8cqw;
+  border-radius: 0.8cqw;
+  background: var(--soft-mint);
+  color: var(--mint-ink);
+  font-weight: 650;
+}
+
+.body {
+  display: grid;
+  grid-template-columns: 19% minmax(0, 1fr) 27%;
+  gap: 1.4cqw;
+  height: 31cqw;
+  padding: 1.4cqw;
+}
+
+.panelLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.7cqw;
+  color: rgb(244 241 234 / 0.48);
+  font-family: var(--font-mono-stack);
+  font-size: 0.95cqw;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.panelLabel i {
+  width: 0.8cqw;
+  height: 0.8cqw;
+  border-radius: 50%;
+  background: var(--soft-mint);
+  box-shadow: 0 0 0.8cqw var(--soft-mint);
+}
+
+/* The brand kit. */
+.kit {
+  display: grid;
+  align-content: start;
+  gap: 1.2cqw;
+  padding: 1.3cqw;
+  border-radius: 1cqw;
+  background: rgb(244 241 234 / 0.03);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.08) inset;
+}
+
+.logo {
+  display: grid;
+  place-items: center;
+  width: 5cqw;
+  height: 5cqw;
+  border-radius: 1cqw;
+  background: linear-gradient(135deg, var(--soft-mint), var(--deep-mint));
+  color: var(--mint-ink);
+  font-size: 1cqw;
+  font-weight: 700;
+}
+
+.swatches {
+  display: flex;
+  gap: 0.6cqw;
+}
+
+.swatches i {
+  width: 2.1cqw;
+  height: 2.1cqw;
+  border-radius: 0.5cqw;
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.3) inset;
+}
+
+.swatches i:nth-child(1) {
+  background: var(--soft-mint);
+}
+
+.swatches i:nth-child(2) {
+  background: var(--deep-mint);
+}
+
+.swatches i:nth-child(3) {
+  background: var(--paper);
+}
+
+.swatches i:nth-child(4) {
+  background: #8a7bd8;
+}
+
+.swatches i:nth-child(5) {
+  background: #d9a06e;
+}
+
+.kitRow {
+  color: rgb(244 241 234 / 0.72);
+  font-size: 1.15cqw;
+}
+
+.kitRow b {
+  margin-right: 0.5cqw;
+  color: var(--paper);
+  font-family: var(--font-accent-stack);
+  font-size: 1.7cqw;
+  font-style: italic;
+  font-weight: 400;
+}
+
+/* The viewer, playing the launch preset's loop. */
+.viewer {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1cqw;
+  background: #050506;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.08) inset;
+}
+
+/* The AI director: its note, and the prompt box beneath. */
+.director {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 1.1cqw;
+}
+
+.note {
+  display: grid;
+  align-content: start;
+  gap: 1.1cqw;
+  padding: 1.3cqw;
+  border-radius: 1cqw;
+  background: rgb(244 241 234 / 0.03);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.08) inset;
+}
+
+.noteRow {
+  color: rgb(244 241 234 / 0.84);
+  font-size: 1.25cqw;
+}
+
+.noteRow em {
+  display: inline-block;
+  min-width: 5.4cqw;
+  color: rgb(244 241 234 / 0.42);
+  font-family: var(--font-mono-stack);
+  font-size: 0.95cqw;
+  font-style: normal;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ask {
+  display: flex;
+  align-items: center;
+  gap: 0.8cqw;
+  padding: 1cqw 1.1cqw 1cqw 1.3cqw;
+  border-radius: 1cqw;
+  background: rgb(244 241 234 / 0.05);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.12) inset;
+  color: rgb(244 241 234 / 0.85);
+  font-size: 1.2cqw;
+}
+
+.ask span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ask i {
+  flex: none;
+  width: 2.2cqw;
+  height: 2.2cqw;
+  margin-left: auto;
+  border-radius: 50%;
+  background: var(--soft-mint);
+}
+
+/* The timeline. */
+.timeline {
+  position: relative;
+  display: grid;
+  grid-template-columns: 11% minmax(0, 1fr);
+  align-items: center;
+  gap: 0.6cqw 1cqw;
+  padding: 1.3cqw 1.4cqw 1.6cqw;
+  border-top: 1px solid rgb(244 241 234 / 0.07);
+  background: #0e0f12;
+}
+
+.trackLabel {
+  overflow: hidden;
+  color: rgb(244 241 234 / 0.45);
+  font-family: var(--font-mono-stack);
+  font-size: 0.95cqw;
+  letter-spacing: 0.06em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.lane {
+  position: relative;
+  height: 2.5cqw;
+  border-radius: 0.5cqw;
+  background: rgb(244 241 234 / 0.03);
+}
+
+.boards {
+  display: flex;
+  gap: 0.3cqw;
+}
+
+.boards i {
+  flex: 1;
+  border-radius: 0.4cqw;
+  background: #4a4f5a;
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.4) inset;
+}
+
+.voice {
+  display: flex;
+  align-items: center;
+  gap: 0.22cqw;
+  padding: 0 0.6cqw;
+}
+
+.voice i {
+  flex: 1;
+  height: calc(var(--h) * 80%);
+  border-radius: 0.2cqw;
+  background: rgb(95 224 176 / 0.7);
+}
+
+/* Pauses, marked to be cut. */
+.cut {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 6%;
+  border-inline: 1px solid rgb(255 190 92 / 0.85);
+  background: repeating-linear-gradient(45deg, rgb(255 190 92 / 0.45) 0 2px, transparent 2px 5px);
+}
+
+.graphics i {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: 0.4cqw;
+  background: #8a7bd8;
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.35) inset;
+}
+
+.music {
+  background: repeating-linear-gradient(90deg, rgb(217 160 110 / 0.75) 0 0.22cqw, transparent 0.22cqw 0.62cqw) 0 50% / 100% 55% no-repeat;
+}
+
+/* The playhead: a rail over the lanes that slides by its own width. */
+.playhead {
+  position: absolute;
+  top: 0.8cqw;
+  right: 1.4cqw;
+  bottom: 1cqw;
+  left: calc(1.4cqw + 11% + 1cqw);
+  pointer-events: none;
+  animation: play 10s linear infinite;
+}
+
+.playhead::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -1px;
+  width: 2px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 1cqw var(--soft-mint);
+}
+
+/* Parts of the editor a stage points at: lit and pinged while in play. */
+.window [data-spot] {
+  position: relative;
+  transition: box-shadow 0.35s ease;
+}
+
+.window [data-spot][data-on] {
+  box-shadow:
+    0 0 0 1.5px var(--soft-mint) inset,
+    0 0 2.4cqw -0.4cqw rgb(95 224 176 / 0.7);
+}
+
+.export[data-on] {
+  box-shadow:
+    0 0 0 0.25cqw #17181c,
+    0 0 0 0.45cqw var(--soft-mint);
+}
+
+.window [data-spot][data-on]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: 0 0 0 1.5px var(--soft-mint);
+  animation: ping 1.8s ease-out infinite;
+  pointer-events: none;
+}
+
+/* Numbers on the parts, used where there are no wires. */
+.badge {
+  display: none;
+}
+
+.pause {
+  display: inline-flex;
+  align-items: center;
+  justify-self: end;
+  gap: 8px;
+  margin-top: 18px;
+  padding: 6px 12px;
+  border: 0;
+  border-radius: var(--radius-round);
+  background: none;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.12) inset;
+  color: rgb(244 241 234 / 0.6);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition:
+    color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.pause:hover {
+  color: var(--paper);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.28) inset;
+}
+
+.pause:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 3px;
+}
+
+[data-paused] .playhead,
+[data-paused] .window [data-spot]::after {
+  animation-play-state: paused;
+}
+
+/* ---------- Facts ---------- */
+
+.facts {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin: clamp(48px, 6vw, 80px) 0 0;
+  border-block: 1px solid rgb(244 241 234 / 0.1);
+}
+
+.fact {
+  min-width: 0;
+  padding: 18px 18px 20px;
+}
+
+.fact + .fact {
+  border-left: 1px solid rgb(244 241 234 / 0.08);
+}
+
+.fact dt {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 10px;
+  color: rgb(244 241 234 / 0.82);
+  font-size: 0.9375rem;
+}
+
+.fact b {
+  color: var(--paper);
+  font-size: clamp(1.9rem, 1.3rem + 1.4vw, 2.6rem);
+  font-weight: 560;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.fact dd {
+  margin: 8px 0 0;
+  color: rgb(244 241 234 / 0.42);
+  font-family: var(--font-mono-stack);
+  font-size: 0.65625rem;
+  line-height: 1.5;
+}
+
+.footnote {
+  margin-top: 14px;
+  color: rgb(244 241 234 / 0.38);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    translate: 0 10px;
+  }
+}
+
+@keyframes settle {
+  from {
+    transform: rotateX(22deg) scale(0.93);
+  }
+
+  to {
+    transform: none;
+  }
+}
+
+@keyframes draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes ping {
+  from {
+    opacity: 0.9;
+    scale: 1;
+  }
+
+  to {
+    opacity: 0;
+    scale: 1.12;
+  }
+}
+
+@keyframes play {
+  to {
+    translate: 100% 0;
+  }
+}
+
+/* ---------- Narrower screens ---------- */
+
+/* The callouts move under the editor, in order; the parts carry numbers. */
+@media (max-width: 1100px) {
+  .stage {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+
+  .side {
+    display: contents;
+  }
+
+  /* In the page's order (--o, set by Anatomy). */
+  .callout {
+    order: var(--o);
+  }
+
+  .window {
+    grid-column: 1 / -1;
+    order: -1;
+    margin-bottom: 18px;
+  }
+
+  .sideLeft .callout {
+    text-align: left;
+  }
+
+  .sideLeft .calloutHead {
+    justify-content: flex-start;
+  }
+
+  .badge {
+    position: absolute;
+    top: 50%;
+    right: 0.6cqw;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    min-width: max(16px, 2.8cqw);
+    height: max(16px, 2.8cqw);
+    padding: 0 3px;
+    border-radius: var(--radius-round);
+    background: #0b0b0d;
+    box-shadow: 0 0 0 1px rgb(244 241 234 / 0.35) inset;
+    color: rgb(244 241 234 / 0.85);
+    font-family: var(--font-mono-stack);
+    font-size: max(9px, 1.2cqw);
+    font-weight: 500;
+    translate: 0 -50%;
+  }
+
+  .kit .badge,
+  .note .badge {
+    top: 1cqw;
+    translate: 0 0;
+  }
+
+  [data-on] > .badge {
+    background: var(--soft-mint);
+    box-shadow: none;
+    color: var(--mint-ink);
+  }
+}
+
+@media (max-width: 860px) {
+  .facts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .fact {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 4px 16px;
+    padding: 14px 4px;
+  }
+
+  .fact + .fact {
+    border-top: 1px solid rgb(244 241 234 / 0.08);
+    border-left: 0;
+  }
+
+  .fact b {
+    font-size: 1.6rem;
+  }
+
+  .fact dd {
+    margin: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .stage {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .callout {
+    padding: 12px 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .eyebrow,
+  .title,
+  .lead,
+  .actions,
+  .anatomy,
+  .playhead,
+  .wires g[data-on] path,
+  .window [data-spot][data-on]::after {
+    animation: none;
+  }
+
+  .callout,
+  .window [data-spot] {
+    transition: none;
+  }
+
+  .callout {
+    opacity: 1;
+  }
+}

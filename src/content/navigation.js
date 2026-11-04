@@ -1,10 +1,10 @@
 import { siteConfig } from "@/config/site";
 
-// Site navigation. Labels and targets live only here. The anchors point at
-// homepage sections.
+// Site navigation. Labels and targets live only here. Product is its own
+// page; the other anchors point at homepage sections.
 
 export const primaryNav = [
-  { label: "Product", href: "/#product" },
+  { label: "Product", href: "/product" },
   { label: "Use cases", href: "/#use-cases" },
   // Your own AI agents, the ChatGPT and Claude apps, and export to other
   // editors ("Works with your tools").

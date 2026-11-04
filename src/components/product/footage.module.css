@@ -1,0 +1,705 @@
+/*
+ * Product page, "Footage": the heading as on the homepage's sections; one
+ * recording cleaned up in four passes (Cleanup sets data-done on .stage,
+ * "1 2 3 4" matched with ~=, so what each pass does stays): the picture
+ * and its track, the transcript, and the passes as a bar beneath; then
+ * where your footage goes, between hairlines.
+ */
+.section {
+  position: relative;
+  padding: var(--section-pad) 0;
+  color: var(--paper);
+}
+
+.inner {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* ---------- Heading (as on the homepage's sections) ---------- */
+
+.head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+  margin-bottom: clamp(32px, 4vw, 56px);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: rgb(244 241 234 / 0.62);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.eyebrowMark {
+  width: 18px;
+  height: 1px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+}
+
+.title {
+  margin-top: 16px;
+  font-size: clamp(2.1rem, 1.1rem + 2.2vw, 3.4rem);
+  font-weight: 560;
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+
+.plain,
+.accent {
+  display: block;
+}
+
+.accent {
+  padding-bottom: 0.06em;
+  background: linear-gradient(100deg, var(--mint-text-dark), #eafff6 50%, var(--soft-mint));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-family: var(--font-accent-stack);
+  font-size: 1.1em;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.lead {
+  max-width: 40ch;
+  color: rgb(244 241 234 / 0.62);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  text-align: right;
+}
+
+/* ---------- The stage: picture, transcript, passes ---------- */
+
+.stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(0, 1fr);
+  gap: 28px clamp(28px, 4vw, 56px);
+}
+
+/* The picture, with its file and length above and its track below. */
+.picture {
+  display: grid;
+  gap: 10px;
+}
+
+.fileBar {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.fileBar > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: rgb(244 241 234 / 0.7);
+  font-family: var(--font-mono-stack);
+  font-size: 0.75rem;
+}
+
+.fileBar > span i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #ff5a5a;
+  box-shadow: 0 0 8px #ff5a5a;
+}
+
+.fileBar b {
+  color: var(--paper);
+  font-family: var(--font-mono-stack);
+  font-size: 1.25rem;
+  font-weight: 500;
+}
+
+.fileBar b span {
+  display: inline-block;
+  animation: tick 0.45s var(--ease-land);
+}
+
+.stage[data-done~="2"] .fileBar b {
+  color: var(--mint-text-dark);
+}
+
+.frame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 16px;
+  background: #050506;
+  box-shadow:
+    0 0 0 1.5px var(--soft-mint),
+    0 0 50px -12px rgb(95 224 176 / 0.5),
+    0 40px 80px -30px rgb(0 0 0 / 0.9);
+}
+
+/* Pass 4: the shot zooms on the speaker. */
+.shot {
+  position: absolute;
+  inset: 0;
+  transform-origin: 62% 42%;
+  transition: scale 1s var(--ease-land);
+}
+
+.stage[data-done~="4"] .shot {
+  scale: 1.3;
+}
+
+.video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.zoomTag,
+.callout {
+  position: absolute;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  opacity: 0;
+  translate: 0 6px;
+  transition:
+    opacity 0.45s ease,
+    translate 0.5s var(--ease-land);
+}
+
+.zoomTag {
+  top: 12px;
+  left: 12px;
+  padding: 4px 10px;
+  border-radius: var(--radius-round);
+  background: rgb(11 11 13 / 0.72);
+  color: var(--mint-text-dark);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+}
+
+/* Pass 4: a callout lands beside the speaker. */
+.callout {
+  top: 30%;
+  left: 14%;
+  padding: 7px 13px;
+  border-radius: 12px;
+  background: rgb(244 241 234 / 0.94);
+  color: #141416;
+  font-size: 0.9375rem;
+  font-weight: 650;
+  letter-spacing: -0.01em;
+  box-shadow: 0 12px 30px -10px rgb(0 0 0 / 0.7);
+}
+
+.callout i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--deep-mint);
+}
+
+.stage[data-done~="4"] .zoomTag,
+.stage[data-done~="4"] .callout {
+  opacity: 1;
+  translate: 0 0;
+}
+
+.stage[data-done~="4"] .callout {
+  transition-delay: 0.35s;
+}
+
+/* Pass 3: captions, word by word. */
+.caption {
+  position: absolute;
+  right: 0;
+  bottom: 9%;
+  left: 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 0.3em;
+  color: #fff;
+  font-size: clamp(1rem, 0.7rem + 1vw, 1.5rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-shadow: 0 2px 14px rgb(0 0 0 / 0.75);
+}
+
+.caption span {
+  opacity: 0;
+  translate: 0 6px;
+  transition:
+    opacity 0.35s ease,
+    translate 0.4s var(--ease-land);
+}
+
+.stage[data-done~="3"] .caption span {
+  opacity: 1;
+  translate: 0 0;
+  transition-delay: calc(var(--i) * 0.09s);
+}
+
+.stage[data-done~="3"] .caption span:nth-child(4) {
+  color: var(--soft-mint);
+}
+
+/* The track: speech, and the pauses pass 1 closes. */
+.track {
+  display: flex;
+  align-items: stretch;
+  height: 40px;
+  padding: 6px;
+  border-radius: 10px;
+  background: rgb(244 241 234 / 0.03);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.07) inset;
+}
+
+.speech,
+.gap {
+  flex: 0 0 calc(var(--w) * 1%);
+  transition:
+    flex-basis 0.8s var(--ease-land),
+    opacity 0.5s ease;
+}
+
+.speech {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 0 2px;
+}
+
+.speech i {
+  flex: 1;
+  height: calc(var(--h) * 100%);
+  border-radius: 1px;
+  background: rgb(95 224 176 / 0.72);
+}
+
+.gap {
+  border-inline: 1px solid rgb(255 190 92 / 0.85);
+  background: repeating-linear-gradient(45deg, rgb(255 190 92 / 0.45) 0 2px, transparent 2px 5px);
+}
+
+.stage[data-done~="1"] .gap {
+  flex-basis: 0;
+  opacity: 0;
+}
+
+/* The transcript, in the prompt box's glass, as tall as the picture; its
+   log sits at the foot. */
+.transcript {
+  display: flex;
+  flex-direction: column;
+  padding: 18px 20px 20px;
+  border-radius: 16px;
+  background:
+    radial-gradient(80% 60% at 50% 0%, rgb(95 224 176 / 0.06), transparent 70%),
+    linear-gradient(180deg, #16181c, #101114);
+  box-shadow:
+    0 0 0 1px rgb(244 241 234 / 0.1),
+    0 30px 60px -30px rgb(0 0 0 / 0.9);
+}
+
+.transcriptHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+  color: rgb(244 241 234 / 0.5);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.pause {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 11px;
+  border: 0;
+  border-radius: var(--radius-round);
+  background: none;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.12) inset;
+  color: rgb(244 241 234 / 0.6);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.pause:hover {
+  color: var(--paper);
+}
+
+.pause:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 3px;
+}
+
+.words {
+  margin-bottom: 18px;
+  color: rgb(244 241 234 / 0.88);
+  font-size: clamp(1.0625rem, 0.9rem + 0.5vw, 1.3rem);
+  line-height: 1.75;
+  letter-spacing: -0.01em;
+}
+
+/* What each pass changed, a line at a time. */
+.log {
+  display: grid;
+  gap: 2px;
+  margin: auto 0 0;
+  padding: 16px 0 0;
+  border-top: 1px solid rgb(244 241 234 / 0.08);
+  list-style: none;
+}
+
+.log li {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 5px 0;
+  color: rgb(244 241 234 / 0.3);
+  font-family: var(--font-mono-stack);
+  font-size: 0.75rem;
+  transition: color 0.4s ease;
+}
+
+.log span {
+  color: rgb(244 241 234 / 0.25);
+  transition: color 0.4s ease;
+}
+
+.log li[data-done] {
+  color: rgb(244 241 234 / 0.85);
+}
+
+.log li[data-done] span {
+  color: var(--soft-mint);
+}
+
+/* Words to cut fold away when their pass runs. */
+.filler > span,
+.silence > span {
+  display: inline-block;
+  max-width: 9em;
+  overflow: hidden;
+  vertical-align: bottom;
+  white-space: pre;
+  transition:
+    max-width 0.7s var(--ease-land),
+    opacity 0.5s ease;
+}
+
+.filler > span {
+  color: rgb(255 190 92 / 0.95);
+  text-decoration: underline dotted rgb(255 190 92 / 0.6);
+  text-underline-offset: 0.25em;
+}
+
+.silence > span {
+  padding: 0 0.15em;
+  color: rgb(255 190 92 / 0.9);
+  font-family: var(--font-mono-stack);
+  font-size: 0.72em;
+}
+
+.stage[data-done~="1"] .silence > span,
+.stage[data-done~="2"] .filler > span {
+  max-width: 0;
+  opacity: 0;
+}
+
+/* The four passes, as a bar beneath both. */
+.passes {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  border-block: 1px solid rgb(244 241 234 / 0.1);
+  list-style: none;
+}
+
+.passes li + li {
+  border-left: 1px solid rgb(244 241 234 / 0.08);
+}
+
+.pass {
+  position: relative;
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr) auto;
+  grid-template-rows: auto auto;
+  align-items: center;
+  gap: 2px 10px;
+  width: 100%;
+  height: 100%;
+  padding: 16px 18px;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+/* The pass in play: a mint line along its foot. */
+.pass::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 2px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 10px var(--soft-mint);
+  scale: 0 1;
+  transform-origin: left;
+  transition: scale 0.5s var(--ease-land);
+}
+
+.pass[data-now]::after {
+  scale: 1 1;
+}
+
+.pass:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: -2px;
+}
+
+.passIndex {
+  grid-row: 1 / span 2;
+  color: rgb(244 241 234 / 0.35);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+}
+
+.pass[data-done] .passIndex {
+  color: var(--soft-mint);
+}
+
+.passName {
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+.passDetail {
+  grid-column: 2;
+  color: rgb(244 241 234 / 0.5);
+  font-size: 0.8125rem;
+}
+
+/* A ring that becomes a mint tick when the pass has run. */
+.tick {
+  display: grid;
+  grid-row: 1 / span 2;
+  grid-column: 3;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.25) inset;
+  color: transparent;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
+}
+
+.pass[data-done] .tick {
+  background: var(--soft-mint);
+  box-shadow: none;
+  color: var(--mint-ink);
+}
+
+/* ---------- Where your footage goes ---------- */
+
+.data {
+  display: grid;
+  grid-template-columns: clamp(110px, 12vw, 180px) minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px clamp(16px, 3vw, 48px);
+  margin-top: clamp(36px, 4.5vw, 56px);
+  padding: 22px 0;
+  border-block: 1px solid rgb(244 241 234 / 0.1);
+}
+
+.dataLabel {
+  color: rgb(244 241 234 / 0.6);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.dataList {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px 32px;
+  margin: 0;
+}
+
+.dataList dt {
+  color: var(--mint-text-dark);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.dataList dd {
+  margin: 6px 0 0;
+  color: rgb(244 241 234 / 0.75);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.download {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--mint-text-dark);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.download svg {
+  transition: translate 0.3s var(--ease-land);
+}
+
+.download:hover svg,
+.download:focus-visible svg {
+  translate: 0 2px;
+}
+
+.download:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+.footnote {
+  margin-top: 16px;
+  color: rgb(244 241 234 / 0.38);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+@keyframes tick {
+  from {
+    opacity: 0;
+    translate: 0 -6px;
+  }
+}
+
+/* ---------- Narrower screens ---------- */
+
+@media (max-width: 980px) {
+  .stage {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .passes {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .passes li:nth-child(3) {
+    border-left: 0;
+  }
+
+  .passes li:nth-child(n + 3) {
+    border-top: 1px solid rgb(244 241 234 / 0.08);
+  }
+
+  .data {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 860px) {
+  .head {
+    display: grid;
+    gap: 14px;
+  }
+
+  .lead {
+    text-align: left;
+  }
+
+  .plain,
+  .accent {
+    display: inline;
+  }
+
+  .title {
+    font-size: clamp(1.9rem, 1.2rem + 3vw, 2.75rem);
+  }
+}
+
+@media (max-width: 560px) {
+  .pass {
+    grid-template-columns: minmax(0, 1fr) auto;
+    padding: 14px 12px;
+  }
+
+  .passIndex {
+    display: none;
+  }
+
+  .passName,
+  .passDetail {
+    grid-column: 1;
+  }
+
+  .tick {
+    grid-column: 2;
+  }
+
+  .dataList {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .callout {
+    font-size: 0.75rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shot,
+  .zoomTag,
+  .callout,
+  .caption span,
+  .speech,
+  .gap,
+  .filler > span,
+  .silence > span,
+  .pass::after,
+  .tick {
+    transition: none;
+  }
+
+  .fileBar b span {
+    animation: none;
+  }
+}

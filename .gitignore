@@ -42,3 +42,8 @@ next-env.d.ts
 
 # local Claude Code permissions
 .claude/settings.local.json
+
+# Raw footage for scripts/keyfly-footage (working files; only the recorded
+# public/video/keyfly-footage.mp4 is used by the site)
+scripts/keyfly-footage/footage/*
+!scripts/keyfly-footage/footage/.gitkeep
