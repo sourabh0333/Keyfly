@@ -319,6 +319,10 @@
   width: var(--frame-h);
 }
 
+.section[data-format="4:5"] .frame {
+  width: calc(var(--frame-h) * 4 / 5);
+}
+
 .scene {
   position: absolute;
   inset: 0;
@@ -508,7 +512,8 @@
 
 .section[data-format="16:9"] .formats [data-format="16:9"],
 .section[data-format="9:16"] .formats [data-format="9:16"],
-.section[data-format="1:1"] .formats [data-format="1:1"] {
+.section[data-format="1:1"] .formats [data-format="1:1"],
+.section[data-format="4:5"] .formats [data-format="4:5"] {
   background: rgb(95 224 176 / 0.14);
   color: var(--soft-mint);
 }

@@ -571,6 +571,72 @@
 
 /* ---------- Smaller screens ---------- */
 
+/* ---------- Templates ---------- */
+
+.templates {
+  display: grid;
+  grid-template-columns: clamp(110px, 12vw, 180px) minmax(0, 1fr) auto auto;
+  align-items: baseline;
+  gap: 16px clamp(16px, 3vw, 40px);
+  margin-top: clamp(36px, 5vw, 56px);
+  padding: 26px 0;
+  border-block: 1px solid rgb(244 241 234 / 0.1);
+}
+
+.templatesLabel,
+.templatesMeta {
+  color: rgb(244 241 234 / 0.45);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.templatesMeta {
+  color: rgb(244 241 234 / 0.35);
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+
+.templatesText {
+  max-width: 62ch;
+  color: rgb(244 241 234 / 0.6);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.templatesText b {
+  color: var(--paper);
+  font-weight: 600;
+}
+
+.browse {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--mint-text-dark);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.browse svg {
+  transition: translate 0.3s var(--ease-land);
+}
+
+.browse:hover svg,
+.browse:focus-visible svg {
+  translate: 2px -2px;
+}
+
+.browse:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
 @media (max-width: 1080px) {
   .promptRow {
     grid-template-columns: minmax(0, 1fr);
@@ -585,6 +651,16 @@
 /* The wheel lies on its side under the viewer: its top half shows, with
    the notch at the top and the names standing upright. */
 @media (max-width: 860px) {
+  .templates {
+    grid-template-columns: minmax(0, 1fr) auto;
+    padding: 22px 0;
+  }
+
+  .templatesLabel,
+  .templatesText {
+    grid-column: 1 / -1;
+  }
+
   .head {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
@@ -694,6 +770,10 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .browse svg {
+    transition: none;
+  }
+
   .feed[data-on],
   .flash,
   .caption,

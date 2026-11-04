@@ -4,16 +4,24 @@ import { siteConfig } from "@/config/site";
 // team. Lines still marked PLACEHOLDER wait for the team; the page stays
 // noindex until they're settled.
 
+// The promise (2026-11-04): KeyFly makes the video from a sentence, and
+// unlike closed AI editors it lets you finish it your way: your own AI
+// agents, your own editing app, on Mac, Windows or the web.
 export const hero = {
-  eyebrow: "The AI video editor",
+  eyebrow: "The AI video editor, your way",
   // Each line is a list of words; `accent` words are set in the serif italic.
   title: [
     [{ text: "Describe" }, { text: "the" }, { text: "video." }],
-    [{ text: "KeyFly", accent: true }, { text: "makes", accent: true }, { text: "it.", accent: true }],
+    [{ text: "Take", accent: true }, { text: "it", accent: true }, { text: "anywhere.", accent: true }],
   ],
-  // The app's own promise ("Describe it in a sentence. KeyFly writes the
-  // storyboard, voice-over and motion graphics.").
-  lead: "Describe it in a sentence, or drop in your footage. KeyFly writes the storyboard, voice-over and motion graphics, then you shape the cut.",
+  lead: "KeyFly turns a sentence or your footage into an edited video, then lets you finish it your way.",
+  // The three things it doesn't lock you into, between the lead and the
+  // prompt box. Each points to where the page shows it.
+  proof: [
+    { label: "Mac · Windows · Web", href: "#tools" },
+    { label: "Your own Claude, Codex or Cursor", href: "#tools" },
+    { label: "Hands off to Final Cut, Resolve, Premiere", href: "#tools" },
+  ],
 };
 
 // The prompt box, as it appears in the KeyFly app's "New video" box (read
@@ -69,8 +77,8 @@ export const prompt = {
   // "or make it in …". These open the section that explains it until the
   // apps have their own install links (the KeyFly app shows none yet).
   elsewhere: [
-    { label: "ChatGPT", href: "#anywhere" },
-    { label: "Claude", href: "#anywhere" },
+    { label: "ChatGPT", href: "#tools" },
+    { label: "Claude", href: "#tools" },
   ],
 };
 
@@ -85,7 +93,7 @@ export const howItWorks = {
   steps: [
     { title: "Describe it", body: "Type the video you have in mind, or drop in your footage, and press Create. A sentence is enough to start." },
     { title: "KeyFly edits", body: "KeyFly's AI director writes the storyboard, voice-over and motion graphics, and lays them out on the timeline." },
-    { title: "Export anywhere", body: "Pick 16:9, 9:16, 1:1 or 4:5 and export in up to 4K, or hand the timeline to Final Cut, Resolve or Premiere." },
+    { title: "Share or hand off", body: "Send a review link for comments and approval, export in 16:9, 9:16, 1:1 or 4:5 up to 4K, or hand the timeline to Final Cut, Resolve or Premiere." },
   ],
   // What the illustrative editor shows.
   demo: {
@@ -99,7 +107,7 @@ export const howItWorks = {
       { title: "Built for speed", caption: "Everything in one place" },
       { title: "Try it today", caption: "Available now" },
     ],
-    formats: ["16:9", "9:16", "1:1"],
+    formats: ["16:9", "9:16", "1:1", "4:5"],
     note: "Illustrative interface",
   },
 };
@@ -114,7 +122,7 @@ export const howItWorks = {
 export const creates = {
   eyebrow: "What KeyFly makes",
   title: [{ text: "KeyFly makes the pieces." }, { text: "You keep the timeline.", accent: true }],
-  lead: "Describe a video and KeyFly writes the storyboard, records the voice-over and builds the motion graphics, each on its own track you can change.",
+  lead: "Describe a video and KeyFly writes the storyboard, records the voice-over, builds the motion graphics and lays in licensed music, each on its own track you can change.",
   note: "Illustrative film",
   tag: "Illustrative",
   video: { src: "/video/keyfly-film.mp4", poster: "/video/keyfly-film.webp", duration: 29.98 },
@@ -196,27 +204,43 @@ export const editWithWords = {
   ],
 };
 
-// "You make the calls": KeyFly shows every decision it made, why, and
-// lets you change it. The decisions and reasons are PLACEHOLDER
-// (illustrative) until the team confirms what KeyFly exposes.
+// "You make the calls": the AI director's note on the cut it built. From
+// the KeyFly editor (read 2026-11-04): after each build the AI director
+// replies with what it chose ("Hook: opens on 'Describe a video. Get a
+// video.'", "Voice: Eyal, calm, confident, premium (also fits: Bronwen,
+// Elaine, Quinn)", "Calm, modern, minimal electronic with a soft pulse
+// music bed"), what it assumed (the look), a self-check (3.4/5) and
+// "Next:" ideas, with Revert and Retry ("Cloud · Worked for 43s · 18
+// steps"). The other hook and music options are illustrative; the looks
+// are the app's motion styles.
 export const yourCall = {
   eyebrow: "You make the calls",
   title: [{ text: "KeyFly decides." }, { text: "You have the final say.", accent: true }],
-  lead: "No black box. Every call KeyFly makes is listed in the inspector with its reason, marked on the timeline, and one click from changing.",
-  file: "Launch Video",
-  inspector: "Inspector",
-  inspectorSub: "KeyFly's decisions",
-  why: "Why",
-  pickLabel: "KeyFly's pick",
-  changedLabel: "Changed",
-  reset: "Back to KeyFly's cut",
+  lead: "No black box. After every edit the AI director tells you what it chose and why, what else would fit and what it would try next. Change any call, or revert it in one click.",
   note: "Illustrative interface",
+  report: {
+    from: "AI director",
+    meta: "Cloud · worked for 43s · 18 steps",
+    prompt: "A 30-second launch film for our new app.",
+    built: "Built",
+    name: "Launch Video",
+  },
+  pickLabel: "KeyFly's pick",
+  changedLabel: "Your call",
+  assumedLabel: "Assumed",
+  // In the order the note lists them. Each option's index also picks what
+  // the preview shows (see DirectorNote).
   decisions: [
-    { id: "take", label: "Opening shot", reason: "Take 3 has the clearest delivery and the steadiest frame.", options: ["Take 1", "Take 2", "Take 3"], pick: 2 },
-    { id: "cuts", label: "Cut points", reason: "Cutting on the beat matches the music's 120 BPM.", options: ["On beat", "2 beats", "Free"], pick: 0 },
-    { id: "title", label: "Chapter title", reason: "Two seconds is long enough to read it once.", options: ["1 sec", "2 sec", "3 sec"], pick: 1 },
-    { id: "duck", label: "Music under voice", reason: "Twelve decibels down keeps every word clear.", options: ["Off", "−6 dB", "−12 dB"], pick: 2 },
+    { id: "hook", label: "Hook", why: "Opens on the whole idea in one line: “Describe a video. Get a video.”", options: ["Title line", "Product demo", "Quick montage"], pick: 0 },
+    { id: "voice", label: "Voice", why: "Calm, confident and premium, as you asked.", options: ["Eyal", "Bronwen", "Elaine", "Quinn"], pick: 0 },
+    { id: "music", label: "Music", why: "Calm, minimal electronic with a soft pulse, kept under every word.", options: ["Soft pulse", "Upbeat", "No music"], pick: 0 },
+    { id: "look", label: "Look", assumed: true, why: "Near-black with a mint accent, read from your prompt.", options: ["Midnight Tech", "Editorial Minimal", "Warm Lifestyle"], pick: 0 },
   ],
+  check: { label: "Self-check", score: 3.4, of: 5 },
+  next: { label: "Next", items: ["Open on the prompt typing", "Warmer voice in scene 3", "Try a 9:16 cut for Reels"] },
+  revert: "Revert",
+  retry: "Retry",
+  preview: { label: "The cut", updated: "Updated", voiceOver: "Voice-over", noMusic: "No music" },
 };
 
 // "One edit, every format": one cut in each shape. The four shapes are the
@@ -273,91 +297,35 @@ export const onBrand = {
   ],
 };
 
-// "Works where you work": one project across chat, browser and desktop.
-// The team confirmed on 2026-11-02 that KeyFly runs as an app inside
-// ChatGPT and Claude, and the project then opens in KeyFly. The desktop
-// app page confirms the sync ("everything syncs when you're back"). The
-// example edits are illustrative.
-export const anywhere = {
-  eyebrow: "Works where you work",
-  title: [{ text: "Start anywhere." }, { text: "Finish anywhere.", accent: true }],
-  lead: "Ask for a video in ChatGPT or Claude, pick it up in your browser, finish it in the desktop app. One project, wherever you open it.",
-  note: "Illustrative interface",
-  openIn: "Open it in",
-  history: "Project history",
-  project: { name: "Launch Video", meta: "0:30 · 16:9", synced: "Synced", label: "One project" },
-  surfaces: [
-    { id: "chat", name: "Chat", where: "ChatGPT · Claude", ask: "Make a 30-second launch video from my footage", reply: "Here's your first cut.", card: "Open in KeyFly", log: "Draft made in chat" },
-    { id: "browser", name: "Browser", where: "app.keyfly.si", action: "Captions added", log: "Captions added in the browser" },
-    { id: "desktop", name: "Desktop app", where: "macOS · Windows", action: "Exported · 1920 × 1080", log: "Exported from the desktop" },
-  ],
-};
-
-// "Start from a prompt": example prompts to try, grouped by goal. Each
-// uses only what KeyFly is confirmed to do (the presets, the formats,
-// captions, the brand kit); the preset prompts are the app's own. The two
-// extra examples match the app's templates ("Feature drop", a 15s 9:16
-// launch film; and its "Events and promos" category).
-export const prompts = {
-  eyebrow: "Prompt gallery",
-  title: [{ text: "Start from" }, { text: "a prompt.", accent: true }],
-  lead: "Not sure what to ask for? Pick a prompt, send it to the box at the top, and change any word you like.",
-  note: "Illustrative previews",
-  try: "Try it",
-  // The app's Templates page (read 2026-11-03): "Start from a proven
-  // structure; the AI director fills it with your product", 91 templates,
-  // Free and Premium. /templates opens the signed-in workspace's page.
-  templates: {
-    label: "Templates",
-    count: "91 templates",
-    line: "for launch films, UGC ads, podcast clips, logo reveals, screen recordings and more. Pick one and the AI director fills it with your product.",
-    meta: "Free and Premium",
-    cta: "Browse templates",
-    href: `${siteConfig.appUrl}/templates`,
-  },
-  groups: [
-    {
-      label: "Launch",
-      items: [
-        { text: presetPrompt("Launch Video"), preset: "Launch Video", kind: "launch", format: "16:9" },
-        { text: "A 15-second vertical teaser of our launch video, with captions and our brand kit.", preset: "Launch Video", kind: "launch", format: "9:16" },
-      ],
-    },
-    {
-      label: "Social",
-      items: [
-        { text: presetPrompt("UGC"), preset: "UGC", kind: "ugc", format: "9:16" },
-        { text: presetPrompt("Podcast"), preset: "Podcast", kind: "podcast", format: "9:16" },
-      ],
-    },
-    {
-      label: "Explain",
-      items: [
-        { text: presetPrompt("Explainer"), preset: "Explainer", kind: "explainer", format: "16:9" },
-        { text: presetPrompt("Product Demo"), preset: "Product Demo", kind: "demo", format: "16:9" },
-      ],
-    },
-    {
-      label: "Stories",
-      items: [
-        { text: presetPrompt("Montage"), preset: "Montage", kind: "montage", format: "16:9" },
-        { text: "A one-minute recap of our event from my footage, cut to the music, with our logo at the end.", preset: "Montage", kind: "montage", format: "16:9" },
-      ],
-    },
-  ],
-};
-
-// "Works with your tools": the AI that edits, and the editors the timeline
-// goes to. Read from the KeyFly app on 2026-11-03: the AI picker (Cloud, or
-// your own agents), Settings → Agents, the desktop app page, and the export
-// sheet's "Timeline for other editors" and "Package for editing". The ask
-// and reply in the middle are illustrative.
+// "Open by design" (2026-11-04; it merges "Works where you work" and "Works
+// with your tools"): where KeyFly runs, the AI that edits, and the editors
+// the timeline goes to. From the KeyFly app (read 2026-11-03): the desktop
+// builds (app.keyfly.si/download), the ChatGPT and Claude apps (confirmed
+// by the team on 2026-11-02; the project then opens in KeyFly and syncs:
+// "everything syncs when you're back"), the AI picker (Cloud, or your own
+// agents), Settings → Agents, and the export sheet's "Timeline for other
+// editors" and "Package for editing". The ask and reply in the middle are
+// illustrative.
 export const tools = {
-  eyebrow: "Works with your tools",
-  title: [{ text: "Bring your own AI." }, { text: "Take the timeline anywhere.", accent: true }],
-  lead: "Let KeyFly pick the model, or edit with the AI agents you already pay for. When it's ready, hand the timeline to your editor with every file it uses.",
+  eyebrow: "Open by design",
+  title: [{ text: "Your computer. Your AI." }, { text: "Your editor.", accent: true }],
+  lead: "KeyFly doesn't lock you in. Run it on Mac, Windows or the web, or start in ChatGPT and Claude. Edit with the AI you already pay for, then hand the timeline to the editor you already use.",
   note: "Illustrative interface",
+  on: {
+    index: "01",
+    kicker: "Run it on",
+    // `href` null: no install link yet (see prompt.elsewhere).
+    options: [
+      { id: "mac", name: "macOS", note: "Desktop app · Apple silicon and Intel", href: "#download" },
+      { id: "windows", name: "Windows", note: "Desktop app · Windows 10 and 11", href: "#download" },
+      { id: "web", name: "Web", note: "app.keyfly.si · nothing to install", href: siteConfig.appUrl },
+      { id: "chatgpt", name: "ChatGPT", note: "Start a video in the chat", href: null },
+      { id: "claude", name: "Claude", note: "Start a video in the chat", href: null },
+    ],
+    foot: "One project everywhere: start it in a chat, finish it on your desktop. Everything syncs when you're back online.",
+  },
   in: {
+    index: "02",
     kicker: "Bring your AI",
     options: [
       { id: "cloud", name: "KeyFly Cloud", note: "Picks the best model for each step", cost: "AI minutes" },
@@ -376,7 +344,8 @@ export const tools = {
     handOff: "Hand off as",
   },
   out: {
-    kicker: "Take it anywhere",
+    index: "03",
+    kicker: "Finish in your editor",
     options: [
       { id: "fcp", name: "Final Cut Pro", format: "FCPXML" },
       { id: "resolve", name: "DaVinci Resolve", format: "FCPXML · EDL · OTIO" },
@@ -412,13 +381,24 @@ export const audience = {
 
 export const useCases = {
   eyebrow: "Use cases",
-  title: [{ text: "Made for" }, { text: "every kind of video.", accent: true }],
+  title: [{ text: "Pick a preset." }, { text: "Make it yours.", accent: true }],
   lead: "Start from a preset or describe your own. Six of the videos people make most:",
   cta: "Try this prompt",
   dialLabel: "Preset",
   hint: { live: "Scroll or drag to turn", still: "Drag or click to turn" },
   promptLabel: "Prompt",
   note: "Illustrative previews",
+  // The app's Templates page (read 2026-11-03): "Start from a proven
+  // structure; the AI director fills it with your product", 91 templates,
+  // Free and Premium. /templates opens the signed-in workspace's page.
+  templates: {
+    label: "Templates",
+    count: "91 templates",
+    line: "for launch films, UGC ads, podcast clips, logo reveals, screen recordings and more. Pick one and the AI director fills it with your product.",
+    meta: "Free and Premium",
+    cta: "Browse templates",
+    href: `${siteConfig.appUrl}/templates`,
+  },
   // One line per preset, drawn from its prompt in the app.
   items: [
     { label: "Launch Video", kind: "launch", format: "16:9", body: "Title cards, quick cuts on the beat and a clear call to action at the end." },
@@ -499,13 +479,13 @@ export const faq = {
     {
       q: "Can I use KeyFly from ChatGPT or Claude?",
       a: "Yes. KeyFly runs as an app inside ChatGPT and Claude. Ask for a video in the chat, then open the project in KeyFly when you want to keep working on it.",
-      link: { label: "Works where you work", href: "#anywhere" },
+      link: { label: "Open by design", href: "#tools" },
     },
     {
       // The app's AI picker and Settings → Agents.
       q: "Can I use my own AI agents?",
       a: "Yes. Connect Claude Code, Codex, Cursor, Antigravity or any other ACP agent through the KeyFly desktop app, and it edits with your own plan, without using your AI minutes. Or let KeyFly Cloud pick the best model for each step.",
-      link: { label: "Works with your tools", href: "#tools" },
+      link: { label: "Open by design", href: "#tools" },
     },
     {
       // The app's AI director takes changes in chat ("What should we change?",
@@ -515,9 +495,32 @@ export const faq = {
       link: { label: "Edit with words", href: "#edit" },
     },
     {
+      // The plans' features in the pricing API: AI images and AI
+      // voice-overs (Starter), generated video and voice cloning (Creator
+      // and up); the editor's Audio panel makes music beds and sound
+      // effects, "Licensed for you".
+      q: "What can KeyFly's AI make?",
+      a: "The storyboard, voice-over and motion graphics for every video, plus AI images, music beds and sound effects (licensed for you). Higher plans add generated video and a clone of your own voice.",
+      link: { label: "What KeyFly makes", href: "#makes" },
+    },
+    {
       q: "Can KeyFly keep my videos on brand?",
       a: "Yes. A brand kit holds your logo, colours, font and voice, and KeyFly can fill it from your website. Every new video uses your default kit automatically.",
       link: { label: "On brand, every time", href: "#brand" },
+    },
+    {
+      // The editor's Share button: "Share for review. Anyone with the link
+      // can watch, comment at a moment, approve or ask for changes. They
+      // can't edit anything."
+      q: "How do I get feedback on a video?",
+      a: "Share it for review. Anyone with the link can watch it, comment at a moment, and approve it or ask for changes, without being able to edit anything.",
+      link: { label: "How it works", href: "#product" },
+    },
+    {
+      // The Team and Enterprise plans in the pricing API.
+      q: "Can my team use KeyFly together?",
+      a: "Yes. The Team plan shares brand kits and a library across your team, with roles and comments and one bill. Enterprise adds SSO and SCIM, a DPA and data residency.",
+      link: { label: "Pricing", href: "#pricing" },
     },
     {
       // The app's export sheet.
@@ -549,9 +552,10 @@ export const faq = {
       link: { label: "Pricing", href: "#pricing" },
     },
     {
-      // The app has a Help page; help@keyfly.si is its contact address.
+      // The app's Help page: its answers, "Take the tour", and "Contact us:
+      // We answer within one working day" (help@keyfly.si).
       q: "How do I get help?",
-      a: "Open Help in the KeyFly app for answers to common questions, or email help@keyfly.si and tell us what you need.",
+      a: "Open Help in the KeyFly app for answers and a tour of the editor, or email help@keyfly.si. The team answers within one working day.",
       link: { label: "Email help@keyfly.si", href: "mailto:help@keyfly.si" },
     },
   ],

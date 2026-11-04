@@ -160,15 +160,15 @@ export function PromptBox({ label, placeholder, action, accept, addMedia, format
   useEffect(() => () => clearInterval(typer.current), []);
 
   // Other sections can hand a preset (by label) or any prompt (by text) to
-  // the box ("Try this prompt", the prompt gallery): the page scrolls back
-  // up to it and the prompt types itself in.
+  // the box ("Try this prompt" in Use cases and Who it's for): the page
+  // scrolls back up to it and the prompt types itself in.
   const typeOutRef = useRef(null);
   useEffect(() => {
     typeOutRef.current = typeOut;
   });
   useEffect(() => {
     const onPrompt = (event) => {
-      // A preset by its label, or any prompt's text (the prompt gallery).
+      // A preset by its label, or any prompt's text (Who it's for).
       const text = event.detail?.text;
       const preset = text ? { label: null, prompt: text } : presets.find((p) => p.label === event.detail?.label);
       if (!preset) return;

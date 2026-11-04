@@ -1,16 +1,16 @@
 import { yourCall } from "@/content/home";
 import wipe from "@/components/scene/wipe.module.css";
 import { PauseOffscreen } from "@/components/pause-offscreen";
-import { Inspector } from "./inspector";
+import { DirectorNote } from "./director-note";
 import styles from "./your-call.module.css";
 
 /**
- * "You make the calls": the KeyFly editor with its inspector open, every
- * decision listed with its reason and a switch, and marked on the
- * timeline (see Inspector).
+ * "You make the calls": the AI director's note on the cut it built, every
+ * decision with its reason and the options that also fit, beside the cut
+ * itself (see DirectorNote).
  */
 export function YourCall() {
-  const { eyebrow, title, lead, note, ...timeline } = yourCall;
+  const { eyebrow, title, lead, note, ...director } = yourCall;
 
   return (
     <section id="control" className={styles.section} aria-labelledby="control-title" data-section="Your call">
@@ -34,7 +34,7 @@ export function YourCall() {
           <p className={styles.lead}>{lead}</p>
         </div>
 
-        <Inspector {...timeline} />
+        <DirectorNote {...director} />
 
         <p className={styles.footnote}>{note}</p>
       </div>

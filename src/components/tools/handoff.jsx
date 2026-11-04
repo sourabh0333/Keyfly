@@ -155,7 +155,7 @@ export function Handoff({ in: inSide, hub, out }) {
       {/* Left: the AI that edits. */}
       <div className={styles.column}>
         <p className={styles.kicker}>
-          <span>01</span> {inSide.kicker}
+          <span>{inSide.index}</span> {inSide.kicker}
         </p>
         <div className={styles.options} role="radiogroup" aria-label={inSide.kicker}>
           {inSide.options.map((o, i) => (
@@ -238,7 +238,7 @@ export function Handoff({ in: inSide, hub, out }) {
       {/* Right: the editor it goes to. */}
       <div className={styles.column}>
         <p className={styles.kicker}>
-          <span>02</span> {out.kicker}
+          <span>{out.index}</span> {out.kicker}
         </p>
         <div className={styles.options} role="radiogroup" aria-label={out.kicker}>
           {out.options.map((o, i) => (

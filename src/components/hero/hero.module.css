@@ -68,8 +68,45 @@
 }
 
 /* The prompt box: wide enough for the app's full toolbar. */
-.inner > :last-child {
+.promptWrap {
+  width: 100%;
   max-width: 760px;
+}
+
+/* What KeyFly doesn't lock you into: a quiet row above the box. */
+.proof {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 22px;
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+  animation: rise 1s var(--ease-land) 0.95s backwards;
+}
+
+.proof a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: rgb(244 241 234 / 0.62);
+  font-size: 0.8125rem;
+  text-decoration: none;
+  transition: color 0.25s ease;
+}
+
+.proof a:hover {
+  color: var(--paper);
+}
+
+.proof svg {
+  color: var(--soft-mint);
+}
+
+.proof a:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 4px;
+  border-radius: 4px;
 }
 
 .eyebrow {
@@ -209,6 +246,7 @@
 @media (prefers-reduced-motion: reduce) {
   .eyebrow,
   .lead,
+  .proof,
   .aurora,
   .rec::after {
     animation: none;

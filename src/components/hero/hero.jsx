@@ -7,8 +7,9 @@ import styles from "./hero.module.css";
 
 /**
  * The homepage hero: a headline, the KeyFly prompt box (as it appears in the
- * app) and, below it, an editing timeline that runs away to the horizon
- * with a mint playhead, so the first screen already reads as video editing.
+ * app) after a row of what KeyFly doesn't lock you into, and, below it, an
+ * editing timeline that runs away to the horizon with a mint playhead, so
+ * the first screen already reads as video editing.
  */
 export function Hero() {
   let word = 0;
@@ -46,7 +47,22 @@ export function Hero() {
 
         <p className={styles.lead}>{hero.lead}</p>
 
-        <PromptBox {...prompt} />
+        <ul className={styles.proof}>
+          {hero.proof.map((item) => (
+            <li key={item.label}>
+              <a href={item.href}>
+                <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true">
+                  <path d="M3.5 8.4 6.6 11.4 12.5 5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+
+        <div className={styles.promptWrap}>
+          <PromptBox {...prompt} />
+        </div>
       </div>
     </section>
   );

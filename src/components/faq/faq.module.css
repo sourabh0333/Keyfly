@@ -88,7 +88,7 @@
 .ask {
   display: grid;
   grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
-  align-items: stretch;
+  align-items: start;
   gap: clamp(32px, 5vw, 80px);
 }
 
@@ -189,11 +189,15 @@
 }
 
 /* The panel: the prompt box's glass, with a mint edge along its top. */
+/* The panel keeps its own height (enough for the longest answer, so it
+   barely changes between questions) and stays beside the list as it
+   scrolls, so the answer is always next to its question. */
 .panel {
-  position: relative;
+  position: sticky;
+  top: calc(var(--header-h) + 24px);
   display: grid;
   grid-template-rows: auto auto minmax(0, 1fr) auto;
-  min-height: clamp(320px, 34vw, 400px);
+  min-height: clamp(320px, 28vw, 370px);
   overflow: hidden;
   border-radius: 22px;
   background:
@@ -376,6 +380,8 @@
   }
 
   .panel {
+    position: relative;
+    top: auto;
     order: -1;
     min-height: 0;
   }

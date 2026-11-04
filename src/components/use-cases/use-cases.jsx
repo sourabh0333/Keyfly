@@ -6,10 +6,11 @@ import styles from "./use-cases.module.css";
 
 /**
  * "Use cases": the six presets from the prompt box on a jog wheel, with
- * the one at the notch playing beside it (see PresetDial).
+ * the one at the notch playing beside it (see PresetDial), then a row
+ * pointing to the app's templates.
  */
 export function UseCases() {
-  const { eyebrow, title, lead, note, ...dial } = useCases;
+  const { eyebrow, title, lead, note, templates, ...dial } = useCases;
 
   return (
     <section id="use-cases" className={styles.section} aria-labelledby="cases-title" data-section="Use cases">
@@ -36,6 +37,20 @@ export function UseCases() {
         <PresetDial {...dial} />
 
         <p className={styles.note}>{note}</p>
+
+        <div className={styles.templates}>
+          <p className={styles.templatesLabel}>{templates.label}</p>
+          <p className={styles.templatesText}>
+            <b>{templates.count}</b> {templates.line}
+          </p>
+          <span className={styles.templatesMeta}>{templates.meta}</span>
+          <a className={styles.browse} href={templates.href}>
+            {templates.cta}
+            <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true">
+              <path d="M4 12 12 4M5.5 4H12v6.5" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </a>
+        </div>
       </div>
     </section>
   );

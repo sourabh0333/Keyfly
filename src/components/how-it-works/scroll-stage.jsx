@@ -6,7 +6,7 @@ const clamp = (value) => Math.min(1, Math.max(0, value));
 
 // Assembly takes the first part of step 2; the playhead plays the rest.
 const ASSEMBLY = 0.35;
-const FORMATS = ["16:9", "9:16", "1:1"];
+const FORMATS = ["16:9", "9:16", "1:1", "4:5"];
 const LENGTH = 30; // seconds in the demo cut
 
 function timecode(seconds) {
@@ -66,7 +66,7 @@ export function ScrollStage({ className, id, labelledBy, label, prompt, children
       style.setProperty("--asm", clamp(s2 / ASSEMBLY).toFixed(4));
 
       write("step", step, (v) => (section.dataset.step = v));
-      write("format", FORMATS[Math.min(2, Math.floor(s3 * 3.4))], (v) => (section.dataset.format = v));
+      write("format", FORMATS[Math.min(FORMATS.length - 1, Math.floor(s3 * (FORMATS.length + 0.5)))], (v) => (section.dataset.format = v));
       write("ready", s3 >= 0.98, (v) => (v ? (section.dataset.ready = "") : delete section.dataset.ready));
       write("typed", Math.round(prompt.length * s1), (v) => typed && (typed.textContent = prompt.slice(0, v)));
       write("code", timecode(ph * LENGTH), (v) => code && (code.textContent = v));
