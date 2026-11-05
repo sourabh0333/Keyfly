@@ -128,14 +128,16 @@ The team's decision: **the website logo uses the brand kit's lockup shapes and c
 
 ## Header (rebuilt 2026-10-30)
 
-The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `SiteFooter`. Pages render a fragment or `<div>`, never their own `<main>`. Navigation labels and targets live only in `src/content/navigation.js`. The menu links to Product, Use cases, Pricing and Download.
+The root layout renders the skip link, `SiteHeader`, `<main id="main">` and `SiteFooter`. Pages render a fragment or `<div>`, never their own `<main>`. Navigation labels and targets live only in `src/content/navigation.js`. The menu links to Product, Use cases, Integrations and Pricing, with Download as a button (2026-11-05).
 
-- **`SiteHeader`** (`src/components/header/site-header.jsx`, a client component):
-  - Layout: the logo, centred links (Product, Use cases, Integrations → `#tools`, Pricing, Download), then "Sign in" (`app.keyfly.si/login`) and the mint "Start free" (`app.keyfly.si/signup?plan=free`, the Free plan's own sign-up link; updated 2026-11-03).
-  - At the top of the page it is an open bar. Once scrolled (`data-scrolled`), it gathers into a floating glass pill.
-  - It slides away while scrolling down past 240px (`data-hidden`) and comes back on the way up.
-  - A light slides under the hovered or focused link (`--lx`, `--lw`).
-  - At 1000px and below (860px before Integrations was added, 2026-11-03) the links fold into a menu panel behind a two-line button, which closes on Escape. Below 420px only the menu button remains.
+- **`SiteHeader`** (`src/components/header/site-header.jsx`, a client component; menus rebuilt 2026-11-05 after a review of 13 AI video editors' navbars, where the main competitor has only five plain links and no product or use-case menu):
+  - **Layout:** the logo; centred, plain links Product (`/product`), Use cases (`/#use-cases`), Integrations (`/#tools`) and Pricing (`/#pricing`); then "Sign in", a ghost **Download** button and the mint "Start free" (`app.keyfly.si/signup?plan=free`).
+  - **No dropdowns for now** (2026-11-05). Menus were built the same day (Product's six parts, Use cases by video and by role, Integrations by AI, editor and platform, each with a featured card) with deep links that opened each item. The team removed them: items that are only sections of a page, not pages of their own, read as pages that don't exist. The header still supports a menu (`menu` on a `primaryNav` item, rendered by `mega-menu.jsx`: hover after 140ms, chevron button, Escape, `inert` when closed; on phones an expand button), for when items get pages of their own. The deep-link code (`src/lib/pick.js`) is in git history.
+  - **`HashLanding`** (`src/components/hash-landing.jsx`, in the root layout; 2026-11-05): landing on an anchor from another page (e.g. Pricing from `/product`) used to stop thousands of pixels short, because the homepage keeps growing after the browser's jump (pinned tracks, TrimPins, media). It holds the anchor under the header (the `scroll-padding-top`) while the layout settles, for up to 2.5s, and lets go as soon as the visitor scrolls (wheel, touch, keys) or a section scrolls elsewhere (a pick turning the dial). Verified on a production build: Pricing, Cursor, Podcast and Footage from another page all land at 88px.
+  - **Download** names the visitor's system (`useSyncExternalStore`): "Download for Mac" / "for Windows" go straight to the real builds; other systems and the server's HTML get "Download" → `/#download`; phones get "Open in browser". In the bar it always reads just "Download" (the team found "Download for Windows" too long, 2026-11-05); its tooltip and accessible name still name the system.
+  - At the top of the page it is an open bar. Once scrolled (`data-scrolled`), or while a menu is open, it gathers into a floating glass pill (up to 1120px wide). It slides away while scrolling down past 240px (`data-hidden`), never while a menu is open, and comes back on the way up.
+  - A light slides under the hovered or focused top-level item (`--lx`, `--lw`, from `[data-top]`).
+  - **At 1000px and below** everything folds into a menu panel behind a two-line button (Escape closes it). Each item with a menu gets an expand button, and its groups open in place (two columns, one below 520px) with the featured card; Sign in, Start free and the Download button sit at its foot. The panel scrolls within the screen. Below 420px only the menu button remains in the bar.
 
 ## Footer (added 2026-10-31, rebuilt the same day)
 

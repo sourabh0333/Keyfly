@@ -145,3 +145,19 @@ Planned from `reports/AI video editor product pages.md`. Built one section at a 
 | 7 | AI minutes (`#minutes`) | ✅ built 2026-11-05 | An illustrative session whose meter counts only while KeyFly's AI works; each plan's minutes from the API |
 | 8 | Close | ✅ built 2026-11-05 | A reel of the six parts (links back) ending on "Your video"; Start free / Download |
 
+
+## Site pages: build order (agreed 2026-11-05)
+
+The site isn't live yet, so every page the navbar points at gets built now, one at a time, in the navbar's order, before anything else. Each page follows the Product page's process: research competitors' pages, a plan the team approves, then one section at a time, each checked at desktop and phone. Tick a page off here when it's done, so none is forgotten.
+
+| # | Page | Status | Navbar today | Facts we have / what's missing |
+|---|---|---|---|---|
+| 1 | Product `/product` | ✅ done 2026-11-05 | Product | All nine sections built |
+| 2 | Use cases `/use-cases` | ⏳ next | Use cases → `/#use-cases` | Six presets with their real prompts, four roles, 91 templates (11 categories). Missing: real videos made with KeyFly and customer stories, so previews stay illustrative |
+| 3 | Integrations `/integrations` | ⏳ | Integrations → `/#tools` | Agents (Settings → Agents), editors and timeline formats, Package for editing, platforms. Missing: ChatGPT and Claude app install links |
+| 4 | Pricing `/pricing` | ⏳ | Pricing → `/#pricing` | Everything from the pricing API (plans, prices, AI minutes, packs, Team, Enterprise) |
+| 5 | Download `/download` | ⏳ | Download button → the build, or `/#download` | Real builds (version 1.1.7), macOS 13+ (Apple silicon, Intel), Windows 10 and 11 |
+
+When a page is built, point its navbar and footer links at it (`src/content/navigation.js`, `src/content/footer.js`) and remove the homepage anchor from them.
+
+Not until the team sends content: Blog, Changelog, About, Customers, Enterprise, a public Templates gallery, and the full Terms and Privacy text.

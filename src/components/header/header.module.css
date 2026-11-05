@@ -34,7 +34,7 @@
 }
 
 .header[data-scrolled] .bar {
-  max-width: 1040px;
+  max-width: 1120px;
   padding-inline: 10px 8px;
   border-color: rgb(244 241 234 / 0.08);
   background-color: rgb(16 17 19 / 0.72);
@@ -53,7 +53,7 @@
   translate: 0 -9.3%;
 }
 
-/* Navigation with a light that slides to the hovered link. */
+/* Navigation with a light that slides to the hovered top-level item. */
 .nav {
   position: relative;
   display: flex;
@@ -96,8 +96,328 @@
 }
 
 .link:hover,
-.link:focus-visible {
+.link:focus-visible,
+.item[data-open] .link {
   color: var(--paper);
+}
+
+/* A top-level item with a menu: its link, a chevron button, and its panel
+   (positioned against the nav, so the item itself stays unpositioned). */
+.item {
+  display: flex;
+}
+
+.top {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9px;
+}
+
+.top .link {
+  padding-right: 4px;
+}
+
+.chevron {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 26px;
+  margin-right: 6px;
+  padding: 0;
+  border: 0;
+  border-radius: 7px;
+  background: none;
+  color: rgb(244 241 234 / 0.5);
+  cursor: pointer;
+  transition: color var(--dur-ui) ease;
+}
+
+.chevron svg {
+  transition: rotate 0.3s var(--ease-land);
+}
+
+.item:hover .chevron,
+.item[data-open] .chevron {
+  color: var(--paper);
+}
+
+.item[data-open] .chevron svg {
+  rotate: 180deg;
+}
+
+.chevron:focus-visible,
+.link:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 2px;
+}
+
+/* The menu panel: glass like the pill, dropping just below it. Its top
+   padding bridges the gap, so the pointer can travel down into it. */
+.panel {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  width: min(900px, calc(100vw - 2 * var(--gutter)));
+  padding-top: 16px;
+  opacity: 0;
+  visibility: hidden;
+  translate: -50% 8px;
+  transition:
+    opacity 0.22s ease,
+    translate 0.3s var(--ease-land),
+    visibility 0s linear 0.3s;
+}
+
+.item[data-open] .panel {
+  opacity: 1;
+  visibility: visible;
+  translate: -50% 0;
+  transition:
+    opacity 0.22s ease,
+    translate 0.3s var(--ease-land),
+    visibility 0s;
+}
+
+.panelInner {
+  position: relative;
+  padding: 16px;
+  border: 1px solid rgb(244 241 234 / 0.09);
+  border-radius: 20px;
+  background: #111215;
+  box-shadow:
+    0 1px 0 rgb(244 241 234 / 0.05) inset,
+    0 30px 70px -24px rgb(0 0 0 / 0.95);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  backdrop-filter: blur(18px) saturate(1.4);
+}
+
+/* A mint line along the panel's top, as on the site's glass panels. */
+.panelInner::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  right: 18%;
+  left: 18%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--soft-mint), transparent);
+}
+
+.menuBody {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 236px;
+  gap: 12px 18px;
+}
+
+.groups {
+  display: grid;
+  grid-auto-columns: minmax(0, 1fr);
+  grid-auto-flow: column;
+  gap: 18px;
+}
+
+.menuBody[data-groups="1"] .groups {
+  grid-auto-flow: row;
+}
+
+.group ul {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.group[data-columns="2"] ul {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 6px;
+}
+
+.groupTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 2px 10px 6px;
+  color: rgb(244 241 234 / 0.45);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.groupTag {
+  padding: 2px 7px;
+  border-radius: var(--radius-round);
+  background: rgb(95 224 176 / 0.12);
+  color: var(--mint-text-dark);
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+
+.menuItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 8px 10px;
+  border-radius: 11px;
+  color: var(--paper);
+  text-decoration: none;
+  transition: background-color var(--dur-ui) ease;
+}
+
+.menuItem:hover,
+.menuItem:focus-visible {
+  background: rgb(244 241 234 / 0.06);
+}
+
+.menuItem:focus-visible,
+.feature:focus-visible,
+.menuAll:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 1px;
+}
+
+.menuIcon {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  padding: 8px;
+  border-radius: 10px;
+  background: rgb(244 241 234 / 0.05);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.08) inset;
+  color: var(--soft-mint);
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: box-shadow var(--dur-ui) ease;
+}
+
+.menuItem:hover .menuIcon {
+  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.5) inset;
+}
+
+.menuItemText {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.menuItemText b {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* The Product menu's parts carry their number on the page. */
+.menuNum {
+  color: var(--soft-mint);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+}
+
+.menuItemText em {
+  color: rgb(244 241 234 / 0.55);
+  font-size: 0.8125rem;
+  font-style: normal;
+  line-height: 1.35;
+}
+
+/* The featured card: a mint-lit tile with one idea and its link. */
+.feature {
+  display: grid;
+  align-content: start;
+  align-self: start;
+  gap: 8px;
+  padding: 18px;
+  border-radius: 14px;
+  background:
+    radial-gradient(120% 80% at 100% 0%, rgb(95 224 176 / 0.18), transparent 60%),
+    rgb(244 241 234 / 0.03);
+  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.22) inset;
+  color: var(--paper);
+  text-decoration: none;
+  transition: box-shadow 0.25s ease;
+}
+
+.feature:hover {
+  box-shadow:
+    0 0 0 1px rgb(95 224 176 / 0.55) inset,
+    0 0 30px -10px rgb(95 224 176 / 0.5);
+}
+
+.featureEyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--mint-text-dark);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.featureEyebrow i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+}
+
+.featureTitle {
+  font-family: var(--font-accent-stack);
+  font-size: 1.6rem;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.05;
+}
+
+.featureLine {
+  color: rgb(244 241 234 / 0.62);
+  font-size: 0.8125rem;
+  line-height: 1.45;
+}
+
+.featureMeta {
+  justify-self: start;
+  padding: 2px 8px;
+  border-radius: var(--radius-round);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.16) inset;
+  color: rgb(244 241 234 / 0.66);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+}
+
+.featureCta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  color: var(--mint-text-dark);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.menuAll {
+  grid-column: 1 / -1;
+  justify-self: start;
+  margin: 0 10px;
+  padding-top: 2px;
+  color: rgb(244 241 234 / 0.6);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color var(--dur-ui) ease;
+}
+
+.menuAll:hover {
+  color: var(--mint-text-dark);
 }
 
 .actions {
@@ -123,6 +443,38 @@
 .signIn:hover {
   background: rgb(244 241 234 / 0.06);
   color: var(--paper);
+}
+
+/* Download: a ghost button that names the visitor's system. */
+.download {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 38px;
+  padding: 0 14px;
+  border-radius: 11px;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.16) inset;
+  color: var(--paper);
+  font-size: 0.875rem;
+  font-weight: 560;
+  letter-spacing: -0.005em;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background-color var(--dur-ui) ease,
+    box-shadow var(--dur-ui) ease;
+}
+
+.download:hover {
+  background: rgb(244 241 234 / 0.06);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.32) inset;
+}
+
+.download:focus-visible,
+.signIn:focus-visible,
+.cta:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 2px;
 }
 
 /* Primary action: soft mint, with a sheen that crosses on hover. */
@@ -226,11 +578,14 @@
 /* Small-screen menu panel, dropping out of the pill. */
 .menu {
   max-width: 1040px;
+  max-height: calc(100svh - 96px);
   margin: 8px auto 0;
   padding: 10px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   border: 1px solid rgb(244 241 234 / 0.08);
   border-radius: 18px;
-  background: rgb(16 17 19 / 0.92);
+  background: rgb(16 17 19 / 0.95);
   box-shadow: 0 24px 60px -20px rgb(0 0 0 / 0.9);
   pointer-events: auto;
   -webkit-backdrop-filter: blur(16px);
@@ -247,19 +602,30 @@
   display: grid;
 }
 
+.menuRow {
+  border-bottom: 1px solid rgb(244 241 234 / 0.07);
+  animation: rise 0.5s var(--ease-land) backwards;
+  animation-delay: calc(var(--i) * 60ms + 80ms);
+}
+
+.menuRowHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
 .menuLink {
   display: flex;
+  flex: 1;
   align-items: baseline;
   gap: 14px;
   padding: 14px 12px;
-  border-bottom: 1px solid rgb(244 241 234 / 0.07);
   color: var(--paper);
   font-size: 1.5rem;
   font-weight: 520;
   letter-spacing: -0.03em;
   text-decoration: none;
-  animation: rise 0.5s var(--ease-land) backwards;
-  animation-delay: calc(var(--i) * 60ms + 80ms);
 }
 
 .menuIndex {
@@ -267,6 +633,50 @@
   font-family: var(--font-mono-stack);
   font-size: 0.6875rem;
   letter-spacing: 0.04em;
+}
+
+/* The phone menu's expand button: a chevron that turns when open. */
+.menuExpand {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid rgb(244 241 234 / 0.1);
+  border-radius: 11px;
+  background: rgb(244 241 234 / 0.04);
+  color: var(--paper);
+  cursor: pointer;
+}
+
+.menuExpand svg {
+  transition: rotate 0.3s var(--ease-land);
+}
+
+.menuExpand[aria-expanded="true"] svg {
+  rotate: 180deg;
+}
+
+/* The phone menu's expanded contents. */
+.menuBodyCompact {
+  display: grid;
+  gap: 14px;
+  padding: 0 2px 16px;
+  animation: rise 0.4s var(--ease-land);
+}
+
+.menuBodyCompact .groups {
+  grid-auto-flow: row;
+  gap: 14px;
+}
+
+.menuBodyCompact .group ul {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 6px;
+}
+
+.menuBodyCompact .featureTitle {
+  font-size: 1.3rem;
 }
 
 .menuActions {
@@ -277,7 +687,8 @@
 }
 
 .menuActions .signIn,
-.menuActions .cta {
+.menuActions .cta,
+.menuActions .download {
   justify-content: center;
   height: 46px;
   display: inline-flex;
@@ -286,6 +697,10 @@
 
 .menuActions .signIn {
   border: 1px solid rgb(244 241 234 / 0.1);
+}
+
+.menuDownload {
+  grid-column: 1 / -1;
 }
 
 @keyframes drop {
@@ -309,7 +724,8 @@
   }
 
   .nav,
-  .actions > .signIn {
+  .actions > .signIn,
+  .actions > .download {
     display: none;
   }
 
@@ -322,6 +738,13 @@
   }
 }
 
+/* Phones: the menu's lists stack one to a row. */
+@media (max-width: 520px) {
+  .menuBodyCompact .group ul {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 @media (max-width: 420px) {
   .actions > .cta {
     display: none;
@@ -330,8 +753,16 @@
 
 @media (prefers-reduced-motion: reduce) {
   .menu,
-  .menuLink {
+  .menuRow,
+  .menuBodyCompact {
     animation: none;
+  }
+
+  .panel,
+  .item[data-open] .panel,
+  .chevron svg,
+  .menuExpand svg {
+    transition: none;
   }
 
   .cta::after {
