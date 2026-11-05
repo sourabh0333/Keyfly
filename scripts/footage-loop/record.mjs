@@ -1,15 +1,22 @@
-// Records the illustrative talking-head loop for the Product page's
-// "Footage" section (loop.js) to public/video/footage-loop.mp4, and its
-// first frame to public/video/footage-loop.webp (the poster).
+// Edits the talking-head loop for the Product page's "Footage" section
+// (reel.js) from a real Mixkit stock clip and saves
+// public/video/footage-loop.mp4 and its poster footage-loop.webp.
 //
-// Usage: node scripts/footage-loop/record.mjs
-//   Then open http://127.0.0.1:4418/?record in Chrome (or headless Chrome)
-//   for 8 s; the MP4 and the poster are saved when it ends.
-//   http://127.0.0.1:4418/?t=2.5 shows a single frame, for checking.
+// The source clip is not kept in the repository. Download it into any
+// folder as vlog-studio.mp4, then:
+//   node scripts/footage-loop/record.mjs <folder with the clip>
+//   open http://127.0.0.1:4418/?record in Chrome for about 9 s.
+// http://127.0.0.1:4418/?t=2.5 shows one frame; ?sheet shows a contact
+// sheet of the speaker's face, for finding where he pauses.
 //
-// The loop has no sound, and every motion repeats every 8 s, so it plays
-// seamlessly with `loop`. Its two pauses match the transcript's (see
-// `productFootage` in src/content/product.js).
+// Clip (its page says "Mixkit Stock Video Free License": commercial use,
+// no attribution; checked 2026-11-05):
+//   vlog-studio.mp4  mixkit.co/free-stock-video/youtuber-vlogging-in-his-studio-41272/
+//                    (assets.mixkit.co/videos/41272/41272-720.mp4)
+//
+// The loop has no sound and repeats every 8 s (its end cross-fades into
+// its start). The speaker's words aren't the transcript's, which stays
+// illustrative (see `productFootage` in src/content/product.js).
 import http from "node:http";
 import fs from "node:fs";
 import path from "node:path";
@@ -17,8 +24,14 @@ import { fileURLToPath } from "node:url";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(here, "../..");
+const clips = path.resolve(process.argv[2] || ".");
 const outs = { "/save": "public/video/footage-loop.mp4", "/poster": "public/video/footage-loop.webp" };
-const types = { ".html": "text/html", ".js": "text/javascript" };
+const types = { ".html": "text/html", ".js": "text/javascript", ".mp4": "video/mp4", ".woff2": "font/woff2" };
+
+function resolve(urlPath) {
+  if (urlPath.startsWith("/clips/")) return path.join(clips, path.basename(urlPath));
+  return path.join(here, path.basename(urlPath) || "index.html");
+}
 
 http
   .createServer((req, res) => {
@@ -32,9 +45,9 @@ http
       });
       return;
     }
-    const file = path.join(here, new URL(req.url, "http://x").pathname.slice(1) || "index.html");
-    if (!file.startsWith(here) || !fs.existsSync(file)) return res.writeHead(404).end();
+    const file = resolve(decodeURIComponent(new URL(req.url, "http://x").pathname));
+    if (!fs.existsSync(file)) return res.writeHead(404).end();
     res.writeHead(200, { "content-type": types[path.extname(file)] || "application/octet-stream" });
     fs.createReadStream(file).pipe(res);
   })
-  .listen(4418, "127.0.0.1", () => console.log("Loop at http://127.0.0.1:4418/ (add ?record to record)"));
+  .listen(4418, "127.0.0.1", () => console.log(`Footage loop at http://127.0.0.1:4418/ (clip from ${clips})`));

@@ -1,0 +1,784 @@
+/*
+ * Product page, "Deliver": the heading as on the homepage's sections; then
+ * Routes' stage: the finished cut, a mint line branching from it to three
+ * route cards (export a file, share for review, hand it on). The stage
+ * carries data-route (the route in turn); that route's branch lights, its
+ * card takes a mint edge and its picture plays. data-still (reduced
+ * motion) shows every picture finished.
+ */
+.section {
+  position: relative;
+  padding: var(--section-pad) 0;
+  color: var(--paper);
+}
+
+.inner {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* ---------- Heading (as on the homepage's sections) ---------- */
+
+.head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+  margin-bottom: clamp(32px, 4vw, 56px);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: rgb(244 241 234 / 0.62);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.eyebrowMark {
+  width: 18px;
+  height: 1px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+}
+
+.title {
+  margin-top: 16px;
+  font-size: clamp(2.1rem, 1.1rem + 2.2vw, 3.4rem);
+  font-weight: 560;
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+
+.plain,
+.accent {
+  display: block;
+}
+
+.accent {
+  padding-bottom: 0.06em;
+  background: linear-gradient(100deg, var(--mint-text-dark), #eafff6 50%, var(--soft-mint));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-family: var(--font-accent-stack);
+  font-size: 1.1em;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.lead {
+  max-width: 40ch;
+  color: rgb(244 241 234 / 0.62);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  text-align: right;
+}
+
+/* ---------- The stage ---------- */
+
+.stage {
+  --g: clamp(16px, 2vw, 24px); /* the gap between the routes */
+  display: grid;
+}
+
+/* The finished cut, centred above its branches. */
+.source {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px 16px;
+  justify-self: center;
+  padding: 12px 14px 12px 12px;
+  border-radius: 16px;
+  background:
+    radial-gradient(80% 80% at 50% 0%, rgb(95 224 176 / 0.08), transparent 70%),
+    linear-gradient(180deg, #16181c, #101114);
+  box-shadow:
+    0 0 0 1px rgb(95 224 176 / 0.4),
+    0 0 50px -16px rgb(95 224 176 / 0.45),
+    0 30px 60px -30px rgb(0 0 0 / 0.9);
+}
+
+.cut {
+  display: grid;
+  grid-template-columns: 2fr 1.4fr 1.8fr 1.2fr;
+  gap: 2px;
+  width: 96px;
+  height: 28px;
+  overflow: hidden;
+  border-radius: 6px;
+}
+
+.cut i {
+  background: linear-gradient(180deg, #343a64, #6b5466 60%, #b98a6a);
+}
+
+.cut i:nth-child(2) {
+  background: linear-gradient(180deg, #2c4a6a, #5fe0b0);
+}
+
+.cut i:nth-child(4) {
+  background: linear-gradient(180deg, #3a2b52, #8a7bd8);
+}
+
+.cutName {
+  display: grid;
+  gap: 1px;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+.cutName em {
+  color: rgb(244 241 234 / 0.45);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  font-style: normal;
+  font-weight: 400;
+}
+
+.ready {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--mint-text-dark);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ready i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+}
+
+.pause {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 11px;
+  border: 0;
+  border-radius: var(--radius-round);
+  background: none;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.12) inset;
+  color: rgb(244 241 234 / 0.6);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.pause:hover {
+  color: var(--paper);
+}
+
+.pause:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 3px;
+}
+
+/* The branches: a stem down from the cut, a rail across, a drop to each
+   route's centre. The route in turn lights its drop. */
+.branches {
+  position: relative;
+  height: 64px;
+}
+
+.branches i {
+  position: absolute;
+  display: block;
+}
+
+.stem {
+  top: 0;
+  left: 50%;
+  width: 1px;
+  height: 50%;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px rgb(95 224 176 / 0.6);
+}
+
+.rail {
+  top: 50%;
+  right: calc((100% - 2 * var(--g)) / 6);
+  left: calc((100% - 2 * var(--g)) / 6);
+  height: 1px;
+  background: rgb(244 241 234 / 0.18);
+}
+
+.drop {
+  top: 50%;
+  bottom: 0;
+  left: calc((100% - 2 * var(--g)) / 6 + var(--i) * ((100% - 2 * var(--g)) / 3 + var(--g)));
+  width: 1px;
+  background: rgb(244 241 234 / 0.18);
+}
+
+/* The lit drop: a mint line drawn down, with a point at its foot. */
+.drop::before,
+.drop::after {
+  content: "";
+  position: absolute;
+  left: 0;
+}
+
+.drop::before {
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px rgb(95 224 176 / 0.6);
+  scale: 1 0;
+  transform-origin: top;
+  transition: scale 0.45s var(--ease-land);
+}
+
+.drop::after {
+  bottom: -4px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--soft-mint);
+  box-shadow: 0 0 10px var(--soft-mint);
+  opacity: 0;
+  translate: -4px 0;
+  transition: opacity 0.3s ease 0.3s;
+}
+
+.drop[data-on]::before {
+  scale: 1 1;
+}
+
+.drop[data-on]::after {
+  opacity: 1;
+}
+
+/* ---------- The routes ---------- */
+
+.routes {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--g);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.route {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  padding: 20px 20px 22px;
+  border-radius: 18px;
+  background:
+    radial-gradient(80% 40% at 50% 0%, rgb(95 224 176 / 0.05), transparent 70%),
+    linear-gradient(180deg, #15171b, #101114);
+  box-shadow:
+    0 0 0 1px rgb(244 241 234 / 0.09),
+    0 30px 70px -40px rgb(0 0 0 / 0.95);
+  transition: box-shadow 0.45s ease;
+}
+
+.route[data-on] {
+  box-shadow:
+    0 0 0 1.5px var(--soft-mint),
+    0 0 50px -20px rgb(95 224 176 / 0.5),
+    0 30px 70px -40px rgb(0 0 0 / 0.95);
+}
+
+.kicker {
+  color: rgb(244 241 234 / 0.5);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.kicker span {
+  color: var(--soft-mint);
+}
+
+.routeTitle {
+  margin-top: -6px;
+  font-size: clamp(1.3rem, 1rem + 0.7vw, 1.6rem);
+  font-weight: 560;
+  letter-spacing: -0.03em;
+}
+
+/* The pictures: one height, so the three cards line up below them. */
+.pic {
+  position: relative;
+  display: grid;
+  align-content: center;
+  gap: 12px;
+  height: 140px;
+  padding: 14px;
+  border-radius: 12px;
+  background: #0d0e11;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.07) inset;
+}
+
+/* Export: a render that fills to "Ready". */
+.fileChip {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 0.875rem;
+  font-weight: 560;
+}
+
+.fileChip i {
+  width: 30px;
+  height: 20px;
+  border-radius: 4px;
+  background: linear-gradient(180deg, #343a64, #6b5466 60%, #b98a6a);
+}
+
+.fileChip em {
+  margin-left: auto;
+  color: rgb(244 241 234 / 0.45);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  font-style: normal;
+  font-weight: 400;
+}
+
+.bar {
+  height: 6px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: rgb(244 241 234 / 0.08);
+}
+
+.bar i {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--deep-mint), var(--soft-mint));
+  transform-origin: left;
+}
+
+.stage[data-route="file"] .bar i {
+  animation: fill 1.9s var(--ease-land) both;
+}
+
+.renderState {
+  display: grid;
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.renderState b {
+  grid-area: 1 / 1;
+  font-weight: 400;
+}
+
+.renderState b:first-child {
+  color: rgb(244 241 234 / 0.45);
+  opacity: 0;
+}
+
+.renderState b:last-child {
+  color: var(--mint-text-dark);
+}
+
+.stage[data-route="file"] .renderState b:first-child {
+  animation: show-then-hide 1.9s steps(1) both;
+}
+
+.stage[data-route="file"] .renderState b:last-child {
+  animation: hide-then-show 1.9s steps(1) both;
+}
+
+/* Review: a link, comments pinned at moments, and the verdict. */
+.linkChip {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--radius-round);
+  background: rgb(95 224 176 / 0.12);
+  color: var(--mint-text-dark);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.scrub {
+  position: relative;
+  height: 4px;
+  border-radius: 2px;
+  background: rgb(244 241 234 / 0.14);
+}
+
+.scrub i {
+  position: absolute;
+  top: 50%;
+  left: calc(var(--x) * 1%);
+  width: 12px;
+  height: 12px;
+  border-radius: 50% 50% 50% 2px;
+  background: #ffc145;
+  rotate: -45deg;
+  translate: -50% -50%;
+}
+
+.stage[data-route="review"] .scrub i {
+  animation: pop 0.4s var(--ease-land) calc(0.15s + var(--i) * 0.25s) backwards;
+}
+
+.comment {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: 10px;
+  background: rgb(244 241 234 / 0.06);
+  font-size: 0.8125rem;
+}
+
+.comment b {
+  color: #ffc145;
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  font-weight: 400;
+}
+
+.stage[data-route="review"] .comment {
+  animation: rise 0.45s var(--ease-land) 0.5s backwards;
+}
+
+.verdict {
+  display: flex;
+  gap: 6px;
+}
+
+.verdict i {
+  padding: 4px 10px;
+  border-radius: 8px;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.14) inset;
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 600;
+}
+
+.verdict i:first-child {
+  background: var(--soft-mint);
+  box-shadow: none;
+  color: var(--mint-ink);
+}
+
+/* The specs: hairline rows of label and value. */
+.specs {
+  display: grid;
+  margin: 0;
+}
+
+.specs div {
+  display: grid;
+  grid-template-columns: 96px minmax(0, 1fr);
+  gap: 10px;
+  align-items: baseline;
+  padding: 9px 0;
+  border-top: 1px solid rgb(244 241 234 / 0.07);
+}
+
+.specs dt {
+  color: rgb(244 241 234 / 0.45);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.specs dd {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin: 0;
+  color: rgb(244 241 234 / 0.82);
+  font-size: 0.875rem;
+  line-height: 1.45;
+}
+
+.chip {
+  padding: 1px 8px;
+  border-radius: var(--radius-round);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.16) inset;
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+}
+
+.body {
+  color: rgb(244 241 234 / 0.75);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+}
+
+.foot {
+  padding-top: 12px;
+  border-top: 1px solid rgb(244 241 234 / 0.07);
+  color: rgb(244 241 234 / 0.5);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+/* Hand-off: which timeline format each editor opens. */
+.grid {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.grid th,
+.grid td {
+  padding: 10px 6px;
+  border-top: 1px solid rgb(244 241 234 / 0.07);
+  text-align: center;
+}
+
+.grid thead th {
+  border-top: 0;
+  color: rgb(244 241 234 / 0.5);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+}
+
+.grid tbody th {
+  padding-left: 0;
+  color: rgb(244 241 234 / 0.85);
+  font-weight: 560;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.yes,
+.no {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.yes {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 10px rgb(95 224 176 / 0.5);
+  rotate: 45deg;
+}
+
+.no {
+  width: 10px;
+  height: 1px;
+  background: rgb(244 241 234 / 0.2);
+}
+
+.stage[data-route="handoff"] .grid tbody tr .yes {
+  animation: pop 0.4s var(--ease-land) calc(0.1s + var(--i) * 0.15s) backwards;
+}
+
+.package {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px solid rgb(244 241 234 / 0.07);
+}
+
+.zip {
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: rgb(95 224 176 / 0.12);
+  color: var(--mint-text-dark);
+  font-family: var(--font-mono-stack);
+  font-size: 0.75rem;
+}
+
+.package p {
+  display: grid;
+  gap: 3px;
+  color: rgb(244 241 234 / 0.6);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.package b {
+  color: var(--paper);
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+/* Reduced motion: every picture finished. */
+.stage[data-still] .renderState b:first-child {
+  opacity: 0;
+}
+
+/* ---------- What the plans decide ---------- */
+
+.planLine {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 20px;
+  margin-top: clamp(28px, 3.5vw, 44px);
+  padding-top: 20px;
+  border-top: 1px solid rgb(244 241 234 / 0.1);
+  color: rgb(244 241 234 / 0.6);
+  font-size: 0.9375rem;
+}
+
+.plansLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--mint-text-dark);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.plansLink:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+.footnote {
+  margin-left: auto;
+  color: rgb(244 241 234 / 0.38);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+@keyframes fill {
+  from {
+    scale: 0 1;
+  }
+}
+
+@keyframes show-then-hide {
+  0% {
+    opacity: 1;
+  }
+
+  90% {
+    opacity: 0;
+  }
+}
+
+@keyframes hide-then-show {
+  0% {
+    opacity: 0;
+  }
+
+  90% {
+    opacity: 1;
+  }
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    scale: 0.3;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    translate: 0 6px;
+  }
+}
+
+/* ---------- Narrower screens ---------- */
+
+/* The routes stack; the branch becomes one line down to them. */
+@media (max-width: 980px) {
+  .routes {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .branches {
+    height: 32px;
+  }
+
+  .branches .stem {
+    height: 100%;
+  }
+
+  .branches .rail,
+  .branches .drop {
+    display: none;
+  }
+}
+
+@media (max-width: 860px) {
+  .head {
+    display: grid;
+    gap: 14px;
+  }
+
+  .lead {
+    text-align: left;
+  }
+
+  .plain,
+  .accent {
+    display: inline;
+  }
+
+  .title {
+    font-size: clamp(1.9rem, 1.2rem + 3vw, 2.75rem);
+  }
+
+  .footnote {
+    width: 100%;
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 420px) {
+  .route {
+    padding: 16px 14px 18px;
+  }
+
+  .specs div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stage .bar i,
+  .stage .renderState b,
+  .stage .scrub i,
+  .stage .comment,
+  .stage .grid .yes {
+    animation: none;
+  }
+
+  .route,
+  .drop::before,
+  .drop::after {
+    transition: none;
+  }
+}

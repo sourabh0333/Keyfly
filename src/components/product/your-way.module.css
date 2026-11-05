@@ -1,0 +1,450 @@
+/*
+ * Product page, "Your way": the heading as on the homepage's sections; a
+ * ledger of five rows between hairlines (padlock and index, the name with
+ * its noun in the serif accent, the choices as chips, what it means), each
+ * unlocked once as it comes into view (Ledger sets data-open; rows wait
+ * locked only once data-armed); a counter tallies them; one way in below.
+ */
+.section {
+  position: relative;
+  padding: var(--section-pad) 0;
+  color: var(--paper);
+}
+
+.inner {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* ---------- Heading (as on the homepage's sections) ---------- */
+
+.head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+  margin-bottom: clamp(32px, 4vw, 56px);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: rgb(244 241 234 / 0.62);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.eyebrowMark {
+  width: 18px;
+  height: 1px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+}
+
+.title {
+  margin-top: 16px;
+  font-size: clamp(2.1rem, 1.1rem + 2.2vw, 3.4rem);
+  font-weight: 560;
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+
+.plain,
+.accent {
+  display: block;
+}
+
+.accent {
+  padding-bottom: 0.06em;
+  background: linear-gradient(100deg, var(--mint-text-dark), #eafff6 50%, var(--soft-mint));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-family: var(--font-accent-stack);
+  font-size: 1.1em;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.lead {
+  max-width: 40ch;
+  color: rgb(244 241 234 / 0.62);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  text-align: right;
+}
+
+/* ---------- The ledger ---------- */
+
+.ledger {
+  display: grid;
+}
+
+/* The tally: "4 of 5 unlocked", and a segment per row. */
+.counter {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-bottom: 14px;
+  color: rgb(244 241 234 / 0.5);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.counter b {
+  color: var(--mint-text-dark);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.meter {
+  display: flex;
+  gap: 3px;
+}
+
+.meter i {
+  width: 18px;
+  height: 4px;
+  border-radius: 2px;
+  background: rgb(244 241 234 / 0.14);
+  transition:
+    background-color 0.4s ease,
+    box-shadow 0.4s ease;
+}
+
+.meter i[data-open] {
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px rgb(95 224 176 / 0.5);
+}
+
+.rows {
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid rgb(244 241 234 / 0.12);
+  list-style: none;
+}
+
+.row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 56px minmax(170px, 0.75fr) minmax(0, 1.3fr) minmax(0, 1fr);
+  align-items: start;
+  gap: 16px clamp(20px, 3vw, 44px);
+  padding: clamp(24px, 3vw, 34px) 0;
+  border-bottom: 1px solid rgb(244 241 234 / 0.1);
+}
+
+/* A mint line along the row's foot as it unlocks. */
+.row::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 1px;
+  background: linear-gradient(90deg, var(--soft-mint), rgb(95 224 176 / 0));
+  scale: 0 1;
+  transform-origin: left;
+  transition: scale 0.9s var(--ease-land) 0.2s;
+}
+
+.row[data-open]::after {
+  scale: 1 1;
+}
+
+/* The padlock and the row's number. */
+.mark {
+  display: grid;
+  justify-items: start;
+  gap: 10px;
+  padding-top: 4px;
+}
+
+.mark em {
+  color: rgb(244 241 234 / 0.35);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  font-style: normal;
+}
+
+.lock {
+  color: rgb(244 241 234 / 0.3);
+  overflow: visible;
+  transition: color 0.4s ease;
+}
+
+.shackle {
+  transform-box: fill-box;
+  transform-origin: 90% 100%;
+  transition: translate 0.5s var(--ease-land), rotate 0.5s var(--ease-land);
+}
+
+.keyhole {
+  fill: #0b0b0d;
+}
+
+.row[data-open] .lock {
+  color: var(--soft-mint);
+  filter: drop-shadow(0 0 6px rgb(95 224 176 / 0.5));
+}
+
+.row[data-open] .shackle {
+  translate: 0 -2.5px;
+  rotate: 28deg;
+}
+
+/* The name: "Your" plain, the noun in the serif accent. */
+.name {
+  font-size: clamp(1.6rem, 1.1rem + 1.3vw, 2.3rem);
+  font-weight: 560;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.name span {
+  display: block;
+  margin-top: 2px;
+  color: var(--mint-text-dark);
+  font-family: var(--font-accent-stack);
+  font-size: 1.12em;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+/* The choices, as chips. */
+.choices {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: start;
+  gap: 7px;
+  margin: 0;
+  padding: 4px 0 0;
+  list-style: none;
+}
+
+.choices li {
+  padding: 6px 12px;
+  border-radius: var(--radius-round);
+  background: rgb(244 241 234 / 0.04);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.12) inset;
+  color: rgb(244 241 234 / 0.85);
+  font-size: 0.875rem;
+  transition:
+    opacity 0.45s ease,
+    translate 0.5s var(--ease-land);
+}
+
+.row[data-open] .choices li {
+  transition-delay: calc(0.12s + var(--i) * 0.06s);
+}
+
+.means {
+  display: grid;
+  gap: 10px;
+  padding-top: 4px;
+}
+
+.means p {
+  color: rgb(244 241 234 / 0.62);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+}
+
+.rowLink {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  gap: 6px;
+  color: var(--mint-text-dark);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.rowLink svg {
+  transition: translate 0.3s var(--ease-land);
+}
+
+.rowLink:hover svg,
+.rowLink:focus-visible svg {
+  translate: 3px 0;
+}
+
+.rowLink:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+/* Locked (only once hydrated, so the server's HTML shows them open): the
+   chips and the line wait, faint. */
+.ledger[data-armed] .row:not([data-open]) .choices li {
+  opacity: 0;
+  translate: 0 8px;
+}
+
+.ledger[data-armed] .row:not([data-open]) .means,
+.ledger[data-armed] .row:not([data-open]) .name {
+  opacity: 0.4;
+}
+
+.means,
+.name {
+  transition: opacity 0.5s ease;
+}
+
+/* The row under the pointer: a faint mint wash. */
+.row::before {
+  content: "";
+  position: absolute;
+  inset: 0 -16px;
+  z-index: -1;
+  border-radius: 14px;
+  background: linear-gradient(90deg, rgb(95 224 176 / 0.06), transparent 80%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.row[data-hover]::before {
+  opacity: 1;
+}
+
+/* ---------- The hover preview ---------- */
+
+.float {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 40;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.float[data-on] {
+  opacity: 1;
+}
+
+.floatScreen {
+  position: relative;
+  width: 300px;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 14px;
+  background: #0d0e11;
+  box-shadow:
+    0 0 0 1.5px var(--soft-mint),
+    0 0 44px -10px rgb(95 224 176 / 0.5),
+    0 30px 60px -20px rgb(0 0 0 / 0.9);
+  container-type: inline-size;
+  scale: 0.94;
+  transition: scale 0.35s var(--ease-land);
+}
+
+.float[data-on] .floatScreen {
+  scale: 1;
+}
+
+.floatTag {
+  position: absolute;
+  bottom: 8px;
+  left: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 9px;
+  border-radius: 99px;
+  background: rgb(11 11 13 / 0.78);
+  color: var(--paper);
+  font-size: 0.6875rem;
+  font-weight: 600;
+}
+
+.floatTag em {
+  color: rgb(244 241 234 / 0.45);
+  font-family: var(--font-mono-stack);
+  font-size: 0.5625rem;
+  font-style: normal;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* One way in. */
+.cta {
+  display: flex;
+  justify-content: center;
+  margin-top: clamp(32px, 4vw, 48px);
+}
+
+/* ---------- Narrower screens ---------- */
+
+@media (max-width: 1100px) {
+  .row {
+    grid-template-columns: 48px minmax(0, 1fr) minmax(0, 1fr);
+  }
+
+  .means {
+    grid-column: 2 / -1;
+  }
+}
+
+@media (max-width: 860px) {
+  .head {
+    display: grid;
+    gap: 14px;
+  }
+
+  .lead {
+    text-align: left;
+  }
+
+  .plain,
+  .accent {
+    display: inline;
+  }
+
+  .title {
+    font-size: clamp(1.9rem, 1.2rem + 3vw, 2.75rem);
+  }
+
+  .counter {
+    justify-content: flex-start;
+  }
+
+  .row {
+    grid-template-columns: 40px minmax(0, 1fr);
+  }
+
+  .choices,
+  .means {
+    grid-column: 2;
+  }
+
+  .name span {
+    display: inline;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .float,
+  .floatScreen,
+  .row::before,
+  .row::after,
+  .lock,
+  .shackle,
+  .choices li,
+  .means,
+  .name,
+  .meter i {
+    transition: none;
+  }
+}

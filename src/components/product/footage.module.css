@@ -149,7 +149,7 @@
 .shot {
   position: absolute;
   inset: 0;
-  transform-origin: 62% 42%;
+  transform-origin: 46% 36%; /* the speaker's face in the recording */
   transition: scale 1s var(--ease-land);
 }
 
@@ -189,10 +189,11 @@
   letter-spacing: 0.06em;
 }
 
-/* Pass 4: a callout lands beside the speaker. */
+/* Pass 4: a callout lands beside the speaker (over the blinds, clear of
+   his face). */
 .callout {
-  top: 30%;
-  left: 14%;
+  top: 28%;
+  right: 7%;
   padding: 7px 13px;
   border-radius: 12px;
   background: rgb(244 241 234 / 0.94);

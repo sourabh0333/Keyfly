@@ -1,0 +1,714 @@
+/*
+ * The looping clips in Your way's hover preview, one per row, each 8 s,
+ * sized in cqw of the box (its parent is the size container). Transform
+ * and opacity only. The float pauses them while hidden ([data-paused]).
+ */
+.clip {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(70% 60% at 50% 0%, rgb(95 224 176 / 0.1), transparent 70%),
+    linear-gradient(180deg, #15171b, #0d0e11);
+  color: var(--paper);
+  font-size: 3.6cqw;
+}
+
+.clip > div {
+  position: absolute;
+  inset: 0;
+}
+
+:global([data-paused]) .clip *,
+:global([data-paused]) .clip *::before,
+:global([data-paused]) .clip *::after {
+  animation-play-state: paused;
+}
+
+/* ---------- 01 Your platform: one project hopping between four places ---------- */
+
+.platform {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  align-content: center;
+  gap: 3cqw;
+  padding: 0 6cqw 6cqw;
+}
+
+.place {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 26cqw;
+  overflow: hidden;
+  border-radius: 2cqw;
+  background: #1a1c21;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.12);
+  animation: place 8s calc(var(--i) * 2s) infinite;
+}
+
+.placeBar {
+  display: flex;
+  gap: 0.8cqw;
+  padding: 1.4cqw;
+  background: #22252b;
+}
+
+.placeBar i {
+  width: 1.4cqw;
+  height: 1.4cqw;
+  border-radius: 50%;
+  background: rgb(244 241 234 / 0.25);
+}
+
+/* Windows: square controls on the right; Web: an address bar; Chat: a bubble. */
+.place[data-kind="1"] .placeBar {
+  justify-content: flex-end;
+}
+
+.place[data-kind="1"] .placeBar i {
+  border-radius: 0.2cqw;
+}
+
+.place[data-kind="2"] .placeBar i:nth-child(3) {
+  flex: 1;
+  border-radius: 1cqw;
+}
+
+.place[data-kind="3"] .placeBody {
+  margin: 2cqw;
+  border-radius: 1.6cqw 1.6cqw 1.6cqw 0.3cqw;
+  background: rgb(244 241 234 / 0.1);
+}
+
+.place em {
+  position: absolute;
+  right: 0;
+  bottom: -5.5cqw;
+  left: 0;
+  font-size: 2.8cqw;
+  font-style: normal;
+  text-align: center;
+  color: rgb(244 241 234 / 0.6);
+}
+
+.platform .place {
+  overflow: visible;
+}
+
+.platform .placeBar,
+.platform .placeBody {
+  overflow: hidden;
+}
+
+.placeBar {
+  border-radius: 2cqw 2cqw 0 0;
+}
+
+/* The project chip, hopping from place to place. */
+.project {
+  position: absolute;
+  top: 46%;
+  left: 6cqw;
+  display: inline-flex;
+  align-items: center;
+  gap: 1cqw;
+  width: calc((100cqw - 21cqw) / 4);
+  justify-content: center;
+  padding: 1cqw 0;
+  border-radius: 99px;
+  background: var(--soft-mint);
+  color: var(--mint-ink);
+  font-size: 2.6cqw;
+  font-weight: 700;
+  white-space: nowrap;
+  animation: hop 8s var(--ease-land) infinite;
+}
+
+.project i {
+  width: 1.4cqw;
+  height: 1.4cqw;
+  border-radius: 50%;
+  background: var(--mint-ink);
+}
+
+.synced {
+  position: absolute;
+  top: 5cqw;
+  right: 6cqw;
+  color: var(--mint-text-dark);
+  font-family: var(--font-mono-stack);
+  font-size: 2.6cqw;
+  animation: blink 2s steps(1) infinite;
+}
+
+@keyframes place {
+  0%,
+  22% {
+    box-shadow:
+      0 0 0 1.5px var(--soft-mint),
+      0 0 4cqw rgb(95 224 176 / 0.35);
+  }
+
+  25%,
+  100% {
+    box-shadow: 0 0 0 1px rgb(244 241 234 / 0.12);
+  }
+}
+
+@keyframes hop {
+  0%,
+  20% {
+    translate: 0 0;
+  }
+
+  25%,
+  45% {
+    translate: calc((100cqw - 21cqw) / 4 + 3cqw) 0;
+  }
+
+  50%,
+  70% {
+    translate: calc(2 * ((100cqw - 21cqw) / 4 + 3cqw)) 0;
+  }
+
+  75%,
+  95% {
+    translate: calc(3 * ((100cqw - 21cqw) / 4 + 3cqw)) 0;
+  }
+
+  100% {
+    translate: 0 0;
+  }
+}
+
+/* ---------- 02 Your AI: the picker moving from Cloud to your agents ---------- */
+
+.ai {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  align-items: center;
+  gap: 5cqw;
+  padding: 0 7cqw;
+}
+
+.agents {
+  position: relative;
+  margin: 0;
+  padding: 1.5cqw;
+  border-radius: 2.4cqw;
+  background: #1a1c21;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.12);
+  list-style: none;
+}
+
+.agents li {
+  position: relative;
+  z-index: 1;
+  height: 8cqw;
+  padding: 0 2.4cqw;
+  font-size: 3.4cqw;
+  font-weight: 560;
+  line-height: 8cqw;
+}
+
+/* The highlight, stepping down the list. */
+.pick {
+  position: absolute;
+  top: 1.5cqw;
+  right: 1.5cqw;
+  left: 1.5cqw;
+  height: 8cqw;
+  border-radius: 1.6cqw;
+  background: rgb(95 224 176 / 0.16);
+  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.6) inset;
+  animation: pick 8s var(--ease-land) infinite;
+}
+
+.cost {
+  display: grid;
+  font-size: 3.6cqw;
+  font-weight: 650;
+}
+
+.cost b {
+  grid-area: 1 / 1;
+  justify-self: start;
+  padding: 1.6cqw 3cqw;
+  border-radius: 99px;
+  font-weight: 650;
+}
+
+.cost b:first-child {
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.3) inset;
+  color: rgb(244 241 234 / 0.8);
+  animation: costCloud 8s infinite;
+}
+
+.cost b:last-child {
+  background: var(--soft-mint);
+  color: var(--mint-ink);
+  animation: costOwn 8s infinite;
+}
+
+@keyframes pick {
+  0%,
+  22% {
+    translate: 0 0;
+  }
+
+  25%,
+  47% {
+    translate: 0 8cqw;
+  }
+
+  50%,
+  72% {
+    translate: 0 16cqw;
+  }
+
+  75%,
+  97% {
+    translate: 0 24cqw;
+  }
+
+  100% {
+    translate: 0 0;
+  }
+}
+
+@keyframes costCloud {
+  0%,
+  23% {
+    opacity: 1;
+  }
+
+  25%,
+  98% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes costOwn {
+  0%,
+  23% {
+    opacity: 0;
+    scale: 0.9;
+  }
+
+  25%,
+  98% {
+    opacity: 1;
+    scale: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+/* ---------- 03 Your projects: out as a file, then as a timeline ---------- */
+
+.projects {
+  display: grid;
+  align-content: center;
+  gap: 3.4cqw;
+  padding: 0 8cqw;
+}
+
+.strip {
+  display: grid;
+  grid-template-columns: 2fr 1.4fr 1.8fr 1.2fr;
+  gap: 0.8cqw;
+  height: 9cqw;
+  overflow: hidden;
+  border-radius: 1.6cqw;
+}
+
+.strip i {
+  background: linear-gradient(180deg, #343a64, #6b5466 60%, #b98a6a);
+}
+
+.strip i:nth-child(2) {
+  background: linear-gradient(180deg, #2c4a6a, #5fe0b0);
+}
+
+.strip i:nth-child(4) {
+  background: linear-gradient(180deg, #3a2b52, #8a7bd8);
+}
+
+.out {
+  display: grid;
+  gap: 1.4cqw;
+  padding: 2.2cqw 3cqw;
+  border-radius: 2cqw;
+  background: #1a1c21;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.12);
+  font-size: 3.2cqw;
+}
+
+.out em {
+  color: rgb(244 241 234 / 0.55);
+  font-size: 2.6cqw;
+  font-style: normal;
+}
+
+.bar {
+  height: 1.2cqw;
+  overflow: hidden;
+  border-radius: 1cqw;
+  background: rgb(244 241 234 / 0.1);
+}
+
+.bar i {
+  display: block;
+  height: 100%;
+  background: var(--soft-mint);
+  transform-origin: left;
+  animation: render 8s var(--ease-land) infinite;
+}
+
+.outFile {
+  animation: outFile 8s infinite;
+}
+
+.outTimeline {
+  box-shadow: 0 0 0 1.5px var(--soft-mint);
+  animation: outTimeline 8s var(--ease-land) infinite;
+}
+
+@keyframes render {
+  0% {
+    scale: 0 1;
+  }
+
+  40%,
+  100% {
+    scale: 1 1;
+  }
+}
+
+@keyframes outFile {
+  0%,
+  45% {
+    box-shadow: 0 0 0 1.5px var(--soft-mint);
+  }
+
+  50%,
+  100% {
+    box-shadow: 0 0 0 1px rgb(244 241 234 / 0.12);
+  }
+}
+
+@keyframes outTimeline {
+  0%,
+  45% {
+    opacity: 0;
+    translate: 0 3cqw;
+  }
+
+  52%,
+  95% {
+    opacity: 1;
+    translate: 0 0;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+/* ---------- 04 Your data: footage stays; only an AI step goes up ---------- */
+
+.data {
+  padding: 0;
+}
+
+.laptop {
+  position: absolute;
+  bottom: 22cqw;
+  left: 10cqw;
+  width: 46cqw;
+}
+
+.screen {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.2cqw;
+  height: 24cqw;
+  padding: 2cqw;
+  border-radius: 2cqw 2cqw 0 0;
+  background: #1a1c21;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.18);
+}
+
+.screen i {
+  align-self: center;
+  height: 9cqw;
+  border-radius: 1cqw;
+  background: linear-gradient(180deg, #343a64, #6b5466 60%, #b98a6a);
+}
+
+.base {
+  display: block;
+  height: 2cqw;
+  margin: 0 -4cqw;
+  border-radius: 0 0 2cqw 2cqw;
+  background: #2a2c33;
+}
+
+.padlock {
+  position: absolute;
+  top: -4cqw;
+  right: -3cqw;
+  width: 8cqw;
+  height: 7cqw;
+  border-radius: 1.4cqw;
+  background: var(--soft-mint);
+  box-shadow: 0 0 4cqw rgb(95 224 176 / 0.5);
+}
+
+.padlock::before {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 1.8cqw;
+  width: 4.4cqw;
+  height: 3.6cqw;
+  border: 1cqw solid var(--soft-mint);
+  border-bottom: 0;
+  border-radius: 3cqw 3cqw 0 0;
+}
+
+.laptop em,
+.cloud em {
+  position: absolute;
+  top: calc(100% + 2cqw);
+  left: 0;
+  right: 0;
+  color: rgb(244 241 234 / 0.65);
+  font-size: 3cqw;
+  font-style: normal;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.cloud {
+  position: absolute;
+  top: 8cqw;
+  right: 9cqw;
+  width: 22cqw;
+  height: 11cqw;
+  border-radius: 6cqw;
+  background: rgb(244 241 234 / 0.1);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.2) inset;
+}
+
+.cloud::before {
+  content: "";
+  position: absolute;
+  top: -4cqw;
+  left: 4cqw;
+  width: 10cqw;
+  height: 10cqw;
+  border-radius: 50%;
+  background: rgb(244 241 234 / 0.1);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.2) inset;
+}
+
+/* A small piece goes up for the AI step and comes back; the footage stays. */
+.packet {
+  position: absolute;
+  top: 21cqw;
+  left: 54cqw;
+  width: 3.4cqw;
+  height: 3.4cqw;
+  border-radius: 50%;
+  background: var(--soft-mint);
+  box-shadow: 0 0 3cqw var(--soft-mint);
+  animation: packet 8s var(--ease-land) infinite;
+}
+
+@keyframes packet {
+  0%,
+  15% {
+    opacity: 0;
+    translate: 0 0;
+  }
+
+  20% {
+    opacity: 1;
+  }
+
+  45% {
+    opacity: 1;
+    translate: 24cqw -8cqw;
+  }
+
+  55% {
+    opacity: 1;
+    translate: 24cqw -8cqw;
+  }
+
+  80% {
+    opacity: 1;
+    translate: 0 0;
+  }
+
+  85%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* ---------- 05 Your team: a shared kit, people and their comments ---------- */
+
+.kit {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  gap: 2cqw;
+  padding: 3cqw 4cqw;
+  border-radius: 2.4cqw;
+  background: #1a1c21;
+  box-shadow: 0 0 0 1.5px var(--soft-mint);
+  font-size: 3.2cqw;
+  translate: -50% -50%;
+}
+
+.swatches {
+  display: flex;
+  gap: 1cqw;
+}
+
+.swatches i {
+  width: 5cqw;
+  height: 5cqw;
+  border-radius: 1cqw;
+  background: #ff7a59;
+}
+
+.swatches i:nth-child(2) {
+  background: #1e2a4a;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.25);
+}
+
+.swatches i:nth-child(3) {
+  background: #fff4e6;
+}
+
+.swatches i:nth-child(4) {
+  background: #ffc145;
+}
+
+.swatches i:nth-child(5) {
+  background: #2bb3a3;
+}
+
+.person {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 9cqw;
+  height: 9cqw;
+  border-radius: 50%;
+  background: #4a3f6e;
+  box-shadow: 0 0 0 0.6cqw #0d0e11;
+  font-size: 2.8cqw;
+  font-weight: 700;
+}
+
+.person:nth-of-type(2) {
+  top: 9cqw;
+  left: 12cqw;
+}
+
+.person:nth-of-type(3) {
+  top: 8cqw;
+  right: 12cqw;
+  background: #2c6a5a;
+}
+
+.person:nth-of-type(4) {
+  bottom: 11cqw;
+  left: 66cqw;
+  background: #8a5a3c;
+}
+
+.bubble {
+  position: absolute;
+  padding: 1.4cqw 2.6cqw;
+  border-radius: 2cqw 2cqw 2cqw 0.4cqw;
+  background: rgb(244 241 234 / 0.94);
+  color: #141416;
+  font-size: 2.8cqw;
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 0;
+  animation: bubble 8s var(--ease-land) calc(var(--i) * 2.2s) infinite;
+}
+
+.bubble:nth-of-type(5) {
+  top: 20cqw;
+  left: 6cqw;
+}
+
+.bubble:nth-of-type(6) {
+  top: 19cqw;
+  right: 5cqw;
+}
+
+.bubble:nth-of-type(7) {
+  bottom: 18cqw;
+  left: 54cqw;
+  background: var(--soft-mint);
+}
+
+@keyframes bubble {
+  0% {
+    opacity: 0;
+    translate: 0 2cqw;
+  }
+
+  6%,
+  60% {
+    opacity: 1;
+    translate: 0 0;
+  }
+
+  70%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0.4;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .clip *,
+  .clip *::before,
+  .clip *::after {
+    animation: none !important;
+  }
+
+  .bubble {
+    opacity: 1;
+  }
+
+  .outTimeline {
+    opacity: 1;
+  }
+
+  .cost b:first-child {
+    opacity: 0;
+  }
+}

@@ -47,3 +47,6 @@ next-env.d.ts
 # public/video/keyfly-footage.mp4 is used by the site)
 scripts/keyfly-footage/footage/*
 !scripts/keyfly-footage/footage/.gitkeep
+
+# graphify knowledge graph (rebuild with: graphify update .)
+graphify-out/

@@ -140,8 +140,8 @@ Planned from `reports/AI video editor product pages.md`. Built one section at a 
 | 2 | Direct (`#direct`) | ✅ built 2026-11-04, redesigned the same day | The AI director's notes pinned to its own cut's timeline, a playhead touring them; three ways to steer |
 | 3 | Footage (`#footage`) | ✅ built 2026-11-04 | One recording cleaned in four passes (picture, transcript, log); where footage goes |
 | 4 | Brand (`#brand`) | ✅ built 2026-11-04 | habitly.io read into a brand kit field by field; every new video on-brand; the app's suggestions |
-| 5 | Deliver (`#deliver`) | next | Spec sheet; review link; format-by-editor table |
-| 6 | Your way (`#your-way`) | planned | Platform, AI, ownership, data, teams |
-| 7 | AI minutes (`#minutes`) | planned | One explanation; links to pricing |
-| 8 | Close | planned | One action |
+| 5 | Deliver (`#deliver`) | ✅ built 2026-11-05 | One cut branching to three cards: export specs, review link, format-by-editor grid; plans line |
+| 6 | Your way (`#your-way`) | ✅ built 2026-11-05 | A ledger of five choices (platform, AI, projects, data, team) that unlock as they come into view |
+| 7 | AI minutes (`#minutes`) | ✅ built 2026-11-05 | An illustrative session whose meter counts only while KeyFly's AI works; each plan's minutes from the API |
+| 8 | Close | ✅ built 2026-11-05 | A reel of the six parts (links back) ending on "Your video"; Start free / Download |
 

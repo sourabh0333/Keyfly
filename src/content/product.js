@@ -1,3 +1,4 @@
+import { siteConfig } from "@/config/site";
 import { primaryCta } from "./navigation";
 
 // The Product page (/product), built section by section from the plan in
@@ -39,6 +40,9 @@ export const productHero = {
     editor: {
       file: "Launch Video",
       platforms: "macOS · Windows · Web",
+      // The viewer's clip: an illustrative launch film cut from three Mixkit
+      // stock clips (scripts/hero-reel/), not made in KeyFly.
+      reel: { src: "/video/hero-reel.mp4", poster: "/video/hero-reel.webp", tag: "Illustrative" },
       export: "Export",
       brand: { label: "Brand kit", logo: "Logo", font: "Inter", voice: "Voice · Eyal" },
       director: { label: "AI director", rows: [["Hook", "Title line"], ["Voice", "Eyal"], ["Music", "Soft pulse"]] },
@@ -183,9 +187,10 @@ export const productFootage = {
   lead: "Drop in a talking head or a screen recording. KeyFly cuts the silences and filler words, adds captions, zooms on what matters and adds callouts. No storyboard needed.",
   note: "Illustrative recording",
   file: "founder-update.mov",
-  // The recording: an illustrative 8 s silent loop, drawn on canvas in the
-  // site's dusk room (source: scripts/footage-loop/; its pauses match the
-  // transcript's). Replace it with a real recording when the team has one.
+  // The recording: an 8 s silent loop edited from a real Mixkit stock
+  // talking head (source: scripts/footage-loop/). His words aren't the
+  // transcript's, which stays illustrative. Replace it with a real KeyFly
+  // recording when the team has one.
   video: { src: "/video/footage-loop.mp4", poster: "/video/footage-loop.webp" },
   pause: "Pause",
   play: "Play",
@@ -273,4 +278,179 @@ export const productBrand = {
     suggested: { label: "Suggested for you", sub: "Picked for Habitly", items: ["SaaS launch film", "App Store launch", "Feature drop"] },
     team: "On a team, everyone shares the same kits.",
   },
+};
+
+// "Deliver": every way a finished cut leaves KeyFly. From the app's export
+// sheet (16:9, 9:16, 1:1 and 4:5; up to 4K; MP4, MOV, WebM, MKV and GIF;
+// sound as WAV; frames as pictures; presets for TikTok, Reels, YouTube,
+// Shorts, LinkedIn and X; "Timeline for other editors": FCPXML, EDL CMX 3600
+// and OpenTimelineIO; "Package for editing", a .zip with the timeline and
+// every file it uses) and its Share button ("Share for review. Anyone with
+// the link can watch, comment at a moment, approve or ask for changes.
+// They can't edit anything."). The pricing API shows export size, the
+// KeyFly mark and timeline export vary by plan, so the section says so and
+// links to the plans rather than naming them. The cut, its file name and
+// its comments are illustrative.
+export const productDeliver = {
+  eyebrow: "Deliver",
+  title: [{ text: "Export it, share it," }, { text: "or hand it on.", accent: true }],
+  lead: "One finished cut, three ways out: a file for any screen, a link for feedback, or the whole timeline for the editor you already use.",
+  note: "Illustrative cut",
+  pause: "Pause",
+  play: "Play",
+  cut: { name: "Launch Video", meta: "0:30 · 16:9", ready: "Ready to deliver" },
+  routes: [
+    {
+      id: "file",
+      kicker: "Export a file",
+      title: "For any screen",
+      file: "launch-video.mp4",
+      size: "3840 × 2160",
+      rendering: "Rendering",
+      done: "Ready",
+      specs: [
+        { label: "Frame shapes", chips: ["16:9", "9:16", "1:1", "4:5"] },
+        { label: "Size", text: "Up to 4K" },
+        { label: "Video", chips: ["MP4", "MOV", "WebM", "MKV", "GIF"] },
+        { label: "Also", text: "Sound as WAV, frames as pictures" },
+        { label: "Presets", text: "TikTok, Reels, YouTube, Shorts, LinkedIn, X" },
+      ],
+    },
+    {
+      id: "review",
+      kicker: "Share for review",
+      title: "For feedback",
+      link: "Review link",
+      comments: [
+        { at: "0:04", x: 13, text: "Make the logo bigger" },
+        { at: "0:17", x: 57, text: "Love this line" },
+        { at: "0:26", x: 87, text: "End on the app" },
+      ],
+      approve: "Approve",
+      changes: "Ask for changes",
+      body: "Anyone with the link can watch, comment at a moment, and approve or ask for changes. They can't edit anything.",
+      foot: "Comments from the review link show up in the project's Feedback.",
+    },
+    {
+      id: "handoff",
+      kicker: "Hand it on",
+      title: "For your editor",
+      formats: ["FCPXML", "EDL", "OTIO"],
+      // Which timeline format each editor opens (the app's export sheet).
+      editors: [
+        { name: "Final Cut Pro", opens: ["FCPXML"] },
+        { name: "DaVinci Resolve", opens: ["FCPXML", "EDL", "OTIO"] },
+        { name: "Premiere Pro", opens: ["EDL"] },
+        { name: "Avid", opens: ["EDL"] },
+      ],
+      package: { title: "Package for editing", body: "A .zip with the timeline and every file it uses: footage, voice-over, music and pictures." },
+    },
+  ],
+  plans: { text: "Export size, the KeyFly mark and timeline export depend on your plan.", link: "See plans", href: "/#pricing" },
+};
+
+// "Your way": what KeyFly doesn't lock you into, one row per choice. From
+// the app: the desktop builds (Apple silicon and Intel Macs, Windows 10 and
+// 11) and the web app; the ChatGPT and Claude apps (the team, 2026-11-02);
+// sync ("everything syncs when you're back"); the AI picker and Settings →
+// Agents (Claude Code, Codex, Cursor, Antigravity and any ACP agent, "with
+// your own plan, without using your AI minutes"); help ("Your projects stay
+// yours and you can always export them"); the data notes (footage stays on
+// your computer in the desktop app, uploaded only when a cloud AI step
+// needs it; usage data never includes your videos, prompts or files); and
+// the pricing API's Team and Enterprise plans. "Projects never expire" is
+// left out until the team confirms its scope.
+export const productYourWay = {
+  eyebrow: "Your way",
+  title: [{ text: "Your platform. Your AI." }, { text: "Your projects.", accent: true }],
+  lead: "Nothing in KeyFly locks you in. Here is every choice that stays yours, in one place.",
+  counter: { of: "of", unlocked: "unlocked" },
+  // The labels in each row's hover preview (an illustrative looping clip,
+  // drawn in CSS; see RowPreview).
+  previewNote: "Illustrative",
+  rows: [
+    {
+      id: "platform",
+      name: "Your platform",
+      choices: ["macOS · Apple silicon and Intel", "Windows 10 and 11", "Web · app.keyfly.si", "ChatGPT", "Claude"],
+      statement: "One project, wherever you open it. Start in a chat, finish on your desktop; everything syncs when you're back online.",
+      preview: { places: ["Mac", "Windows", "Web", "Chat"], project: "Launch Video", synced: "Synced" },
+      link: { label: "Download", href: "/#download" },
+    },
+    {
+      id: "ai",
+      name: "Your AI",
+      choices: ["KeyFly Cloud · the best model for each step", "Claude Code", "Codex", "Cursor", "Antigravity", "Any ACP agent"],
+      statement: "Let KeyFly pick the model, or bring the agents you already pay for. They edit through the desktop app, without using your AI minutes.",
+      preview: { agents: ["KeyFly Cloud", "Claude Code", "Codex", "Cursor"], cloud: "AI minutes", own: "No AI minutes" },
+    },
+    {
+      id: "projects",
+      name: "Your projects",
+      choices: ["Always yours", "Export any time", "Take the timeline to any editor", "Even if you cancel"],
+      statement: "Your projects stay yours, and you can always export them: as a file, or as a timeline with every file it uses.",
+      preview: { file: "launch-video.mp4", timeline: "Timeline · FCPXML", zip: "Package for editing · .zip" },
+      link: { label: "Every way out", href: "#deliver" },
+    },
+    {
+      id: "data",
+      name: "Your data",
+      choices: ["Footage stays on your computer", "Uploaded only for a cloud AI step", "Usage data never includes your videos"],
+      statement: "In the desktop app your footage stays local. Usage data never includes your videos, prompts or files.",
+      preview: { local: "On your computer", step: "Cloud AI step" },
+      link: { label: "Privacy", href: "/privacy" },
+    },
+    {
+      id: "team",
+      name: "Your team",
+      choices: ["Shared brand kits and library", "Roles and comments", "One bill", "SSO and SCIM", "DPA and data residency"],
+      statement: "Work alone or together. Teams share their kits and library; Enterprise adds single sign-on, a DPA and data residency.",
+      preview: { kit: "Shared brand kit", people: ["MA", "JK", "RS"], comments: ["Love the intro", "Logo bigger?", "Approved"] },
+      link: { label: "See plans", href: "/#pricing" },
+    },
+  ],
+  cta: { label: "Open KeyFly in your browser", href: siteConfig.appUrl },
+};
+
+// "AI minutes": the pricing unit, explained once. From the pricing API (its
+// wording, "AI minutes", never "credits"; each plan's AI minutes a month;
+// AI-minute packs) and the app (KeyFly's AI counts them while it works:
+// the AI director's reply ends "Used 6 AI minutes"; your own agents edit
+// "without using your AI minutes"). The session is illustrative; the
+// plans' allowances are read from the API at build time and every 5
+// minutes, and drop out if it can't be reached.
+export const productMinutes = {
+  eyebrow: "AI minutes",
+  title: [{ text: "One simple unit." }, { text: "Counted only while the AI works.", accent: true }],
+  lead: "Plans come with AI minutes: the time KeyFly's AI spends building and editing your videos. Editing by hand, or with your own agent, uses none.",
+  note: "Illustrative session",
+  pause: "Pause",
+  play: "Play",
+  meter: { label: "AI minutes used", counting: "Counting", stopped: "Not counting" },
+  // One editing session, left to right: what happens, who does it, and
+  // whether it counts. `share` is its part of the bar; `minutes` what it
+  // adds (illustrative).
+  session: [
+    { id: "build", who: "KeyFly AI", what: "Builds the first cut", counts: true, share: 30, minutes: 4 },
+    { id: "trim", who: "You", what: "Trim it on the timeline", counts: false, share: 25, minutes: 0 },
+    { id: "ask", who: "KeyFly AI", what: "“Make the intro faster”", counts: true, share: 20, minutes: 2 },
+    { id: "agent", who: "Your Claude Code", what: "Makes the next pass", counts: false, share: 25, minutes: 0 },
+  ],
+  counts: "Counts",
+  free: "No AI minutes",
+  plans: { label: "AI minutes a month", perSeat: "per seat", unit: "min", packs: "Need more? Add an AI-minute pack any time.", link: "See plans", href: "/#pricing" },
+};
+
+// "Close": the page's last word before the footer. A reel of the six parts
+// the page has shown (each links back to its section), ending on the one
+// clip still to make: yours. The footer's own call to action follows, so
+// the headline says something different.
+export const productClose = {
+  eyebrow: "Your turn",
+  title: [{ text: "You've seen every part." }, { text: "Now make your first video.", accent: true }],
+  lead: "Start free in your browser, or download KeyFly for Mac or Windows. A sentence is enough.",
+  reelLabel: "The page so far",
+  yours: { name: "Your video", meta: "Starts with a sentence" },
+  primary: primaryCta,
+  secondary: { label: "Download", href: "/#download" },
 };

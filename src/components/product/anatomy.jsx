@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore } from "react";
-import { Preview } from "@/components/use-cases/preview";
 import styles from "./product-hero.module.css";
 
 const STEP = 3000; // ms per stage of the tour
@@ -50,6 +49,15 @@ function offset(el, root) {
  * under the editor and its parts carry their numbers instead of wires.
  * Reduced motion: no tour, nothing moves.
  */
+// A small stroked icon for the viewer's player bar.
+function Icon({ d }) {
+  return (
+    <svg viewBox="0 0 16 16" aria-hidden="true">
+      <path d={d} />
+    </svg>
+  );
+}
+
 export function Anatomy({ label, pause, play, stages, editor }) {
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
@@ -59,6 +67,8 @@ export function Anatomy({ label, pause, play, stages, editor }) {
   const reduced = useSyncExternalStore(onMotion, () => matchMedia(MOTION).matches, () => false);
   const stageRef = useRef(null);
   const windowRef = useRef(null);
+  const reelRef = useRef(null);
+  const [on, setOn] = useState(null);
 
   const auto = visible && !paused && !held && !reduced;
   const current = stages[active].id;
@@ -75,6 +85,22 @@ export function Anatomy({ label, pause, play, stages, editor }) {
     const timer = setInterval(() => setActive((a) => (a + 1) % stages.length), STEP);
     return () => clearInterval(timer);
   }, [auto, stages.length]);
+
+  // The viewer's clip plays while the editor is on screen, unless its own
+  // play button or "Pause the tour" stopped it; with reduced motion it rests
+  // on its poster until its play button is pressed.
+  const playing = on ?? !reduced;
+  useEffect(() => {
+    const reel = reelRef.current;
+    if (visible && playing) reel.play().catch(() => {});
+    else reel.pause();
+  }, [visible, playing]);
+
+  function togglePause() {
+    const next = !paused;
+    setPaused(next);
+    setOn(next ? false : null);
+  }
 
   // Measure the wires: from each callout's inner edge, level to just beside
   // the editor, then straight to the near edge of its part (so they barely
@@ -205,7 +231,34 @@ export function Anatomy({ label, pause, play, stages, editor }) {
             </div>
 
             <div className={styles.viewer}>
-              <Preview kind="launch" format="16:9" bleed />
+              <div className={styles.picture}>
+                <video ref={reelRef} className={styles.reel} src={editor.reel.src} poster={editor.reel.poster} muted loop playsInline preload="metadata" />
+                <span className={styles.reelTag}>{editor.reel.tag}</span>
+              </div>
+              {/* The player bar: only play/pause works (the rest is the
+                  editor's, illustrative). The window is aria-hidden, so the
+                  button stays out of the tab order; "Pause the tour" below
+                  is the accessible control. */}
+              <div className={styles.player}>
+                <span className={styles.playerMark} />
+                <span className={styles.transport}>
+                  <Icon d="M4 3.5v9M12 3.5 6.5 8l5.5 4.5Z" />
+                  <button type="button" tabIndex={-1} className={styles.play} data-playing={playing ? "" : undefined} onClick={() => setOn(!playing)}>
+                    {playing ? <Icon d="M6 4.5v7M10 4.5v7" /> : <Icon d="M6 4v8l6-4Z" />}
+                  </button>
+                  <Icon d="M12 3.5v9M4 3.5 9.5 8 4 12.5Z" />
+                </span>
+                <span className={styles.tools}>
+                  <Icon d="M7 2.5a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9ZM10.3 10.3 13.5 13.5M5 7h4" />
+                  <span className={styles.zoom}>
+                    <i />
+                  </span>
+                  <Icon d="M7 2.5a4.5 4.5 0 1 1 0 9 4.5 4.5 0 0 1 0-9ZM10.3 10.3 13.5 13.5M5 7h4M7 5v4" />
+                  <Icon d="M2.5 5.5h2.5l1.2-1.8h3.6L11 5.5h2.5v7h-11ZM8 7a2 2 0 1 1 0 4 2 2 0 0 1 0-4Z" />
+                  <Icon d="M2.5 6V2.5H6M10 2.5h3.5V6M13.5 10v3.5H10M6 13.5H2.5V10" />
+                  <Icon d="M2.5 3.5h11v7.5h-11ZM6 13.5h4" />
+                </span>
+              </div>
             </div>
 
             <div className={styles.director}>
@@ -262,7 +315,7 @@ export function Anatomy({ label, pause, play, stages, editor }) {
       </div>
 
       {reduced ? null : (
-        <button type="button" className={styles.pause} aria-pressed={paused} onClick={() => setPaused((p) => !p)}>
+        <button type="button" className={styles.pause} aria-pressed={paused} onClick={togglePause}>
           <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true">
             {paused ? <path d="M5 3.5v9l7-4.5Z" fill="currentColor" /> : <path d="M5 3.5v9M11 3.5v9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />}
           </svg>

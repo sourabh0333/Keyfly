@@ -1,0 +1,550 @@
+/*
+ * Product page, "AI minutes": the heading as on the homepage's sections;
+ * the meter panel (MinuteMeter writes --p, the playhead's place along the
+ * session, data-part and data-counting on it each frame); then each
+ * plan's AI minutes a month from the pricing API, as hairline rows with a
+ * bar (square-root scaled, as the pricing ruler), and the packs line.
+ */
+.section {
+  position: relative;
+  padding: var(--section-pad) 0;
+  color: var(--paper);
+}
+
+.inner {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* ---------- Heading (as on the homepage's sections) ---------- */
+
+.head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+  margin-bottom: clamp(32px, 4vw, 56px);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: rgb(244 241 234 / 0.62);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.eyebrowMark {
+  width: 18px;
+  height: 1px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+}
+
+.title {
+  margin-top: 16px;
+  font-size: clamp(2.1rem, 1.1rem + 2.2vw, 3.4rem);
+  font-weight: 560;
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+
+.plain,
+.accent {
+  display: block;
+}
+
+.accent {
+  padding-bottom: 0.06em;
+  background: linear-gradient(100deg, var(--mint-text-dark), #eafff6 50%, var(--soft-mint));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-family: var(--font-accent-stack);
+  font-size: 1.1em;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.lead {
+  max-width: 40ch;
+  color: rgb(244 241 234 / 0.62);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  text-align: right;
+}
+
+/* ---------- The meter ---------- */
+
+.meterPanel {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(220px, 0.32fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(24px, 4vw, 56px);
+  padding: clamp(22px, 3vw, 34px);
+  border-radius: var(--radius-window);
+  background:
+    radial-gradient(60% 80% at 0% 50%, rgb(95 224 176 / 0.08), transparent 70%),
+    linear-gradient(180deg, #15171b, #0f1013);
+  box-shadow:
+    0 0 0 1px rgb(244 241 234 / 0.1),
+    0 1px 0 rgb(244 241 234 / 0.08) inset,
+    0 50px 110px -40px rgb(0 0 0 / 0.95);
+}
+
+.meterPanel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 16%;
+  left: 16%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--soft-mint), transparent);
+}
+
+/* The readout: the label, a big running count, and its state. */
+.readout {
+  display: grid;
+  justify-items: start;
+  gap: 10px;
+}
+
+.readoutLabel {
+  color: rgb(244 241 234 / 0.5);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.count {
+  display: grid;
+  gap: 8px;
+}
+
+.count b {
+  color: var(--paper);
+  font-family: var(--font-mono-stack);
+  font-size: clamp(3rem, 2rem + 3vw, 4.6rem);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.meterPanel[data-counting] .count b {
+  color: var(--soft-mint);
+  text-shadow: 0 0 24px rgb(95 224 176 / 0.35);
+}
+
+.state {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.state i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgb(244 241 234 / 0.3);
+}
+
+.state em {
+  font-style: normal;
+}
+
+.on {
+  display: none;
+  color: var(--mint-text-dark);
+}
+
+.off {
+  color: rgb(244 241 234 / 0.45);
+}
+
+.meterPanel[data-counting] .state i {
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+  animation: blink 0.9s steps(1) infinite;
+}
+
+.meterPanel[data-counting] .on {
+  display: inline;
+}
+
+.meterPanel[data-counting] .off {
+  display: none;
+}
+
+.pause {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 6px;
+  padding: 5px 11px;
+  border: 0;
+  border-radius: var(--radius-round);
+  background: none;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.12) inset;
+  color: rgb(244 241 234 / 0.6);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.pause:hover {
+  color: var(--paper);
+}
+
+.pause:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 3px;
+}
+
+/* The session: a bar of four parts with a playhead, labelled beneath. */
+.session {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+}
+
+.bar {
+  position: relative;
+  display: flex;
+  gap: 4px;
+  height: 44px;
+  container-type: inline-size;
+}
+
+.seg {
+  border-radius: 8px;
+  transition:
+    box-shadow 0.3s ease,
+    opacity 0.3s ease;
+}
+
+/* The parts that count: mint. The rest: hatched, grey. */
+.seg[data-counts] {
+  background: linear-gradient(180deg, rgb(95 224 176 / 0.5), rgb(18 128 91 / 0.55));
+  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.45) inset;
+}
+
+.seg:not([data-counts]) {
+  background: repeating-linear-gradient(135deg, rgb(244 241 234 / 0.07) 0 6px, rgb(244 241 234 / 0.02) 6px 12px);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.12) inset;
+}
+
+/* The part in play glows a little. */
+.meterPanel[data-part="build"] .seg[data-id="build"],
+.meterPanel[data-part="trim"] .seg[data-id="trim"],
+.meterPanel[data-part="ask"] .seg[data-id="ask"],
+.meterPanel[data-part="agent"] .seg[data-id="agent"] {
+  box-shadow:
+    0 0 0 1.5px rgb(244 241 234 / 0.5) inset,
+    0 0 20px -6px rgb(95 224 176 / 0.5);
+}
+
+/* The playhead: a thin mark moved along the bar in the bar's own width
+   (cqw), so nothing hangs past its end and widens the page. */
+.playhead {
+  position: absolute;
+  top: -8px;
+  bottom: -8px;
+  left: 0;
+  width: 0;
+  translate: calc(var(--p) * 100cqw) 0;
+  pointer-events: none;
+}
+
+.playhead::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -1px;
+  width: 2px;
+  background: var(--paper);
+  box-shadow: 0 0 10px rgb(244 241 234 / 0.6);
+}
+
+.playhead::after {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  background: var(--paper);
+  rotate: 45deg;
+}
+
+.meterPanel[data-counting] .playhead::before,
+.meterPanel[data-counting] .playhead::after {
+  background: var(--soft-mint);
+  box-shadow: 0 0 12px var(--soft-mint);
+}
+
+.parts {
+  display: flex;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.parts li {
+  display: grid;
+  align-content: start;
+  gap: 3px;
+  min-width: 0;
+  padding: 0 4px;
+  opacity: 0.55;
+  transition: opacity 0.3s ease;
+}
+
+.meterPanel[data-part="build"] .parts [data-id="build"],
+.meterPanel[data-part="trim"] .parts [data-id="trim"],
+.meterPanel[data-part="ask"] .parts [data-id="ask"],
+.meterPanel[data-part="agent"] .parts [data-id="agent"] {
+  opacity: 1;
+}
+
+.who {
+  color: rgb(244 241 234 / 0.5);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.what {
+  font-size: 0.9375rem;
+  font-weight: 560;
+  line-height: 1.3;
+}
+
+.tag {
+  justify-self: start;
+  margin-top: 4px;
+  padding: 2px 8px;
+  border-radius: var(--radius-round);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.16) inset;
+  color: rgb(244 241 234 / 0.6);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  white-space: nowrap;
+}
+
+.parts [data-counts] .tag {
+  background: rgb(95 224 176 / 0.12);
+  box-shadow: none;
+  color: var(--mint-text-dark);
+}
+
+.footnote {
+  margin-top: 12px;
+  color: rgb(244 241 234 / 0.38);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+/* ---------- Each plan's AI minutes (from the pricing API) ---------- */
+
+.plans {
+  display: grid;
+  grid-template-columns: clamp(110px, 12vw, 180px) minmax(0, 1fr);
+  gap: 14px clamp(16px, 3vw, 48px);
+  margin-top: clamp(32px, 4vw, 52px);
+  padding-top: 24px;
+  border-top: 1px solid rgb(244 241 234 / 0.1);
+}
+
+.plansLabel {
+  color: rgb(244 241 234 / 0.6);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.allowances {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.allowances li {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr) 120px;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgb(244 241 234 / 0.06);
+}
+
+.planName {
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.planBar {
+  height: 6px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: rgb(244 241 234 / 0.06);
+}
+
+.planBar i {
+  display: block;
+  width: calc(var(--w) * 100%);
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--deep-mint), var(--soft-mint));
+}
+
+.planMinutes {
+  color: rgb(244 241 234 / 0.6);
+  white-space: nowrap;
+  font-family: var(--font-mono-stack);
+  font-size: 0.75rem;
+  text-align: right;
+}
+
+.planMinutes b {
+  color: var(--paper);
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.planMinutes em {
+  font-style: normal;
+}
+
+.allowances li[data-popular] .planName,
+.allowances li[data-popular] .planMinutes b {
+  color: var(--mint-text-dark);
+}
+
+.packs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 18px;
+  grid-column: 2;
+  color: rgb(244 241 234 / 0.6);
+  font-size: 0.9375rem;
+}
+
+.plansLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--mint-text-dark);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.plansLink:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+/* ---------- Narrower screens ---------- */
+
+@media (max-width: 980px) {
+  .meterPanel {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .readout {
+    grid-template-columns: auto auto;
+    align-items: end;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .readoutLabel {
+    grid-column: 1 / -1;
+  }
+
+  .plans {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .packs {
+    grid-column: 1;
+  }
+}
+
+@media (max-width: 860px) {
+  .head {
+    display: grid;
+    gap: 14px;
+  }
+
+  .lead {
+    text-align: left;
+  }
+
+  .plain,
+  .accent {
+    display: inline;
+  }
+
+  .title {
+    font-size: clamp(1.9rem, 1.2rem + 3vw, 2.75rem);
+  }
+}
+
+/* Phones: the parts' labels as a 2 × 2 list under the bar. */
+@media (max-width: 640px) {
+  .parts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px 10px;
+  }
+
+  .allowances li {
+    grid-template-columns: 72px minmax(0, 1fr) auto;
+    gap: 10px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .count b,
+  .seg,
+  .parts li {
+    transition: none;
+  }
+
+  .meterPanel .state i {
+    animation: none;
+  }
+}

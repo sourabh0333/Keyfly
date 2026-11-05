@@ -1,0 +1,283 @@
+/*
+ * Product page, "Close": the reel of the page's six parts (clips that link
+ * back) ending on "Your video", a playhead run along it by a view timeline
+ * (--run, 0 to 1, registered so it animates), then the heading, centred
+ * as in the hero, and its two actions.
+ */
+@property --run {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
+
+.section {
+  position: relative;
+  padding: var(--section-pad) 0 calc(var(--section-pad) * 0.8);
+  color: var(--paper);
+}
+
+.inner {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* ---------- The reel ---------- */
+
+.reel {
+  position: relative;
+  max-width: 1080px;
+  margin: 0 auto clamp(48px, 6vw, 80px);
+  padding-top: 18px;
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reel {
+      animation: run linear both;
+      animation-timeline: view();
+      animation-range: entry 40% cover 55%;
+    }
+  }
+}
+
+.clips {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr)) minmax(0, 1.5fr);
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.clip {
+  display: grid;
+  align-content: center;
+  gap: 2px;
+  height: 64px;
+  padding: 0 12px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, rgb(95 224 176 / 0.22), rgb(18 128 91 / 0.28));
+  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.35) inset;
+  color: var(--paper);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  transition:
+    background-color 0.25s ease,
+    box-shadow 0.25s ease,
+    translate 0.3s var(--ease-land);
+}
+
+.clip em {
+  color: var(--mint-text-dark);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  font-style: normal;
+  font-weight: 400;
+}
+
+.clip:hover {
+  box-shadow: 0 0 0 1.5px var(--soft-mint) inset;
+  translate: 0 -2px;
+}
+
+.clip:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 3px;
+}
+
+/* The clip still to make: dashed, glowing, the playhead's landing. */
+.yours {
+  display: grid;
+  align-content: center;
+  gap: 2px;
+  height: 64px;
+  padding: 0 16px 0 22px;
+  border: 1.5px dashed rgb(95 224 176 / 0.7);
+  border-radius: 10px;
+  background: rgb(95 224 176 / 0.06);
+  box-shadow: 0 0 40px -10px rgb(95 224 176 / 0.6);
+  animation: breathe 2.4s ease-in-out infinite alternate;
+}
+
+.yours b {
+  font-family: var(--font-accent-stack);
+  font-size: 1.35rem;
+  font-style: italic;
+  font-weight: 400;
+  color: var(--mint-text-dark);
+  line-height: 1;
+}
+
+.yours em {
+  color: rgb(244 241 234 / 0.55);
+  font-size: 0.75rem;
+  font-style: normal;
+}
+
+/* The playhead: a zero-width mark moved along the track in the track's own
+   width (cqw), so it never widens the page; it lands at the start of "Your
+   video" (6 of the 7.5 column shares, plus a little into its padding), so
+   it never crosses its words. */
+.track {
+  position: absolute;
+  inset: 0;
+  container-type: inline-size;
+  pointer-events: none;
+}
+
+.playhead {
+  position: absolute;
+  top: 0;
+  bottom: -10px;
+  left: 0;
+  width: 0;
+  translate: calc(var(--run) * (6 / 7.5 * 100cqw + 8px)) 0;
+}
+
+.playhead::before {
+  content: "";
+  position: absolute;
+  top: 8px;
+  bottom: 0;
+  left: -1px;
+  width: 2px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 12px var(--soft-mint);
+}
+
+.playhead::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -6px;
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 14px var(--soft-mint);
+  rotate: 45deg;
+}
+
+/* ---------- The heading, centred ---------- */
+
+.head {
+  display: grid;
+  justify-items: center;
+  max-width: 880px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: rgb(244 241 234 / 0.62);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.eyebrowMark {
+  width: 18px;
+  height: 1px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+}
+
+.title {
+  margin-top: 18px;
+  font-size: clamp(2.3rem, 1.2rem + 3vw, 4rem);
+  font-weight: 560;
+  letter-spacing: -0.05em;
+  line-height: 1;
+}
+
+.plain,
+.accent {
+  display: block;
+}
+
+.accent {
+  padding-bottom: 0.06em;
+  background: linear-gradient(100deg, var(--mint-text-dark), #eafff6 50%, var(--soft-mint));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-family: var(--font-accent-stack);
+  font-size: 1.1em;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.lead {
+  max-width: 46ch;
+  margin-top: 20px;
+  color: rgb(244 241 234 / 0.62);
+  font-size: var(--text-lead);
+  line-height: 1.5;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+@keyframes run {
+  from {
+    --run: 0;
+  }
+
+  to {
+    --run: 1;
+  }
+}
+
+@keyframes breathe {
+  to {
+    box-shadow: 0 0 56px -6px rgb(95 224 176 / 0.8);
+  }
+}
+
+/* ---------- Narrower screens ---------- */
+
+/* The reel wraps: the six parts as two rows of three, then "Your video"
+   across; the playhead goes. */
+@media (max-width: 860px) {
+  .clips {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .yoursItem {
+    grid-column: 1 / -1;
+  }
+
+  .track {
+    display: none;
+  }
+
+  .reel {
+    padding-top: 0;
+  }
+
+  .plain,
+  .accent {
+    display: inline;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .yours,
+  .clip {
+    animation: none;
+    transition: none;
+  }
+}
