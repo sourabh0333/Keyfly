@@ -101,6 +101,33 @@
   translate: 0 -50%;
 }
 
+/* Every clip gets a colour, so pages other than the homepage (the Product
+   and Use cases pages) show their sections too: a cycle in the site's dusk
+   and mint, overridden below for sections with a light of their own. */
+.clip:nth-child(6n + 1) {
+  --clip: linear-gradient(180deg, #343a64, #6b5466 55%, #b98a6a);
+}
+
+.clip:nth-child(6n + 2) {
+  --clip: linear-gradient(180deg, #2c4a6a, #3a2b52 50%, #5fe0b0);
+}
+
+.clip:nth-child(6n + 3) {
+  --clip: linear-gradient(180deg, #4f6b8c, #c98a5a 50%, #5fe0b0);
+}
+
+.clip:nth-child(6n + 4) {
+  --clip: linear-gradient(180deg, #7b6cf0, #3a2b52 50%, #5fe0b0);
+}
+
+.clip:nth-child(6n + 5) {
+  --clip: linear-gradient(180deg, #6aa3b3, #2c4a6a 50%, #5fe0b0);
+}
+
+.clip:nth-child(6n) {
+  --clip: linear-gradient(180deg, #8a5a78, #3a2b52 50%, #5fe0b0);
+}
+
 /* Each clip in its section's light (see SceneLight). */
 .clip[data-key="intro"] {
   --clip: linear-gradient(90deg, #1c3a30, #12261f);
@@ -150,8 +177,43 @@
   --clip: linear-gradient(90deg, #5fe0b0 0 87%, #2a2b30 0);
 }
 
-.clip[data-key="faq"] {
+.clip[data-key="faq"],
+.clip[data-key="questions"] {
   --clip: linear-gradient(180deg, #1c3a30, #12261f);
+}
+
+/* The Product page's sections, in the same palette. */
+.clip[data-key="footage"] {
+  --clip: linear-gradient(180deg, #3a3b44, #5fe0b0);
+}
+
+.clip[data-key="brand"] {
+  --clip: linear-gradient(180deg, #7b6cf0, #3a2b52 50%, #5fe0b0);
+}
+
+.clip[data-key="deliver"] {
+  --clip: linear-gradient(180deg, #12805b, #2fae82);
+}
+
+.clip[data-key="ai-minutes"] {
+  --clip: linear-gradient(90deg, #5fe0b0 0 70%, #2a2b30 0);
+}
+
+.clip[data-key="close"] {
+  --clip: linear-gradient(180deg, #1f4a3a, #5fe0b0);
+}
+
+/* The Use cases page's: the categories striped like the template looks. */
+.clip[data-key="categories"] {
+  --clip: linear-gradient(180deg, #f1ece2 0 10%, #ff7a59 0 20%, #0c1222 0 30%, #e9edf3 0 40%, #5b34f0 0 50%, #1d4ed8 0 60%, #f6d2b1 0 70%, #0d0d0d 0 80%, #6b548c 0 90%, #1f4a3a 0);
+}
+
+.clip[data-key="by-role"] {
+  --clip: linear-gradient(180deg, #343a64, #6b5466 55%, #b98a6a);
+}
+
+.clip[data-key="template-to-video"] {
+  --clip: linear-gradient(180deg, #1e2a4a, #ff7a59 60%, #5fe0b0);
 }
 
 /* The playhead: a mint bar across the rail. */

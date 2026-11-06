@@ -1,0 +1,494 @@
+/*
+ * Use cases page, "Browse by category": the heading as on the site's other
+ * sections; then a filter bar (sticky under the header), a sticky index of
+ * the ten categories beside the shelves, and a shelf of templates per
+ * category at their real shapes (cards: template-card.module.css).
+ */
+.section {
+  position: relative;
+  padding: var(--section-pad) 0;
+  color: var(--paper);
+}
+
+.inner {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* ---------- Heading ---------- */
+
+.head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+  margin-bottom: clamp(28px, 3.4vw, 44px);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: rgb(244 241 234 / 0.62);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.eyebrowMark {
+  width: 18px;
+  height: 1px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+}
+
+.title {
+  margin-top: 16px;
+  font-size: clamp(2.1rem, 1.1rem + 2.2vw, 3.4rem);
+  font-weight: 560;
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+
+.plain,
+.accent {
+  display: block;
+}
+
+.accent {
+  padding-bottom: 0.06em;
+  background: linear-gradient(100deg, var(--mint-text-dark), #eafff6 50%, var(--soft-mint));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-family: var(--font-accent-stack);
+  font-size: 1.1em;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.lead {
+  max-width: 42ch;
+  color: rgb(244 241 234 / 0.62);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  text-align: right;
+}
+
+/* ---------- The filter bar ---------- */
+
+.bar {
+  position: sticky;
+  top: 84px;
+  z-index: 5;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 22px;
+  padding: 12px 14px;
+  border-radius: 16px;
+  background: rgb(16 17 19 / 0.86);
+  box-shadow:
+    0 0 0 1px rgb(244 241 234 / 0.09) inset,
+    0 16px 40px -20px rgb(0 0 0 / 0.9);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+}
+
+/* While the header has slid away (scrolling down), the bar and the index
+   move up into its place. */
+:global(:root:has(header[data-hidden])) .bar {
+  top: 16px;
+}
+
+:global(:root:has(header[data-hidden])) .index {
+  top: 108px;
+}
+
+.bar,
+.index {
+  transition: top 0.5s var(--ease-land);
+}
+
+.filter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.filterLabel {
+  margin-right: 4px;
+  color: rgb(244 241 234 / 0.45);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.chip {
+  padding: 6px 11px;
+  border: 0;
+  border-radius: var(--radius-round);
+  background: rgb(244 241 234 / 0.04);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.12) inset;
+  color: rgb(244 241 234 / 0.72);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background-color var(--dur-ui) ease,
+    color var(--dur-ui) ease,
+    box-shadow var(--dur-ui) ease;
+}
+
+.chip:hover {
+  color: var(--paper);
+}
+
+.chip[aria-pressed="true"] {
+  background: rgb(95 224 176 / 0.14);
+  box-shadow: 0 0 0 1px var(--soft-mint) inset;
+  color: var(--mint-text-dark);
+}
+
+.chip:focus-visible,
+.clear:focus-visible,
+.open:focus-visible,
+.index a:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 2px;
+}
+
+.count {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+  color: rgb(244 241 234 / 0.7);
+  font-family: var(--font-mono-stack);
+  font-size: 0.75rem;
+}
+
+.count b {
+  color: var(--paper);
+  font-weight: 500;
+}
+
+.clear {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--mint-text-dark);
+  font: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+/* ---------- Index and shelves ---------- */
+
+.layout {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: clamp(28px, 3.4vw, 56px);
+  margin-top: clamp(28px, 3vw, 40px);
+}
+
+.index {
+  position: sticky;
+  top: 176px;
+  align-self: start;
+}
+
+.indexLabel {
+  margin: 0 0 10px 10px;
+  color: rgb(244 241 234 / 0.45);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.index ol {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.index a {
+  position: relative;
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 9px;
+  color: rgb(244 241 234 / 0.6);
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition:
+    background-color var(--dur-ui) ease,
+    color var(--dur-ui) ease;
+}
+
+.index a:hover {
+  color: var(--paper);
+}
+
+.index a em {
+  color: rgb(244 241 234 / 0.35);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  font-style: normal;
+}
+
+.index a b {
+  color: rgb(244 241 234 / 0.45);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  font-weight: 400;
+}
+
+/* The category in view: a mint line at its left and its number lit. */
+.index a[data-on] {
+  background: rgb(244 241 234 / 0.05);
+  color: var(--paper);
+}
+
+.index a[data-on]::before {
+  content: "";
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  left: 0;
+  width: 2px;
+  border-radius: 2px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+}
+
+.index a[data-on] em {
+  color: var(--soft-mint);
+}
+
+.index a[data-empty] {
+  opacity: 0.4;
+}
+
+.shelves {
+  display: grid;
+  gap: clamp(40px, 4.4vw, 64px);
+  min-width: 0;
+}
+
+.category {
+  /* Anchored jumps land below the header and the filter bar. */
+  scroll-margin-top: 170px;
+}
+
+.catHead {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgb(244 241 234 / 0.08);
+}
+
+.catIndex {
+  color: var(--soft-mint);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+}
+
+.catIndex span {
+  color: rgb(244 241 234 / 0.45);
+}
+
+.catName {
+  margin-top: 6px;
+  font-size: clamp(1.4rem, 1rem + 1vw, 1.9rem);
+  font-weight: 560;
+  letter-spacing: -0.03em;
+}
+
+.catLine {
+  margin-top: 6px;
+  color: rgb(244 241 234 / 0.58);
+  font-size: 0.9375rem;
+}
+
+.open {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 6px;
+  color: var(--mint-text-dark);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.open:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.shelf {
+  --h: clamp(124px, 11vw, 158px);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 22px 16px;
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.empty {
+  margin-top: 18px;
+  color: rgb(244 241 234 / 0.5);
+  font-size: 0.875rem;
+}
+
+.note {
+  margin-top: 28px;
+  color: rgb(244 241 234 / 0.38);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+/* ---------- Narrower screens ---------- */
+
+/* The index becomes a row of chips that scrolls sideways, under the bar. */
+@media (max-width: 1100px) {
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .index {
+    top: 150px;
+    z-index: 4;
+    margin: -8px 0 0;
+    padding: 8px 0;
+    background: linear-gradient(var(--night) 70%, transparent);
+  }
+
+  .indexLabel {
+    display: none;
+  }
+
+  .index ol {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .index a {
+    grid-template-columns: auto auto;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: var(--radius-round);
+    box-shadow: 0 0 0 1px rgb(244 241 234 / 0.1) inset;
+    font-size: 0.8125rem;
+    white-space: nowrap;
+  }
+
+  .index a em {
+    display: none;
+  }
+
+  .index a[data-on]::before {
+    display: none;
+  }
+
+  .index a[data-on] {
+    background: rgb(95 224 176 / 0.12);
+    box-shadow: 0 0 0 1px var(--soft-mint) inset;
+  }
+
+  .category {
+    scroll-margin-top: 220px;
+  }
+}
+
+@media (max-width: 860px) {
+  .head {
+    display: grid;
+    gap: 14px;
+  }
+
+  .lead {
+    text-align: left;
+  }
+
+  .plain,
+  .accent {
+    display: inline;
+  }
+
+  .title {
+    font-size: clamp(1.9rem, 1.2rem + 3vw, 2.75rem);
+  }
+}
+
+/* Phones: the filters scroll sideways in one line each; the count sits
+   under them. */
+@media (max-width: 640px) {
+  .bar {
+    top: 76px;
+    gap: 8px;
+    padding: 10px;
+  }
+
+  .filter {
+    flex-wrap: nowrap;
+    width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .chip {
+    flex: none;
+  }
+
+  .count {
+    margin-left: 0;
+  }
+
+  .index {
+    top: 196px;
+  }
+
+  :global(:root:has(header[data-hidden])) .index {
+    top: 132px;
+  }
+
+  .catHead {
+    display: grid;
+  }
+
+  .shelf {
+    --h: 112px;
+    gap: 18px 12px;
+  }
+
+  .category {
+    scroll-margin-top: 260px;
+  }
+
+  .note {
+    text-align: left;
+  }
+}

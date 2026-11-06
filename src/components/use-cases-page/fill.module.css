@@ -1,0 +1,845 @@
+/*
+ * Use cases page, "From template to your video": the heading as on the
+ * site's other sections; then the stage (the frame and its scenes beside
+ * the panel for the step) and a bar of the four steps. The stage carries
+ * data-step (the step on screen) and data-reached (every step so far,
+ * matched with ~=), so what each step does stays.
+ */
+.section {
+  position: relative;
+  padding: var(--section-pad) 0;
+  color: var(--paper);
+}
+
+.inner {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* ---------- Heading ---------- */
+
+.head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+  margin-bottom: clamp(32px, 4vw, 56px);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: rgb(244 241 234 / 0.62);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.eyebrowMark {
+  width: 18px;
+  height: 1px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+}
+
+.title {
+  margin-top: 16px;
+  font-size: clamp(2.1rem, 1.1rem + 2.2vw, 3.4rem);
+  font-weight: 560;
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+
+.plain,
+.accent {
+  display: block;
+}
+
+.accent {
+  padding-bottom: 0.06em;
+  background: linear-gradient(100deg, var(--mint-text-dark), #eafff6 50%, var(--soft-mint));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-family: var(--font-accent-stack);
+  font-size: 1.1em;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.lead {
+  max-width: 42ch;
+  color: rgb(244 241 234 / 0.62);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  text-align: right;
+}
+
+/* ---------- The stage ---------- */
+
+.stage {
+  display: grid;
+  gap: 22px;
+}
+
+.work {
+  display: grid;
+  grid-template-columns: minmax(0, 1.65fr) minmax(0, 1fr);
+  gap: clamp(20px, 2.4vw, 36px);
+  align-items: stretch;
+}
+
+.frameCol {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+
+/* The frame: the template's preview, then the brand in its structure. */
+.frame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 16px;
+  background: #0d0e10;
+  box-shadow:
+    0 0 0 1.5px var(--soft-mint),
+    0 0 50px -12px rgb(95 224 176 / 0.5),
+    0 40px 80px -30px rgb(0 0 0 / 0.9);
+}
+
+.clip {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: opacity 0.6s ease;
+}
+
+.stage[data-reached~="fill"] .clip {
+  opacity: 0;
+}
+
+/* The brand (illustrative): navy, a coral bar, the serif headline. */
+.branded {
+  position: absolute;
+  inset: 0;
+  container-type: inline-size;
+  background:
+    radial-gradient(70% 90% at 85% 60%, rgb(255 122 89 / 0.22), transparent 70%),
+    #1e2a4a;
+  opacity: 0;
+  scale: 1.04;
+  transition:
+    opacity 0.7s ease,
+    scale 0.9s var(--ease-land);
+}
+
+.stage[data-reached~="fill"] .branded {
+  opacity: 1;
+  scale: 1;
+}
+
+.logo {
+  position: absolute;
+  top: 6cqw;
+  left: 6cqw;
+  display: inline-flex;
+  align-items: center;
+  gap: 1.2cqw;
+  color: #fff4e6;
+  font-size: 2.2cqw;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+
+.logo i {
+  width: 2.8cqw;
+  height: 2.8cqw;
+  border-radius: 50%;
+  background: #ff7a59;
+}
+
+.headline {
+  position: absolute;
+  top: 30%;
+  left: 6cqw;
+  width: 52cqw;
+  padding: 0.6cqw 1cqw;
+  margin-left: -1cqw;
+  border-radius: 1cqw;
+  color: #fff4e6;
+  font-family: var(--font-accent-stack);
+  font-size: 5.6cqw;
+  font-style: italic;
+  line-height: 1;
+  transform-origin: left center;
+  transition:
+    scale 0.6s var(--ease-land),
+    box-shadow 0.4s ease;
+}
+
+/* Steer: the headline gets bigger, as asked, with a mint ring. */
+.stage[data-reached~="steer"] .headline {
+  scale: 1.16;
+}
+
+.stage[data-step="steer"] .headline {
+  box-shadow: 0 0 0 0.3cqw var(--soft-mint);
+}
+
+.line {
+  position: absolute;
+  top: 66%;
+  left: 6cqw;
+  width: 46cqw;
+  color: rgb(255 244 230 / 0.72);
+  font-size: 1.8cqw;
+}
+
+.bar {
+  position: absolute;
+  bottom: 9cqw;
+  left: 6cqw;
+  width: 12cqw;
+  height: 0.8cqw;
+  border-radius: 1cqw;
+  background: #ff7a59;
+}
+
+/* A phone with the streak of days, the brand's own picture. */
+.phone {
+  position: absolute;
+  top: 12cqw;
+  right: 8cqw;
+  display: grid;
+  align-content: center;
+  gap: 1.4cqw;
+  justify-items: center;
+  width: 17cqw;
+  height: 32cqw;
+  border-radius: 2.6cqw;
+  background: #fff4e6;
+  box-shadow: 0 2cqw 4cqw -1cqw rgb(0 0 0 / 0.5);
+  rotate: 6deg;
+}
+
+.phone i {
+  width: 9cqw;
+  height: 2.2cqw;
+  border-radius: 1cqw;
+  background: #ffc145;
+}
+
+.phone i:nth-child(2n) {
+  background: #2bb3a3;
+}
+
+.phone i:last-child {
+  background: #ff7a59;
+}
+
+.frameTag {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  padding: 3px 8px;
+  border-radius: 7px;
+  background: rgb(8 8 10 / 0.62);
+  color: rgb(244 241 234 / 0.9);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+}
+
+/* Export: a render line fills along the frame's foot. */
+.progress {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+  height: 4px;
+  background: rgb(0 0 0 / 0.35);
+}
+
+.progress i {
+  display: block;
+  height: 100%;
+  background: var(--soft-mint);
+  box-shadow: 0 0 10px var(--soft-mint);
+  transform-origin: left;
+  scale: 0 1;
+  transition: scale 0s;
+}
+
+.stage[data-reached~="export"] .progress i {
+  scale: 1 1;
+  transition: scale 2.2s var(--ease-land);
+}
+
+/* The cut's scenes: grey (the template's), then the brand's, one by one. */
+.scenes {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.scenes li {
+  display: grid;
+  gap: 5px;
+}
+
+.scenes i {
+  display: block;
+  height: 30px;
+  border-radius: 6px;
+  background: linear-gradient(180deg, #f1ece2, #ddd6c8);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.08) inset;
+  transition:
+    background 0.4s ease calc(var(--n) * 120ms),
+    box-shadow 0.3s ease;
+}
+
+.stage[data-reached~="fill"] .scenes i {
+  background: linear-gradient(90deg, #ff7a59 0 18%, #1e2a4a 18%);
+}
+
+.stage[data-step="steer"] .scenes li:nth-child(2) i {
+  box-shadow: 0 0 0 2px var(--soft-mint);
+}
+
+.scenes span {
+  color: rgb(244 241 234 / 0.4);
+  font-family: var(--font-mono-stack);
+  font-size: 0.5625rem;
+}
+
+/* ---------- The panel ---------- */
+
+.panel {
+  position: relative;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 18px;
+  min-width: 0;
+  padding: clamp(18px, 2vw, 26px);
+  border-radius: 16px;
+  background:
+    radial-gradient(80% 60% at 100% 0%, rgb(95 224 176 / 0.07), transparent 70%),
+    linear-gradient(180deg, #15171b, #0f1013);
+  box-shadow:
+    0 0 0 1px rgb(244 241 234 / 0.1),
+    0 1px 0 rgb(244 241 234 / 0.08) inset,
+    0 40px 90px -40px rgb(0 0 0 / 0.95);
+}
+
+.panel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 16%;
+  left: 16%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--soft-mint), transparent);
+}
+
+/* The four panes share one cell; the step's pane fades in. */
+.pane {
+  grid-area: 1 / 1;
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  min-width: 0;
+  opacity: 0;
+  translate: 0 8px;
+  transition:
+    opacity 0.4s ease,
+    translate 0.5s var(--ease-land);
+}
+
+.stage[data-step="pick"] [data-pane="pick"],
+.stage[data-step="fill"] [data-pane="fill"],
+.stage[data-step="steer"] [data-pane="steer"],
+.stage[data-step="export"] [data-pane="export"] {
+  opacity: 1;
+  translate: 0 0;
+}
+
+.paneLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: rgb(244 241 234 / 0.5);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+}
+
+/* Pick: the template's card. */
+.tplName {
+  margin-top: 6px;
+  font-size: clamp(1.4rem, 1rem + 1vw, 1.9rem);
+  font-weight: 560;
+  letter-spacing: -0.03em;
+}
+
+.tplMeta {
+  color: rgb(244 241 234 / 0.6);
+  font-size: 0.9375rem;
+}
+
+.tplChips {
+  display: flex;
+  gap: 6px;
+}
+
+.tplChips span,
+.routes span,
+.actions span {
+  padding: 4px 10px;
+  border-radius: var(--radius-round);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.14) inset;
+  color: rgb(244 241 234 / 0.75);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+}
+
+.useBtn {
+  justify-self: start;
+  margin-top: 8px;
+  padding: 9px 16px;
+  border-radius: var(--radius-round);
+  background: var(--soft-mint);
+  color: var(--mint-ink);
+  font-size: 0.875rem;
+  font-weight: 620;
+}
+
+.paneFoot {
+  margin-top: 4px;
+  color: rgb(244 241 234 / 0.42);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+}
+
+/* Fill: what the AI director filled, ticked off row by row. */
+.rows {
+  display: grid;
+  margin: 4px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rows li {
+  display: grid;
+  grid-template-columns: 20px 92px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgb(244 241 234 / 0.07);
+}
+
+.rows em {
+  color: rgb(244 241 234 / 0.5);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  font-style: normal;
+}
+
+.rows b {
+  overflow: hidden;
+  font-size: 0.9375rem;
+  font-weight: 560;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ring {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1.5px rgb(244 241 234 / 0.25) inset;
+  color: transparent;
+  transition:
+    background-color 0.3s ease calc(var(--i) * 140ms + 200ms),
+    color 0.3s ease calc(var(--i) * 140ms + 200ms),
+    box-shadow 0.3s ease calc(var(--i) * 140ms + 200ms);
+}
+
+.stage[data-reached~="fill"] .ring {
+  background: var(--soft-mint);
+  box-shadow: none;
+  color: var(--mint-ink);
+}
+
+/* Steer: the ask and the reply. */
+.ask {
+  margin-top: 6px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgb(244 241 234 / 0.05);
+  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.35) inset;
+  font-size: 0.9375rem;
+}
+
+.ask span {
+  color: var(--soft-mint);
+}
+
+.reply {
+  color: rgb(244 241 234 / 0.72);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.actions,
+.routes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* Export: the file, a render bar and where it goes. */
+.file {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+  font-family: var(--font-mono-stack);
+  font-size: 0.9375rem;
+}
+
+.ready {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--mint-text-dark);
+  font-size: 0.75rem;
+}
+
+.ready i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--soft-mint);
+}
+
+.fileMeta {
+  color: rgb(244 241 234 / 0.5);
+  font-family: var(--font-mono-stack);
+  font-size: 0.75rem;
+}
+
+.render {
+  display: block;
+  height: 6px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: rgb(244 241 234 / 0.08);
+}
+
+.render i {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--deep-mint), var(--soft-mint));
+  transform-origin: left;
+  scale: 0 1;
+  transition: scale 0s;
+}
+
+.stage[data-reached~="export"] .render i {
+  scale: 1 1;
+  transition: scale 2.2s var(--ease-land);
+}
+
+.more {
+  justify-self: start;
+  margin-top: 6px;
+  color: var(--mint-text-dark);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.more:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* The app's chat box at the panel's foot; it glows while you steer. */
+.chat {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 12px 12px 14px;
+  border-radius: 12px;
+  background: rgb(244 241 234 / 0.04);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.1) inset;
+  color: rgb(244 241 234 / 0.42);
+  font-size: 0.8125rem;
+  transition: box-shadow 0.3s ease;
+}
+
+.chat i {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  background: var(--soft-mint);
+  color: var(--mint-ink);
+  opacity: 0.5;
+}
+
+.stage[data-step="steer"] .chat {
+  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.55) inset;
+}
+
+.stage[data-step="steer"] .chat i {
+  opacity: 1;
+}
+
+/* ---------- The four steps ---------- */
+
+.stepsRow {
+  display: grid;
+  gap: 12px;
+}
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  border-block: 1px solid rgb(244 241 234 / 0.1);
+  list-style: none;
+}
+
+.steps li + li {
+  border-left: 1px solid rgb(244 241 234 / 0.08);
+}
+
+.step {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-content: start;
+  gap: 4px 10px;
+  width: 100%;
+  height: 100%;
+  padding: 16px 18px 18px;
+  border: 0;
+  background: none;
+  color: rgb(244 241 234 / 0.6);
+  text-align: left;
+  cursor: pointer;
+  transition: color var(--dur-ui) ease;
+}
+
+.step em {
+  color: rgb(244 241 234 / 0.4);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  font-style: normal;
+  line-height: 1.6;
+}
+
+.step b {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.stepTitle,
+.stepBody {
+  grid-column: 2;
+}
+
+.stepTitle {
+  color: rgb(244 241 234 / 0.8);
+  font-size: 0.875rem;
+}
+
+.stepBody {
+  color: rgb(244 241 234 / 0.5);
+  font-size: 0.8125rem;
+  line-height: 1.45;
+}
+
+.step:hover,
+.step[aria-pressed="true"] {
+  color: var(--paper);
+}
+
+.step[aria-pressed="true"] em,
+.step[data-done] em {
+  color: var(--soft-mint);
+}
+
+.step:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: -2px;
+}
+
+/* The step on screen gets a mint line along its foot, filling while the
+   section plays. */
+.fillLine {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 2px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+  transform-origin: left;
+  scale: 0 1;
+}
+
+.step[aria-pressed="true"] .fillLine {
+  scale: 1 1;
+}
+
+.stage[data-auto] .step[aria-pressed="true"] .fillLine {
+  animation: fill var(--dur) linear;
+}
+
+.pause {
+  display: inline-flex;
+  align-items: center;
+  justify-self: end;
+  gap: 7px;
+  padding: 5px 11px;
+  border: 0;
+  border-radius: var(--radius-round);
+  background: none;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.12) inset;
+  color: rgb(244 241 234 / 0.6);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.pause:hover {
+  color: var(--paper);
+}
+
+.pause:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 3px;
+}
+
+.note {
+  margin-top: 18px;
+  color: rgb(244 241 234 / 0.38);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+@keyframes fill {
+  from {
+    scale: 0 1;
+  }
+}
+
+/* ---------- Narrower screens ---------- */
+
+@media (max-width: 980px) {
+  .work {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .steps li:nth-child(3) {
+    border-left: 0;
+  }
+
+  .steps li:nth-child(n + 3) {
+    border-top: 1px solid rgb(244 241 234 / 0.08);
+  }
+}
+
+@media (max-width: 860px) {
+  .head {
+    display: grid;
+    gap: 14px;
+  }
+
+  .lead {
+    text-align: left;
+  }
+
+  .plain,
+  .accent {
+    display: inline;
+  }
+
+  .title {
+    font-size: clamp(1.9rem, 1.2rem + 3vw, 2.75rem);
+  }
+}
+
+/* Phones: the steps show their number, name and title only. */
+@media (max-width: 560px) {
+  .stepBody {
+    display: none;
+  }
+
+  .step {
+    padding: 12px;
+  }
+
+  .rows li {
+    grid-template-columns: 20px 78px minmax(0, 1fr);
+  }
+
+  .note {
+    text-align: left;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .clip,
+  .branded,
+  .headline,
+  .progress i,
+  .render i,
+  .scenes i,
+  .pane,
+  .ring {
+    transition: none;
+  }
+
+  .stage[data-auto] .step[aria-pressed="true"] .fillLine {
+    animation: none;
+  }
+}

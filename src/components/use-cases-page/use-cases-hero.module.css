@@ -1,0 +1,343 @@
+/*
+ * The Use cases page's hero. Centred, oversized type, as the Product page's
+ * hero; then a wall of KeyFly's templates drifting in three rows, each card
+ * at its real shape (--r, width over height) and in its look (data-look),
+ * and a bar of facts between hairlines.
+ */
+.hero {
+  position: relative;
+  isolation: isolate;
+  padding: calc(var(--header-h) + clamp(44px, 7vh, 88px)) 0 clamp(72px, 8vw, 120px);
+  overflow-x: clip;
+  color: var(--paper);
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Mint light under the wall; dusk violet at its ends. */
+.glow {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(46% 30% at 50% 62%, rgb(95 224 176 / 0.13), transparent 72%),
+    radial-gradient(30% 30% at 8% 62%, rgb(107 84 140 / 0.16), transparent 72%),
+    radial-gradient(30% 30% at 92% 62%, rgb(107 84 140 / 0.12), transparent 72%),
+    radial-gradient(60% 30% at 50% 0%, rgb(95 224 176 / 0.06), transparent 70%);
+}
+
+.grain {
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+  opacity: 0.035;
+}
+
+.inner {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* ---------- Heading ---------- */
+
+.head {
+  display: grid;
+  justify-items: center;
+  max-width: 1000px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 14px 6px 10px;
+  border-radius: var(--radius-round);
+  background: rgb(244 241 234 / 0.04);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.09) inset;
+  color: rgb(244 241 234 / 0.72);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  animation: rise 0.9s var(--ease-land) 0.1s backwards;
+}
+
+.rec {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--soft-mint);
+  box-shadow: 0 0 10px var(--soft-mint);
+}
+
+.title {
+  margin-top: 26px;
+  font-size: clamp(2.9rem, 1.2rem + 4.8vw, 6.1rem);
+  font-weight: 560;
+  letter-spacing: -0.055em;
+  line-height: 0.95;
+  animation: rise 1s var(--ease-land) 0.25s backwards;
+}
+
+.plain,
+.accent {
+  display: block;
+}
+
+.accent {
+  padding-bottom: 0.08em;
+  background: linear-gradient(100deg, var(--mint-text-dark), #eafff6 50%, var(--soft-mint));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-family: var(--font-accent-stack);
+  font-size: 1.1em;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.lead {
+  max-width: 56ch;
+  margin-top: 24px;
+  color: rgb(244 241 234 / 0.64);
+  font-size: var(--text-lead);
+  line-height: 1.5;
+  animation: rise 1s var(--ease-land) 0.45s backwards;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 30px;
+  animation: rise 1s var(--ease-land) 0.6s backwards;
+}
+
+/* ---------- The wall of templates ---------- */
+
+/* Kept to the page column, so the page timeline in the right margin never
+   sits over a card. */
+.wallWrap {
+  display: grid;
+  width: min(1320px, 100% - 2 * var(--gutter));
+  margin: clamp(56px, 7vw, 96px) auto 0;
+  animation: rise 1.2s var(--ease-land) 0.75s backwards;
+}
+
+.wall {
+  --h: clamp(118px, 12.5vw, 176px);
+  --gap: clamp(12px, 1.2vw, 18px);
+  position: relative;
+  display: grid;
+  /* A grid item would otherwise grow to its rows' full width. */
+  min-width: 0;
+  gap: var(--gap);
+  overflow-x: clip;
+}
+
+/* The wall's ends fade into the night (painted over it, not a mask). */
+.wall::before,
+.wall::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  z-index: 2;
+  width: clamp(28px, 4vw, 56px);
+  pointer-events: none;
+}
+
+.wall::before {
+  left: 0;
+  background: linear-gradient(90deg, var(--night), transparent);
+}
+
+.wall::after {
+  right: 0;
+  background: linear-gradient(270deg, var(--night), transparent);
+}
+
+.row {
+  display: flex;
+}
+
+.track {
+  display: flex;
+  flex: none;
+  will-change: transform;
+  animation: drift var(--dur) linear infinite;
+}
+
+.row[data-dir="right"] .track {
+  animation-direction: reverse;
+}
+
+.wall[data-paused] .track {
+  animation-play-state: paused;
+}
+
+.set {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--gap);
+  margin: 0;
+  padding: 0 var(--gap) 0 0;
+  list-style: none;
+}
+
+.pause {
+  display: inline-flex;
+  align-items: center;
+  justify-self: end;
+  gap: 7px;
+  margin-top: 16px;
+  padding: 5px 11px;
+  border: 0;
+  border-radius: var(--radius-round);
+  background: none;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.12) inset;
+  color: rgb(244 241 234 / 0.6);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.pause:hover {
+  color: var(--paper);
+}
+
+.pause:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 3px;
+}
+
+/* ---------- Facts ---------- */
+
+.facts {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin: clamp(40px, 5vw, 64px) 0 0;
+  border-block: 1px solid rgb(244 241 234 / 0.1);
+}
+
+.fact {
+  min-width: 0;
+  padding: 18px 18px 20px;
+}
+
+.fact + .fact {
+  border-left: 1px solid rgb(244 241 234 / 0.08);
+}
+
+.fact dt {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 10px;
+  color: rgb(244 241 234 / 0.82);
+  font-size: 0.9375rem;
+}
+
+.fact b {
+  color: var(--paper);
+  font-size: clamp(1.9rem, 1.3rem + 1.4vw, 2.6rem);
+  font-weight: 560;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.fact dd {
+  margin: 8px 0 0;
+  color: rgb(244 241 234 / 0.42);
+  font-family: var(--font-mono-stack);
+  font-size: 0.65625rem;
+  line-height: 1.5;
+}
+
+.footnote {
+  margin-top: 14px;
+  color: rgb(244 241 234 / 0.38);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    translate: 0 10px;
+  }
+}
+
+@keyframes drift {
+  to {
+    translate: -50% 0;
+  }
+}
+
+/* ---------- Narrower screens ---------- */
+
+@media (max-width: 980px) {
+  .facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .fact + .fact {
+    border-left: 0;
+  }
+
+  .fact:nth-child(n + 3) {
+    border-top: 1px solid rgb(244 241 234 / 0.08);
+  }
+
+  .fact:nth-child(even) {
+    border-left: 1px solid rgb(244 241 234 / 0.08);
+  }
+}
+
+@media (max-width: 760px) {
+  .plain,
+  .accent {
+    display: inline;
+  }
+
+  .wall {
+    --h: clamp(96px, 26vw, 128px);
+  }
+
+
+  .footnote {
+    text-align: left;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .eyebrow,
+  .title,
+  .lead,
+  .actions,
+  .wallWrap {
+    animation: none;
+  }
+
+  .track {
+    animation: none;
+  }
+
+  .pause {
+    display: none;
+  }
+}

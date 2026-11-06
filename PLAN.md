@@ -153,8 +153,8 @@ The site isn't live yet, so every page the navbar points at gets built now, one 
 | # | Page | Status | Navbar today | Facts we have / what's missing |
 |---|---|---|---|---|
 | 1 | Product `/product` | ✅ done 2026-11-05 | Product | All nine sections built |
-| 2 | Use cases `/use-cases` | ⏳ next | Use cases → `/#use-cases` | Six presets with their real prompts, four roles, 91 templates (11 categories). Missing: real videos made with KeyFly and customer stories, so previews stay illustrative |
-| 3 | Integrations `/integrations` | ⏳ | Integrations → `/#tools` | Agents (Settings → Agents), editors and timeline formats, Package for editing, platforms. Missing: ChatGPT and Claude app install links |
+| 2 | Use cases `/use-cases` | ✅ done 2026-11-06 | Use cases → `/use-cases` (navbar and footer) | Six presets with their real prompts, four roles, 91 templates (11 categories). Missing: real videos made with KeyFly and customer stories, so previews stay illustrative |
+| 3 | Integrations `/integrations` | ⏳ next | Integrations → `/#tools` | Agents (Settings → Agents), editors and timeline formats, Package for editing, platforms. Missing: ChatGPT and Claude app install links |
 | 4 | Pricing `/pricing` | ⏳ | Pricing → `/#pricing` | Everything from the pricing API (plans, prices, AI minutes, packs, Team, Enterprise) |
 | 5 | Download `/download` | ⏳ | Download button → the build, or `/#download` | Real builds (version 1.1.7), macOS 13+ (Apple silicon, Intel), Windows 10 and 11 |
 

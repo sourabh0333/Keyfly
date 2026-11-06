@@ -7,11 +7,12 @@ import { siteConfig } from "@/config/site";
 // exist. The header still supports a dropdown (`menu: { groups, feature,
 // all }`, see src/components/header/mega-menu.jsx) for when items have
 // pages of their own. When the Use cases, Integrations and Download pages
-// are built, point these links at them (PLAN.md, "Site pages").
+// are built, point these links at them (PLAN.md, "Site pages"); Use cases
+// points at its page from 2026-11-05, while it is being built.
 
 export const primaryNav = [
   { label: "Product", href: "/product" },
-  { label: "Use cases", href: "/#use-cases" },
+  { label: "Use cases", href: "/use-cases" },
   // Your own AI agents, the ChatGPT and Claude apps, and export to other
   // editors ("Open by design").
   { label: "Integrations", href: "/#tools" },

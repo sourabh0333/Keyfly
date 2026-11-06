@@ -1,0 +1,296 @@
+/*
+ * Use cases page, "Questions": two columns, the heading and a help card
+ * sticky on the left, the questions on the right as numbered hairline
+ * rows that open in place (native <details>; the open one gets a mint
+ * line at its left and its plus turns to a minus).
+ */
+.section {
+  position: relative;
+  padding: var(--section-pad) 0;
+  color: var(--paper);
+}
+
+.inner {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.4fr);
+  gap: clamp(32px, 6vw, 96px);
+  align-items: start;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* ---------- The side ---------- */
+
+.side {
+  position: sticky;
+  top: 120px;
+  display: grid;
+  justify-items: start;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: rgb(244 241 234 / 0.62);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.eyebrowMark {
+  width: 18px;
+  height: 1px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+}
+
+.title {
+  margin-top: 16px;
+  font-size: clamp(2.1rem, 1.1rem + 2.2vw, 3.4rem);
+  font-weight: 560;
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+
+.plain,
+.accent {
+  display: block;
+}
+
+.accent {
+  padding-bottom: 0.06em;
+  background: linear-gradient(100deg, var(--mint-text-dark), #eafff6 50%, var(--soft-mint));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-family: var(--font-accent-stack);
+  font-size: 1.1em;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.lead {
+  max-width: 34ch;
+  margin-top: 18px;
+  color: rgb(244 241 234 / 0.62);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.help {
+  display: grid;
+  gap: 4px;
+  margin-top: clamp(24px, 3vw, 40px);
+  padding: 18px 20px;
+  border-radius: 16px;
+  background: linear-gradient(180deg, #15171b, #0f1013);
+  box-shadow:
+    0 0 0 1px rgb(244 241 234 / 0.1),
+    0 1px 0 rgb(244 241 234 / 0.08) inset;
+}
+
+.helpLabel {
+  color: rgb(244 241 234 / 0.5);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.helpMail {
+  color: var(--mint-text-dark);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.helpMail:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.helpLine {
+  color: rgb(244 241 234 / 0.55);
+  font-size: 0.8125rem;
+}
+
+/* ---------- The questions ---------- */
+
+.list {
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid rgb(244 241 234 / 0.1);
+  list-style: none;
+}
+
+.item {
+  position: relative;
+  border-bottom: 1px solid rgb(244 241 234 / 0.1);
+}
+
+/* The open question: a mint line along its left. */
+.item[open]::before {
+  content: "";
+  position: absolute;
+  top: 16px;
+  bottom: 16px;
+  left: -14px;
+  width: 2px;
+  border-radius: 2px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+}
+
+.q {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) 20px;
+  align-items: baseline;
+  gap: 12px;
+  padding: 20px 4px;
+  color: rgb(244 241 234 / 0.85);
+  font-size: clamp(1rem, 0.9rem + 0.35vw, 1.2rem);
+  font-weight: 560;
+  letter-spacing: -0.015em;
+  list-style: none;
+  cursor: pointer;
+  transition: color var(--dur-ui) ease;
+}
+
+.q::-webkit-details-marker {
+  display: none;
+}
+
+.q:hover,
+.item[open] .q {
+  color: var(--paper);
+}
+
+.q:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+.q em {
+  color: rgb(244 241 234 / 0.4);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  font-style: normal;
+}
+
+.item[open] .q em {
+  color: var(--soft-mint);
+}
+
+/* A plus that turns to a minus. */
+.plus {
+  position: relative;
+  align-self: center;
+  width: 14px;
+  height: 14px;
+}
+
+.plus::before,
+.plus::after {
+  content: "";
+  position: absolute;
+  top: 6px;
+  left: 0;
+  width: 14px;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  transition: rotate 0.3s var(--ease-land);
+}
+
+.plus::after {
+  rotate: 90deg;
+}
+
+.item[open] .plus::after {
+  rotate: 0deg;
+}
+
+.a {
+  display: grid;
+  justify-items: start;
+  gap: 10px;
+  padding: 0 4px 22px 50px;
+}
+
+.a p {
+  max-width: 62ch;
+  color: rgb(244 241 234 / 0.66);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+
+.a a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--mint-text-dark);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.a a:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.a a:focus-visible,
+.helpMail:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ---------- Narrower screens ---------- */
+
+@media (max-width: 980px) {
+  .inner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .side {
+    position: static;
+  }
+
+  .plain,
+  .accent {
+    display: inline;
+  }
+
+  .title {
+    font-size: clamp(1.9rem, 1.2rem + 3vw, 2.75rem);
+  }
+}
+
+/* Phones: the numbers sit closer; answers keep a small indent. */
+@media (max-width: 560px) {
+  .q {
+    grid-template-columns: 26px minmax(0, 1fr) 16px;
+    gap: 8px;
+  }
+
+  .a {
+    padding-left: 34px;
+  }
+
+  .item[open]::before {
+    left: -8px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .plus::before,
+  .plus::after {
+    transition: none;
+  }
+}
