@@ -172,14 +172,14 @@
 
 /* A column as tall as the heading (the eyebrow's top to the lead's last
    line). Its three films are the bars of a waveform, centred on the
-   heading's middle and rising towards it in even steps (78%, 58%, 38% of
+   heading's middle and rising towards it in even steps (72%, 54%, 36% of
    the heading's height). The tallest, beside the heading, is also wider
-   (`--big`, 1.3 bars). Mirrored on the right, so the heading is the
+   (`--big`, 1.55 bars). Mirrored on the right, so the heading is the
    peak. */
 .frames {
   --gap: 12px;
-  --bar: min(124px, (100cqw - 2 * var(--gap)) / 3.3);
-  --big: calc(var(--bar) * 1.3);
+  --bar: min(124px, (100cqw - 2 * var(--gap)) / 3.55);
+  --big: calc(var(--bar) * 1.55);
   position: relative;
   container-type: size;
   min-width: 0;
@@ -200,18 +200,18 @@
 .wall .cell {
   flex: none;
   width: var(--big);
-  height: 78%;
+  height: 72%;
   animation: bar 1.1s var(--ease-land) calc(0.6s + (2 - var(--i)) * 0.14s) backwards;
 }
 
 .wall .cell:nth-child(1) {
   width: var(--bar);
-  height: 38%;
+  height: 36%;
 }
 
 .wall .cell:nth-child(2) {
   width: var(--bar);
-  height: 58%;
+  height: 54%;
 }
 
 /* Each film is a layer; a cut wipes the next one in over it, towards the
@@ -299,7 +299,7 @@
    feet. */
 .filmsPause {
   position: absolute;
-  bottom: 11%;
+  bottom: 14%;
   left: calc(var(--big) + 2 * var(--gap) + var(--bar) * 1.5);
   display: grid;
   place-items: center;
