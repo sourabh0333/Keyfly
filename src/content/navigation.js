@@ -15,8 +15,8 @@ export const primaryNav = [
   { label: "Use cases", href: "/use-cases" },
   // Your own AI agents, the ChatGPT and Claude apps, and export to other
   // editors ("Open by design").
-  { label: "Integrations", href: "/#tools" },
-  { label: "Pricing", href: "/#pricing" },
+  { label: "Integrations", href: "/integrations" },
+  { label: "Pricing", href: "/pricing" },
 ];
 
 // The app's own sign-in and free sign-up (the links the pricing API gives

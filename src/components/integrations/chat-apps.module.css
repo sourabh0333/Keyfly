@@ -1,0 +1,813 @@
+/*
+ * Integrations page, "Chat apps": the heading as on the site's other
+ * sections; then a bar (which chat, each app's status), a thread of three steps
+ * (a rail beside the ask, the reply and the project in KeyFly), and the
+ * way into the app.
+ */
+.section {
+  position: relative;
+  padding: var(--section-pad) 0;
+  color: var(--paper);
+}
+
+.inner {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* ---------- Heading ---------- */
+
+.head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+  margin-bottom: clamp(32px, 4vw, 52px);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: rgb(244 241 234 / 0.62);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.eyebrowMark {
+  width: 18px;
+  height: 1px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+}
+
+.title {
+  margin-top: 16px;
+  font-size: clamp(2.1rem, 1.1rem + 2.2vw, 3.4rem);
+  font-weight: 560;
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+
+.plain,
+.accent {
+  display: block;
+}
+
+.accent {
+  padding-bottom: 0.06em;
+  background: linear-gradient(100deg, var(--mint-text-dark), #eafff6 50%, var(--soft-mint));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-family: var(--font-accent-stack);
+  font-size: 1.1em;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.lead {
+  max-width: 46ch;
+  color: rgb(244 241 234 / 0.62);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  text-align: right;
+}
+
+/* ---------- The bar ---------- */
+
+.wrap {
+  display: grid;
+  gap: 0;
+}
+
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px 24px;
+  padding: 14px 0;
+  border-block: 1px solid rgb(244 241 234 / 0.1);
+}
+
+.switchRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.switchLabel {
+  color: rgb(244 241 234 / 0.5);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.switch {
+  display: inline-flex;
+  padding: 3px;
+  border-radius: var(--radius-round);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.14) inset;
+}
+
+.switch button {
+  padding: 6px 16px;
+  border: 0;
+  border-radius: var(--radius-round);
+  background: none;
+  color: rgb(244 241 234 / 0.62);
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 560;
+  cursor: pointer;
+  transition:
+    background 0.3s ease,
+    color 0.3s ease;
+}
+
+.switch button[aria-pressed="true"] {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.switch button:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 2px;
+}
+
+.avail {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.avail li {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.avail span {
+  padding: 3px 10px;
+  border-radius: var(--radius-round);
+  box-shadow: 0 0 0 1px rgb(242 168 110 / 0.45) inset;
+  color: #f2c49a;
+  font-family: var(--font-mono-stack);
+  font-size: 0.5625rem;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+}
+
+/* ---------- The thread ---------- */
+
+/* A rail of steps beside what each looks like; the rail's line draws
+   down to the step in play (--fill). */
+.thread {
+  --rail: clamp(150px, 15vw, 210px);
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--rail) minmax(0, 1fr);
+  column-gap: clamp(20px, 3vw, 48px);
+  padding-top: clamp(32px, 4vw, 52px);
+}
+
+.line {
+  position: absolute;
+  top: clamp(40px, 4.6vw, 60px);
+  bottom: 40px;
+  left: 6px;
+  width: 1px;
+  background: rgb(244 241 234 / 0.12);
+}
+
+.line::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, var(--soft-mint), rgb(95 224 176 / 0.4));
+  box-shadow: 0 0 8px rgb(95 224 176 / 0.6);
+  transform-origin: top;
+  scale: 1 var(--fill);
+  transition: scale 0.9s var(--ease-land);
+}
+
+.step {
+  position: relative;
+  display: grid;
+  grid-template-columns: 13px minmax(0, 1fr);
+  align-content: start;
+  column-gap: 16px;
+  row-gap: 4px;
+  padding-top: 6px;
+  padding-bottom: clamp(36px, 4vw, 56px);
+}
+
+.node {
+  grid-row: 1 / span 2;
+  width: 13px;
+  height: 13px;
+  margin-top: 1px;
+  border-radius: 50%;
+  background: var(--night);
+  box-shadow: 0 0 0 1.5px rgb(244 241 234 / 0.3);
+  transition:
+    background 0.4s ease,
+    box-shadow 0.4s ease;
+}
+
+.step[data-on] .node {
+  background: var(--soft-mint);
+  box-shadow: 0 0 0 4px rgb(95 224 176 / 0.15);
+}
+
+.step[data-now] .node {
+  box-shadow:
+    0 0 0 4px rgb(95 224 176 / 0.2),
+    0 0 16px var(--soft-mint);
+}
+
+.stepIndex {
+  color: rgb(244 241 234 / 0.4);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.12em;
+}
+
+.step[data-on] .stepIndex {
+  color: var(--mint-text-dark);
+}
+
+.stepLabel {
+  grid-column: 2;
+  color: rgb(244 241 234 / 0.5);
+  font-size: 1rem;
+  font-weight: 580;
+  letter-spacing: -0.015em;
+  transition: color 0.4s ease;
+}
+
+.step[data-now] .stepLabel {
+  color: var(--paper);
+}
+
+.block {
+  min-width: 0;
+  padding-bottom: clamp(36px, 4vw, 56px);
+}
+
+/* 01 The ask, set like a pull quote. */
+.quote {
+  max-width: 24ch;
+  margin: 0;
+  color: var(--paper);
+  font-family: var(--font-accent-stack);
+  font-size: clamp(1.9rem, 1.1rem + 2.6vw, 3.4rem);
+  font-style: italic;
+  line-height: 1.08;
+  letter-spacing: -0.015em;
+  min-height: 2.2em;
+}
+
+.mark {
+  color: var(--mint-text-dark);
+}
+
+.caret {
+  display: inline-block;
+  width: 2px;
+  height: 0.9em;
+  margin-left: 3px;
+  vertical-align: -0.08em;
+  background: var(--soft-mint);
+  animation: caret 0.9s steps(1) infinite;
+}
+
+.by {
+  margin-top: 14px;
+  color: rgb(244 241 234 / 0.5);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+}
+
+.by b {
+  color: var(--paper);
+  font-weight: 600;
+  animation: swap 0.45s var(--ease-land);
+}
+
+/* 02 KeyFly's reply in the chat: the video beside its details. */
+.reply {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+  max-width: 860px;
+  overflow: hidden;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #15171b, #0f1013);
+  box-shadow:
+    0 0 0 1px rgb(244 241 234 / 0.1),
+    0 40px 90px -46px rgb(0 0 0 / 0.95);
+  opacity: 0.35;
+  transition:
+    opacity 0.6s ease,
+    box-shadow 0.6s ease;
+}
+
+.reply[data-on] {
+  opacity: 1;
+}
+
+.reply[data-ready] {
+  box-shadow:
+    0 0 0 1px rgb(95 224 176 / 0.45),
+    0 40px 90px -46px rgb(0 0 0 / 0.95),
+    0 0 70px -30px rgb(95 224 176 / 0.55);
+}
+
+.video {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: #000;
+}
+
+.video video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(10px) brightness(0.5);
+  scale: 1.06;
+  transition:
+    filter 0.8s ease,
+    scale 0.8s var(--ease-land);
+}
+
+.reply[data-ready] .video video {
+  filter: none;
+  scale: 1;
+}
+
+/* While KeyFly makes it, a light sweeps the picture. */
+.shimmer {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 30%, rgb(95 224 176 / 0.22) 50%, transparent 70%);
+  translate: -100% 0;
+  opacity: 0;
+}
+
+.reply[data-on]:not([data-ready]) .shimmer {
+  opacity: 1;
+  animation: sweep 1.2s linear infinite;
+}
+
+.length {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  padding: 2px 7px;
+  border-radius: 5px;
+  background: rgb(11 11 13 / 0.7);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+}
+
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  padding: 20px;
+}
+
+.from {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.from em {
+  color: rgb(244 241 234 / 0.45);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  font-style: normal;
+  font-weight: 400;
+  animation: swap 0.45s var(--ease-land);
+}
+
+.symbol {
+  width: 18px;
+  height: 18px;
+  background: url("/brand/symbol-dark.svg") center / contain no-repeat;
+}
+
+.state {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--mint-text-dark);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+}
+
+.spin {
+  width: 11px;
+  height: 11px;
+  border: 1.5px solid rgb(95 224 176 / 0.25);
+  border-top-color: var(--soft-mint);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.replyTitle {
+  font-size: clamp(1.2rem, 0.9rem + 0.8vw, 1.6rem);
+  font-weight: 560;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+}
+
+.open {
+  align-self: flex-start;
+  margin-top: auto;
+  padding: 9px 16px;
+  border-radius: var(--radius-round);
+  background: var(--soft-mint);
+  color: var(--mint-ink);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  transition: scale 0.2s ease;
+}
+
+.open[data-pressed] {
+  scale: 0.94;
+  box-shadow: 0 0 0 6px rgb(95 224 176 / 0.18);
+}
+
+/* 03 The project in KeyFly. */
+.project {
+  display: grid;
+  gap: 12px;
+  max-width: 860px;
+  padding: 16px 18px;
+  border-radius: 16px;
+  background: #0e0f12;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.1);
+  opacity: 0.35;
+  transition:
+    opacity 0.6s ease,
+    box-shadow 0.6s ease;
+}
+
+.project[data-on] {
+  opacity: 1;
+  box-shadow:
+    0 0 0 1px rgb(95 224 176 / 0.4),
+    0 0 50px -24px rgb(95 224 176 / 0.5);
+}
+
+.projectHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  font-size: 0.8125rem;
+}
+
+.projectHead > b {
+  font-weight: 600;
+}
+
+.liveDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--soft-mint);
+  box-shadow: 0 0 6px var(--soft-mint);
+}
+
+.opened {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  color: var(--mint-text-dark);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+}
+
+.opened b {
+  font-weight: 600;
+  animation: swap 0.45s var(--ease-land);
+}
+
+.tracks {
+  position: relative;
+  display: grid;
+  gap: 5px;
+}
+
+.track {
+  display: grid;
+  grid-template-columns: 82px minmax(0, 1fr);
+  align-items: center;
+  height: 16px;
+}
+
+.track span {
+  color: rgb(244 241 234 / 0.4);
+  font-family: var(--font-mono-stack);
+  font-size: 0.5625rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.track i {
+  height: 100%;
+  border-radius: 4px;
+  background: rgb(95 224 176 / 0.2);
+  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.45) inset;
+  transform-origin: left;
+  scale: 0 1;
+  transition: scale 0.7s var(--ease-land) calc(0.15s + var(--i) * 0.12s);
+}
+
+.project[data-on] .track i {
+  scale: 1 1;
+}
+
+.track:nth-child(2) i {
+  width: 92%;
+  background: rgb(150 136 232 / 0.22);
+  box-shadow: 0 0 0 1px rgb(170 158 245 / 0.5) inset;
+}
+
+.track:nth-child(3) i {
+  background: rgb(242 168 110 / 0.16);
+  box-shadow: 0 0 0 1px rgb(242 168 110 / 0.4) inset;
+}
+
+.track:nth-child(4) i {
+  width: 40%;
+  margin-left: 8%;
+  background: rgb(244 241 234 / 0.12);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.3) inset;
+}
+
+.playhead {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  left: 82px;
+  width: 2px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 6px var(--soft-mint);
+  opacity: 0;
+}
+
+.project[data-on] .playhead {
+  opacity: 1;
+  animation: playhead 6s linear infinite;
+}
+
+.sync {
+  color: rgb(244 241 234 / 0.45);
+  font-size: 0.75rem;
+}
+
+/* ---------- Foot ---------- */
+
+.foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 16px;
+  border-top: 1px solid rgb(244 241 234 / 0.1);
+}
+
+.meanwhile {
+  color: var(--mint-text-dark);
+  font-size: 0.875rem;
+  text-decoration: underline;
+  text-decoration-color: rgb(130 232 194 / 0.35);
+  text-underline-offset: 3px;
+}
+
+.meanwhile:hover {
+  text-decoration-color: currentColor;
+}
+
+.pause {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 11px;
+  border: 0;
+  border-radius: var(--radius-round);
+  background: none;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.12) inset;
+  color: rgb(244 241 234 / 0.6);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.pause:hover {
+  color: var(--paper);
+}
+
+.pause:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 3px;
+}
+
+.note {
+  margin-top: 14px;
+  color: rgb(244 241 234 / 0.38);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+@keyframes swap {
+  from {
+    opacity: 0;
+    translate: 0 4px;
+  }
+}
+
+@keyframes caret {
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes sweep {
+  from {
+    translate: -100% 0;
+  }
+
+  to {
+    translate: 100% 0;
+  }
+}
+
+@keyframes spin {
+  to {
+    rotate: 360deg;
+  }
+}
+
+@keyframes playhead {
+  from {
+    left: 82px;
+  }
+
+  to {
+    left: calc(100% - 2px);
+  }
+}
+
+/* ---------- Narrower screens ---------- */
+
+@media (max-width: 1000px) {
+  .reply {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .side {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 6px 14px;
+  }
+
+  .from,
+  .state,
+  .replyTitle {
+    grid-column: 1;
+  }
+
+  .open {
+    grid-row: 1 / span 3;
+    grid-column: 2;
+    align-self: center;
+    margin: 0;
+  }
+}
+
+/* The rail's labels go above each block; the line runs down the left. */
+@media (max-width: 860px) {
+  .head {
+    display: grid;
+    gap: 14px;
+  }
+
+  .lead {
+    text-align: left;
+  }
+
+  .plain,
+  .accent {
+    display: inline;
+  }
+
+  .title {
+    font-size: clamp(1.9rem, 1.2rem + 3vw, 2.75rem);
+  }
+
+  .thread {
+    grid-template-columns: minmax(0, 1fr);
+    padding-left: 30px;
+  }
+
+  .line {
+    top: clamp(40px, 4.6vw, 60px);
+  }
+
+  .step {
+    grid-template-columns: 13px auto minmax(0, 1fr);
+    align-items: center;
+    column-gap: 10px;
+    margin-left: -30px;
+    padding-bottom: 14px;
+  }
+
+  .node {
+    grid-row: 1;
+  }
+
+  .stepLabel {
+    grid-row: 1;
+    grid-column: 3;
+  }
+
+  .note {
+    text-align: left;
+  }
+}
+
+@media (max-width: 560px) {
+  .side {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .open {
+    grid-row: auto;
+    grid-column: 1;
+    justify-self: start;
+  }
+
+  .opened {
+    margin-left: 0;
+  }
+
+  .track {
+    grid-template-columns: 64px minmax(0, 1fr);
+  }
+
+  .playhead {
+    left: 64px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .line::after,
+  .node,
+  .stepLabel,
+  .reply,
+  .video video,
+  .project,
+  .track i,
+  .switch button {
+    transition: none;
+  }
+
+  .caret,
+  .by b,
+  .from em,
+  .opened b,
+  .spin,
+  .project[data-on] .playhead {
+    animation: none;
+  }
+}

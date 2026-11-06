@@ -5,7 +5,8 @@
 // The source clips are not kept in the repository. Download them into any
 // folder, then:
 //   node scripts/hero-reel/record.mjs <folder with the clips>
-//   open http://127.0.0.1:4419/?record in Chrome for 9 s.
+//   open http://127.0.0.1:4419/?record in Chrome and wait until it saves
+//   (it collects each shot's frames, then encodes them frame-exact).
 // http://127.0.0.1:4419/?t=3.2 shows one frame; ?sheet shows a contact
 // sheet of each clip, for picking in-points.
 //

@@ -16,8 +16,11 @@ function price(p) {
   if (!p) return null;
   const amount = str(p.perMonthDisplay);
   if (!amount) return null;
-  const listDisplay = num(p.listCents) !== null && num(p.cents) !== null && p.listCents > p.cents ? usd(p.listCents) : null;
-  return { amount, billed: str(p.billedDisplay), was: listDisplay, reason: str(p.reason) };
+  // The list price struck through when this one is lower (the API's field
+  // is perMonthCents; an earlier version read "cents", so it never showed).
+  const now = num(p.perMonthCents) ?? num(p.cents);
+  const listDisplay = num(p.listCents) !== null && now !== null && p.listCents > now ? usd(p.listCents) : null;
+  return { amount, billed: str(p.billedDisplay), was: listDisplay, reason: str(p.reason), discount: num(p.discountPercent) };
 }
 
 function links(l) {
@@ -35,14 +38,25 @@ function plan(p, i) {
     monthly: price(p.price?.monthly),
     annual: price(p.price?.annual),
     mostPopular: Boolean(p.mostPopular),
-    trial: p.trial ? { days: num(p.trial.days), noCard: Boolean(p.trial.noCard) } : null,
+    // The API says cardRequired: false; an earlier version read noCard.
+    trial: p.trial
+      ? {
+          days: num(p.trial.days),
+          noCard: p.trial.cardRequired === false || Boolean(p.trial.noCard),
+          aiMinutes: num(p.trial.aiMinutes),
+          after: str(p.trial.afterTrial),
+        }
+      : null,
     aiMinutes: num(p.aiMinutesPerMonth),
     storageGb: num(p.storageGb),
+    exportsPerMonth: num(p.exportsPerMonth),
+    generatedVideoSeconds: num(p.generatedVideoSecondsPerMonth),
     exportResolution: str(p.maxExportResolution),
     watermark: typeof p.watermark === "boolean" ? p.watermark : null,
-    seats: p.seats ? { perSeat: Boolean(p.seats.perSeat), minimum: num(p.seats.minimum) } : null,
+    seats: p.seats ? { perSeat: Boolean(p.seats.perSeat), minimum: num(p.seats.minimum), included: num(p.seats.included) } : null,
     features: Array.isArray(p.features) ? p.features.filter(str).slice(0, 5) : [],
     cta: p.cta && str(p.cta.label) && str(p.cta.href) ? { label: p.cta.label, href: p.cta.href } : null,
+    contact: str(p.links?.month?.contact) || str(p.links?.year?.contact),
     links: links(p.links),
   };
 }
@@ -54,9 +68,17 @@ function normalise(raw) {
     plans: raw.plans.map(plan),
     annualSavingsPercent: num(raw.annualSavingsPercent),
     launchOffer: offer ? str(offer.label) || str(offer.text) || str(offer.title) : null,
+    currency: str(raw.currency),
+    unit: raw.unit ? { name: str(raw.unit.name), description: str(raw.unit.description) } : null,
     packs: Array.isArray(raw.packs)
       ? raw.packs
-          .map((k) => ({ minutes: num(k.aiMinutes) ?? num(k.minutes), price: str(k.priceDisplay), bonus: num(k.bonusPercent), href: str(k.checkoutUrl) }))
+          .map((k) => ({
+            minutes: num(k.aiMinutes) ?? num(k.minutes),
+            price: str(k.priceDisplay),
+            bonus: num(k.bonusPercent),
+            perMinuteCents: num(k.centsPerAiMinute),
+            href: str(k.checkoutUrl),
+          }))
           .filter((k) => k.minutes !== null && k.price && k.href)
       : [],
   };

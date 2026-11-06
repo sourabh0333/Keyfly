@@ -54,9 +54,11 @@ const seek = (v, t) =>
 // Draw a video frame to cover the canvas, scaled up by `zoom` towards the
 // focus point.
 function cover(v, zoom, [fx, fy]) {
-  const s = Math.max(W / v.videoWidth, H / v.videoHeight) * zoom;
-  const w = v.videoWidth * s;
-  const h = v.videoHeight * s;
+  const vw = v.videoWidth || v.width;
+  const vh = v.videoHeight || v.height;
+  const s = Math.max(W / vw, H / vh) * zoom;
+  const w = vw * s;
+  const h = vh * s;
   const x = clamp(W / 2 - fx * w + (fx - 0.5) * W * 0.6, W - w, 0);
   const y = clamp(H / 2 - fy * h + (fy - 0.5) * H * 0.6, H - h, 0);
   ctx.drawImage(v, x, y, w, h);
@@ -117,9 +119,11 @@ function title(shot, t) {
   ctx.restore();
 }
 
-function frame(t, videos) {
+// `pick(shot, t)` returns what to draw: the shot's video element, or, when
+// recording, the decoded frame for that moment.
+function frame(t, videos, pick = (shot) => videos[shot.clip]) {
   const shot = SHOTS.find((s) => t >= s.start && t < s.end) || SHOTS[SHOTS.length - 1];
-  const v = videos[shot.clip];
+  const v = pick(shot, t);
   const p = (t - shot.start) / (shot.end - shot.start);
   ctx.save();
   ctx.filter = `brightness(${shot.lift}) saturate(0.9) contrast(1.06)`;
@@ -152,38 +156,79 @@ async function still(t, videos) {
 const videos = await ready();
 
 if (params.has("record")) {
-  // The poster: the first shot with its word landed.
-  await still(1.1, videos);
-  const poster = await new Promise((r) => canvas.toBlob(r, "image/webp", 0.82));
-  await fetch("/poster", { method: "POST", body: poster });
-
-  for (const s of SHOTS) await seek(videos[s.clip], s.from);
-  const stream = canvas.captureStream(30);
-  const recorder = new MediaRecorder(stream, { mimeType: "video/mp4;codecs=avc1.640028", videoBitsPerSecond: 1_300_000 });
-  const chunks = [];
-  recorder.ondataavailable = (e) => e.data.size && chunks.push(e.data);
-  recorder.onstop = async () => {
-    const blob = new Blob(chunks, { type: "video/mp4" });
-    await fetch("/save", { method: "POST", body: blob });
-    window.__done = blob.size;
-  };
-  frame(0, videos);
-  await videos[SHOTS[0].clip].play();
-  const start = performance.now();
-  recorder.start(1000);
-  let playing = 0;
-  const tick = () => {
-    const t = (performance.now() - start) / 1000;
-    const i = SHOTS.findIndex((s) => t >= s.start && t < s.end);
-    if (i > playing) {
-      playing = i;
-      videos[SHOTS[i].clip].play();
+  // Frame-exact, shot by shot (2026-11-06): recording the clips in real
+  // time with MediaRecorder stalled in headless Chrome and held one frame
+  // for 2.9 s. Each shot's clip is played (fast up to its range, half speed
+  // through it) and every decoded frame kept; the shot's output frames are
+  // built from them, encoded with WebCodecs at exact timestamps, and the
+  // MP4 is written by mp4.js. Seeking isn't used: it can return stale frames.
+  const FPS = 30;
+  const { mp4 } = await import("./mp4.js");
+  const samples = [];
+  let avcC = null;
+  const encoder = new VideoEncoder({
+    output: (chunk, meta) => {
+      if (meta?.decoderConfig?.description) avcC = meta.decoderConfig.description;
+      const data = new Uint8Array(chunk.byteLength);
+      chunk.copyTo(data);
+      samples.push({ data, key: chunk.type === "key" });
+    },
+    error: (e) => {
+      window.__done = `error ${e.message}`;
+    },
+  });
+  encoder.configure({ codec: "avc1.4d401f", width: W, height: H, bitrate: 1_300_000, framerate: FPS, avc: { format: "avc" }, latencyMode: "quality" });
+  const counts = [];
+  for (const shot of SHOTS) {
+    const v = videos[shot.clip];
+    v.pause();
+    const vw = v.videoWidth;
+    const vh = v.videoHeight;
+    const k = Math.min(1, 1100 / vw);
+    const from = shot.from - 0.05;
+    const until = shot.from + (shot.end - shot.start) + 0.05;
+    const list = [];
+    v.currentTime = 0;
+    await new Promise((r) => v.addEventListener("seeked", r, { once: true }));
+    await new Promise((done) => {
+      const each = async (now, meta) => {
+        const m = meta.mediaTime;
+        if (m >= from - 0.6) v.playbackRate = 0.5;
+        if (m >= from && m <= until) list.push([m, await createImageBitmap(v, { resizeWidth: Math.round(vw * k), resizeHeight: Math.round(vh * k) })]);
+        if (m < until && !v.ended) v.requestVideoFrameCallback(each);
+        else done();
+      };
+      v.requestVideoFrameCallback(each);
+      v.addEventListener("ended", done, { once: true });
+      v.playbackRate = 4;
+      v.play();
+    });
+    v.pause();
+    counts.push(list.length);
+    const pick = (s, t) => {
+      const want = s.from + (t - s.start);
+      let best = list[0][1];
+      for (const [m, bmp] of list) if (m <= want + 0.001) best = bmp;
+      return best;
+    };
+    for (let f = Math.round(shot.start * FPS); f < Math.round(shot.end * FPS); f++) {
+      frame(f / FPS, videos, pick);
+      if (f === Math.round(1.1 * FPS)) {
+        // The poster: the first shot with its word landed.
+        const poster = await new Promise((r) => canvas.toBlob(r, "image/webp", 0.82));
+        await fetch("/poster", { method: "POST", body: poster });
+      }
+      const vf = new VideoFrame(canvas, { timestamp: Math.round((f * 1e6) / FPS), duration: Math.round(1e6 / FPS) });
+      encoder.encode(vf, { keyFrame: f % FPS === 0 });
+      vf.close();
+      if (encoder.encodeQueueSize > 8) await new Promise((r) => setTimeout(r, 5));
     }
-    frame(Math.min(t, LOOP - 0.001), videos);
-    if (t < LOOP) setTimeout(tick, 1000 / 60);
-    else recorder.stop();
-  };
-  tick();
+    for (const [, b] of list) b.close();
+  }
+  await encoder.flush();
+  const blob = mp4({ width: W, height: H, fps: FPS, avcC, samples });
+  await fetch("/save", { method: "POST", body: blob });
+  window.__done = `${blob.size} bytes; frames collected per shot ${counts.join(", ")}`;
 } else if (params.has("sheet")) {
   const names = SHOTS.map((s) => s.clip);
   const cols = 10;

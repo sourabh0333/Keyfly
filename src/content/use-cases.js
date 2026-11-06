@@ -397,7 +397,7 @@ export const useCasesFaq = {
     {
       q: "What does Premium mean?",
       a: "The app marks every template Free or Premium. The plans show what each one includes.",
-      link: { label: "See plans", href: "/#pricing" },
+      link: { label: "See plans", href: "/pricing" },
     },
     {
       q: "My video isn't on the list. What then?",

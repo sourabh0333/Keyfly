@@ -1,0 +1,437 @@
+/*
+ * Integrations page, "Questions": the heading as on the site's other
+ * sections; then a map of three columns, topic → question → answer,
+ * joined by measured mint wires. Type and hairlines only, no panels.
+ */
+.section {
+  position: relative;
+  padding: var(--section-pad) 0;
+  color: var(--paper);
+}
+
+.inner {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* ---------- Heading ---------- */
+
+.head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+  margin-bottom: clamp(32px, 4vw, 52px);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: rgb(244 241 234 / 0.62);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.eyebrowMark {
+  width: 18px;
+  height: 1px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+}
+
+.title {
+  margin-top: 16px;
+  font-size: clamp(2.1rem, 1.1rem + 2.2vw, 3.4rem);
+  font-weight: 560;
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+
+.plain,
+.accent {
+  display: block;
+}
+
+.accent {
+  padding-bottom: 0.06em;
+  background: linear-gradient(100deg, var(--mint-text-dark), #eafff6 50%, var(--soft-mint));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-family: var(--font-accent-stack);
+  font-size: 1.1em;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.lead {
+  max-width: 46ch;
+  color: rgb(244 241 234 / 0.62);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  text-align: right;
+}
+
+/* ---------- The map: topic → question → answer ---------- */
+
+.map {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.1fr) minmax(0, 1.35fr);
+  align-items: start;
+  column-gap: clamp(56px, 6.5vw, 110px);
+  row-gap: clamp(32px, 4vw, 52px);
+  padding-top: clamp(8px, 1vw, 16px);
+}
+
+.wires {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.wires path {
+  fill: none;
+  stroke: var(--soft-mint);
+  stroke-width: 1.5;
+  stroke-dasharray: 1;
+  filter: drop-shadow(0 0 4px rgb(95 224 176 / 0.55));
+  animation: draw 0.55s var(--ease-land) both;
+}
+
+.wires path[data-late] {
+  animation-delay: 0.25s;
+}
+
+.wires circle {
+  fill: var(--soft-mint);
+  filter: drop-shadow(0 0 5px var(--soft-mint));
+  animation: land 0.3s ease-out calc(0.2s + var(--i) * 0.12s) both;
+}
+
+.col {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  min-width: 0;
+}
+
+.colLabel {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: rgb(244 241 234 / 0.42);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.colLabel::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: rgb(244 241 234 / 0.1);
+}
+
+/* 1. Topics: large type, the one in play lit. */
+.topics {
+  display: grid;
+}
+
+.topic {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+  border: 0;
+  background: none;
+  color: rgb(244 241 234 / 0.38);
+  font: inherit;
+  font-size: clamp(1.2rem, 0.95rem + 0.7vw, 1.6rem);
+  font-weight: 560;
+  letter-spacing: -0.03em;
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.topic em {
+  color: rgb(244 241 234 / 0.3);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  font-style: normal;
+  letter-spacing: 0;
+}
+
+.topic:hover {
+  color: rgb(244 241 234 / 0.75);
+}
+
+.topic[aria-selected="true"] {
+  color: var(--paper);
+}
+
+.topic[aria-selected="true"] em {
+  color: var(--soft-mint);
+}
+
+.topic:focus-visible,
+.q:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* 2. Questions: hairline rows, the one in play underlined in mint. */
+.questions {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.qRow {
+  border-bottom: 1px solid rgb(244 241 234 / 0.08);
+  animation: rise 0.45s var(--ease-land) calc(var(--k) * 0.06s) backwards;
+}
+
+.q {
+  position: relative;
+  width: 100%;
+  padding: 16px 0;
+  border: 0;
+  background: none;
+  color: rgb(244 241 234 / 0.6);
+  font: inherit;
+  font-size: clamp(1rem, 0.92rem + 0.3vw, 1.125rem);
+  font-weight: 560;
+  letter-spacing: -0.015em;
+  line-height: 1.35;
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.q::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 1px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px rgb(95 224 176 / 0.6);
+  transform-origin: left;
+  scale: 0 1;
+  transition: scale 0.5s var(--ease-land);
+}
+
+.q:hover {
+  color: rgb(244 241 234 / 0.88);
+}
+
+.qRow[data-on] .q {
+  color: var(--paper);
+}
+
+.qRow[data-on] .q::after {
+  scale: 1 1;
+}
+
+/* 3. The answer: the question echoed in the serif, then the answer. */
+.answer {
+  min-height: 300px;
+}
+
+.answerIn {
+  display: grid;
+  gap: 16px;
+  animation: rise 0.45s var(--ease-land) 0.15s backwards;
+}
+
+.answerTopic {
+  color: var(--mint-text-dark);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.answerQ {
+  color: var(--paper);
+  font-family: var(--font-accent-stack);
+  font-size: clamp(1.8rem, 1.2rem + 1.6vw, 2.6rem);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.015em;
+  line-height: 1.08;
+  text-wrap: balance;
+}
+
+.answerText {
+  max-width: 48ch;
+  color: rgb(244 241 234 / 0.75);
+  font-size: clamp(1rem, 0.94rem + 0.25vw, 1.125rem);
+  line-height: 1.6;
+}
+
+.answerLink,
+.inline a,
+.help a {
+  justify-self: start;
+  color: var(--mint-text-dark);
+  font-size: 0.9375rem;
+  text-decoration: underline;
+  text-decoration-color: rgb(130 232 194 / 0.35);
+  text-underline-offset: 4px;
+}
+
+.answerLink:hover,
+.inline a:hover,
+.help a:hover {
+  text-decoration-color: currentColor;
+}
+
+.inline {
+  display: none;
+}
+
+.help {
+  grid-column: 1 / -1;
+  padding-top: 18px;
+  border-top: 1px solid rgb(244 241 234 / 0.1);
+  color: rgb(244 241 234 / 0.55);
+  font-size: 0.9375rem;
+}
+
+.help b {
+  color: var(--paper);
+  font-weight: 600;
+}
+
+@keyframes draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes land {
+  from {
+    opacity: 0;
+    scale: 0.3;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    translate: 0 8px;
+  }
+}
+
+/* ---------- Narrower screens ---------- */
+
+/* Topics become a row of underlined tabs; the answer opens under its
+   question. */
+@media (max-width: 980px) {
+  .map {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .answerCol,
+  .col .colLabel {
+    display: none;
+  }
+
+  .topics {
+    display: flex;
+    gap: 22px;
+    overflow-x: auto;
+    border-bottom: 1px solid rgb(244 241 234 / 0.12);
+    scrollbar-width: none;
+  }
+
+  .topic {
+    flex: none;
+    padding: 10px 0 12px;
+    font-size: 1rem;
+  }
+
+  .topic em {
+    display: none;
+  }
+
+  .topic[aria-selected="true"]::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: -1px;
+    left: 0;
+    height: 2px;
+    background: var(--soft-mint);
+    box-shadow: 0 0 8px var(--soft-mint);
+  }
+
+  .inline {
+    display: grid;
+    gap: 12px;
+    padding: 0 0 20px;
+    animation: rise 0.4s var(--ease-land);
+  }
+
+  .inline p {
+    color: rgb(244 241 234 / 0.72);
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+}
+
+@media (max-width: 860px) {
+  .head {
+    display: grid;
+    gap: 14px;
+  }
+
+  .lead {
+    text-align: left;
+  }
+
+  .plain,
+  .accent {
+    display: inline;
+  }
+
+  .title {
+    font-size: clamp(1.9rem, 1.2rem + 3vw, 2.75rem);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wires path,
+  .wires circle,
+  .qRow,
+  .answerIn,
+  .inline {
+    animation: none;
+  }
+
+  .topic,
+  .q,
+  .q::after {
+    transition: none;
+  }
+}

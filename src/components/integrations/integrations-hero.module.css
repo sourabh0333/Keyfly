@@ -1,0 +1,698 @@
+/*
+ * The Integrations page's hero. Centred, oversized type, as the other
+ * pages' heroes; then the map of what KeyFly connects to, on four even sides
+ * around it (OrbitMap), and a bar of facts between hairlines.
+ */
+.hero {
+  position: relative;
+  isolation: isolate;
+  padding: calc(var(--header-h) + clamp(44px, 7vh, 88px)) 0 clamp(72px, 8vw, 120px);
+  overflow-x: clip;
+  color: var(--paper);
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Mint light at the map's centre; dusk violet at its sides. */
+.glow {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(46% 30% at 50% 62%, rgb(95 224 176 / 0.13), transparent 72%),
+    radial-gradient(30% 30% at 8% 62%, rgb(107 84 140 / 0.16), transparent 72%),
+    radial-gradient(30% 30% at 92% 62%, rgb(107 84 140 / 0.12), transparent 72%),
+    radial-gradient(60% 30% at 50% 0%, rgb(95 224 176 / 0.06), transparent 70%);
+}
+
+.grain {
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+  opacity: 0.035;
+}
+
+.inner {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* ---------- Heading ---------- */
+
+.head {
+  display: grid;
+  justify-items: center;
+  max-width: 1000px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 14px 6px 10px;
+  border-radius: var(--radius-round);
+  background: rgb(244 241 234 / 0.04);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.09) inset;
+  color: rgb(244 241 234 / 0.72);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  animation: rise 0.9s var(--ease-land) 0.1s backwards;
+}
+
+.rec {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--soft-mint);
+  box-shadow: 0 0 10px var(--soft-mint);
+}
+
+.title {
+  margin-top: 26px;
+  font-size: clamp(2.9rem, 1.2rem + 4.8vw, 6.1rem);
+  font-weight: 560;
+  letter-spacing: -0.055em;
+  line-height: 0.95;
+  animation: rise 1s var(--ease-land) 0.25s backwards;
+}
+
+.plain,
+.accent {
+  display: block;
+}
+
+.accent {
+  padding-bottom: 0.08em;
+  background: linear-gradient(100deg, var(--mint-text-dark), #eafff6 50%, var(--soft-mint));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-family: var(--font-accent-stack);
+  font-size: 1.1em;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.lead {
+  max-width: 56ch;
+  margin-top: 24px;
+  color: rgb(244 241 234 / 0.64);
+  font-size: var(--text-lead);
+  line-height: 1.5;
+  animation: rise 1s var(--ease-land) 0.45s backwards;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 30px;
+  animation: rise 1s var(--ease-land) 0.6s backwards;
+}
+
+/* ---------- The map: four even sides around KeyFly ---------- */
+
+.map {
+  display: grid;
+  margin-top: clamp(40px, 5vw, 72px);
+  animation: rise 1.2s var(--ease-land) 0.75s backwards;
+}
+
+/* Posts across the top, your AI and your editor down the sides, where it
+   runs across the bottom, KeyFly in the middle. */
+.stage {
+  position: relative;
+  display: grid;
+  grid-template-areas:
+    "posts posts posts"
+    "ai    hub   editors"
+    "runs  runs  runs";
+  /* The film in the middle; your AI and your editor sit at the outer
+     edges, so the wires have room to curve in to it. */
+  grid-template-columns: minmax(0, 1fr) clamp(300px, 38vw, 540px) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(44px, 5vw, 72px) clamp(28px, 4vw, 64px);
+  width: min(100%, 1280px);
+  margin: 0 auto;
+}
+
+.group[data-g="posts"] {
+  grid-area: posts;
+}
+
+.group[data-g="ai"] {
+  grid-area: ai;
+}
+
+.group[data-g="editors"] {
+  grid-area: editors;
+}
+
+.group[data-g="runs"] {
+  grid-area: runs;
+}
+
+.group {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 12px;
+}
+
+.groupLabel {
+  color: rgb(244 241 234 / 0.5);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.group ul {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* The sides: one column each, aligned towards the centre. */
+.group[data-g="ai"] {
+  justify-items: start;
+}
+
+.group[data-g="editors"] {
+  justify-items: end;
+}
+
+.group[data-g="ai"] ul,
+.group[data-g="editors"] ul {
+  grid-template-columns: 200px;
+}
+
+/* The top and bottom: one row each, centred, the label above or below. */
+.group[data-g="posts"],
+.group[data-g="runs"] {
+  justify-items: center;
+}
+
+.group[data-g="posts"] ul,
+.group[data-g="runs"] ul {
+  grid-auto-columns: 96px;
+  grid-auto-flow: column;
+}
+
+.group[data-g="runs"] .groupLabel {
+  order: 1;
+  color: var(--mint-text-dark);
+}
+
+/* The connectors: measured curves from each chip to the centre's rim; the
+   hand-off in play runs a mint light along its two. */
+.spokes {
+  position: absolute;
+  inset: 0;
+  z-index: 3; /* above the player, so the ports on its edge show whole */
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.spokes path {
+  fill: none;
+  stroke: rgb(244 241 234 / 0.16);
+  stroke-width: 1;
+}
+
+/* The ports: a small point where each wire meets a chip and the player. */
+.ports circle {
+  fill: #0b0c0e;
+  stroke: rgb(244 241 234 / 0.35);
+  stroke-width: 1;
+  transition:
+    fill 0.3s ease,
+    stroke 0.3s ease;
+}
+
+.ports[data-on] circle {
+  fill: var(--soft-mint);
+  stroke: var(--soft-mint);
+}
+
+/* The wire in a hand-off stays drawn whole, in mint. */
+.spokes .base[data-on] {
+  stroke: rgb(95 224 176 / 0.55);
+  stroke-width: 1.25;
+  transition: stroke 0.3s ease;
+}
+
+/* The light: a short bright dash running along it. */
+.spokes .light {
+  stroke: #eafff6;
+  stroke-width: 2;
+  stroke-dasharray: 0.24 2;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 4px rgb(95 224 176 / 0.9));
+  animation: run 1s var(--ease-land) both;
+}
+
+.spokes .light[data-out] {
+  animation-delay: 0.7s;
+}
+
+/* At the centre, the film in a KeyFly player: 16:9, a mint edge and glow,
+   the brand badge, its length, and tags naming the hand-off in play. It
+   pulses as each hand-off passes through it. */
+.center {
+  position: relative;
+  z-index: 2;
+  grid-area: hub;
+  align-self: center;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 16px;
+  background: #0b0c0e;
+  box-shadow:
+    0 0 0 1.5px var(--soft-mint),
+    0 0 0 10px rgb(95 224 176 / 0.05),
+    0 0 80px -16px rgb(95 224 176 / 0.6),
+    0 40px 80px -30px rgb(0 0 0 / 0.9);
+}
+
+.film {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* A soft shade along the top and foot so the badge and tags read. */
+.center::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgb(8 8 10 / 0.55), transparent 28%, transparent 66%, rgb(8 8 10 / 0.65));
+  pointer-events: none;
+}
+
+.badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 10px 4px 6px;
+  border-radius: var(--radius-round);
+  background: rgb(11 11 13 / 0.6);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.14) inset;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
+.badge b {
+  color: var(--paper);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.mark {
+  width: 16px;
+  height: 16px;
+  background: url("/brand/symbol-dark.svg") center / contain no-repeat;
+}
+
+.length {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 1;
+  color: rgb(244 241 234 / 0.8);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+}
+
+.tags {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  left: 12px;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.tagIn,
+.tagOut {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px 10px;
+  border-radius: var(--radius-round);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  white-space: nowrap;
+  animation: tagIn 0.45s var(--ease-land);
+}
+
+.tagIn {
+  background: rgb(11 11 13 / 0.6);
+  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.45) inset;
+  color: var(--paper);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
+.tagDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--soft-mint);
+  box-shadow: 0 0 6px var(--soft-mint);
+}
+
+.tagOut {
+  background: var(--soft-mint);
+  color: var(--mint-ink);
+  animation-delay: 0.7s;
+  animation-fill-mode: backwards;
+}
+
+.center[data-pulse="0"] {
+  animation: pulseA 1.4s ease-out 0.6s;
+}
+
+.center[data-pulse="1"] {
+  animation: pulseB 1.4s ease-out 0.6s;
+}
+
+/* A chip: the same size within its side. */
+.chip {
+  display: grid;
+  gap: 2px;
+  padding: 9px 14px;
+  border-radius: 12px;
+  background: #131417;
+  box-shadow:
+    0 0 0 1px rgb(244 241 234 / 0.12),
+    0 10px 24px -14px rgb(0 0 0 / 0.9);
+  color: rgb(244 241 234 / 0.86);
+  font-size: 0.875rem;
+  font-weight: 560;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  transition:
+    box-shadow 0.35s ease,
+    color 0.35s ease;
+}
+
+.group[data-g="posts"] .chip,
+.group[data-g="runs"] .chip {
+  justify-items: center;
+  padding: 8px 10px;
+  border-radius: var(--radius-round);
+  font-size: 0.8125rem;
+}
+
+.group[data-g="runs"] .chip {
+  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.35);
+}
+
+.chip em {
+  color: rgb(244 241 234 / 0.45);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: 0.02em;
+}
+
+.chip em[data-free] {
+  color: var(--mint-text-dark);
+}
+
+.node[data-on] .chip {
+  box-shadow:
+    0 0 0 1.5px var(--soft-mint),
+    0 0 26px -6px rgb(95 224 176 / 0.7);
+  color: var(--paper);
+}
+
+.pause {
+  display: inline-flex;
+  align-items: center;
+  justify-self: end;
+  gap: 7px;
+  margin-top: 14px;
+  padding: 5px 11px;
+  border: 0;
+  border-radius: var(--radius-round);
+  background: none;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.12) inset;
+  color: rgb(244 241 234 / 0.6);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.pause:hover {
+  color: var(--paper);
+}
+
+.pause:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 3px;
+}
+
+@keyframes run {
+  from {
+    stroke-dashoffset: 0.24;
+  }
+
+  to {
+    stroke-dashoffset: -1;
+  }
+}
+
+@keyframes tagIn {
+  from {
+    opacity: 0;
+    translate: 0 6px;
+  }
+}
+
+@keyframes pulseA {
+  30% {
+    box-shadow:
+      0 0 0 1.5px var(--soft-mint),
+      0 0 0 18px rgb(95 224 176 / 0.1),
+      0 0 90px -6px rgb(95 224 176 / 0.8);
+  }
+}
+
+@keyframes pulseB {
+  30% {
+    box-shadow:
+      0 0 0 1.5px var(--soft-mint),
+      0 0 0 18px rgb(95 224 176 / 0.1),
+      0 0 90px -6px rgb(95 224 176 / 0.8);
+  }
+}
+
+/* Narrower desktops: narrower side columns. */
+@media (max-width: 1180px) {
+  .group[data-g="ai"] ul,
+  .group[data-g="editors"] ul {
+    grid-template-columns: 176px;
+  }
+
+  .group[data-g="posts"] ul,
+  .group[data-g="runs"] ul {
+    grid-auto-columns: 84px;
+  }
+
+  .chip {
+    padding: 8px 12px;
+    font-size: 0.8125rem;
+  }
+}
+
+/* Narrow screens: the sides stack as rows, KeyFly on top. */
+@media (max-width: 860px) {
+  .stage {
+    grid-template-areas:
+      "hub"
+      "runs"
+      "ai"
+      "editors"
+      "posts";
+    grid-template-columns: minmax(0, 1fr);
+    gap: 18px;
+  }
+
+  .spokes {
+    display: none;
+  }
+
+  .center {
+    border-radius: 12px;
+  }
+
+  .group,
+  .group[data-g="ai"],
+  .group[data-g="editors"],
+  .group[data-g="posts"],
+  .group[data-g="runs"] {
+    justify-items: start;
+    gap: 10px;
+    padding-top: 14px;
+    border-top: 1px solid rgb(244 241 234 / 0.08);
+    text-align: left;
+  }
+
+  .group[data-g="runs"] .groupLabel {
+    order: 0;
+  }
+
+  .group ul,
+  .group[data-g="ai"] ul,
+  .group[data-g="editors"] ul,
+  .group[data-g="posts"] ul,
+  .group[data-g="runs"] ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .group[data-g="posts"] .chip,
+  .group[data-g="runs"] .chip {
+    min-width: 72px;
+  }
+}
+
+/* ---------- Facts ---------- */
+
+.facts {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin: clamp(40px, 5vw, 64px) 0 0;
+  border-block: 1px solid rgb(244 241 234 / 0.1);
+}
+
+.fact {
+  min-width: 0;
+  padding: 18px 18px 20px;
+}
+
+.fact + .fact {
+  border-left: 1px solid rgb(244 241 234 / 0.08);
+}
+
+.fact dt {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 10px;
+  color: rgb(244 241 234 / 0.82);
+  font-size: 0.9375rem;
+}
+
+.fact b {
+  color: var(--paper);
+  font-size: clamp(1.9rem, 1.3rem + 1.4vw, 2.6rem);
+  font-weight: 560;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+.fact dd {
+  margin: 8px 0 0;
+  color: rgb(244 241 234 / 0.42);
+  font-family: var(--font-mono-stack);
+  font-size: 0.65625rem;
+  line-height: 1.5;
+}
+
+.footnote {
+  margin-top: 14px;
+  color: rgb(244 241 234 / 0.38);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    translate: 0 10px;
+  }
+}
+
+
+@media (max-width: 980px) {
+  .facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .fact + .fact {
+    border-left: 0;
+  }
+
+  .fact:nth-child(n + 3) {
+    border-top: 1px solid rgb(244 241 234 / 0.08);
+  }
+
+  .fact:nth-child(even) {
+    border-left: 1px solid rgb(244 241 234 / 0.08);
+  }
+}
+
+@media (max-width: 760px) {
+  .plain,
+  .accent {
+    display: inline;
+  }
+
+  .footnote {
+    text-align: left;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .eyebrow,
+  .title,
+  .lead,
+  .actions,
+  .map,
+  .center {
+    animation: none;
+  }
+
+  .spokes .light {
+    display: none;
+  }
+
+  .chip {
+    transition: none;
+  }
+}

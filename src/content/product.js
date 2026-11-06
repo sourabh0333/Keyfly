@@ -346,7 +346,7 @@ export const productDeliver = {
       package: { title: "Package for editing", body: "A .zip with the timeline and every file it uses: footage, voice-over, music and pictures." },
     },
   ],
-  plans: { text: "Export size, the KeyFly mark and timeline export depend on your plan.", link: "See plans", href: "/#pricing" },
+  plans: { text: "Export size, the KeyFly mark and timeline export depend on your plan.", link: "See plans", href: "/pricing" },
 };
 
 // "Your way": what KeyFly doesn't lock you into, one row per choice. From
@@ -406,7 +406,7 @@ export const productYourWay = {
       choices: ["Shared brand kits and library", "Roles and comments", "One bill", "SSO and SCIM", "DPA and data residency"],
       statement: "Work alone or together. Teams share their kits and library; Enterprise adds single sign-on, a DPA and data residency.",
       preview: { kit: "Shared brand kit", people: ["MA", "JK", "RS"], comments: ["Love the intro", "Logo bigger?", "Approved"] },
-      link: { label: "See plans", href: "/#pricing" },
+      link: { label: "See plans", href: "/pricing" },
     },
   ],
   cta: { label: "Open KeyFly in your browser", href: siteConfig.appUrl },
@@ -438,7 +438,7 @@ export const productMinutes = {
   ],
   counts: "Counts",
   free: "No AI minutes",
-  plans: { label: "AI minutes a month", perSeat: "per seat", unit: "min", packs: "Need more? Add an AI-minute pack any time.", link: "See plans", href: "/#pricing" },
+  plans: { label: "AI minutes a month", perSeat: "per seat", unit: "min", packs: "Need more? Add an AI-minute pack any time.", link: "See plans", href: "/pricing" },
 };
 
 // "Close": the page's last word before the footer. A reel of the six parts

@@ -154,8 +154,8 @@ The site isn't live yet, so every page the navbar points at gets built now, one 
 |---|---|---|---|---|
 | 1 | Product `/product` | ✅ done 2026-11-05 | Product | All nine sections built |
 | 2 | Use cases `/use-cases` | ✅ done 2026-11-06 | Use cases → `/use-cases` (navbar and footer) | Six presets with their real prompts, four roles, 91 templates (11 categories). Missing: real videos made with KeyFly and customer stories, so previews stay illustrative |
-| 3 | Integrations `/integrations` | ⏳ next | Integrations → `/#tools` | Agents (Settings → Agents), editors and timeline formats, Package for editing, platforms. Missing: ChatGPT and Claude app install links |
-| 4 | Pricing `/pricing` | ⏳ | Pricing → `/#pricing` | Everything from the pricing API (plans, prices, AI minutes, packs, Team, Enterprise) |
+| 3 | Integrations `/integrations` | ✅ built 2026-11-06 (hero, Your own AI agent, Your editor, Where it goes, Chat apps, Cost and your data, Questions) | Integrations → `/integrations` (navbar and footer) | Agents (Settings → Agents), editors and timeline formats, Package for editing, platforms. Missing: ChatGPT and Claude app install links |
+| 4 | Pricing `/pricing` | 🔨 building (hero 2026-11-06) | Pricing → `/pricing` (from 2026-11-06) | Everything from the pricing API (plans, prices, AI minutes, packs, Team, Enterprise) |
 | 5 | Download `/download` | ⏳ | Download button → the build, or `/#download` | Real builds (version 1.1.7), macOS 13+ (Apple silicon, Intel), Windows 10 and 11 |
 
 When a page is built, point its navbar and footer links at it (`src/content/navigation.js`, `src/content/footer.js`) and remove the homepage anchor from them.

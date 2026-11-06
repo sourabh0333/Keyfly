@@ -69,7 +69,7 @@ export async function Minutes() {
             <Link href={plans.href} className={styles.plansLink}>
               {plans.link}
               <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true">
-                <path d="M8 3v9M4.5 8.5 8 12l3.5-3.5" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M3 8h9M8.5 4.5 12 8l-3.5 3.5" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </Link>
           </p>

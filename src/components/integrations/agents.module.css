@@ -1,0 +1,1006 @@
+/*
+ * Integrations page, "Your own AI agent": the heading as on the site's
+ * other sections; then one studio panel around a playing video (header,
+ * the video beside the activity, every agent in the footer); then the
+ * three steps to set it up, in one line between hairlines. Each part that
+ * has happened carries data-on.
+ */
+.section {
+  position: relative;
+  padding: var(--section-pad) 0;
+  color: var(--paper);
+}
+
+.inner {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* ---------- Heading ---------- */
+
+.head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+  margin-bottom: clamp(36px, 4.4vw, 64px);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: rgb(244 241 234 / 0.62);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.eyebrowMark {
+  width: 18px;
+  height: 1px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+}
+
+.title {
+  margin-top: 16px;
+  font-size: clamp(2.1rem, 1.1rem + 2.2vw, 3.4rem);
+  font-weight: 560;
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+
+.plain,
+.accent {
+  display: block;
+}
+
+.accent {
+  padding-bottom: 0.06em;
+  background: linear-gradient(100deg, var(--mint-text-dark), #eafff6 50%, var(--soft-mint));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-family: var(--font-accent-stack);
+  font-size: 1.1em;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.lead {
+  max-width: 46ch;
+  color: rgb(244 241 234 / 0.62);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  text-align: right;
+}
+
+/* ---------- The studio ---------- */
+
+.studioWrap {
+  display: grid;
+  gap: 14px;
+}
+
+/* One panel in the site's glass, a mint line along its top. */
+.studio {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  overflow: hidden;
+  border-radius: 22px;
+  background:
+    radial-gradient(60% 50% at 30% 0%, rgb(95 224 176 / 0.07), transparent 70%),
+    linear-gradient(180deg, #15171b, #0f1013);
+  box-shadow:
+    0 0 0 1px rgb(244 241 234 / 0.1),
+    0 1px 0 rgb(244 241 234 / 0.08) inset,
+    0 50px 110px -50px rgb(0 0 0 / 0.95),
+    0 0 90px -40px rgb(95 224 176 / 0.35);
+}
+
+.studio::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 16%;
+  left: 16%;
+  z-index: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--soft-mint), transparent);
+}
+
+/* Header. */
+.studioHead {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 20px;
+  border-bottom: 1px solid rgb(244 241 234 / 0.07);
+}
+
+.dots {
+  display: flex;
+  gap: 5px;
+}
+
+.dots i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgb(244 241 234 / 0.16);
+}
+
+.project {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.working {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 8px;
+  padding: 5px 12px;
+  border-radius: var(--radius-round);
+  background: rgb(95 224 176 / 0.08);
+  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.35) inset;
+  color: rgb(244 241 234 / 0.7);
+  font-size: 0.75rem;
+  transition:
+    background 0.4s ease,
+    box-shadow 0.4s ease;
+}
+
+.working b {
+  color: var(--paper);
+  font-weight: 600;
+  animation: swap 0.5s var(--ease-land);
+}
+
+.working small {
+  color: rgb(244 241 234 / 0.42);
+  font-family: var(--font-mono-stack);
+  font-size: 0.5625rem;
+}
+
+.working[data-limit] {
+  background: rgb(242 168 110 / 0.08);
+  box-shadow: 0 0 0 1px rgb(242 168 110 / 0.4) inset;
+}
+
+.working[data-limit] .live {
+  background: #f2a86e;
+  box-shadow: 0 0 8px #f2a86e;
+}
+
+.live {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+  animation: blink 1.6s ease-in-out infinite;
+}
+
+.minutes {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-left: auto;
+  color: rgb(244 241 234 / 0.5);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.minutes strong {
+  background: linear-gradient(100deg, var(--mint-text-dark), #eafff6 60%, var(--soft-mint));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-size: 1.75rem;
+  font-weight: 500;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+
+/* Body: the video beside the activity. */
+.studioBody {
+  display: grid;
+  grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr);
+}
+
+.player {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  min-width: 0;
+  padding: 20px;
+  border-right: 1px solid rgb(244 241 234 / 0.07);
+}
+
+.screen {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 14px;
+  background: #0b0c0e;
+  box-shadow:
+    0 0 0 1.5px var(--soft-mint),
+    0 0 50px -14px rgb(95 224 176 / 0.5);
+}
+
+.screen video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.captionLine {
+  position: absolute;
+  bottom: 7%;
+  left: 50%;
+  padding: 5px 14px;
+  border-radius: 7px;
+  background: rgb(11 11 13 / 0.75);
+  color: var(--paper);
+  font-size: clamp(0.8125rem, 0.5rem + 0.7vw, 1.0625rem);
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 0;
+  translate: -50% 8px;
+  transition:
+    opacity 0.5s ease,
+    translate 0.5s var(--ease-land);
+}
+
+.captionLine[data-on] {
+  opacity: 1;
+  translate: -50% 0;
+}
+
+.updated {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: var(--radius-round);
+  background: var(--soft-mint);
+  color: var(--mint-ink);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  font-weight: 600;
+  opacity: 0;
+}
+
+.updated[data-on] {
+  animation: flash 1.8s var(--ease-land) both;
+}
+
+/* The scrub bar: the cut's four shots (the first trimmed), the captions
+   beneath, and a playhead running with the video. */
+.scrub {
+  position: relative;
+  display: grid;
+  gap: 5px;
+}
+
+.segments,
+.capTrack {
+  display: flex;
+  gap: 3px;
+}
+
+.segments i {
+  flex: 2 1 0;
+  height: 22px;
+  border-radius: 5px;
+  background: rgb(95 224 176 / 0.16);
+  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.4) inset;
+  transition: flex-grow 0.9s var(--ease-land);
+}
+
+.segments i:first-child {
+  flex-grow: 3.2;
+}
+
+.segments i:nth-child(2n) {
+  background: rgb(150 136 232 / 0.2);
+  box-shadow: 0 0 0 1px rgb(170 158 245 / 0.45) inset;
+}
+
+.segments[data-trimmed] i:first-child {
+  flex-grow: 1.6;
+}
+
+.capTrack {
+  gap: 4px;
+  height: 8px;
+}
+
+.capTrack i {
+  width: 14%;
+  border-radius: 3px;
+  background: rgb(244 241 234 / 0.45);
+  scale: 0 1;
+  transform-origin: left;
+  transition: scale 0.5s var(--ease-land);
+}
+
+.capTrack[data-on] i {
+  scale: 1 1;
+}
+
+.capTrack[data-on] i:nth-child(2) {
+  transition-delay: 0.08s;
+}
+
+.capTrack[data-on] i:nth-child(3) {
+  transition-delay: 0.16s;
+}
+
+.capTrack[data-on] i:nth-child(4) {
+  transition-delay: 0.24s;
+}
+
+.capTrack[data-on] i:nth-child(5) {
+  transition-delay: 0.32s;
+}
+
+.scrubHead {
+  position: absolute;
+  top: -4px;
+  bottom: -4px;
+  left: 0;
+  width: 2px;
+  background: var(--paper);
+  box-shadow: 0 0 8px rgb(244 241 234 / 0.8);
+  animation: scrub 8s linear infinite paused;
+}
+
+.studio[data-playing] .scrubHead {
+  animation-play-state: running;
+}
+
+/* The chat: your asks on the right, the agent and KeyFly on the left, the
+   newest at the foot and older ones moving up. */
+.chat {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+.chatHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid rgb(244 241 234 / 0.06);
+  color: rgb(244 241 234 / 0.5);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.chatAgent {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--paper);
+  font-family: var(--font-text-stack);
+  font-size: 0.75rem;
+  font-weight: 560;
+  letter-spacing: 0;
+  text-transform: none;
+  animation: swap 0.5s var(--ease-land);
+}
+
+.badge,
+.avatar {
+  display: grid;
+  flex: none;
+  place-items: center;
+  border-radius: 7px;
+  background: #0e0f12;
+  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.45) inset;
+  color: var(--soft-mint);
+  font-family: var(--font-mono-stack);
+  font-weight: 700;
+}
+
+.badge {
+  width: 20px;
+  height: 20px;
+  font-size: 0.5625rem;
+}
+
+.thread {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 10px;
+  min-height: 0;
+  padding: 14px 20px;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 40px);
+  mask-image: linear-gradient(180deg, transparent, #000 40px);
+}
+
+.thread > * {
+  flex: none;
+  animation: msgIn 0.45s var(--ease-land);
+}
+
+/* Yours. */
+.mine {
+  align-self: flex-end;
+  max-width: 82%;
+  padding: 9px 14px;
+  border-radius: 14px 14px 4px;
+  background: rgb(95 224 176 / 0.14);
+  box-shadow: 0 0 0 1px rgb(95 224 176 / 0.3) inset;
+  color: var(--paper);
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+/* The agent's, and KeyFly's. */
+.theirs {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  align-items: end;
+  gap: 10px;
+  max-width: 92%;
+}
+
+.avatar {
+  width: 28px;
+  height: 28px;
+  font-size: 0.6875rem;
+}
+
+.avatar[data-keyfly] {
+  background: #0e0f12 url("/brand/symbol-dark.svg") center / 62% no-repeat;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.16) inset;
+}
+
+.bubble {
+  display: grid;
+  gap: 3px;
+  padding: 9px 14px 10px;
+  border-radius: 14px 14px 14px 4px;
+  background: rgb(244 241 234 / 0.06);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.08) inset;
+}
+
+.bubble small {
+  color: var(--mint-text-dark);
+  font-family: var(--font-mono-stack);
+  font-size: 0.5625rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.theirs[data-keyfly] .bubble small {
+  color: rgb(244 241 234 / 0.5);
+}
+
+.bubble p {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: rgb(244 241 234 / 0.88);
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.bubble p svg {
+  flex: none;
+  color: var(--soft-mint);
+}
+
+.choices {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.choices i {
+  padding: 4px 10px;
+  border-radius: var(--radius-round);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.2) inset;
+  font-size: 0.6875rem;
+  font-style: normal;
+  font-weight: 560;
+}
+
+/* Switch to Codex is pressed a moment after the offer arrives. */
+.choices i[data-pick] {
+  animation: pick 0.4s var(--ease-land) 0.9s both;
+}
+
+/* KeyFly's notice when an agent reaches its limit. */
+.system {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 12px;
+  border-radius: 12px;
+  background: rgb(242 168 110 / 0.08);
+  box-shadow: 0 0 0 1px rgb(242 168 110 / 0.35) inset;
+  color: #f2c49a;
+  font-size: 0.8125rem;
+  line-height: 1.4;
+}
+
+.systemMark {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #f2a86e;
+  color: #101114;
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  font-weight: 700;
+}
+
+.system b {
+  font-weight: 600;
+}
+
+/* While the agent works. */
+.typing {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding-left: 38px;
+  color: rgb(244 241 234 / 0.45);
+  font-size: 0.75rem;
+}
+
+.dotsTyping {
+  display: inline-flex;
+  gap: 4px;
+  padding: 7px 10px;
+  border-radius: 12px;
+  background: rgb(244 241 234 / 0.06);
+}
+
+.dotsTyping i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--soft-mint);
+  animation: typing 1.1s ease-in-out infinite;
+}
+
+.dotsTyping i:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.dotsTyping i:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+.composer {
+  margin: 0 20px 18px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: #0e0f12;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.12) inset;
+  color: rgb(244 241 234 / 0.35);
+  font-size: 0.75rem;
+}
+
+/* Footer: every agent it works with. */
+.studioFoot {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 20px;
+  border-top: 1px solid rgb(244 241 234 / 0.07);
+  background: rgb(11 12 14 / 0.5);
+}
+
+.roster {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.roster li {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 12px;
+  border-radius: var(--radius-round);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.1) inset;
+  color: rgb(244 241 234 / 0.55);
+  font-size: 0.75rem;
+  transition:
+    background 0.4s ease,
+    color 0.4s ease,
+    box-shadow 0.4s ease;
+}
+
+.rosterDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgb(244 241 234 / 0.25);
+  transition: background 0.4s ease;
+}
+
+.roster li[data-state="on"] {
+  background: rgb(95 224 176 / 0.12);
+  box-shadow: 0 0 0 1px var(--soft-mint) inset;
+  color: var(--paper);
+}
+
+.roster li[data-state="on"] .rosterDot {
+  background: var(--soft-mint);
+  box-shadow: 0 0 6px var(--soft-mint);
+}
+
+.roster li[data-state="limit"] .rosterDot {
+  background: #f2a86e;
+}
+
+.roster li[data-cloud] {
+  border-left: 0;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.1) inset;
+  font-family: var(--font-accent-stack);
+  font-size: 0.875rem;
+  font-style: italic;
+}
+
+.roster small {
+  color: rgb(244 241 234 / 0.4);
+  font-family: var(--font-mono-stack);
+  font-size: 0.5625rem;
+  font-style: normal;
+}
+
+.plan {
+  margin-left: auto;
+  color: var(--mint-text-dark);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.pause {
+  display: inline-flex;
+  align-items: center;
+  justify-self: end;
+  gap: 7px;
+  padding: 5px 11px;
+  border: 0;
+  border-radius: var(--radius-round);
+  background: none;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.12) inset;
+  color: rgb(244 241 234 / 0.6);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.pause:hover {
+  color: var(--paper);
+}
+
+.pause:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 3px;
+}
+
+/* ---------- Set up once ---------- */
+
+.setup {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 28px;
+  margin-top: clamp(24px, 3vw, 40px);
+  padding: 18px 0;
+  border-block: 1px solid rgb(244 241 234 / 0.1);
+}
+
+.setupLabel,
+.setupHelp {
+  color: rgb(244 241 234 / 0.5);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.setupLabel {
+  color: var(--mint-text-dark);
+}
+
+.setupHelp {
+  letter-spacing: 0.02em;
+  text-transform: none;
+}
+
+.setupSteps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.setupSteps li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+}
+
+.setupNum {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px var(--soft-mint);
+  color: var(--mint-text-dark);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+}
+
+.setupSteps b {
+  display: block;
+  font-size: 0.9375rem;
+  font-weight: 580;
+}
+
+.setupSteps small {
+  display: block;
+  margin-top: 2px;
+  color: rgb(244 241 234 / 0.55);
+  font-size: 0.8125rem;
+  line-height: 1.4;
+}
+
+.setupSteps a {
+  color: var(--mint-text-dark);
+  text-decoration: underline;
+  text-decoration-color: rgb(130 232 194 / 0.35);
+  text-underline-offset: 3px;
+}
+
+.setupSteps a:hover {
+  text-decoration-color: currentColor;
+}
+
+.note {
+  margin-top: 14px;
+  color: rgb(244 241 234 / 0.38);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+@keyframes swap {
+  from {
+    opacity: 0;
+    translate: 0 4px;
+  }
+}
+
+@keyframes flash {
+  15%,
+  70% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes msgIn {
+  from {
+    opacity: 0;
+    translate: 0 8px;
+  }
+}
+
+@keyframes typing {
+  0%,
+  60%,
+  100% {
+    opacity: 0.3;
+    translate: 0 0;
+  }
+
+  30% {
+    opacity: 1;
+    translate: 0 -3px;
+  }
+}
+
+@keyframes pick {
+  to {
+    background: var(--soft-mint);
+    box-shadow: 0 0 16px -4px rgb(95 224 176 / 0.8);
+    color: var(--mint-ink);
+  }
+}
+
+@keyframes scrub {
+  to {
+    left: calc(100% - 2px);
+  }
+}
+
+/* ---------- Narrower screens ---------- */
+
+@media (max-width: 1180px) {
+  .setup {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+}
+
+/* The activity goes under the video. */
+@media (max-width: 1000px) {
+  .studioBody {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .player {
+    border-right: 0;
+    border-bottom: 1px solid rgb(244 241 234 / 0.07);
+  }
+
+  /* A fixed height, so the chat never jumps as messages arrive. */
+  .thread {
+    flex: none;
+    height: 400px;
+  }
+
+  .working small {
+    display: none;
+  }
+}
+
+@media (max-width: 860px) {
+  .head {
+    display: grid;
+    gap: 14px;
+  }
+
+  .lead {
+    text-align: left;
+  }
+
+  .plain,
+  .accent {
+    display: inline;
+  }
+
+  .title {
+    font-size: clamp(1.9rem, 1.2rem + 3vw, 2.75rem);
+  }
+
+  .setupSteps {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+  }
+
+  .setupHelp {
+    white-space: normal;
+  }
+
+  .note {
+    text-align: left;
+  }
+
+  .studioFoot {
+    flex-wrap: wrap;
+  }
+
+  .plan {
+    margin-left: 0;
+  }
+}
+
+/* Phones: the header wraps, the panel's padding tightens. */
+@media (max-width: 560px) {
+  .studioHead {
+    flex-wrap: wrap;
+    gap: 10px 12px;
+    padding: 12px 14px;
+  }
+
+  .dots {
+    display: none;
+  }
+
+  .working {
+    order: 3;
+  }
+
+  .player,
+  .chatHead,
+  .thread {
+    padding-inline: 14px;
+  }
+
+  .composer {
+    margin-inline: 14px;
+  }
+
+  .studioFoot {
+    padding: 12px 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .captionLine,
+  .segments i,
+  .capTrack i,
+  .roster li,
+  .working {
+    transition: none;
+  }
+
+  .thread > *,
+  .chatAgent,
+  .dotsTyping i {
+    animation: none;
+  }
+
+  .choices i[data-pick] {
+    animation-delay: 0s;
+    animation-duration: 0s;
+  }
+
+  .live,
+  .working b,
+  .updated[data-on],
+  .scrubHead {
+    animation: none;
+  }
+}
