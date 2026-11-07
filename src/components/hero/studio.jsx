@@ -157,16 +157,20 @@ export function Studio({ request, copy, motionStyles, onClose }) {
     ].filter(Boolean);
   }, [plan, copy]);
 
-  // Open as a modal; lock the page's scroll behind it.
+  // Open as a modal; lock the page's scroll behind it. The page keeps a
+  // stable scrollbar gutter, which would show as an empty strip beside the
+  // studio, so it is released while the studio covers the page.
   useEffect(() => {
     const el = dialog.current;
     if (!el) return;
     if (!el.open) el.showModal();
     const root = document.documentElement;
-    const before = root.style.overflow;
+    const before = { overflow: root.style.overflow, gutter: root.style.scrollbarGutter };
     root.style.overflow = "hidden";
+    root.style.scrollbarGutter = "auto";
     return () => {
-      root.style.overflow = before;
+      root.style.overflow = before.overflow;
+      root.style.scrollbarGutter = before.gutter;
     };
   }, []);
 

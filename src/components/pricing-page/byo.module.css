@@ -366,24 +366,29 @@
 }
 
 /* The meters: a channel per allowance, as tall as the monitor. */
+/* The channels share their rows (subgrid), so a long value that wraps
+   (the agent's request limit) never pushes its meter below the others. */
 .channels {
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-rows: auto minmax(0, 1fr) auto;
   gap: 10px;
 }
 
 .channel {
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-row: span 3;
+  grid-template-rows: subgrid;
   justify-items: center;
-  gap: 10px;
+  row-gap: 10px;
   min-width: 0;
   text-align: center;
 }
 
 .value {
   display: flex;
-  align-items: center;
+  align-self: end;
+  align-items: flex-end;
   justify-content: center;
   flex-wrap: wrap;
   gap: 4px;
