@@ -1,0 +1,563 @@
+/*
+ * Pricing page, "Compare every plan": every plan as a path through the
+ * editor's tracks; no boxes. The heading as on the site's other sections;
+ * the plans by lane; the tracks (hairlines, keyframes, one mint path); the
+ * plan in focus beneath.
+ */
+.section {
+  position: relative;
+  padding: var(--section-pad) 0;
+  color: var(--paper);
+}
+
+.inner {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+.hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---------- Heading ---------- */
+
+.head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+  margin-bottom: clamp(28px, 3.4vw, 44px);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: rgb(244 241 234 / 0.62);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.eyebrowMark {
+  width: 18px;
+  height: 1px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+}
+
+.title {
+  margin-top: 16px;
+  font-size: clamp(2.1rem, 1.1rem + 2.2vw, 3.4rem);
+  font-weight: 560;
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+
+.plain,
+.accent {
+  display: block;
+}
+
+.accent {
+  padding-bottom: 0.06em;
+  background: linear-gradient(100deg, var(--mint-text-dark), #eafff6 50%, var(--soft-mint));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-family: var(--font-accent-stack);
+  font-size: 1.1em;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.lead {
+  max-width: 48ch;
+  color: rgb(244 241 234 / 0.62);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  text-align: right;
+}
+
+/* ---------- The stage ---------- */
+
+.stage {
+  --label: clamp(160px, 15%, 210px);
+  --value: clamp(170px, 16%, 210px);
+  --gap: clamp(16px, 2vw, 28px);
+  position: relative;
+  display: grid;
+}
+
+/* The plans, by lane: mono lane names over plain names. */
+.picker {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 18px 32px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid rgb(244 241 234 / 0.16);
+}
+
+.lane {
+  display: grid;
+  gap: 8px;
+}
+
+.laneName {
+  color: rgb(244 241 234 / 0.45);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.laneNames {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 22px;
+}
+
+.laneNames button {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 4px 0 8px;
+  border: 0;
+  background: none;
+  color: rgb(244 241 234 / 0.5);
+  font: inherit;
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  cursor: pointer;
+  transition: color 0.25s ease;
+}
+
+.laneNames button::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 10px rgb(95 224 176 / 0.7);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s var(--ease-land);
+}
+
+.laneNames button:hover,
+.laneNames button[data-on] {
+  color: var(--paper);
+}
+
+.laneNames button[data-on]::after {
+  transform: scaleX(1);
+}
+
+.laneNames button:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+.laneNames em,
+.summaryName em {
+  color: var(--mint-text-dark);
+  font-family: var(--font-mono-stack);
+  font-size: 0.5625rem;
+  font-style: normal;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* ---------- The tracks ---------- */
+
+.tracks {
+  position: relative;
+  display: grid;
+  grid-auto-rows: 64px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: var(--label) minmax(0, 1fr) var(--value);
+  align-items: center;
+  gap: var(--gap);
+  border-bottom: 1px solid rgb(244 241 234 / 0.07);
+}
+
+.label {
+  display: grid;
+  gap: 3px;
+  margin: 0;
+  color: rgb(244 241 234 / 0.8);
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+
+.label span {
+  color: rgb(244 241 234 / 0.4);
+  font-family: var(--font-mono-stack);
+  font-size: 0.5625rem;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.track {
+  position: relative;
+  height: 100%;
+}
+
+/* The track's line, from its first stop to its last. */
+.rail {
+  position: absolute;
+  top: 50%;
+  left: 3%;
+  width: 80%;
+  height: 1px;
+  background: rgb(244 241 234 / 0.2);
+}
+
+/* "Custom": a dashed zone at the track's end. */
+.customZone {
+  position: absolute;
+  top: 50%;
+  left: 88%;
+  width: 10%;
+  border-top: 1px dashed rgb(244 241 234 / 0.35);
+}
+
+.customZone span,
+.end,
+.stop {
+  position: absolute;
+  top: 10px;
+  color: rgb(244 241 234 / 0.38);
+  font-family: var(--font-mono-stack);
+  font-size: 0.5625rem;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  translate: -50% 0;
+  z-index: 2;
+  /* A soft night halo, so a path running through stays behind the words. */
+  text-shadow:
+    0 0 3px #0b0b0d,
+    0 0 6px #0b0b0d,
+    0 0 10px #0b0b0d;
+  transition: color 0.25s ease;
+}
+
+.customZone span {
+  left: 50%;
+}
+
+/* Beside their keyframe, not under it, so a path never runs through them. */
+.end,
+.stop {
+  top: calc(50% + 6px);
+  margin-left: 9px;
+  translate: 0 0;
+}
+
+/* In the right half, before their keyframe instead. */
+.end[data-before],
+.stop[data-before] {
+  margin-left: -9px;
+  translate: -100% 0;
+}
+
+.stop[data-on] {
+  color: var(--mint-text-dark);
+}
+
+/* Every plan's keyframe; the plan in focus lit. */
+.key {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  width: 9px;
+  height: 9px;
+  margin: -4.5px 0 0 -4.5px;
+  border: 1.5px solid rgb(244 241 234 / 0.38);
+  background: #0e0f12;
+  cursor: pointer;
+  rotate: 45deg;
+  transition:
+    scale 0.3s ease,
+    background 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.key:hover {
+  border-color: var(--paper);
+}
+
+.key[data-on] {
+  z-index: 3;
+  border-color: var(--soft-mint);
+  background: var(--soft-mint);
+  box-shadow: 0 0 14px rgb(95 224 176 / 0.9);
+  scale: 1.45;
+}
+
+/* The paths: every plan's a faint thread, the plan in focus mint. */
+.paths {
+  position: absolute;
+  top: 0;
+  left: calc(var(--label) + var(--gap));
+  z-index: 1;
+  width: calc(100% - var(--label) - var(--value) - 2 * var(--gap));
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.thread,
+.route {
+  fill: none;
+  vector-effect: non-scaling-stroke;
+}
+
+.thread {
+  stroke: rgb(244 241 234 / 0.12);
+  stroke-width: 1.2;
+}
+
+.route {
+  stroke: var(--soft-mint);
+  stroke-width: 2.4;
+  filter: drop-shadow(0 0 5px rgb(95 224 176 / 0.7));
+  transition: d 0.6s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* The plan's exact value on each track. */
+.value {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+}
+
+.value b {
+  color: var(--mint-text-dark);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.value span {
+  color: rgb(244 241 234 / 0.42);
+  font-family: var(--font-mono-stack);
+  font-size: 0.5625rem;
+  line-height: 1.4;
+}
+
+/* ---------- The plan in focus ---------- */
+
+.summary {
+  display: grid;
+  grid-template-columns: var(--label) minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 18px var(--gap);
+  padding-top: 24px;
+}
+
+.summaryName {
+  display: grid;
+  gap: 6px;
+}
+
+.summaryName p {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+.summaryName span {
+  color: rgb(244 241 234 / 0.55);
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.summaryAdds p {
+  margin: 0 0 10px;
+  color: rgb(244 241 234 / 0.45);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.summaryAdds ul {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 28px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.summaryAdds li {
+  display: grid;
+  grid-template-columns: 10px minmax(0, 1fr);
+  gap: 8px;
+  color: rgb(244 241 234 / 0.8);
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.summaryAdds li svg {
+  margin-top: 4px;
+  color: var(--soft-mint);
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 20px;
+  border-radius: var(--radius-round);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.22) inset;
+  color: var(--paper);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.25s ease;
+}
+
+.cta:hover {
+  background: rgb(244 241 234 / 0.06);
+}
+
+.cta[data-solid] {
+  background: var(--soft-mint);
+  box-shadow: 0 0 28px -6px rgb(95 224 176 / 0.7);
+  color: var(--mint-ink);
+}
+
+.cta[data-solid]:hover {
+  background: #74e8bd;
+}
+
+.cta:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 3px;
+}
+
+/* ---------- Foot ---------- */
+
+.foot {
+  margin: 28px 0 0;
+  color: rgb(244 241 234 / 0.4);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* ---------- Narrower screens ---------- */
+
+@media (max-width: 1100px) {
+  .summary {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .summaryAdds {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+}
+
+@media (max-width: 860px) {
+  .head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .lead {
+    text-align: left;
+  }
+
+  .picker {
+    justify-content: flex-start;
+  }
+
+  /* Each track: its label and value on a line, the track beneath; the
+     paths go (they can't follow the stacked layout), the keyframes stay. */
+  .tracks {
+    grid-auto-rows: auto;
+  }
+
+  .paths {
+    display: none;
+  }
+
+  .row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "label value"
+      "track track";
+    row-gap: 4px;
+    padding: 14px 0 6px;
+  }
+
+  .label {
+    grid-area: label;
+  }
+
+  .value {
+    grid-area: value;
+    justify-items: end;
+    text-align: right;
+  }
+
+  .track {
+    grid-area: track;
+    height: 52px;
+  }
+
+  .summaryAdds ul {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 560px) {
+  .summary {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .cta {
+    justify-self: start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .route,
+  .key,
+  .stop,
+  .laneNames button,
+  .laneNames button::after {
+    transition: none;
+  }
+}

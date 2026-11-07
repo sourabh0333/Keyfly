@@ -1,0 +1,587 @@
+/*
+ * Pricing page, "Teams and Enterprise": type, hairlines and one timeline;
+ * no boxes. The heading as on the site's other sections; Team (a seat
+ * slider over a shared timeline, the totals beside it, its plan lines)
+ * across a hairline from Enterprise (in type).
+ */
+.section {
+  position: relative;
+  padding: var(--section-pad) 0;
+  color: var(--paper);
+}
+
+.inner {
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+/* ---------- Heading ---------- */
+
+.head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 32px;
+  margin-bottom: clamp(32px, 4vw, 52px);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: rgb(244 241 234 / 0.62);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.eyebrowMark {
+  width: 18px;
+  height: 1px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+}
+
+.title {
+  margin-top: 16px;
+  font-size: clamp(2.1rem, 1.1rem + 2.2vw, 3.4rem);
+  font-weight: 560;
+  letter-spacing: -0.045em;
+  line-height: 1;
+}
+
+.plain,
+.accent {
+  display: block;
+}
+
+.accent {
+  padding-bottom: 0.06em;
+  background: linear-gradient(100deg, var(--mint-text-dark), #eafff6 50%, var(--soft-mint));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-family: var(--font-accent-stack);
+  font-size: 1.1em;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.lead {
+  max-width: 48ch;
+  color: rgb(244 241 234 / 0.62);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  text-align: right;
+}
+
+/* ---------- The stage: Team across a hairline from Enterprise ---------- */
+
+.stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+  border-top: 1px solid rgb(244 241 234 / 0.16);
+  border-bottom: 1px solid rgb(244 241 234 / 0.16);
+}
+
+.team {
+  display: grid;
+  align-content: start;
+  gap: 30px;
+  padding: 30px clamp(28px, 3.4vw, 56px) 32px 0;
+}
+
+.enterprise {
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  padding: 30px 0 32px clamp(28px, 3.4vw, 56px);
+  border-left: 1px solid rgb(244 241 234 / 0.16);
+}
+
+.planName {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+.tagline {
+  max-width: 44ch;
+  margin: 0;
+  color: rgb(244 241 234 / 0.58);
+  font-size: 0.9375rem;
+  line-height: 1.45;
+}
+
+.includes {
+  margin: 0;
+  color: rgb(244 241 234 / 0.45);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* ---------- Team ---------- */
+
+.teamHead {
+  display: grid;
+  grid-template-columns: auto auto minmax(0, 1fr);
+  align-items: baseline;
+  gap: 6px 22px;
+}
+
+.price {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0;
+}
+
+.price b {
+  font-size: clamp(2rem, 1.4rem + 1.2vw, 2.6rem);
+  font-weight: 560;
+  letter-spacing: -0.05em;
+  line-height: 1;
+}
+
+.price span {
+  color: rgb(244 241 234 / 0.55);
+  font-size: 0.875rem;
+}
+
+.billed {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  color: rgb(244 241 234 / 0.45);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  line-height: 1.5;
+}
+
+.teamHead .tagline {
+  grid-column: 1 / -1;
+}
+
+.calc {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: clamp(28px, 3vw, 44px);
+}
+
+/* The seats: a slider over one shared timeline. */
+.seats {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+}
+
+.seatsHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  color: rgb(244 241 234 / 0.5);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.seatsHead b {
+  color: var(--soft-mint);
+  font-size: 2.4rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  text-shadow: 0 0 16px rgb(95 224 176 / 0.5);
+}
+
+.range {
+  width: 100%;
+  height: 24px;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+  appearance: none;
+}
+
+.range::-webkit-slider-runnable-track {
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--soft-mint) calc(var(--p) * 100%), rgb(244 241 234 / 0.18) calc(var(--p) * 100%));
+}
+
+.range::-moz-range-track {
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--soft-mint) calc(var(--p) * 100%), rgb(244 241 234 / 0.18) calc(var(--p) * 100%));
+}
+
+.range::-webkit-slider-thumb {
+  width: 16px;
+  height: 16px;
+  margin-top: -7px;
+  border: 0;
+  background: var(--soft-mint);
+  box-shadow: 0 0 14px rgb(95 224 176 / 0.9);
+  rotate: 45deg;
+  appearance: none;
+}
+
+.range::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border: 0;
+  border-radius: 0;
+  background: var(--soft-mint);
+  box-shadow: 0 0 14px rgb(95 224 176 / 0.9);
+  rotate: 45deg;
+}
+
+.range:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+.rangeFoot {
+  display: flex;
+  justify-content: space-between;
+  margin: -4px 0 0;
+  color: rgb(244 241 234 / 0.4);
+  font-family: var(--font-mono-stack);
+  font-size: 0.5625rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* One shared timeline: a track per seat, one playhead across them all. */
+.timeline {
+  --names: 58px;
+  position: relative;
+  display: grid;
+  gap: 0;
+  margin-top: 26px;
+}
+
+.playhead {
+  position: absolute;
+  top: -20px;
+  bottom: 0;
+  left: calc(var(--names) + (100% - var(--names)) * 0.56);
+  z-index: 2;
+  width: 2px;
+  margin-left: -1px;
+  background: var(--soft-mint);
+  box-shadow: 0 0 10px rgb(95 224 176 / 0.8);
+}
+
+.playhead em {
+  position: absolute;
+  top: -2px;
+  left: 8px;
+  color: var(--mint-text-dark);
+  font-family: var(--font-mono-stack);
+  font-size: 0.5625rem;
+  font-style: normal;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.seatTrack {
+  display: grid;
+  grid-template-columns: var(--names) minmax(0, 1fr);
+  align-items: center;
+  height: 18px;
+}
+
+/* A seat not taken: faint and dashed, no keyframes. */
+.seatTrack[data-open] > span:first-child {
+  color: rgb(244 241 234 / 0.18);
+}
+
+.seatTrack[data-open] .seatLine {
+  background: none;
+  border-top: 1px dashed rgb(244 241 234 / 0.12);
+}
+
+.seatLine i {
+  animation: keyIn 0.4s var(--ease-land) both;
+}
+
+.seatTrack > span:first-child {
+  color: rgb(244 241 234 / 0.4);
+  font-family: var(--font-mono-stack);
+  font-size: 0.5625rem;
+  letter-spacing: 0.06em;
+}
+
+.seatLine {
+  position: relative;
+  height: 1px;
+  background: rgb(244 241 234 / 0.16);
+}
+
+.seatLine i {
+  position: absolute;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  margin: -3.5px 0 0 -3.5px;
+  border: 1.5px solid rgb(95 224 176 / 0.7);
+  background: #0e0f12;
+  rotate: 45deg;
+}
+
+.more {
+  margin: 6px 0 0 var(--names);
+  color: rgb(244 241 234 / 0.5);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  letter-spacing: 0.06em;
+}
+
+@keyframes keyIn {
+  from {
+    opacity: 0;
+    scale: 0.4;
+  }
+}
+
+/* The totals: hairline rows, each value with its sum. */
+.totals {
+  display: grid;
+  align-content: start;
+  margin: 0;
+}
+
+.totals > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 13px 0;
+  border-bottom: 1px solid rgb(244 241 234 / 0.08);
+}
+
+.totals > div:first-child {
+  padding-top: 4px;
+}
+
+.totals dt {
+  color: rgb(244 241 234 / 0.6);
+  font-size: 0.875rem;
+}
+
+.totals dd {
+  display: grid;
+  justify-items: end;
+  gap: 2px;
+  margin: 0;
+}
+
+.totals dd b {
+  color: var(--paper);
+  font-size: 1.25rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.totals > div:first-child dd b {
+  color: var(--mint-text-dark);
+  font-size: 1.5rem;
+}
+
+.totals dd span {
+  color: rgb(244 241 234 / 0.4);
+  font-family: var(--font-mono-stack);
+  font-size: 0.5625rem;
+}
+
+/* Team's plan lines and button. */
+.teamFoot {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 20px 32px;
+  padding-top: 22px;
+  border-top: 1px solid rgb(244 241 234 / 0.08);
+}
+
+.lines {
+  display: grid;
+  gap: 10px;
+}
+
+.lines ul {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 26px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lines li {
+  display: grid;
+  grid-template-columns: 10px minmax(0, 1fr);
+  gap: 8px;
+  color: rgb(244 241 234 / 0.8);
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.lines li svg {
+  margin-top: 4px;
+  color: var(--soft-mint);
+}
+
+/* ---------- Enterprise: in type ---------- */
+
+.custom {
+  margin: 0;
+  font-family: var(--font-accent-stack);
+  font-size: clamp(2.6rem, 1.8rem + 1.8vw, 3.6rem);
+  font-style: italic;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.enterprise .includes {
+  margin-top: 14px;
+}
+
+.bigLines {
+  margin: 0 0 10px;
+  padding: 0;
+  list-style: none;
+}
+
+.bigLines li {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 15px 0;
+  border-bottom: 1px solid rgb(244 241 234 / 0.08);
+  font-size: clamp(1.0625rem, 0.95rem + 0.35vw, 1.3125rem);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+}
+
+.bigLines i {
+  flex: none;
+  width: 9px;
+  height: 9px;
+  border: 1.5px solid var(--soft-mint);
+  rotate: 45deg;
+}
+
+/* ---------- Buttons ---------- */
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  gap: 12px;
+  padding: 11px 20px;
+  border-radius: var(--radius-round);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.22) inset;
+  color: var(--paper);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.25s ease;
+}
+
+.cta:hover {
+  background: rgb(244 241 234 / 0.06);
+}
+
+.cta[data-solid] {
+  background: var(--soft-mint);
+  box-shadow: 0 0 28px -6px rgb(95 224 176 / 0.7);
+  color: var(--mint-ink);
+}
+
+.cta[data-solid]:hover {
+  background: #74e8bd;
+}
+
+.cta:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 3px;
+}
+
+/* ---------- Foot ---------- */
+
+.foot {
+  margin: 22px 0 0;
+  color: rgb(244 241 234 / 0.4);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* ---------- Narrower screens ---------- */
+
+/* Below 1100px Enterprise goes under Team. */
+@media (max-width: 1100px) {
+  .stage {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .team {
+    padding-right: 0;
+  }
+
+  .enterprise {
+    padding-left: 0;
+    border-top: 1px solid rgb(244 241 234 / 0.16);
+    border-left: 0;
+  }
+}
+
+@media (max-width: 860px) {
+  .head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .lead {
+    text-align: left;
+  }
+}
+
+/* Phones: the totals under the seats; one column of plan lines. */
+@media (max-width: 700px) {
+  .calc {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .teamHead {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .billed {
+    grid-column: 1 / -1;
+  }
+
+  .teamFoot,
+  .lines ul {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .seatLine i {
+    animation: none;
+  }
+}

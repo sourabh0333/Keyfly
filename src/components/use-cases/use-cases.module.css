@@ -459,6 +459,26 @@
   line-height: 1.5;
 }
 
+.caseLink {
+  color: var(--mint-text-dark);
+  font-family: var(--font-mono-stack);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  text-decoration: none;
+  border-bottom: 1px solid rgb(95 224 176 / 0.4);
+}
+
+.caseLink:hover {
+  border-bottom-color: var(--soft-mint);
+}
+
+.caseLink:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
 .promptRow {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;

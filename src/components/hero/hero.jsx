@@ -1,6 +1,6 @@
 import { hero, prompt } from "@/content/home";
 import { PauseOffscreen } from "@/components/pause-offscreen";
-import { PointerField } from "./pointer-field";
+import { FloorPause } from "./floor-pause";
 import { PromptBox } from "./prompt-box";
 import { TimelineFloor } from "./timeline-floor";
 import styles from "./hero.module.css";
@@ -18,11 +18,11 @@ export function Hero() {
     <section className={styles.hero} aria-labelledby="hero-title" data-section="Intro">
       <div className={styles.backdrop} aria-hidden="true">
         <div className={styles.aurora} />
-        <TimelineFloor />
+        <TimelineFloor films={hero.floor.films} />
         <div className={styles.grain} />
       </div>
-      <PointerField className={styles.spot} />
       <PauseOffscreen />
+      <FloorPause pause={hero.floor.pause} play={hero.floor.play} />
 
       <div className={styles.inner}>
         <p className={styles.eyebrow}>

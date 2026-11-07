@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Shot } from "@/components/shot/shot";
 import styles from "./old-way.module.css";
 
 const AUTO = 2800; // ms per step when it isn't pinned to the scroll
@@ -33,13 +32,15 @@ const CUT = [0, 18, 34, 50, 68, 84, 100];
  * moves on by itself every few seconds while on screen. Reduced motion:
  * step 6, still. The segments under the editor jump to a step.
  */
-export function Story({ hand, keyfly, ask, zoom, hint, steps }) {
+export function Story({ hand, keyfly, ask, zoom, hint, steps, footage }) {
   const n = steps.length;
   const [step, setStep] = useState(1);
   const [live, setLive] = useState(false);
   const [reduced, setReduced] = useState(false);
   const trackRef = useRef(null);
   const pinRef = useRef(null);
+  const rawRef = useRef(null);
+  const cutRef = useRef(null);
 
   // Pin only where the stage fits the screen and motion is welcome.
   useEffect(() => {
@@ -99,6 +100,23 @@ export function Story({ hand, keyfly, ask, zoom, hint, steps }) {
     };
   }, [live, reduced, n]);
 
+  // The recording plays (both sides in step, muted) only while the stage
+  // is on screen; with reduced motion it rests on its posters.
+  useEffect(() => {
+    const videos = [rawRef.current, cutRef.current].filter(Boolean);
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        videos.forEach((v) => {
+          v.currentTime = videos[0].currentTime;
+          v.play().catch(() => {});
+        });
+      } else videos.forEach((v) => v.pause());
+    }, { threshold: 0.15 });
+    observer.observe(pinRef.current);
+    return () => observer.disconnect();
+  }, []);
+
   // A segment: pinned, scroll to its stretch; otherwise show it.
   function go(i) {
     if (!live) {
@@ -140,7 +158,7 @@ export function Story({ hand, keyfly, ask, zoom, hint, steps }) {
             </div>
 
             <div className={styles.viewer} aria-hidden="true">
-              <Shot />
+              <video ref={rawRef} className={styles.film} src={footage.raw.src} poster={footage.raw.poster} muted loop playsInline preload="none" tabIndex={-1} />
               <span className={styles.rawWash} />
               <span className={styles.timecode}>00:00:12:04</span>
               <span className={styles.zoom}>{zoom}</span>
@@ -215,7 +233,7 @@ export function Story({ hand, keyfly, ask, zoom, hint, steps }) {
             </div>
 
             <div className={`${styles.viewer} ${styles.cut}`} aria-hidden="true">
-              <Shot />
+              <video ref={cutRef} className={styles.film} src={footage.cut.src} poster={footage.cut.poster} muted loop playsInline preload="none" tabIndex={-1} />
               <span className={styles.lower}>
                 <b>{keyfly.title}</b>
                 <span>{keyfly.sub}</span>

@@ -1,4 +1,5 @@
 import { siteConfig } from "@/config/site";
+import { categories } from "./use-cases";
 
 // Homepage copy. Facts come from the KeyFly app (read 2026-11-03) and the
 // team. Lines still marked PLACEHOLDER wait for the team; the page stays
@@ -15,6 +16,18 @@ export const hero = {
     [{ text: "Take", accent: true }, { text: "it", accent: true }, { text: "anywhere.", accent: true }],
   ],
   lead: "KeyFly turns a sentence or your footage into an edited video, then lets you finish it your way.",
+  // Footage on the timeline floor's video tracks: single-shot loops cut
+  // from real stock clips (scripts/pricing-cells/, as on the Pricing hero).
+  // Each video clip shows a still of one; the clips under the playhead play
+  // theirs. Illustrative.
+  floor: {
+    films: ["lake", "aerial", "host", "meadow", "park", "creator", "phone"].map((name) => ({
+      src: `/video/cells/${name}.mp4`,
+      poster: `/video/cells/${name}.webp`,
+    })),
+    pause: "Pause the timeline",
+    play: "Play the timeline",
+  },
   // The three things it doesn't lock you into, between the lead and the
   // prompt box. Each points to where the page shows it.
   proof: [
@@ -31,9 +44,6 @@ export const hero = {
 export const prompt = {
   label: "Describe your video",
   placeholder: "e.g. A 30s launch film for habitly.io, our habit-tracking app.",
-  // Where the prompt box sends people. The app does not take the prompt
-  // from the URL yet, so it simply opens the app.
-  action: siteConfig.appUrl,
   accept: "video/*,audio/*,image/*",
   addMedia: "Add media",
   formats: {
@@ -65,15 +75,88 @@ export const prompt = {
   enhance: { label: "Enhance", title: "Rewrite your idea into a clearer prompt (free)" },
   create: "Create",
   blank: { label: "Blank project", title: "Start with an empty timeline and build it yourself", href: siteConfig.appUrl },
-  // Starting points. Clicking one writes its example prompt into the box.
+  // Starting points: six of the app's use-case types (its Templates page's
+  // "Any use case" filter, read 2026-11-05; the app's New video box no
+  // longer has preset chips). Clicking one writes the site's example prompt
+  // for it into the box.
   presets: [
-    { label: "Launch Video", prompt: "A 30-second launch video for our new app: bold title cards, quick cuts on the beat and a clear call to action at the end." },
-    { label: "UGC", prompt: "A selfie-style UGC ad, vertical, with punchy captions, a hook in the first two seconds and natural jump cuts." },
+    { label: "Launch film", prompt: "A 30-second launch film for our new app: bold title cards, quick cuts on the beat and a clear call to action at the end." },
+    { label: "UGC ad", prompt: "A selfie-style UGC ad, vertical, with punchy captions, a hook in the first two seconds and natural jump cuts." },
     { label: "Explainer", prompt: "A 60-second explainer that walks through how our product works, with simple animated callouts and a calm voiceover." },
-    { label: "Montage", prompt: "A travel montage from my footage, cut to the music, with the best moments and smooth speed ramps." },
-    { label: "Product Demo", prompt: "A product demo from my screen recording: zoom into each click, add short captions and trim the pauses." },
-    { label: "Podcast", prompt: "Turn my podcast episode into three vertical clips with the strongest quotes, speaker framing and captions." },
+    { label: "Event promo", prompt: "An event promo from last year's footage: the best moments cut to the music, speed ramps, the date and a sign-up call to action." },
+    { label: "Product demo", prompt: "A product demo from my screen recording: zoom into each click, add short captions and trim the pauses." },
+    { label: "Podcast clip", prompt: "Turn my podcast episode into three vertical clips with the strongest quotes, speaker framing and captions." },
   ],
+  // Create opens this studio over the page instead of sending people away
+  // (2026-11-07, the team's request). It is laid out like the app's editor
+  // (read from the app the same day: its header, menus, panels, player bar,
+  // storyboard, timeline and AI director panel, and its sign-up card). The
+  // plan is sketched from the prompt in the browser; nothing plays, and
+  // pressing play asks them to sign up.
+  studio: {
+    label: "Preview",
+    saved: "Saved",
+    menus: ["File", "Edit", "Clip", "View", "Help"],
+    edit: "Edit",
+    noBrandKit: "No brand kit",
+    share: "Share",
+    export: "Export",
+    close: "Close",
+    tabs: [
+      { id: "media", label: "Media" },
+      { id: "text", label: "Text" },
+      { id: "graphics", label: "Graphics" },
+      { id: "transitions", label: "Transitions" },
+    ],
+    drop: "Drop video, images or audio",
+    dropNote: "or click to choose",
+    play: "Play the preview",
+    storyboard: "Storyboard",
+    scenes: "scenes",
+    curves: "Curves",
+    allTracks: "Show all tracks",
+    split: "Split",
+    track: "Track",
+    snap: "Snap",
+    tracks: { scenes: "Scenes", transitions: "Transitions", video: "Video", voice: "Voice-over", music: "Music" },
+    director: "AI director",
+    aspect: "Aspect ratio",
+    planning: "Planning",
+    sketched: "Sketched from your words",
+    reply: {
+      built: "Planned",
+      hook: "Hook: opens on",
+      voice: "Voice:",
+      music: "Music:",
+      look: "Look:",
+      assumed: "Assumed:",
+      storyboard: "Storyboard:",
+      next: "Next: press play to make it.",
+    },
+    revert: "Revert",
+    retry: "Retry",
+    composer: "What should we change? (@ to mention, / for commands)",
+    send: "Send",
+    enhance: "Enhance",
+    cloud: "Cloud",
+    auto: "Auto",
+    signup: `${siteConfig.appUrl}/signup?plan=free`,
+    signIn: `${siteConfig.appUrl}/login`,
+    gate: {
+      back: "Back to the preview",
+      ready: "ready to make",
+      title: "Create your account",
+      trial: "Every new account starts with a 7-day Creator trial, no card.",
+      continueWith: "Continue with",
+      providers: ["Google", "GitHub", "LinkedIn"],
+      or: "or with email",
+      email: "Continue with email",
+      have: "Already have an account?",
+      signIn: "Sign in",
+      legal: ["By continuing you agree to the ", "Terms of Service", " and ", "Privacy Policy", "."],
+      company: "KeyFly.si is a Cevrynt Inc. product",
+    },
+  },
   // "or make it in …". These open the section that explains it until the
   // apps have their own install links (the KeyFly app shows none yet).
   elsewhere: [
@@ -98,7 +181,7 @@ export const howItWorks = {
   // What the illustrative editor shows.
   demo: {
     file: "Launch Video",
-    prompt: presetPrompt("Launch Video"),
+    prompt: presetPrompt("Launch film"),
     // KeyFly's notes in the side panel, ticked off as the playhead passes.
     plan: ["Found 6 shots", "Cut on the beat", "Added title cards", "Wrote captions"],
     // The title and caption on the viewer, one per shot.
@@ -167,7 +250,15 @@ export const oldWay = {
   eyebrow: "Your footage",
   title: [{ text: "Got footage?" }, { text: "KeyFly does the chores.", accent: true }],
   lead: "Drop in a talking head, a screen recording or your clips. KeyFly cuts the silences and filler words, adds captions, and zooms in on what matters: the chores you'd otherwise do by hand.",
-  note: "Illustrative",
+  note: "Illustrative · Real stock footage",
+  // A real talking-head recording (scripts/footage-home/, from Mixkit clip
+  // 10457, Mixkit Stock Video Free License), the same 8 s twice: as shot,
+  // for "By hand", and graded, for "With KeyFly". Illustrative: the
+  // captions and edits laid over it are the site's.
+  footage: {
+    raw: { src: "/video/footage-raw.mp4", poster: "/video/footage-raw.webp" },
+    cut: { src: "/video/footage-cut.mp4", poster: "/video/footage-cut.webp" },
+  },
   hand: { label: "By hand", step: "Step", of: "of" },
   keyfly: { label: "With KeyFly", done: "Done in one step", ready: "First cut ready", title: "Launch day", sub: "Chapter 2", captions: ["Built", "for", "launch", "day"] },
   ask: "Edit my footage into a 30s video with captions, plus a 9:16 cut",
@@ -288,12 +379,12 @@ export const onBrand = {
   ],
   // Illustrative videos, each in its own shape.
   videos: [
-    { kind: "launch", ratio: "16:9", w: 16, h: 9, title: "Launch day", label: "Launch Video" },
-    { kind: "ugc", ratio: "9:16", w: 9, h: 16, title: "Real results", label: "UGC" },
-    { kind: "podcast", ratio: "1:1", w: 1, h: 1, title: "Episode 12", label: "Podcast" },
+    { kind: "launch", ratio: "16:9", w: 16, h: 9, title: "Launch day", label: "Launch film" },
+    { kind: "ugc", ratio: "9:16", w: 9, h: 16, title: "Real results", label: "UGC ad" },
+    { kind: "podcast", ratio: "1:1", w: 1, h: 1, title: "Episode 12", label: "Podcast clip" },
     { kind: "explainer", ratio: "16:9", w: 16, h: 9, title: "How it works", label: "Explainer" },
-    { kind: "demo", ratio: "4:5", w: 4, h: 5, title: "New: Publish", label: "Product Demo" },
-    { kind: "montage", ratio: "16:9", w: 16, h: 9, title: "Highlights", label: "Montage" },
+    { kind: "demo", ratio: "4:5", w: 4, h: 5, title: "New: Publish", label: "Product demo" },
+    { kind: "montage", ratio: "16:9", w: 16, h: 9, title: "Highlights", label: "Event promo" },
   ],
 };
 
@@ -372,19 +463,21 @@ export const audience = {
   promptLabel: "Try",
   try: "Try this prompt",
   roles: [
-    { id: "marketers", name: "Marketers & founders", line: "Launch films, social ads and event promos, from one sentence or your own footage.", presets: ["Launch Video", "Montage"], formats: ["16:9", "9:16"], kind: "launch", format: "16:9", prompt: presetPrompt("Launch Video") },
-    { id: "product", name: "Product & SaaS teams", line: "Walkthroughs, explainers and screen-recording demos, with zooms and callouts.", presets: ["Product Demo", "Explainer"], formats: ["16:9", "1:1"], kind: "explainer", format: "16:9", prompt: presetPrompt("Product Demo") },
-    { id: "creators", name: "Creators", line: "UGC ads and scroll-stopping hooks, captioned and cut for vertical.", presets: ["UGC"], formats: ["9:16"], kind: "ugc", format: "9:16", prompt: presetPrompt("UGC") },
-    { id: "podcasters", name: "Podcasters", line: "Episodes and talking heads cut into clips, with silences and filler words removed.", presets: ["Podcast"], formats: ["9:16"], kind: "podcast", format: "9:16", prompt: presetPrompt("Podcast") },
+    { id: "marketers", name: "Marketers & founders", line: "Launch films, social ads and event promos, from one sentence or your own footage.", presets: ["Launch film", "Event promo"], formats: ["16:9", "9:16"], kind: "launch", format: "16:9", prompt: presetPrompt("Launch film") },
+    { id: "product", name: "Product & SaaS teams", line: "Walkthroughs, explainers and screen-recording demos, with zooms and callouts.", presets: ["Product demo", "Explainer"], formats: ["16:9", "1:1"], kind: "explainer", format: "16:9", prompt: presetPrompt("Product demo") },
+    { id: "creators", name: "Creators", line: "UGC ads and scroll-stopping hooks, captioned and cut for vertical.", presets: ["UGC ad"], formats: ["9:16"], kind: "ugc", format: "9:16", prompt: presetPrompt("UGC ad") },
+    { id: "podcasters", name: "Podcasters", line: "Episodes and talking heads cut into clips, with silences and filler words removed.", presets: ["Podcast clip"], formats: ["9:16"], kind: "podcast", format: "9:16", prompt: presetPrompt("Podcast clip") },
   ],
 };
 
 export const useCases = {
   eyebrow: "Use cases",
-  title: [{ text: "Pick a preset." }, { text: "Make it yours.", accent: true }],
-  lead: "Start from a preset or describe your own. Six of the videos people make most:",
+  title: [{ text: "Pick a use case." }, { text: "Make it yours.", accent: true }],
+  lead: "Six of the twenty kinds of video KeyFly's templates are made for, each with a prompt to start from. Or describe your own.",
   cta: "Try this prompt",
-  dialLabel: "Preset",
+  dialLabel: "Use case",
+  // "8 templates", counted from the app's templates (src/content/use-cases.js).
+  templatesLink: { label: "{n} templates", href: "/use-cases#categories" },
   hint: { live: "Scroll or drag to turn", still: "Drag or click to turn" },
   promptLabel: "Prompt",
   note: "Illustrative previews",
@@ -399,19 +492,24 @@ export const useCases = {
     cta: "Browse templates",
     href: `${siteConfig.appUrl}/templates`,
   },
-  // One line per preset, drawn from its prompt in the app.
+  // Six of the app's use-case types, each with the site's example prompt
+  // and the number of the app's templates of that type.
   items: [
-    { label: "Launch Video", kind: "launch", format: "16:9", body: "Title cards, quick cuts on the beat and a clear call to action at the end." },
-    { label: "UGC", kind: "ugc", format: "9:16", body: "Selfie-style ads with a hook in the first two seconds and punchy captions." },
+    { label: "Launch film", kind: "launch", format: "16:9", body: "Title cards, quick cuts on the beat and a clear call to action at the end." },
+    { label: "UGC ad", kind: "ugc", format: "9:16", body: "Selfie-style ads with a hook in the first two seconds and punchy captions." },
     { label: "Explainer", kind: "explainer", format: "16:9", body: "Walk people through how something works, with simple callouts and a calm voiceover." },
-    { label: "Montage", kind: "montage", format: "16:9", body: "The best moments from your footage, cut to the music with smooth speed ramps." },
-    { label: "Product Demo", kind: "demo", format: "16:9", body: "Screen recordings with a zoom on every click, short captions and the pauses trimmed." },
-    { label: "Podcast", kind: "podcast", format: "9:16", body: "Long episodes turned into vertical clips with the strongest quotes and captions." },
-  ].map((item) => ({ ...item, prompt: presetPrompt(item.label) })),
+    { label: "Event promo", kind: "montage", format: "16:9", body: "The best moments from your footage, cut to the music, with the date and a way to sign up." },
+    { label: "Product demo", kind: "demo", format: "16:9", body: "Screen recordings with a zoom on every click, short captions and the pauses trimmed." },
+    { label: "Podcast clip", kind: "podcast", format: "9:16", body: "Long episodes turned into vertical clips with the strongest quotes and captions." },
+  ].map((item) => ({ ...item, prompt: presetPrompt(item.label), templates: templatesOfType(item.label) })),
 };
 
 function presetPrompt(label) {
   return prompt.presets.find((preset) => preset.label === label).prompt;
+}
+
+function templatesOfType(type) {
+  return categories.reduce((n, category) => n + category.templates.filter((t) => t.type === type).length, 0);
 }
 
 // "Download": the install moment from the brand kit's DMG art, animated.

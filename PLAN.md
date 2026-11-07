@@ -73,7 +73,7 @@ None of them let you **describe a whole video and get an edited cut back**, then
 ### What we know Keyfly does (from the app's prompt box and installer art)
 
 - You describe a video or drop footage, and Keyfly edits it.
-- Presets: Launch Video, UGC, Explainer, Montage, Product Demo, Podcast.
+- Presets: Launch Video, UGC, Explainer, Montage, Product Demo, Podcast. (Gone from the app by 2026-11-05; from 2026-11-07 the site's chips and dial use six of its use-case types instead.)
 - Formats: Auto, 16:9, 9:16, 1:1 (the list is a placeholder).
 - "Or make it in ChatGPT · Claude": Keyfly can apparently be used from inside ChatGPT and Claude.
 - A desktop app (macOS, Windows) plus a web app at app.keyfly.si.
@@ -155,8 +155,8 @@ The site isn't live yet, so every page the navbar points at gets built now, one 
 | 1 | Product `/product` | ✅ done 2026-11-05 | Product | All nine sections built |
 | 2 | Use cases `/use-cases` | ✅ done 2026-11-06 | Use cases → `/use-cases` (navbar and footer) | Six presets with their real prompts, four roles, 91 templates (11 categories). Missing: real videos made with KeyFly and customer stories, so previews stay illustrative |
 | 3 | Integrations `/integrations` | ✅ built 2026-11-06 (hero, Your own AI agent, Your editor, Where it goes, Chat apps, Cost and your data, Questions) | Integrations → `/integrations` (navbar and footer) | Agents (Settings → Agents), editors and timeline formats, Package for editing, platforms. Missing: ChatGPT and Claude app install links |
-| 4 | Pricing `/pricing` | 🔨 building (hero 2026-11-06) | Pricing → `/pricing` (from 2026-11-06) | Everything from the pricing API (plans, prices, AI minutes, packs, Team, Enterprise) |
-| 5 | Download `/download` | ⏳ | Download button → the build, or `/#download` | Real builds (version 1.1.7), macOS 13+ (Apple silicon, Intel), Windows 10 and 11 |
+| 4 | Pricing `/pricing` | ✅ built 2026-11-07 (hero 2026-11-06; Which plan fits, Bring your own AI, AI minutes explained, Compare every plan, Teams and Enterprise and Questions 2026-11-07) | Pricing → `/pricing` (from 2026-11-06) | Everything from the pricing API (plans, prices, AI minutes, packs, Team, Enterprise) |
+| 5 | Download | ❌ not a page (the team's decision, 2026-11-07) | The navbar button downloads the visitor's build at once and shows a note: starting, the install step, the other Mac build, try again; other systems and phones as before | Real builds, macOS 13+ (Apple silicon, Intel), Windows 10 and 11 |
 
 When a page is built, point its navbar and footer links at it (`src/content/navigation.js`, `src/content/footer.js`) and remove the homepage anchor from them.
 

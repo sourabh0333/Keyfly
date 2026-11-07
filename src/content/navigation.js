@@ -28,10 +28,27 @@ export const primaryCta = { label: "Start free", href: `${siteConfig.appUrl}/sig
 // The header's Download button names the visitor's system (the real builds
 // at app.keyfly.si/download, 2026-11-03). Other systems, and the server's
 // HTML, get the Download section; phones get the web app.
+// A Mac gets the Apple silicon build, or the Intel build where the browser
+// can tell it's an Intel Mac (Chrome and Edge can; Safari can't). After a
+// click, a small note says the download is starting, what to do with the
+// file, and offers the other Mac build and a retry.
 export const download = {
   label: "Download",
   mac: { label: "Download for Mac", href: `${siteConfig.appUrl}/download/mac` },
+  macIntel: { label: "Download for Intel Mac", href: `${siteConfig.appUrl}/download/mac-intel` },
   windows: { label: "Download for Windows", href: `${siteConfig.appUrl}/download/windows` },
+  started: {
+    title: "Your download is starting",
+    build: { mac: "KeyFly for Mac · Apple silicon", macIntel: "KeyFly for Mac · Intel", windows: "KeyFly for Windows" },
+    // The app download page's own steps (as in the homepage's Download).
+    next: {
+      mac: "Open the .dmg and drag KeyFly to Applications.",
+      windows: "Run the installer. Windows asks once before KeyFly first opens.",
+    },
+    other: { mac: "Intel Mac? Get that build", macIntel: "Apple silicon Mac? Get that build" },
+    retry: "Didn't start? Try again",
+    close: "Close",
+  },
   other: { label: "Download", href: "/#download" },
   phone: { label: "Open in browser", href: siteConfig.appUrl },
 };

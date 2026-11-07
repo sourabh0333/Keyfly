@@ -47,7 +47,7 @@ function Arrow() {
 }
 
 /**
- * The presets on a jog wheel, the dial editors spin to move through
+ * The use cases on a jog wheel, the dial editors spin to move through
  * footage. The six names sit around its rim and the one at the mint notch
  * plays in the viewer beside it, at its own format, with its prompt typing
  * in.
@@ -58,7 +58,7 @@ function Arrow() {
  * page to match. Where the stage doesn't fit the screen, or with reduced
  * motion, nothing pins and the wheel turns by drag, click and keys alone.
  */
-export function PresetDial({ items, cta, dialLabel, promptLabel, hint }) {
+export function PresetDial({ items, cta, dialLabel, promptLabel, hint, templatesLink }) {
   const narrow = useSyncExternalStore(onNarrowChange, () => matchMedia(NARROW).matches, () => false);
   const [pos, setPos] = useState(0);
   const [live, setLive] = useState(false);
@@ -331,7 +331,14 @@ export function PresetDial({ items, cta, dialLabel, promptLabel, hint }) {
 
             <div key={active} className={styles.caption} aria-live="polite">
               <h3 className={styles.caseTitle}>{item.label}</h3>
-              <p className={styles.caseBody}>{item.body}</p>
+              <p className={styles.caseBody}>
+                {item.body}{" "}
+                {item.templates ? (
+                  <a className={styles.caseLink} href={templatesLink.href}>
+                    {templatesLink.label.replace("{n}", item.templates)} <span aria-hidden="true">→</span>
+                  </a>
+                ) : null}
+              </p>
             </div>
 
             <div className={styles.promptRow}>

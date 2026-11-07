@@ -68,7 +68,57 @@ export function SiteHeader() {
   const navRef = useRef(null);
   const timer = useRef(0);
   const system = useSyncExternalStore(never, getSystem, () => "other");
-  const get = download[system];
+  const [intel, setIntel] = useState(false);
+  const [started, setStarted] = useState(false);
+  const build = system === "mac" && intel ? "macIntel" : system;
+  const get = download[build];
+  const installs = build === "mac" || build === "macIntel" || build === "windows";
+
+  // Chrome and Edge can say whether a Mac is Intel; Safari can't, so it
+  // gets the Apple silicon build with the Intel one offered after a click.
+  useEffect(() => {
+    if (system !== "mac" || !navigator.userAgentData?.getHighEntropyValues) return;
+    navigator.userAgentData
+      .getHighEntropyValues(["architecture"])
+      .then((v) => setIntel(v.architecture === "x86"))
+      .catch(() => {});
+  }, [system]);
+
+  // The note after a download starts: gone after 14s, on Escape or on a
+  // click elsewhere.
+  useEffect(() => {
+    if (!started) return;
+    const done = setTimeout(() => setStarted(false), 14000);
+    const onKey = (event) => event.key === "Escape" && setStarted(false);
+    const onDown = (event) => !event.target.closest("[data-download]") && setStarted(false);
+    window.addEventListener("keydown", onKey);
+    window.addEventListener("pointerdown", onDown);
+    return () => {
+      clearTimeout(done);
+      window.removeEventListener("keydown", onKey);
+      window.removeEventListener("pointerdown", onDown);
+    };
+  }, [started]);
+
+  const starting = () => installs && setStarted(true);
+  const other = build === "mac" ? download.macIntel : build === "macIntel" ? download.mac : null;
+  const note = started ? (
+    <div className={styles.dlNote} role="status">
+      <p className={styles.dlTitle}>
+        <i aria-hidden="true" />
+        {download.started.title}
+        <button type="button" className={styles.dlClose} aria-label={download.started.close} onClick={() => setStarted(false)}>
+          ×
+        </button>
+      </p>
+      <p className={styles.dlBuild}>{download.started.build[build]}</p>
+      <p className={styles.dlNext}>{download.started.next[build === "windows" ? "windows" : "mac"]}</p>
+      <p className={styles.dlLinks}>
+        {other ? <a href={other.href}>{download.started.other[build]}</a> : null}
+        <a href={get.href}>{download.started.retry}</a>
+      </p>
+    </div>
+  ) : null;
 
   useEffect(() => {
     let last = window.scrollY;
@@ -234,10 +284,13 @@ export function SiteHeader() {
           </a>
           {/* A short label in the bar; the link still goes to the visitor's
               build, and its accessible name and tooltip say which. */}
-          <a href={get.href} className={styles.download} data-system={system} aria-label={get.label} title={get.label}>
-            <DownloadIcon />
-            {system === "phone" ? get.label : download.label}
-          </a>
+          <span className={styles.dlWrap} data-download="">
+            <a href={get.href} className={styles.download} data-system={system} aria-label={get.label} title={get.label} onClick={starting}>
+              <DownloadIcon />
+              {system === "phone" ? get.label : download.label}
+            </a>
+            {open ? null : note}
+          </span>
           <a href={primaryCta.href} className={styles.cta}>
             <span>{primaryCta.label}</span>
             <Arrow />
@@ -289,10 +342,13 @@ export function SiteHeader() {
             <span>{primaryCta.label}</span>
             <Arrow />
           </a>
-          <a href={get.href} className={`${styles.download} ${styles.menuDownload}`}>
-            <DownloadIcon />
-            {get.label}
-          </a>
+          <span className={styles.menuDlWrap} data-download="">
+            <a href={get.href} className={styles.download} onClick={starting}>
+              <DownloadIcon />
+              {get.label}
+            </a>
+            {open ? note : null}
+          </span>
         </div>
       </div>
     </header>

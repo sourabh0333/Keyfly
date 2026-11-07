@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { Studio } from "./studio";
 import styles from "./prompt-box.module.css";
 
 function Plus() {
@@ -79,15 +80,16 @@ const hasFiles = (event) => Array.from(event.dataTransfer?.types || []).includes
  * The prompt box from the KeyFly app's "New video" box, working on the
  * homepage: type a description or add media (with + or by dropping files
  * anywhere on the page), pick the aspect ratio, the motion style and the
- * brand kit, Enhance the prompt, or start from one of the presets, which
- * types its example prompt into the box. Create opens the app; so does
- * Blank project.
+ * brand kit, Enhance the prompt, or start from one of the use-case chips, which
+ * types its example prompt into the box. Create opens the studio over the
+ * page (a sketched plan and a storyboard preview); Blank project opens the
+ * app.
  *
  * Enhance here can't call the app's AI: with an empty box it types a
  * preset's prompt; with a prompt, it rewrites it to name the chosen ratio
  * and style and the usual asks (a hook, captions, music).
  */
-export function PromptBox({ label, placeholder, action, accept, addMedia, formats, styles: motion, brandKit, enhance, create, blank, presets, elsewhere }) {
+export function PromptBox({ label, placeholder, accept, addMedia, formats, styles: motion, brandKit, enhance, create, blank, presets, elsewhere, studio }) {
   const [text, setText] = useState("");
   const [files, setFiles] = useState([]);
   const [format, setFormat] = useState(formats.options[0]);
@@ -95,7 +97,7 @@ export function PromptBox({ label, placeholder, action, accept, addMedia, format
   const [open, setOpen] = useState(null); // which picker's menu is open
   const [dragging, setDragging] = useState(false);
   const [typing, setTyping] = useState(null);
-  const [sending, setSending] = useState(false);
+  const [request, setRequest] = useState(null); // what the studio is showing
   const field = useRef(null);
   const picker = useRef(null);
   const typer = useRef(0);
@@ -180,7 +182,7 @@ export function PromptBox({ label, placeholder, action, accept, addMedia, format
   }, [presets]);
 
   function addFiles(list) {
-    const added = Array.from(list || []).map((file) => ({ id: `${file.name}-${file.size}-${file.lastModified}`, name: file.name }));
+    const added = Array.from(list || []).map((file) => ({ id: `${file.name}-${file.size}-${file.lastModified}`, name: file.name, file }));
     setFiles((current) => [...current, ...added.filter((file) => !current.some((c) => c.id === file.id))]);
   }
 
@@ -230,16 +232,33 @@ export function PromptBox({ label, placeholder, action, accept, addMedia, format
     setOpen((current) => (current === name ? null : name));
   }
 
+  // Create opens the studio over the page (it no longer leaves for the
+  // app). The visitor's own video and pictures play in its preview, from
+  // object URLs that go when it closes.
   function submit(event) {
     event.preventDefault();
-    if (!ready || sending) return;
-    setSending(true);
-    window.location.assign(action);
+    if (!ready || request) return;
+    setOpen(null);
+    setRequest({
+      text,
+      format,
+      style,
+      files: files.map(({ name, file }) => {
+        const kind = file?.type.startsWith("video/") ? "video" : file?.type.startsWith("image/") ? "image" : "other";
+        return { name, kind, url: kind === "other" ? null : URL.createObjectURL(file) };
+      }),
+    });
+  }
+
+  function closeStudio() {
+    request?.files.forEach((f) => f.url && URL.revokeObjectURL(f.url));
+    setRequest(null);
+    field.current?.focus();
   }
 
   return (
     <div className={styles.wrap}>
-      <form className={styles.box} onSubmit={submit} data-ready={ready ? "" : undefined} data-sending={sending ? "" : undefined}>
+      <form className={styles.box} onSubmit={submit} data-ready={ready ? "" : undefined} data-sending={request ? "" : undefined}>
         <span className={styles.ring} aria-hidden="true" />
 
         {files.length > 0 ? (
@@ -445,6 +464,8 @@ export function PromptBox({ label, placeholder, action, accept, addMedia, format
           </span>
         ))}
       </p>
+
+      {request ? <Studio request={request} copy={studio} motionStyles={motion.options} onClose={closeStudio} /> : null}
 
       <div className={styles.drop} data-on={dragging ? "" : undefined} aria-hidden="true">
         <div className={styles.dropFrame}>

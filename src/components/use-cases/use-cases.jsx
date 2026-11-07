@@ -5,7 +5,7 @@ import { PresetDial } from "./preset-dial";
 import styles from "./use-cases.module.css";
 
 /**
- * "Use cases": the six presets from the prompt box on a jog wheel, with
+ * "Use cases": six of the app's use-case types (the hero's chips) on a jog wheel, with
  * the one at the notch playing beside it (see PresetDial), then a row
  * pointing to the app's templates.
  */

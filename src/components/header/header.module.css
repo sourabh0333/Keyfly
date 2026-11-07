@@ -699,8 +699,139 @@
   border: 1px solid rgb(244 241 234 / 0.1);
 }
 
-.menuDownload {
+.menuDlWrap {
+  display: grid;
   grid-column: 1 / -1;
+  gap: 10px;
+}
+
+/* After a click on Download: a small note under the button saying the
+   download is starting, what to do with the file, the other Mac build and
+   a retry. In the bar it floats under the button; in the menu it sits
+   beneath it. */
+.dlWrap {
+  position: relative;
+  display: inline-flex;
+}
+
+.dlNote {
+  display: grid;
+  gap: 6px;
+  width: 290px;
+  padding: 14px 16px 14px;
+  border-radius: 14px;
+  background:
+    radial-gradient(90% 60% at 50% 0%, rgb(95 224 176 / 0.1), transparent 70%),
+    rgb(16 17 20 / 0.97);
+  box-shadow:
+    0 0 0 1px rgb(244 241 234 / 0.12),
+    0 24px 50px -20px rgb(0 0 0 / 0.9);
+  color: var(--paper);
+  text-align: left;
+  animation: rise 0.35s var(--ease-land) both;
+}
+
+.menuDlWrap .dlNote {
+  width: auto;
+}
+
+.dlWrap .dlNote {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 5;
+}
+
+.dlNote p {
+  margin: 0;
+}
+
+.dlTitle {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.dlTitle i {
+  width: 7px;
+  height: 7px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--soft-mint);
+  box-shadow: 0 0 10px var(--soft-mint);
+  animation: dlBlink 1.2s steps(1) infinite;
+}
+
+.dlClose {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  margin-left: auto;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: rgb(244 241 234 / 0.55);
+  font: inherit;
+  font-size: 1.125rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.dlClose:hover {
+  color: var(--paper);
+}
+
+.dlClose:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 1px;
+}
+
+.dlBuild {
+  color: var(--mint-text-dark);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+}
+
+.dlNext {
+  color: rgb(244 241 234 / 0.7);
+  font-size: 0.8125rem;
+  line-height: 1.45;
+}
+
+.dlLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin-top: 4px !important;
+  font-size: 0.8125rem;
+}
+
+.dlLinks a {
+  color: var(--mint-text-dark);
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px solid rgb(95 224 176 / 0.4);
+}
+
+.dlLinks a:hover {
+  border-bottom-color: var(--soft-mint);
+}
+
+.dlLinks a:focus-visible {
+  outline: 2px solid var(--soft-mint);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+@keyframes dlBlink {
+  50% {
+    opacity: 0.25;
+  }
 }
 
 @keyframes drop {
@@ -725,7 +856,7 @@
 
   .nav,
   .actions > .signIn,
-  .actions > .download {
+  .actions > .dlWrap {
     display: none;
   }
 
@@ -754,7 +885,9 @@
 @media (prefers-reduced-motion: reduce) {
   .menu,
   .menuRow,
-  .menuBodyCompact {
+  .menuBodyCompact,
+  .dlNote,
+  .dlTitle i {
     animation: none;
   }
 

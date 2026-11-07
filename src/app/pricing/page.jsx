@@ -1,4 +1,11 @@
+import { Divider } from "@/components/divider/divider";
+import { Byo } from "@/components/pricing-page/byo";
+import { Compare } from "@/components/pricing-page/compare";
+import { MinutesExplained } from "@/components/pricing-page/minutes-explained";
+import { PlanFit } from "@/components/pricing-page/plan-fit";
+import { Teams } from "@/components/pricing-page/teams";
 import { PricingHero } from "@/components/pricing-page/pricing-hero";
+import { PricingQuestions } from "@/components/pricing-page/pricing-questions";
 import { Scene } from "@/components/scene/scene";
 import { pricingMeta } from "@/content/pricing";
 import { getPricing } from "@/lib/pricing";
@@ -21,6 +28,22 @@ export default async function PricingPage() {
   return (
     <Scene>
       <PricingHero data={data} />
+      {data ? (
+        <>
+          <Divider ruler={false} up="96px" down="84px" />
+          <PlanFit data={data} />
+          <Divider />
+          <Byo data={data} />
+          <Divider />
+          <MinutesExplained data={data} />
+          <Divider />
+          <Compare data={data} />
+          <Divider />
+          <Teams data={data} />
+          <Divider />
+          <PricingQuestions data={data} />
+        </>
+      ) : null}
     </Scene>
   );
 }
