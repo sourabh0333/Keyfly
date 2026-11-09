@@ -2,8 +2,18 @@ import { siteConfig } from "@/config/site";
 import { categories } from "./use-cases";
 
 // Homepage copy. Facts come from the KeyFly app (read 2026-11-03) and the
-// team. Lines still marked PLACEHOLDER wait for the team; the page stays
-// noindex until they're settled.
+// team. No line is marked PLACEHOLDER any more, so the page is open to
+// search (2026-11-09; see siteConfig.indexable).
+
+// The page's title and description in search results and shares
+// (2026-11-09, from the SEO audit): the title names the category and where
+// it runs (53 characters); the description fits before Google cuts it off
+// and names the three things only KeyFly offers together (130 characters).
+export const homeMeta = {
+  title: "KeyFly · AI video editor for Mac, Windows and the web",
+  description:
+    "Describe a video or drop in footage. KeyFly edits it on a timeline, works with your own Claude or Codex, and exports to Final Cut.",
+};
 
 // The promise (2026-11-04): KeyFly makes the video from a sentence, and
 // unlike closed AI editors it lets you finish it your way: your own AI
@@ -185,13 +195,16 @@ export const howItWorks = {
     // KeyFly's notes in the side panel, ticked off as the playhead passes.
     plan: ["Found 6 shots", "Cut on the beat", "Added title cards", "Wrote captions"],
     // The title and caption on the viewer, one per shot.
+    // Each shot plays a real stock loop (scripts/how-shots/, Mixkit clips
+    // 4837, 1711 and 41375, Mixkit Stock Video Free License); the titles and
+    // captions are laid over it. Illustrative.
     shots: [
-      { title: "Launch day", caption: "Meet the new app" },
-      { title: "Built for speed", caption: "Everything in one place" },
-      { title: "Try it today", caption: "Available now" },
+      { title: "Launch day", caption: "Meet the new app", film: { src: "/video/how-shot-1.mp4", poster: "/video/how-shot-1.webp" } },
+      { title: "Built for speed", caption: "Everything in one place", film: { src: "/video/how-shot-2.mp4", poster: "/video/how-shot-2.webp" } },
+      { title: "Try it today", caption: "Available now", film: { src: "/video/how-shot-3.mp4", poster: "/video/how-shot-3.webp" } },
     ],
     formats: ["16:9", "9:16", "1:1", "4:5"],
-    note: "Illustrative interface",
+    note: "Illustrative interface · Real stock footage",
   },
 };
 
@@ -206,6 +219,8 @@ export const creates = {
   eyebrow: "What KeyFly makes",
   title: [{ text: "KeyFly makes the pieces." }, { text: "You keep the timeline.", accent: true }],
   lead: "Describe a video and KeyFly writes the storyboard, records the voice-over, builds the motion graphics and lays in licensed music, each on its own track you can change.",
+  // A link from the lead to the page that covers this in depth.
+  more: { label: "What goes in, and every layer that comes out", href: "/product#make" },
   note: "Illustrative film",
   tag: "Illustrative",
   video: { src: "/video/keyfly-film.mp4", poster: "/video/keyfly-film.webp", duration: 29.98 },
@@ -250,6 +265,8 @@ export const oldWay = {
   eyebrow: "Your footage",
   title: [{ text: "Got footage?" }, { text: "KeyFly does the chores.", accent: true }],
   lead: "Drop in a talking head, a screen recording or your clips. KeyFly cuts the silences and filler words, adds captions, and zooms in on what matters: the chores you'd otherwise do by hand.",
+  // A link from the lead to the page that covers this in depth.
+  more: { label: "How KeyFly cleans up a recording", href: "/product#footage" },
   note: "Illustrative · Real stock footage",
   // A real talking-head recording (scripts/footage-home/, from Mixkit clip
   // 10457, Mixkit Stock Video Free License), the same 8 s twice: as shot,
@@ -283,8 +300,17 @@ export const editWithWords = {
   eyebrow: "Edit with words",
   title: [{ text: "Change anything" }, { text: "by saying it.", accent: true }],
   lead: "Your first cut is a starting point. Tell KeyFly what to change, the way you'd brief an editor, and the timeline follows.",
+  // A link from the lead to the page that covers this in depth.
+  more: { label: "Steer a template with words", href: "/use-cases#template-to-video" },
   barLabel: "Ask KeyFly to change the cut",
-  note: "Illustrative interface",
+  note: "Illustrative interface · Real stock footage",
+  // The cut on both sides: an illustrative event promo from three real
+  // stock clips (scripts/edit-montage/, Mixkit 4188, 42299 and 4064, Mixkit
+  // Stock Video Free License), saved flat for Before and graded for After.
+  films: {
+    before: { src: "/video/edit-before.mp4", poster: "/video/edit-before.webp" },
+    after: { src: "/video/edit-after.mp4", poster: "/video/edit-after.webp" },
+  },
   edits: [
     { id: "shorter", ask: "Make it shorter", reply: "Trimmed to 0:30 · kept the strongest takes" },
     { id: "pauses", ask: "Cut the pauses", reply: "Removed 4 pauses · 6 seconds tighter" },
@@ -308,7 +334,9 @@ export const yourCall = {
   eyebrow: "You make the calls",
   title: [{ text: "KeyFly decides." }, { text: "You have the final say.", accent: true }],
   lead: "No black box. After every edit the AI director tells you what it chose and why, what else would fit and what it would try next. Change any call, or revert it in one click.",
-  note: "Illustrative interface",
+  // A link from the lead to the page that covers this in depth.
+  more: { label: "Read the AI director’s notes", href: "/product#direct" },
+  note: "Illustrative interface · Real stock footage",
   report: {
     from: "AI director",
     meta: "Cloud · worked for 43s · 18 steps",
@@ -331,7 +359,19 @@ export const yourCall = {
   next: { label: "Next", items: ["Open on the prompt typing", "Warmer voice in scene 3", "Try a 9:16 cut for Reels"] },
   revert: "Revert",
   retry: "Retry",
-  preview: { label: "The cut", updated: "Updated", voiceOver: "Voice-over", noMusic: "No music" },
+  preview: {
+    label: "The cut",
+    updated: "Updated",
+    voiceOver: "Voice-over",
+    noMusic: "No music",
+    // The opening shot for each hook option, for a launch film of KeyFly
+    // itself: real stock loops (scripts/call-hooks/, Mixkit 41161, 44737,
+    // 100079, 4911, 39774 and 43259, Mixkit Stock Video Free License), with
+    // KeyFly keyed onto the green screens. The title line is laid over the
+    // first.
+    titleLine: ["Describe a video.", "Get a video."],
+    hooks: [1, 2, 3].map((n) => ({ src: `/video/call-hook-${n}.mp4`, poster: `/video/call-hook-${n}.webp` })),
+  },
 };
 
 // "One edit, every format": one cut in each shape. The four shapes are the
@@ -342,12 +382,18 @@ export const everyFormat = {
   eyebrow: "One edit, every format",
   title: [{ text: "One edit." }, { text: "Every screen.", accent: true }],
   lead: "Make the cut once, then switch its frame shape. Export it for TikTok, Reels, YouTube, Shorts, LinkedIn or X, in up to 4K.",
-  note: "Illustrative interface",
+  // A link from the lead to the page that covers this in depth.
+  more: { label: "Every export option", href: "/product#deliver" },
+  note: "Illustrative interface · Real stock footage",
   formatLabel: "Format",
   madeFor: "Made for",
   keeps: { label: "KeyFly keeps", items: ["The same cut and timing", "Your voice-over and music", "Your brand kit"] },
   bar: "Formats",
   captions: ["Your", "story,", "cut", "in", "seconds"],
+  // The cut being reframed: a real stock loop of a creator filming herself
+  // as she walks (scripts/format-loop/, Mixkit 34468, Mixkit Stock Video
+  // Free License). Illustrative.
+  film: { src: "/video/format-loop.mp4", poster: "/video/format-loop.webp" },
   formats: [
     { id: "wide", ratio: "16:9", w: 16, h: 9, px: [1920, 1080], name: "Widescreen", for: ["YouTube", "Websites", "Presentations"] },
     { id: "vertical", ratio: "9:16", w: 9, h: 16, px: [1080, 1920], name: "Vertical", for: ["Reels", "Shorts", "TikTok"] },
@@ -366,7 +412,9 @@ export const onBrand = {
   eyebrow: "On brand, every time",
   title: [{ text: "Your brand." }, { text: "On every cut.", accent: true }],
   lead: "Your logo, colours, font and voice in one place. Point KeyFly at your website and it fills the kit for you; every new video uses it automatically.",
-  note: "Illustrative interface",
+  // A link from the lead to the page that covers this in depth.
+  more: { label: "How the brand kit fills itself", href: "/product#brand" },
+  note: "Illustrative interface · Real stock footage",
   kitLabel: "Brand kit",
   applied: "applied",
   videosLabel: "videos",
@@ -377,7 +425,9 @@ export const onBrand = {
     { id: "font", name: "Your font", detail: "Titles and captions" },
     { id: "voice", name: "Your voice", detail: "Tone and voice-over" },
   ],
-  // Illustrative videos, each in its own shape.
+  // Illustrative videos, each in its own shape, each a real stock loop
+  // (scripts/brand-tiles/, Mixkit 100319, 50423, 2957, 4623, 1787 and 4185,
+  // Mixkit Stock Video Free License) with the kit laid over it.
   videos: [
     { kind: "launch", ratio: "16:9", w: 16, h: 9, title: "Launch day", label: "Launch film" },
     { kind: "ugc", ratio: "9:16", w: 9, h: 16, title: "Real results", label: "UGC ad" },
@@ -385,7 +435,7 @@ export const onBrand = {
     { kind: "explainer", ratio: "16:9", w: 16, h: 9, title: "How it works", label: "Explainer" },
     { kind: "demo", ratio: "4:5", w: 4, h: 5, title: "New: Publish", label: "Product demo" },
     { kind: "montage", ratio: "16:9", w: 16, h: 9, title: "Highlights", label: "Event promo" },
-  ],
+  ].map((video) => ({ ...video, film: { src: `/video/brand/${video.kind}.mp4`, poster: `/video/brand/${video.kind}.webp` } })),
 };
 
 // "Open by design" (2026-11-04; it merges "Works where you work" and "Works
@@ -401,6 +451,8 @@ export const tools = {
   eyebrow: "Open by design",
   title: [{ text: "Your computer. Your AI." }, { text: "Your editor.", accent: true }],
   lead: "KeyFly doesn't lock you in. Run it on Mac, Windows or the web, or start in ChatGPT and Claude. Edit with the AI you already pay for, then hand the timeline to the editor you already use.",
+  // A link from the lead to the page that covers this in depth.
+  more: { label: "Every AI agent and editor KeyFly works with", href: "/integrations" },
   note: "Illustrative interface",
   on: {
     index: "01",
@@ -457,16 +509,22 @@ export const audience = {
   eyebrow: "Who it's for",
   title: [{ text: "Made for people" }, { text: "with a story to tell.", accent: true }],
   lead: "Whatever you make, you start the same way: say what you want, or drop in your footage.",
-  note: "Illustrative previews",
+  // A link from the lead to the page that covers this in depth.
+  more: { label: "Templates for your role", href: "/use-cases#by-role" },
+  note: "Illustrative previews · Real stock footage",
   makes: "Makes",
   formatsLabel: "Formats",
   promptLabel: "Try",
   try: "Try this prompt",
+  // Each role's film is a real stock loop in the role's own shape
+  // (scripts/audience-films/, Mixkit 1817, 42650, 34485 and 44048, Mixkit
+  // Stock Video Free License); `at` centres a wide film's crop, and `back`
+  // is the blurred still around a 9:16 film.
   roles: [
-    { id: "marketers", name: "Marketers & founders", line: "Launch films, social ads and event promos, from one sentence or your own footage.", presets: ["Launch film", "Event promo"], formats: ["16:9", "9:16"], kind: "launch", format: "16:9", prompt: presetPrompt("Launch film") },
-    { id: "product", name: "Product & SaaS teams", line: "Walkthroughs, explainers and screen-recording demos, with zooms and callouts.", presets: ["Product demo", "Explainer"], formats: ["16:9", "1:1"], kind: "explainer", format: "16:9", prompt: presetPrompt("Product demo") },
-    { id: "creators", name: "Creators", line: "UGC ads and scroll-stopping hooks, captioned and cut for vertical.", presets: ["UGC ad"], formats: ["9:16"], kind: "ugc", format: "9:16", prompt: presetPrompt("UGC ad") },
-    { id: "podcasters", name: "Podcasters", line: "Episodes and talking heads cut into clips, with silences and filler words removed.", presets: ["Podcast clip"], formats: ["9:16"], kind: "podcast", format: "9:16", prompt: presetPrompt("Podcast clip") },
+    { id: "marketers", name: "Marketers & founders", line: "Launch films, social ads and event promos, from one sentence or your own footage.", presets: ["Launch film", "Event promo"], formats: ["16:9", "9:16"], film: { src: "/video/audience/marketers.mp4", poster: "/video/audience/marketers.webp", at: "62% 35%" }, prompt: presetPrompt("Launch film") },
+    { id: "product", name: "Product & SaaS teams", line: "Walkthroughs, explainers and screen-recording demos, with zooms and callouts.", presets: ["Product demo", "Explainer"], formats: ["16:9", "1:1"], film: { src: "/video/audience/product.mp4", poster: "/video/audience/product.webp", at: "45% 92%" }, prompt: presetPrompt("Product demo") },
+    { id: "creators", name: "Creators", line: "UGC ads and scroll-stopping hooks, captioned and cut for vertical.", presets: ["UGC ad"], formats: ["9:16"], film: { src: "/video/audience/creators.mp4", poster: "/video/audience/creators.webp", back: "/video/audience/creators-back.webp" }, prompt: presetPrompt("UGC ad") },
+    { id: "podcasters", name: "Podcasters", line: "Episodes and talking heads cut into clips, with silences and filler words removed.", presets: ["Podcast clip"], formats: ["9:16"], film: { src: "/video/audience/podcasters.mp4", poster: "/video/audience/podcasters.webp", back: "/video/audience/podcasters-back.webp" }, prompt: presetPrompt("Podcast clip") },
   ],
 };
 
@@ -474,13 +532,15 @@ export const useCases = {
   eyebrow: "Use cases",
   title: [{ text: "Pick a use case." }, { text: "Make it yours.", accent: true }],
   lead: "Six of the twenty kinds of video KeyFly's templates are made for, each with a prompt to start from. Or describe your own.",
+  // A link from the lead to the page that covers this in depth.
+  more: { label: "Browse all 91 templates", href: "/use-cases#categories" },
   cta: "Try this prompt",
   dialLabel: "Use case",
   // "8 templates", counted from the app's templates (src/content/use-cases.js).
   templatesLink: { label: "{n} templates", href: "/use-cases#categories" },
   hint: { live: "Scroll or drag to turn", still: "Drag or click to turn" },
   promptLabel: "Prompt",
-  note: "Illustrative previews",
+  note: "Illustrative previews · Real stock footage",
   // The app's Templates page (read 2026-11-03): "Start from a proven
   // structure; the AI director fills it with your product", 91 templates,
   // Free and Premium. /templates opens the signed-in workspace's page.
@@ -492,8 +552,10 @@ export const useCases = {
     cta: "Browse templates",
     href: `${siteConfig.appUrl}/templates`,
   },
-  // Six of the app's use-case types, each with the site's example prompt
-  // and the number of the app's templates of that type.
+  // Six of the app's use-case types, each with the site's example prompt,
+  // the number of the app's templates of that type and its film: real stock
+  // footage cut in its shape with that use case's edit set in
+  // (scripts/case-films/, Mixkit Stock Video Free License).
   items: [
     { label: "Launch film", kind: "launch", format: "16:9", body: "Title cards, quick cuts on the beat and a clear call to action at the end." },
     { label: "UGC ad", kind: "ugc", format: "9:16", body: "Selfie-style ads with a hook in the first two seconds and punchy captions." },
@@ -501,7 +563,12 @@ export const useCases = {
     { label: "Event promo", kind: "montage", format: "16:9", body: "The best moments from your footage, cut to the music, with the date and a way to sign up." },
     { label: "Product demo", kind: "demo", format: "16:9", body: "Screen recordings with a zoom on every click, short captions and the pauses trimmed." },
     { label: "Podcast clip", kind: "podcast", format: "9:16", body: "Long episodes turned into vertical clips with the strongest quotes and captions." },
-  ].map((item) => ({ ...item, prompt: presetPrompt(item.label), templates: templatesOfType(item.label) })),
+  ].map((item) => ({
+    ...item,
+    prompt: presetPrompt(item.label),
+    templates: templatesOfType(item.label),
+    film: { src: `/video/cases/${item.kind}.mp4`, poster: `/video/cases/${item.kind}.webp` },
+  })),
 };
 
 function presetPrompt(label) {
@@ -583,7 +650,7 @@ export const faq = {
       // The app's AI picker and Settings → Agents.
       q: "Can I use my own AI agents?",
       a: "Yes. Connect Claude Code, Codex, Cursor, Antigravity or any other ACP agent through the KeyFly desktop app, and it edits with your own plan, without using your AI minutes. Or let KeyFly Cloud pick the best model for each step.",
-      link: { label: "Open by design", href: "#tools" },
+      link: { label: "Bring your own agent", href: "/integrations#agents" },
     },
     {
       // The app's AI director takes changes in chat ("What should we change?",
@@ -591,6 +658,20 @@ export const faq = {
       q: "Can I change the video after KeyFly edits it?",
       a: "Yes. Ask the AI director for changes in plain words, like “make the intro faster”, and undo any AI change with one click. Or change it yourself on the timeline.",
       link: { label: "Edit with words", href: "#edit" },
+    },
+    {
+      // The app's help: with a recording, KeyFly cuts silences and filler
+      // words, adds captions, zooms on the focus area and adds callouts.
+      q: "Can KeyFly edit footage I shot myself?",
+      a: "Yes. Drop in a talking head, a screen recording or your own clips, and KeyFly cuts the silences and filler words, adds captions, and zooms in and adds callouts where they help.",
+      link: { label: "How KeyFly cleans up a recording", href: "/product#footage" },
+    },
+    {
+      // Follows from the app: a sentence starts a video, changes are asked
+      // for in plain words, and every clip is on an editable timeline.
+      q: "Do I need video editing experience?",
+      a: "No. Describe the video in a sentence, or pick one of 91 templates, and ask for changes in plain words. If you do know editing, every layer is a real track on the timeline, and you can take the cut to Final Cut, Resolve, Premiere or Avid.",
+      link: { label: "Browse the templates", href: "/use-cases" },
     },
     {
       // The plans' features in the pricing API: AI images and AI
@@ -639,15 +720,15 @@ export const faq = {
       // Prices, trials and allowances come only from the pricing API, so the
       // answer names none of them.
       q: "How much does KeyFly cost?",
-      a: "You can start free and upgrade when you need more AI minutes. Every plan, with its price and what it includes, is in the pricing section below.",
-      link: { label: "Pricing", href: "#pricing" },
+      a: "You can start free and upgrade when you need more AI minutes. Every plan, with its price and what it includes, is on the pricing page.",
+      link: { label: "Every plan", href: "/pricing" },
     },
     {
       // The pricing API's own wording ("AI minutes", never "credits"), and
       // its packs.
       q: "What are AI minutes?",
       a: "The time KeyFly's AI spends building and editing your videos. They count only while the AI is working, so changes you make yourself on the timeline use none. Plans come with AI minutes every month, and packs add more when you need them.",
-      link: { label: "Pricing", href: "#pricing" },
+      link: { label: "AI minutes explained", href: "/pricing#minutes" },
     },
     {
       // The app's Help page: its answers, "Take the tour", and "Contact us:
@@ -666,6 +747,8 @@ export const pricing = {
   eyebrow: "Pricing",
   title: [{ text: "Start free." }, { text: "Grow when you need to.", accent: true }],
   lead: "Every plan edits with KeyFly. Paid plans add AI minutes: the time KeyFly's AI spends building and editing your videos.",
+  // A link from the lead to the page that covers this in depth.
+  more: { label: "Compare every plan", href: "/pricing#compare" },
   plans: {
     billing: "Billing",
     monthly: "Monthly",

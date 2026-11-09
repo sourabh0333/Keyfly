@@ -25,12 +25,16 @@ export function Hero() {
       <FloorPause pause={hero.floor.pause} play={hero.floor.play} />
 
       <div className={styles.inner}>
-        <p className={styles.eyebrow}>
-          <span className={styles.rec} aria-hidden="true" />
-          {hero.eyebrow}
-        </p>
-
-        <h1 id="hero-title" className={styles.title}>
+        {/* The eyebrow is part of the h1, so the page's main heading names
+            what KeyFly is ("The AI video editor") as well as its promise.
+            It looks exactly as it did as a separate line. */}
+        <h1 id="hero-title" className={styles.heading}>
+          <span className={styles.eyebrow}>
+            <span className={styles.rec} aria-hidden="true" />
+            {hero.eyebrow}
+            <span className="visually-hidden">: </span>
+          </span>
+          <span className={styles.title}>
           {hero.title.map((line, l) => (
             <span key={l} className={styles.line}>
               {line.map((w, i) => (
@@ -43,6 +47,7 @@ export function Hero() {
               ))}{" "}
             </span>
           ))}
+          </span>
         </h1>
 
         <p className={styles.lead}>{hero.lead}</p>

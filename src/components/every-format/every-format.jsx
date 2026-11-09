@@ -2,6 +2,7 @@ import { everyFormat } from "@/content/home";
 import wipe from "@/components/scene/wipe.module.css";
 import { PauseOffscreen } from "@/components/pause-offscreen";
 import { Morph } from "./morph";
+import { MoreLink } from "@/components/more-link";
 import styles from "./every-format.module.css";
 
 /**
@@ -9,7 +10,7 @@ import styles from "./every-format.module.css";
  * (see Morph).
  */
 export function EveryFormat() {
-  const { eyebrow, title, lead, note, ...editor } = everyFormat;
+  const { eyebrow, title, lead, more, note, ...editor } = everyFormat;
 
   return (
     <section id="formats" className={styles.section} aria-labelledby="formats-title" data-section="Every format">
@@ -30,7 +31,10 @@ export function EveryFormat() {
               ))}
             </h2>
           </div>
-          <p className={styles.lead}>{lead}</p>
+          <p className={styles.lead}>
+            {lead}
+            <MoreLink {...more} />
+          </p>
         </div>
 
         <Morph {...editor} />

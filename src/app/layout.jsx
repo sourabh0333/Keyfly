@@ -18,6 +18,9 @@ export const metadata = {
     locale: siteConfig.locale,
     type: "website",
   },
+  // A large picture when a link is shared on X (the share image is
+  // src/app/opengraph-image.jsx).
+  twitter: { card: "summary_large_image" },
 };
 
 export const viewport = {

@@ -8,15 +8,16 @@ import { IntegrationsHero } from "@/components/integrations/integrations-hero";
 import { Questions } from "@/components/integrations/questions";
 import { Scene } from "@/components/scene/scene";
 import { integrationsMeta } from "@/content/integrations";
+import { publicRobots } from "@/config/site";
 
 // The Integrations page, built section by section (see PLAN.md), in the
-// same Scene as the other pages. Kept out of search with the rest of the
-// site until the copy is confirmed.
+// same Scene as the other pages. Open to search
+// (see siteConfig.indexable).
 export const metadata = {
   title: integrationsMeta.title,
   description: integrationsMeta.description,
   alternates: { canonical: "/integrations" },
-  robots: { index: false, follow: false },
+  robots: publicRobots,
 };
 
 export default function IntegrationsPage() {

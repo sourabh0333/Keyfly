@@ -553,6 +553,51 @@
   opacity: 1;
 }
 
+/* Each hook's opening shot: real footage, filling the frame. */
+.film {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Title line: the hook's one line, set over the first shot. */
+.titleLine {
+  position: absolute;
+  left: 7%;
+  top: 50%;
+  display: grid;
+  gap: 0.1em;
+  margin: 0;
+  color: #fff;
+  font-size: clamp(1.2rem, 0.6rem + 2.2vw, 2.4rem);
+  font-weight: 640;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  text-shadow: 0 2px 24px rgb(0 0 0 / 0.55);
+  translate: 0 -50%;
+}
+
+.titleLine span:last-child {
+  color: var(--mint-text-dark);
+  font-family: var(--font-accent-stack);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+}
+
+.shot[data-on] .titleLine span {
+  animation: title-in 0.7s var(--ease-land) calc(0.15s + var(--l) * 0.25s) backwards;
+}
+
+@keyframes title-in {
+  from {
+    opacity: 0;
+    translate: 0 0.4em;
+  }
+}
+
 /* The look: a grade over the shot, one layer per look. */
 .grade i {
   position: absolute;

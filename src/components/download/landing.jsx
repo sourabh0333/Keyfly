@@ -80,8 +80,9 @@ function Destination({ id }) {
  * to 100%, and on landing a ring goes out and the buttons light. The
  * platform is picked from the visitor's system and can be changed; the
  * buttons download that build once its link exists and otherwise lead to
- * the browser app. Where the stage doesn't fit the screen, or with reduced
- * motion, nothing pins and it shows landed. Writes --fly (0–1) on the
+ * the browser app. Where the stage doesn't fit the screen, nothing pins and
+ * the flight plays by itself as the stage comes into view; with reduced
+ * motion it shows landed. Writes --fly (0–1) on the
  * track and data-phase (lift, fly, landed).
  */
 export function Landing({ stages, status, hint, platformLabel, platforms, detected, soon, browser, phone: phoneNote }) {
@@ -167,8 +168,40 @@ export function Landing({ stages, status, hint, platformLabel, platforms, detect
     const schedule = () => (frame ||= requestAnimationFrame(update));
 
     if (!live) {
-      paint(1);
-      return;
+      // Unpinned (a short screen, a phone): the flight plays by itself, in
+      // 2.8s, each time the stage comes up into view; scrolled back above
+      // it, it waits at the source again. Reduced motion: landed.
+      if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        paint(1);
+        return;
+      }
+      const stage = pinRef.current.firstElementChild;
+      let tween = 0;
+      let played = stage.getBoundingClientRect().top < innerHeight * 0.5;
+      paint(played ? 1 : 0);
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting && !played) {
+            played = true;
+            const start = performance.now();
+            tween = requestAnimationFrame(function step(now) {
+              const p = Math.min(1, (now - start) / 2800);
+              paint(p);
+              if (p < 1) tween = requestAnimationFrame(step);
+            });
+          } else if (!entry.isIntersecting && entry.boundingClientRect.top > 0) {
+            cancelAnimationFrame(tween);
+            played = false;
+            paint(0);
+          }
+        },
+        { threshold: 0.45 },
+      );
+      observer.observe(stage);
+      return () => {
+        observer.disconnect();
+        cancelAnimationFrame(tween);
+      };
     }
     schedule();
     addEventListener("scroll", schedule, { passive: true });

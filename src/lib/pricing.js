@@ -20,7 +20,7 @@ function price(p) {
   // is perMonthCents; an earlier version read "cents", so it never showed).
   const now = num(p.perMonthCents) ?? num(p.cents);
   const listDisplay = num(p.listCents) !== null && now !== null && p.listCents > now ? usd(p.listCents) : null;
-  return { amount, billed: str(p.billedDisplay), was: listDisplay, reason: str(p.reason), discount: num(p.discountPercent) };
+  return { amount, cents: now, billed: str(p.billedDisplay), was: listDisplay, reason: str(p.reason), discount: num(p.discountPercent) };
 }
 
 function links(l) {

@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { Preview } from "@/components/use-cases/preview";
 import styles from "./on-brand.module.css";
 
 const STEP = 1700; // ms between kit items while it applies them
@@ -41,11 +40,28 @@ function Specimen({ id }) {
   );
 }
 
+// A tile's real footage: muted, playing only while the tile is on screen
+// (the reel drifts, so tiles come and go); with reduced motion, its poster.
+function TileFilm({ film }) {
+  const ref = useRef(null);
+  useEffect(() => {
+    const video = ref.current;
+    if (!video || matchMedia(MOTION).matches) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) video.play().catch(() => {});
+      else video.pause();
+    });
+    observer.observe(video);
+    return () => observer.disconnect();
+  }, []);
+  return <video ref={ref} className={styles.film} src={film.src} poster={film.poster} muted loop playsInline preload="none" tabIndex={-1} />;
+}
+
 function Tile({ video }) {
   return (
     <figure className={styles.tile} data-kind={video.kind} style={{ "--r": video.w / video.h }}>
       <span className={styles.picture}>
-        <Preview kind={video.kind} format={video.ratio === "9:16" ? "9:16" : "16:9"} bleed />
+        <TileFilm film={video.film} />
         <span className={styles.grade} />
         <span className={styles.vidTitle}>
           <b>{video.title}</b>

@@ -2,6 +2,7 @@ import { yourCall } from "@/content/home";
 import wipe from "@/components/scene/wipe.module.css";
 import { PauseOffscreen } from "@/components/pause-offscreen";
 import { DirectorNote } from "./director-note";
+import { MoreLink } from "@/components/more-link";
 import styles from "./your-call.module.css";
 
 /**
@@ -10,7 +11,7 @@ import styles from "./your-call.module.css";
  * itself (see DirectorNote).
  */
 export function YourCall() {
-  const { eyebrow, title, lead, note, ...director } = yourCall;
+  const { eyebrow, title, lead, more, note, ...director } = yourCall;
 
   return (
     <section id="control" className={styles.section} aria-labelledby="control-title" data-section="Your call">
@@ -31,7 +32,10 @@ export function YourCall() {
               ))}
             </h2>
           </div>
-          <p className={styles.lead}>{lead}</p>
+          <p className={styles.lead}>
+            {lead}
+            <MoreLink {...more} />
+          </p>
         </div>
 
         <DirectorNote {...director} />

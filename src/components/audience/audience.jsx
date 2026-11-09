@@ -2,6 +2,7 @@ import { audience } from "@/content/home";
 import wipe from "@/components/scene/wipe.module.css";
 import { PauseOffscreen } from "@/components/pause-offscreen";
 import { Roles } from "./roles";
+import { MoreLink } from "@/components/more-link";
 import styles from "./audience.module.css";
 
 /**
@@ -9,7 +10,7 @@ import styles from "./audience.module.css";
  * (see Roles).
  */
 export function Audience() {
-  const { eyebrow, title, lead, note, ...roles } = audience;
+  const { eyebrow, title, lead, more, note, ...roles } = audience;
 
   return (
     <section id="audience" className={styles.section} aria-labelledby="audience-title" data-section="Audience">
@@ -30,7 +31,10 @@ export function Audience() {
               ))}
             </h2>
           </div>
-          <p className={styles.lead}>{lead}</p>
+          <p className={styles.lead}>
+            {lead}
+            <MoreLink {...more} />
+          </p>
         </div>
 
         <Roles {...roles} />

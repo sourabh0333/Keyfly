@@ -2,6 +2,7 @@ import { editWithWords } from "@/content/home";
 import wipe from "@/components/scene/wipe.module.css";
 import { PauseOffscreen } from "@/components/pause-offscreen";
 import { CommandCut } from "./command-cut";
+import { MoreLink } from "@/components/more-link";
 import styles from "./edit-with-words.module.css";
 
 /**
@@ -10,7 +11,7 @@ import styles from "./edit-with-words.module.css";
  * unlike the side-by-side sections around it.
  */
 export function EditWithWords() {
-  const { eyebrow, title, lead, note, ...cut } = editWithWords;
+  const { eyebrow, title, lead, more, note, ...cut } = editWithWords;
 
   return (
     <section id="edit" className={styles.section} aria-labelledby="edit-title" data-section="Edit with words">
@@ -30,7 +31,10 @@ export function EditWithWords() {
               </span>
             ))}
           </h2>
-          <p className={styles.lead}>{lead}</p>
+          <p className={styles.lead}>
+            {lead}
+            <MoreLink {...more} />
+          </p>
         </div>
 
         <CommandCut {...cut} />

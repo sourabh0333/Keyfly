@@ -2,6 +2,7 @@ import { oldWay } from "@/content/home";
 import wipe from "@/components/scene/wipe.module.css";
 import { PauseOffscreen } from "@/components/pause-offscreen";
 import { Story } from "./story";
+import { MoreLink } from "@/components/more-link";
 import styles from "./old-way.module.css";
 
 /**
@@ -10,7 +11,7 @@ import styles from "./old-way.module.css";
  * KeyFly, played by the scroll (see Story).
  */
 export function OldWay() {
-  const { eyebrow, title, lead, note, ...story } = oldWay;
+  const { eyebrow, title, lead, more, note, ...story } = oldWay;
 
   return (
     <section id="footage" className={styles.section} aria-labelledby="footage-title" data-section="Your footage">
@@ -31,7 +32,10 @@ export function OldWay() {
               ))}
             </h2>
           </div>
-          <p className={styles.lead}>{lead}</p>
+          <p className={styles.lead}>
+            {lead}
+            <MoreLink {...more} />
+          </p>
         </div>
 
         <Story {...story} />

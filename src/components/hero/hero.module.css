@@ -132,10 +132,19 @@
   border-radius: 4px;
 }
 
+/* The h1 holds the eyebrow and the title; it adds no look of its own. */
+.heading {
+  display: grid;
+  justify-items: center;
+}
+
 .eyebrow {
   display: inline-flex;
   align-items: center;
   gap: 10px;
+  font-weight: 400;
+  line-height: 1.55;
+  text-wrap: wrap;
   margin-bottom: 26px;
   padding: 6px 14px 6px 10px;
   border-radius: var(--radius-round);

@@ -157,10 +157,19 @@
   transition: width 0.7s var(--ease-land);
 }
 
-/* Before sits back a little. */
+/* The cut itself: real footage, filling the picture; After narrows to
+   9:16 around its middle. */
+.film {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Before sits back a little (its footage is the flat first cut). */
 .side:not([data-after]) .frame {
-  opacity: 0.72;
-  filter: saturate(0.75);
+  opacity: 0.78;
 }
 
 .side[data-after] .frame {

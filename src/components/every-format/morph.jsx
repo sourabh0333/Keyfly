@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { Shot } from "@/components/shot/shot";
 import styles from "./every-format.module.css";
 
 const HOLD = 4200; // ms each format stays before the next (matches the tab's fill)
@@ -33,13 +32,14 @@ function Glyph({ f }) {
  * waits. It moves on by itself while on screen and not held, until a format
  * is chosen; with reduced motion it waits for a click and changes at once.
  */
-export function Morph({ formats, formatLabel, madeFor, keeps, bar, captions }) {
+export function Morph({ formats, formatLabel, madeFor, keeps, bar, captions, film }) {
   const [active, setActive] = useState(1);
   const [touched, setTouched] = useState(false);
   const [visible, setVisible] = useState(false);
   const [held, setHeld] = useState(false);
   const reduced = useSyncExternalStore(onMotionChange, () => matchMedia(MOTION).matches, () => false);
   const rootRef = useRef(null);
+  const filmRef = useRef(null);
 
   const f = formats[active];
   const auto = visible && !held && !touched && !reduced;
@@ -55,6 +55,15 @@ export function Morph({ formats, formatLabel, madeFor, keeps, bar, captions }) {
     const timer = setTimeout(() => setActive((a) => (a + 1) % formats.length), HOLD);
     return () => clearTimeout(timer);
   }, [auto, active, formats.length]);
+
+  // The cut plays, muted, only while on screen; with reduced motion it
+  // rests on its poster.
+  useEffect(() => {
+    const video = filmRef.current;
+    if (!video) return;
+    if (visible && !reduced) video.play().catch(() => {});
+    else video.pause();
+  }, [visible, reduced]);
 
   function choose(i) {
     setActive(i);
@@ -92,7 +101,7 @@ export function Morph({ formats, formatLabel, madeFor, keeps, bar, captions }) {
         ))}
         <div className={styles.frame} style={{ "--r": f.w / f.h }}>
           <span className={styles.picture}>
-            <Shot />
+            <video ref={filmRef} className={styles.film} src={film.src} poster={film.poster} muted loop playsInline preload="none" tabIndex={-1} />
           </span>
           <span className={styles.captions}>
             {captions.map((word) => (

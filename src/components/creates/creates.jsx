@@ -1,6 +1,7 @@
 import { creates } from "@/content/home";
 import wipe from "@/components/scene/wipe.module.css";
 import { Anatomy } from "./anatomy";
+import { MoreLink } from "@/components/more-link";
 import styles from "./creates.module.css";
 
 /**
@@ -8,7 +9,7 @@ import styles from "./creates.module.css";
  * played beside its panel and above its own timeline (see Anatomy).
  */
 export function Creates() {
-  const { eyebrow, title, lead, note, ...film } = creates;
+  const { eyebrow, title, lead, more, note, ...film } = creates;
 
   return (
     <section id="makes" className={styles.section} aria-labelledby="makes-title" data-section="What KeyFly makes">
@@ -28,7 +29,10 @@ export function Creates() {
               ))}
             </h2>
           </div>
-          <p className={styles.lead}>{lead}</p>
+          <p className={styles.lead}>
+            {lead}
+            <MoreLink {...more} />
+          </p>
         </div>
 
         <Anatomy {...film} />

@@ -14,51 +14,65 @@ import { Scene } from "@/components/scene/scene";
 import { HowItWorks } from "@/components/how-it-works/how-it-works";
 import { OldWay } from "@/components/old-way/old-way";
 import { UseCases } from "@/components/use-cases/use-cases";
-import { siteConfig } from "@/config/site";
+import { publicRobots, siteConfig } from "@/config/site";
+import { faq, homeMeta } from "@/content/home";
+import { getPricing } from "@/lib/pricing";
+import { homeJsonLd, jsonLdHtml } from "@/lib/structured-data";
 
-// Kept out of search until the product details are confirmed (see the
-// PLACEHOLDER notes in src/content/home.js). Built step by step: each
+// Open to search (see siteConfig.indexable). Built step by step: each
 // section is added once the one before is agreed.
 // The pricing section reads KeyFly's pricing API; refresh the page's data
 // at most every 5 minutes (see src/lib/pricing.js).
 export const revalidate = 300;
 
 export const metadata = {
-  title: { absolute: "KeyFly · The AI video editor" },
-  description: siteConfig.description,
-  robots: { index: false, follow: false },
+  title: { absolute: homeMeta.title },
+  description: homeMeta.description,
+  alternates: { canonical: "/" },
+  openGraph: { title: homeMeta.title, description: homeMeta.description, url: "/" },
+  robots: publicRobots,
 };
 
-export default function Home() {
+export default async function Home() {
+  // The same request the pricing section makes (Next shares the cached
+  // response), for the plans in the structured data.
+  const pricing = await getPricing();
+
   return (
-    <Scene>
-      <Hero />
-      <Divider ruler={false} up="120px" down="84px" />
-      <HowItWorks />
-      <Divider />
-      <Creates />
-      <Divider />
-      <OldWay />
-      <Divider />
-      <EditWithWords />
-      <Divider />
-      <YourCall />
-      <Divider />
-      <EveryFormat />
-      <Divider />
-      <OnBrand />
-      <Divider />
-      <Tools />
-      <Divider />
-      <Audience />
-      <Divider />
-      <UseCases />
-      <Divider />
-      <Download />
-      <Divider />
-      <Pricing />
-      <Divider />
-      <Faq />
-    </Scene>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={jsonLdHtml(homeJsonLd({ description: siteConfig.description, faq: faq.items, pricing }))}
+      />
+      <Scene>
+        <Hero />
+        <Divider ruler={false} up="120px" down="84px" />
+        <HowItWorks />
+        <Divider />
+        <Creates />
+        <Divider />
+        <OldWay />
+        <Divider />
+        <EditWithWords />
+        <Divider />
+        <YourCall />
+        <Divider />
+        <EveryFormat />
+        <Divider />
+        <OnBrand />
+        <Divider />
+        <Tools />
+        <Divider />
+        <Audience />
+        <Divider />
+        <UseCases />
+        <Divider />
+        <Download />
+        <Divider />
+        <Pricing />
+        <Divider />
+        <Faq />
+      </Scene>
+    </>
   );
 }

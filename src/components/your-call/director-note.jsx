@@ -1,14 +1,12 @@
 "use client";
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { Preview } from "@/components/use-cases/preview";
 import styles from "./your-call.module.css";
 
 const WRITE = 380; // ms per line as the note writes itself
 const STEP = 1900; // ms per step of the self-running demo
 
 // What the preview shows for each option, by decision.
-const HOOKS = ["launch", "demo", "montage"];
 const VOICE_SPEED = [1, 0.75, 1.2, 0.9]; // each voice speaks at its own pace
 const LOOKS = ["midnight", "editorial", "warm"];
 const WAVE = Array.from({ length: 14 }, (_, i) => 0.3 + ((Math.sin(i * 1.3) + Math.sin(i * 0.5) + 2) / 4) * 0.7);
@@ -53,6 +51,7 @@ export function DirectorNote({ report, decisions, pickLabel, changedLabel, assum
   // page hides the lines it hasn't written yet.
   const hydrated = useSyncExternalStore(never, () => true, () => false);
   const rootRef = useRef(null);
+  const hookRefs = useRef([]);
 
   const shown = reduced ? lines : written;
   const ready = shown >= lines;
@@ -120,6 +119,20 @@ export function DirectorNote({ report, decisions, pickLabel, changedLabel, assum
   }
 
   const [hook, voice, music, look] = choice;
+
+  // Only the opening shot in use plays, and only while the cut is on screen;
+  // with reduced motion they rest on their posters.
+  useEffect(() => {
+    hookRefs.current.forEach((video, i) => {
+      if (!video) return;
+      if (i === hook && visible && !reduced) {
+        if (video.paused) {
+          video.currentTime = 0;
+          video.play().catch(() => {});
+        }
+      } else video.pause();
+    });
+  }, [hook, visible, reduced]);
   const filled = Math.min(1, check.score / check.of);
 
   return (
@@ -234,9 +247,28 @@ export function DirectorNote({ report, decisions, pickLabel, changedLabel, assum
           </span>
         </p>
         <div className={styles.frame} data-look={LOOKS[look]} data-paused={visible ? undefined : ""}>
-          {HOOKS.map((kind, i) => (
-            <div key={kind} className={styles.shot} data-on={i === hook ? "" : undefined} data-paused={i === hook ? undefined : ""}>
-              <Preview kind={kind} format="16:9" bleed />
+          {preview.hooks.map((film, i) => (
+            <div key={film.src} className={styles.shot} data-on={i === hook ? "" : undefined}>
+              <video
+                ref={(el) => (hookRefs.current[i] = el)}
+                className={styles.film}
+                src={film.src}
+                poster={film.poster}
+                muted
+                loop
+                playsInline
+                preload="none"
+                tabIndex={-1}
+              />
+              {i === 0 ? (
+                <p className={styles.titleLine}>
+                  {preview.titleLine.map((line, l) => (
+                    <span key={line} style={{ "--l": l }}>
+                      {line}
+                    </span>
+                  ))}
+                </p>
+              ) : null}
             </div>
           ))}
           <span className={styles.grade}>

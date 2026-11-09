@@ -2,6 +2,7 @@ import { useCases } from "@/content/home";
 import wipe from "@/components/scene/wipe.module.css";
 import { PauseOffscreen } from "@/components/pause-offscreen";
 import { PresetDial } from "./preset-dial";
+import { MoreLink } from "@/components/more-link";
 import styles from "./use-cases.module.css";
 
 /**
@@ -10,7 +11,7 @@ import styles from "./use-cases.module.css";
  * pointing to the app's templates.
  */
 export function UseCases() {
-  const { eyebrow, title, lead, note, templates, ...dial } = useCases;
+  const { eyebrow, title, lead, more, note, templates, ...dial } = useCases;
 
   return (
     <section id="use-cases" className={styles.section} aria-labelledby="cases-title" data-section="Use cases">
@@ -31,7 +32,10 @@ export function UseCases() {
               ))}
             </h2>
           </div>
-          <p className={styles.lead}>{lead}</p>
+          <p className={styles.lead}>
+            {lead}
+            <MoreLink {...more} />
+          </p>
         </div>
 
         <PresetDial {...dial} />

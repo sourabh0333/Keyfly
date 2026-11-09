@@ -2,6 +2,7 @@ import { onBrand } from "@/content/home";
 import wipe from "@/components/scene/wipe.module.css";
 import { PauseOffscreen } from "@/components/pause-offscreen";
 import { BrandReel } from "./brand-reel";
+import { MoreLink } from "@/components/more-link";
 import styles from "./on-brand.module.css";
 
 /**
@@ -9,7 +10,7 @@ import styles from "./on-brand.module.css";
  * different videos (see BrandReel).
  */
 export function OnBrand() {
-  const { eyebrow, title, lead, note, ...kit } = onBrand;
+  const { eyebrow, title, lead, more, note, ...kit } = onBrand;
 
   return (
     <section id="brand" className={styles.section} aria-labelledby="brand-title" data-section="On brand">
@@ -30,7 +31,10 @@ export function OnBrand() {
               ))}
             </h2>
           </div>
-          <p className={styles.lead}>{lead}</p>
+          <p className={styles.lead}>
+            {lead}
+            <MoreLink {...more} />
+          </p>
         </div>
 
         <BrandReel {...kit} />

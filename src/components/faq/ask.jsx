@@ -105,9 +105,10 @@ export function Ask({ panel, listLabel, next, items }) {
           {item.link ? (
             <a className={styles.link} href={item.link.href} tabIndex={-1} data-ready={typing ? undefined : ""}>
               {item.link.label}
-              {/* Down to a section on this page; out to anything else. */}
+              {/* Down to a section on this page; right to another page of the
+                  site; out to anything else. */}
               <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true">
-                <path d={item.link.href.startsWith("#") ? "M8 3v9M4.5 8.5 8 12l3.5-3.5" : "M4 12 12 4M5.5 4H12v6.5"} fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                <path d={item.link.href.startsWith("#") ? "M8 3v9M4.5 8.5 8 12l3.5-3.5" : item.link.href.startsWith("/") ? "M3 8h9M8.5 4.5 12 8l-3.5 3.5" : "M4 12 12 4M5.5 4H12v6.5"} fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </a>
           ) : (

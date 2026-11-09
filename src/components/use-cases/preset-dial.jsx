@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { Preview } from "./preview";
 import styles from "./use-cases.module.css";
 
 // The wheel's ticks never change, so they are built once, not on every
@@ -44,6 +43,29 @@ function Arrow() {
       <path d="M8 13V3.5M3.5 8 8 3.5 12.5 8" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
+}
+
+// A use case's film, muted. Only the one up plays, from its start, and
+// only while the viewer is on screen; the rest wait on their posters.
+// Reduced motion: posters only.
+function CaseFilm({ film, on }) {
+  const ref = useRef(null);
+  const [seen, setSeen] = useState(false);
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => setSeen(entry.isIntersecting));
+    observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
+  useEffect(() => {
+    const video = ref.current;
+    if (on && seen && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      video.play().catch(() => {});
+      return;
+    }
+    video.pause();
+    if (!on) video.currentTime = 0;
+  }, [on, seen]);
+  return <video ref={ref} className={styles.film} src={film.src} poster={film.poster} muted loop playsInline preload="none" tabIndex={-1} />;
 }
 
 /**
@@ -321,8 +343,8 @@ export function PresetDial({ items, cta, dialLabel, promptLabel, hint, templates
             <div className={styles.viewer} aria-hidden="true">
               <div className={styles.frame}>
                 {items.map((it, i) => (
-                  <div key={it.label} className={styles.feed} data-on={i === active ? "" : undefined} data-paused={i === active ? undefined : ""}>
-                    <Preview kind={it.kind} format={it.format} bleed />
+                  <div key={it.label} className={styles.feed} data-on={i === active ? "" : undefined}>
+                    <CaseFilm film={it.film} on={i === active} />
                   </div>
                 ))}
                 <span key={active} className={styles.flash} />

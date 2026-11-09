@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { Preview } from "@/components/use-cases/preview";
 import styles from "./audience.module.css";
 
 const HOLD = 5000; // ms each role stays open while it runs by itself
@@ -13,6 +12,38 @@ function onMotionChange(callback) {
   const query = matchMedia(MOTION);
   query.addEventListener("change", callback);
   return () => query.removeEventListener("change", callback);
+}
+
+// A role's real footage, muted. It plays only while its panel is open and
+// on screen; closed panels show its poster. A 9:16 film stands in the
+// middle of a blurred still of itself. Reduced motion: the poster.
+function RoleFilm({ film, playing }) {
+  const ref = useRef(null);
+  useEffect(() => {
+    const video = ref.current;
+    if (!video) return;
+    if (playing) video.play().catch(() => {});
+    else video.pause();
+  }, [playing]);
+  const tall = Boolean(film.back);
+  return (
+    <>
+      {tall && <span className={styles.back} style={{ backgroundImage: `url(${film.back})` }} />}
+      <video
+        ref={ref}
+        className={styles.film}
+        data-tall={tall ? "" : undefined}
+        style={film.at ? { objectPosition: film.at } : undefined}
+        src={film.src}
+        poster={film.poster}
+        muted
+        loop
+        playsInline
+        preload="none"
+        tabIndex={-1}
+      />
+    </>
+  );
 }
 
 /**
@@ -78,8 +109,8 @@ export function Roles({ roles, makes, formatsLabel, promptLabel, try: tryLabel }
               setTouched(true);
             }}
           >
-            <span className={styles.media} aria-hidden="true" data-paused={on ? undefined : ""}>
-              <Preview kind={role.kind} format={role.format} bleed />
+            <span className={styles.media} aria-hidden="true">
+              <RoleFilm film={role.film} playing={on && visible && !reduced} />
             </span>
             <span className={styles.shade} aria-hidden="true" />
 

@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Preview } from "@/components/use-cases/preview";
 import styles from "./edit-with-words.module.css";
 
 const HOLD = 4600; // ms each ask stays before the next (matches the tab's fill)
@@ -85,13 +84,15 @@ function Facts({ facts, changed }) {
  * by itself while on screen and not hovered or focused. With reduced
  * motion it waits for a click and changes without easing.
  */
-export function CommandCut({ edits, barLabel }) {
+export function CommandCut({ edits, barLabel, films }) {
   const [active, setActive] = useState(0);
   const [typed, setTyped] = useState(edits[0].ask.length);
   const [visible, setVisible] = useState(false);
   const [held, setHeld] = useState(false);
   const [reduced, setReduced] = useState(false);
   const rootRef = useRef(null);
+  const beforeRef = useRef(null);
+  const afterRef = useRef(null);
 
   const edit = edits[active];
   const applied = typed >= edit.ask.length;
@@ -106,6 +107,27 @@ export function CommandCut({ edits, barLabel }) {
     observer.observe(rootRef.current);
     return () => observer.disconnect();
   }, []);
+
+  // The cut plays (both sides in step, muted) only while on screen; with
+  // reduced motion it rests on its posters.
+  useEffect(() => {
+    const videos = [beforeRef.current, afterRef.current];
+    if (!videos.every(Boolean) || reduced) return;
+    if (visible) {
+      videos[1].currentTime = videos[0].currentTime;
+      videos.forEach((v) => v.play().catch(() => {}));
+    } else videos.forEach((v) => v.pause());
+  }, [visible, reduced]);
+
+  // "Faster pace": the edited cut plays faster; back in step otherwise.
+  useEffect(() => {
+    const before = beforeRef.current;
+    const after = afterRef.current;
+    if (!before || !after) return;
+    const fast = shown === "pace";
+    after.playbackRate = fast ? 1.6 : 1;
+    if (!fast) after.currentTime = before.currentTime;
+  }, [shown]);
 
   // Type the ask in, then apply it.
   useEffect(() => {
@@ -150,7 +172,7 @@ export function CommandCut({ edits, barLabel }) {
           <figcaption className={styles.sideLabel}>Before</figcaption>
           <div className={styles.screen} aria-hidden="true">
             <div className={styles.frame}>
-              <Preview kind="montage" format="16:9" bleed />
+              <video ref={beforeRef} className={styles.film} src={films.before.src} poster={films.before.poster} muted loop playsInline preload="none" tabIndex={-1} />
             </div>
           </div>
           <Facts facts={BEFORE} />
@@ -187,7 +209,7 @@ export function CommandCut({ edits, barLabel }) {
           <figcaption className={styles.sideLabel}>After</figcaption>
           <div className={styles.screen} aria-hidden="true">
             <div className={styles.frame}>
-              <Preview kind="montage" format="16:9" bleed />
+              <video ref={afterRef} className={styles.film} src={films.after.src} poster={films.after.poster} muted loop playsInline preload="none" tabIndex={-1} />
               <span className={styles.grade} />
               <p className={styles.captions}>
                 {WORDS.map((word, i) => (

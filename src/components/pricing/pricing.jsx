@@ -5,9 +5,10 @@ import wipe from "@/components/scene/wipe.module.css";
 import { PauseOffscreen } from "@/components/pause-offscreen";
 import { Plans } from "./plans";
 import { Render } from "./render";
+import { MoreLink } from "@/components/more-link";
 import styles from "./pricing.module.css";
 
-function Heading({ eyebrow, title, lead }) {
+function Heading({ eyebrow, title, lead, more }) {
   return (
     <div className={styles.head}>
       <div>
@@ -24,7 +25,10 @@ function Heading({ eyebrow, title, lead }) {
           ))}
         </h2>
       </div>
-      <p className={styles.lead}>{lead}</p>
+      <p className={styles.lead}>
+        {lead}
+        <MoreLink {...more} />
+      </p>
     </div>
   );
 }
@@ -36,7 +40,7 @@ function Heading({ eyebrow, title, lead }) {
  */
 export async function Pricing() {
   const data = await getPricing();
-  const { eyebrow, title, lead, plans, pending } = pricing;
+  const { eyebrow, title, lead, more, plans, pending } = pricing;
 
   return (
     <section id="pricing" className={styles.section} aria-labelledby="pricing-title" data-section="Pricing">
@@ -44,7 +48,7 @@ export async function Pricing() {
       <div className={styles.inner}>
         {data ? (
           <>
-            <Heading eyebrow={eyebrow} title={title} lead={lead} />
+            <Heading eyebrow={eyebrow} title={title} lead={lead} more={more} />
             <Plans data={data} copy={plans} />
           </>
         ) : (

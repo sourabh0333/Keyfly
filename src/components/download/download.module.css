@@ -219,6 +219,14 @@
   overflow: visible;
 }
 
+/* Short laptop screens: a smaller flight, so the stage still fits and pins
+   (1366 × 633 included). */
+@media (max-height: 760px) {
+  .flight {
+    max-height: 42svh;
+  }
+}
+
 .guide {
   fill: none;
   stroke: rgb(244 241 234 / 0.14);

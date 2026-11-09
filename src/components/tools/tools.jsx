@@ -2,6 +2,7 @@ import { tools } from "@/content/home";
 import wipe from "@/components/scene/wipe.module.css";
 import { PauseOffscreen } from "@/components/pause-offscreen";
 import { Handoff } from "./handoff";
+import { MoreLink } from "@/components/more-link";
 import styles from "./tools.module.css";
 
 // Down to a section on this page; out to anything else.
@@ -27,7 +28,7 @@ function Arrow({ href }) {
  * that edits, one KeyFly timeline, and the editor it goes to (see Handoff).
  */
 export function Tools() {
-  const { eyebrow, title, lead, note, on, ...handoff } = tools;
+  const { eyebrow, title, lead, more, note, on, ...handoff } = tools;
 
   return (
     <section id="tools" className={styles.section} aria-labelledby="tools-title" data-section="Open by design">
@@ -48,7 +49,10 @@ export function Tools() {
               ))}
             </h2>
           </div>
-          <p className={styles.lead}>{lead}</p>
+          <p className={styles.lead}>
+            {lead}
+            <MoreLink {...more} />
+          </p>
         </div>
 
         <div className={styles.platforms}>

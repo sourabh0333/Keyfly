@@ -1,0 +1,15 @@
+/* A link in a section's lead: the accent text colour (from the tone), with a
+   drawn underline that firms up on hover and focus. */
+.more {
+  color: var(--color-accent-text);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+  transition: text-decoration-color var(--dur-ui) ease;
+}
+
+.more:hover,
+.more:focus-visible {
+  text-decoration-color: currentColor;
+}

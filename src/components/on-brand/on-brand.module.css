@@ -302,6 +302,15 @@
   transition: box-shadow 0.45s ease var(--delay, 0ms);
 }
 
+/* Each tile's real footage, filling its shape. */
+.film {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .reel[data-colours] .picture {
   box-shadow:
     0 0 0 1px rgb(123 108 240 / 0.55),

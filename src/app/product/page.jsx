@@ -10,11 +10,12 @@ import { ProductHero } from "@/components/product/product-hero";
 import { YourWay } from "@/components/product/your-way";
 import { Scene } from "@/components/scene/scene";
 import { productMeta } from "@/content/product";
+import { publicRobots } from "@/config/site";
 
 // The Product page, built section by section (see PLAN.md), in the same
 // Scene as the homepage: the links between sections, the focus pull, the
-// dissolve, the page timeline and the footer's arrival. Kept out of search
-// with the rest of the site until the copy is confirmed.
+// dissolve, the page timeline and the footer's arrival. Open to search
+// (see siteConfig.indexable).
 // AI minutes reads each plan's allowance from KeyFly's pricing API;
 // refresh it at most every 5 minutes, as the homepage does (src/lib/pricing.js).
 export const revalidate = 300;
@@ -23,7 +24,7 @@ export const metadata = {
   title: productMeta.title,
   description: productMeta.description,
   alternates: { canonical: "/product" },
-  robots: { index: false, follow: false },
+  robots: publicRobots,
 };
 
 export default function ProductPage() {

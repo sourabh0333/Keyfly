@@ -1,6 +1,7 @@
 import { howItWorks } from "@/content/home";
 import wipe from "@/components/scene/wipe.module.css";
 import { ScrollStage } from "./scroll-stage";
+import { ShotFilm } from "./shot-film";
 import styles from "./how-it-works.module.css";
 
 // The demo timeline, in fractions of its length. Shot boundaries fall at
@@ -103,7 +104,7 @@ export function HowItWorks() {
                 <div className={styles.frame}>
                   {demo.shots.map((shot, i) => (
                     <div key={shot.title} className={styles.scene} data-scene={i + 1}>
-                      <div className={styles.sceneArt} />
+                      <ShotFilm className={styles.sceneArt} src={shot.film.src} poster={shot.film.poster} index={i} count={demo.shots.length} />
                       <p className={styles.sceneTitle}>
                         {shot.title}
                         <span className={styles.point} />
