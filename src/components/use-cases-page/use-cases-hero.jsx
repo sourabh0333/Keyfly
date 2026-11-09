@@ -23,17 +23,22 @@ export function UseCasesHero() {
 
       <div className={styles.inner}>
         <div className={styles.head}>
-          <p className={styles.eyebrow}>
-            <span className={styles.rec} aria-hidden="true" />
-            {eyebrow}
-          </p>
-          <h1 id="use-cases-title" className={styles.title}>
-            {title.map((line, i) => (
-              <span key={i} className={line.accent ? styles.accent : styles.plain}>
-                {line.text}
-                {i < title.length - 1 ? " " : null}
-              </span>
-            ))}
+          {/* The eyebrow is part of the h1, so the page's main heading names
+              its topic ("AI video templates"); it looks as it did. */}
+          <h1 id="use-cases-title" className={styles.heading}>
+            <span className={styles.eyebrow}>
+              <span className={styles.rec} aria-hidden="true" />
+              {eyebrow}
+              <span className="visually-hidden">: </span>
+            </span>
+            <span className={styles.title}>
+              {title.map((line, i) => (
+                <span key={i} className={line.accent ? styles.accent : styles.plain}>
+                  {line.text}
+                  {i < title.length - 1 ? " " : null}
+                </span>
+              ))}
+            </span>
           </h1>
           <p className={styles.lead}>{lead}</p>
           <div className={styles.actions}>

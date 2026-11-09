@@ -53,10 +53,19 @@
   text-align: center;
 }
 
+/* The h1 holds the eyebrow and the title; it adds no look of its own. */
+.heading {
+  display: grid;
+  justify-items: center;
+}
+
 .eyebrow {
   display: inline-flex;
   align-items: center;
   gap: 10px;
+  font-weight: 400;
+  line-height: 1.55;
+  text-wrap: wrap;
   padding: 6px 14px 6px 10px;
   border-radius: var(--radius-round);
   background: rgb(244 241 234 / 0.04);
@@ -78,6 +87,7 @@
 }
 
 .title {
+  display: block;
   margin-top: 26px;
   font-size: clamp(2.9rem, 1.2rem + 4.8vw, 6.1rem);
   font-weight: 560;

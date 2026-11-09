@@ -141,6 +141,64 @@ export function productJsonLd({ title, description }) {
   };
 }
 
+// A page's place in the site, for a breadcrumb in search results.
+function breadcrumb(url, name) {
+  return {
+    "@type": "BreadcrumbList",
+    "@id": `${url}#breadcrumb`,
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: siteConfig.url },
+      { "@type": "ListItem", position: 2, name, item: url },
+    ],
+  };
+}
+
+// The Use cases page: a collection of the app's templates, listed by its
+// ten categories (each with its template count and shelf on the page), a
+// breadcrumb, and the page's questions.
+export function useCasesJsonLd({ title, description, categories, faq }) {
+  const url = `${siteConfig.url}/use-cases`;
+  const total = categories.reduce((n, c) => n + c.templates.length, 0);
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "CollectionPage",
+        "@id": `${url}#webpage`,
+        url,
+        name: title,
+        description,
+        isPartOf: site,
+        about: app,
+        breadcrumb: { "@id": `${url}#breadcrumb` },
+        mainEntity: { "@id": `${url}#categories` },
+      },
+      breadcrumb(url, "Use cases"),
+      {
+        "@type": "ItemList",
+        "@id": `${url}#categories`,
+        name: `${total} KeyFly video templates, by category`,
+        numberOfItems: categories.length,
+        itemListElement: categories.map((c, i) => ({
+          "@type": "ListItem",
+          position: i + 1,
+          name: `${c.name} (${c.templates.length} templates)`,
+          description: c.line,
+          url: `${url}#${c.id}`,
+        })),
+      },
+      {
+        "@type": "FAQPage",
+        mainEntity: faq.map((item) => ({
+          "@type": "Question",
+          name: item.q,
+          acceptedAnswer: { "@type": "Answer", text: item.a },
+        })),
+      },
+    ],
+  };
+}
+
 // The script tag's contents, with "<" escaped so no string can close it.
 export function jsonLdHtml(data) {
   return { __html: JSON.stringify(data).replace(/</g, "\\u003c") };

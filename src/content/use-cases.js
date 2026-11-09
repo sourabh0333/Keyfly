@@ -8,10 +8,13 @@ import { primaryCta } from "./navigation";
 // research_notes/use-cases/app-templates.md). The pictures are the site's
 // own, illustrative. PREMIUM and NEW tags change, so none is typed here.
 
+// In search results and shares (2026-11-09, from the SEO audit). The page
+// targets "AI video templates" (what template galleries rank for); the
+// title is 58 characters with " · KeyFly", the description 145.
 export const useCasesMeta = {
-  title: "Use cases",
+  title: "91 AI video templates for launches, ads and demos",
   description:
-    "Launch films, social ads, UGC, demos, podcasts and more: KeyFly's 91 templates in ten categories, each filled by the AI director with your product and your brand kit.",
+    "Launch films, social ads, UGC, explainers and podcast clips: 91 templates in 16:9, 9:16, 1:1 and 4:5. The AI director fills each with your brand.",
 };
 
 // The app's looks, as their cards name them, and the key each uses here.
@@ -42,7 +45,8 @@ const slug = (name) =>
 const t = (name, shape, seconds, look, type) => ({ name, shape, seconds, look, type, clip: `/video/templates/${slug(name)}` });
 
 export const useCasesHero = {
-  eyebrow: "Use cases",
+  // Part of the h1 (2026-11-09), so it names the topic as well as the page.
+  eyebrow: "Use cases · AI video templates",
   title: [{ text: "91 ways to start." }, { text: "One sentence to finish.", accent: true }],
   lead: "Launch films, social ads, UGC, demos, podcasts and more: start from one of KeyFly's templates, and the AI director fills it with your product and your brand kit.",
   primary: primaryCta,
