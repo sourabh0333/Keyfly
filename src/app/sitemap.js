@@ -1,6 +1,7 @@
 import { publicPages, siteConfig } from "@/config/site";
 import { categories } from "@/content/use-cases";
 import { legal } from "@/content/legal";
+import { allPosts } from "@/content/blog";
 
 // sitemap.xml, served at /sitemap.xml and named in robots.txt.
 //
@@ -37,7 +38,10 @@ export default function sitemap() {
     .filter((p) => !p.draft)
     .map((p) => ({ path: p.path, updated: p.updated.iso }));
 
-  return [...publicPages, ...legalPages].map(({ path, updated }) => ({
+  // The blog: each post, with the date it was last changed.
+  const postPages = allPosts.map((p) => ({ path: p.path, updated: (p.updated ?? p.date).iso }));
+
+  return [...publicPages, ...legalPages, ...postPages].map(({ path, updated }) => ({
     url: absolute(path),
     lastModified: updated,
     ...(images[path] ? { images: images[path] } : {}),

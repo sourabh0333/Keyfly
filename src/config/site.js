@@ -34,4 +34,5 @@ export const publicPages = [
   { path: "/use-cases", updated: "2026-11-09" },
   { path: "/integrations", updated: "2026-11-09" },
   { path: "/pricing", updated: "2026-11-09" },
+  { path: "/blog", updated: "2026-11-09" },
 ];

@@ -272,6 +272,69 @@ export function lowestPaidPrice(pricing) {
   return "$" + (Number.isInteger(low) ? low : low.toFixed(2));
 }
 
+// The blog's index: a Blog with its posts, and a breadcrumb.
+export function blogJsonLd({ title, description, posts }) {
+  const url = `${siteConfig.url}/blog`;
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Blog",
+        "@id": `${url}#blog`,
+        url,
+        name: title,
+        description,
+        publisher: org,
+        isPartOf: site,
+        breadcrumb: { "@id": `${url}#breadcrumb` },
+        blogPost: posts.map((p) => ({
+          "@type": "BlogPosting",
+          headline: p.title,
+          url: `${siteConfig.url}${p.path}`,
+          datePublished: p.date.iso,
+        })),
+      },
+      breadcrumb(url, "Blog"),
+    ],
+  };
+}
+
+// One post: a BlogPosting (headline, description, cover, dates, author as
+// the KeyFly team, publisher) and its Home › Blog › Post breadcrumb.
+export function postJsonLd(post) {
+  const url = `${siteConfig.url}${post.path}`;
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BlogPosting",
+        "@id": `${url}#post`,
+        mainEntityOfPage: url,
+        url,
+        headline: post.title,
+        description: post.dek,
+        image: `${siteConfig.url}${post.cover.poster}`,
+        datePublished: post.date.iso,
+        dateModified: post.updated?.iso ?? post.date.iso,
+        articleSection: post.topicLabel,
+        timeRequired: `PT${post.minutes}M`,
+        inLanguage: "en",
+        author: { "@type": "Organization", name: post.author.name, url: siteConfig.url },
+        publisher: org,
+        isPartOf: { "@id": `${siteConfig.url}/blog#blog` },
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: siteConfig.url },
+          { "@type": "ListItem", position: 2, name: "Blog", item: `${siteConfig.url}/blog` },
+          { "@type": "ListItem", position: 3, name: post.title, item: url },
+        ],
+      },
+    ],
+  };
+}
+
 // The script tag's contents, with "<" escaped so no string can close it.
 export function jsonLdHtml(data) {
   return { __html: JSON.stringify(data).replace(/</g, "\\u003c") };

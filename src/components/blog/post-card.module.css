@@ -1,0 +1,252 @@
+/*
+ * A post as a clip in the bin: a 16:9 cover with its topic and read time
+ * on the frame, then the words. No box around the card: the cover is the
+ * shape, and a hairline sits under the words.
+ */
+.card {
+  min-width: 0;
+}
+
+.link {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  height: 100%;
+  padding-bottom: 22px;
+  border-bottom: 1px solid rgb(244 241 234 / 0.08);
+  color: inherit;
+  text-decoration: none;
+}
+
+.thumb {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  margin-bottom: 8px;
+  border-radius: 14px;
+  background: var(--night-top);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.08) inset;
+}
+
+/* The frame's edge over the picture, mint when the clip plays. */
+.thumb::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.1) inset;
+  transition: box-shadow 0.3s ease;
+  pointer-events: none;
+}
+
+.video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: scale 0.6s var(--ease-land);
+}
+
+.topic,
+.duration {
+  position: absolute;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 9px;
+  border-radius: var(--radius-round);
+  background: rgb(11 11 13 / 0.62);
+  backdrop-filter: blur(8px);
+  color: var(--paper);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+}
+
+.topic {
+  top: 10px;
+  left: 10px;
+}
+
+.duration {
+  right: 10px;
+  bottom: 10px;
+}
+
+.duration i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgb(244 241 234 / 0.5);
+  transition: background 0.3s ease;
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  color: rgb(244 241 234 / 0.5);
+  font-family: var(--font-mono-stack);
+  font-size: 0.75rem;
+}
+
+.title {
+  font-size: clamp(1.125rem, 1.05rem + 0.3vw, 1.3rem);
+  font-weight: 560;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  transition: color var(--dur-ui) ease;
+}
+
+.dek {
+  color: rgb(244 241 234 / 0.66);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+}
+
+.more {
+  margin-top: 4px;
+  color: var(--mint-text-dark);
+  font-size: 0.875rem;
+  font-weight: 560;
+  opacity: 0;
+  translate: -4px 0;
+  transition:
+    opacity var(--dur-ui) ease,
+    translate var(--dur-ui) ease;
+}
+
+.link:hover .title,
+.link:focus-visible .title {
+  color: var(--mint-text-dark);
+}
+
+.link:hover .thumb::after,
+.link:focus-visible .thumb::after {
+  box-shadow:
+    0 0 0 1.5px var(--soft-mint) inset,
+    0 0 30px rgb(95 224 176 / 0.25) inset;
+}
+
+.link:hover .duration i {
+  background: var(--soft-mint);
+  box-shadow: 0 0 8px var(--soft-mint);
+}
+
+.link:hover .video {
+  scale: 1.03;
+}
+
+.link:hover .more,
+.link:focus-visible .more {
+  opacity: 1;
+  translate: 0 0;
+}
+
+/* ---- List view: a media browser's rows ---- */
+
+.row {
+  border-bottom: 1px solid rgb(244 241 234 / 0.08);
+}
+
+.rowLink {
+  display: grid;
+  grid-template-columns: 168px minmax(0, 1fr) 120px 72px 150px;
+  gap: 24px;
+  align-items: center;
+  padding: 14px 0;
+  color: inherit;
+  text-decoration: none;
+}
+
+.rowThumb {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 8px;
+  background: var(--night-top);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.1);
+  transition: box-shadow 0.3s ease;
+}
+
+.rowMain {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.rowMain strong {
+  font-size: 1.0625rem;
+  font-weight: 560;
+  letter-spacing: -0.015em;
+  line-height: 1.3;
+  transition: color var(--dur-ui) ease;
+}
+
+.rowMain span {
+  overflow: hidden;
+  color: rgb(244 241 234 / 0.58);
+  font-size: 0.875rem;
+  line-height: 1.45;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rowTopic,
+.rowTime,
+.rowDate {
+  color: rgb(244 241 234 / 0.6);
+  font-family: var(--font-mono-stack);
+  font-size: 0.75rem;
+}
+
+.rowTime {
+  color: var(--paper);
+}
+
+.rowLink:hover .rowMain strong,
+.rowLink:focus-visible .rowMain strong {
+  color: var(--mint-text-dark);
+}
+
+.rowLink:hover .rowThumb,
+.rowLink:focus-visible .rowThumb {
+  box-shadow: 0 0 0 1.5px var(--soft-mint);
+}
+
+@media (max-width: 980px) {
+  .rowLink {
+    grid-template-columns: 132px minmax(0, 1fr) 64px;
+    gap: 16px;
+  }
+
+  .rowTopic,
+  .rowDate {
+    display: none;
+  }
+}
+
+@media (max-width: 560px) {
+  .rowLink {
+    grid-template-columns: 104px minmax(0, 1fr);
+    gap: 14px;
+  }
+
+  .rowTime {
+    display: none;
+  }
+
+  .rowMain span {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .video,
+  .more {
+    transition: none;
+  }
+}

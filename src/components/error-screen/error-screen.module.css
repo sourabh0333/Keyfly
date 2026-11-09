@@ -1,0 +1,421 @@
+/*
+ * The 404 and error screens: centred like the site's heroes, then an
+ * editor's timeline with a hole in it where the playhead stops. Mint for
+ * the missing clip; amber for a render that stopped (a warning, never "go").
+ */
+.screen {
+  --hole: var(--soft-mint);
+  --hole-rgb: 95 224 176;
+  position: relative;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: calc(var(--header-h) + clamp(48px, 9vh, 112px)) var(--gutter) var(--section-pad);
+  color: var(--paper);
+}
+
+.screen[data-kind="failed"] {
+  --hole: #f2a86e;
+  --hole-rgb: 242 168 110;
+}
+
+.glow {
+  position: absolute;
+  z-index: -1;
+  top: 34%;
+  left: 50%;
+  width: min(900px, 90vw);
+  height: 420px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(var(--hole-rgb) / 0.12), transparent);
+  translate: -50% 0;
+  pointer-events: none;
+}
+
+/* ---- Heading ---- */
+
+.head {
+  display: grid;
+  justify-items: center;
+  text-align: center;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 14px;
+  border-radius: var(--radius-round);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.12) inset;
+  color: rgb(244 241 234 / 0.75);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.light {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--hole);
+  box-shadow: 0 0 10px var(--hole);
+  animation: blink 1.6s ease-in-out infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.title {
+  display: grid;
+  margin-top: 22px;
+  font-size: clamp(2.6rem, 1.2rem + 5vw, 5.4rem);
+  font-weight: 560;
+  letter-spacing: -0.05em;
+  line-height: 0.98;
+}
+
+.plain,
+.accent {
+  display: block;
+}
+
+.accent {
+  padding-bottom: 0.08em;
+  background: linear-gradient(100deg, var(--mint-text-dark), #eafff6 50%, var(--soft-mint));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-family: var(--font-accent-stack);
+  font-size: 1.08em;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.025em;
+}
+
+.lead {
+  max-width: 52ch;
+  margin-top: 22px;
+  color: rgb(244 241 234 / 0.72);
+  font-size: var(--text-lead);
+  line-height: 1.5;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+/* ---- Timeline ---- */
+
+.timeline {
+  margin-top: clamp(48px, 8vh, 80px);
+  padding: 14px 18px 18px;
+  border-radius: var(--radius-window);
+  background: var(--glass-fill);
+  box-shadow:
+    0 0 0 1px var(--glass-line) inset,
+    0 30px 80px -40px rgb(0 0 0 / 0.8);
+}
+
+.ruler {
+  position: relative;
+  height: 20px;
+  margin-left: 42px;
+  border-bottom: 1px solid rgb(244 241 234 / 0.1);
+  background: repeating-linear-gradient(
+      90deg,
+      rgb(244 241 234 / 0.18) 0 1px,
+      transparent 1px calc(100% / 30)
+    )
+    bottom / 100% 5px no-repeat;
+}
+
+.ruler span {
+  position: absolute;
+  top: 0;
+  left: var(--x);
+  color: rgb(244 241 234 / 0.4);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  translate: -50% 0;
+}
+
+.ruler span:first-child {
+  translate: 0 0;
+}
+
+.ruler span:last-child {
+  translate: -100% 0;
+}
+
+.tracks {
+  position: relative;
+  display: grid;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.track {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+}
+
+.trackName {
+  color: rgb(244 241 234 / 0.4);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  font-weight: 400;
+  letter-spacing: 0.08em;
+}
+
+.lane {
+  position: relative;
+  height: 46px;
+}
+
+.clip {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--at) + 2px);
+  width: calc(var(--w) - 4px);
+  border-radius: 6px;
+  background:
+    repeating-linear-gradient(90deg, transparent 0 22px, rgb(0 0 0 / 0.28) 22px 23px),
+    linear-gradient(135deg, #3a2f5c, #6a4a6e 55%, #c98a6f);
+  box-shadow: 0 0 0 1px rgb(244 241 234 / 0.12) inset;
+  opacity: 0.85;
+  animation: land 0.6s var(--ease-land) both;
+  animation-delay: calc(var(--k) * 70ms);
+}
+
+.clip:nth-child(2n) {
+  background:
+    repeating-linear-gradient(90deg, transparent 0 22px, rgb(0 0 0 / 0.28) 22px 23px),
+    linear-gradient(135deg, #253a4f, #47507a 60%, #8a6b8f);
+}
+
+@keyframes land {
+  from {
+    opacity: 0;
+    translate: 0 -10px;
+  }
+}
+
+.gap {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--at) + 2px);
+  width: calc(var(--w) - 4px);
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  background: repeating-linear-gradient(
+    -45deg,
+    rgb(var(--hole-rgb) / 0.08) 0 6px,
+    transparent 6px 12px
+  );
+  outline: 1px dashed rgb(var(--hole-rgb) / 0.7);
+  outline-offset: -1px;
+}
+
+.gap em {
+  color: var(--hole);
+  font-family: var(--font-mono-stack);
+  font-size: 0.625rem;
+  font-style: normal;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.wave {
+  height: 30px;
+}
+
+.wave i {
+  position: absolute;
+  bottom: 50%;
+  left: var(--x);
+  width: 0.8%;
+  height: calc(var(--h) * 100%);
+  border-radius: 2px;
+  background: rgb(244 241 234 / 0.28);
+  translate: 0 50%;
+}
+
+/* The playhead scrubs in from the start and stops on the hole. A sweep as
+   wide as the lanes is moved by `translate` (a share of its own width) and
+   carries the playhead on its left edge; the rail clips it sideways. */
+.rail {
+  position: absolute;
+  inset: -14px 0 -6px 42px;
+  overflow-x: clip;
+  pointer-events: none;
+}
+
+.sweep {
+  position: absolute;
+  inset: 0;
+  translate: calc(var(--stop) * 100%) 0;
+  animation: scrub 1.6s var(--ease-draw) 0.4s both;
+}
+
+@keyframes scrub {
+  from {
+    translate: 2% 0;
+  }
+}
+
+.playhead {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -1px;
+  width: 2px;
+  border-radius: 2px;
+  background: var(--hole);
+  box-shadow: 0 0 12px var(--hole);
+}
+
+.timecode {
+  position: absolute;
+  top: -22px;
+  left: 50%;
+  padding: 3px 8px;
+  border-radius: var(--radius-round);
+  background: var(--hole);
+  color: var(--mint-ink);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  white-space: nowrap;
+  translate: -50% 0;
+}
+
+/* ---- Where to go instead ---- */
+
+.pages {
+  margin-top: clamp(48px, 7vh, 72px);
+}
+
+.pagesLabel {
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgb(244 241 234 / 0.1);
+  color: rgb(244 241 234 / 0.5);
+  font-family: var(--font-mono-stack);
+  font-size: 0.6875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.pages ul {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.page {
+  display: grid;
+  gap: 6px;
+  height: 100%;
+  padding: 18px 18px 20px 0;
+  border-bottom: 1px solid rgb(244 241 234 / 0.08);
+  text-decoration: none;
+}
+
+.page strong {
+  color: var(--paper);
+  font-size: 1.0625rem;
+  font-weight: 560;
+  letter-spacing: -0.01em;
+}
+
+.page strong span {
+  color: var(--mint-text-dark);
+  opacity: 0;
+  transition: opacity var(--dur-ui) ease;
+}
+
+.page > span {
+  color: rgb(244 241 234 / 0.6);
+  font-size: 0.875rem;
+  line-height: 1.45;
+}
+
+.page:hover strong,
+.page:focus-visible strong {
+  color: var(--mint-text-dark);
+}
+
+.page:hover strong span,
+.page:focus-visible strong span {
+  opacity: 1;
+}
+
+.report {
+  margin-top: 28px;
+  color: rgb(244 241 234 / 0.55);
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+.mail {
+  color: var(--mint-text-dark);
+  text-decoration: underline;
+  text-decoration-color: rgb(130 232 194 / 0.4);
+  text-underline-offset: 3px;
+}
+
+/* ---- Narrow screens ---- */
+
+@media (max-width: 980px) {
+  .pages ul {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 24px;
+  }
+}
+
+@media (max-width: 560px) {
+  .timeline {
+    padding: 12px 12px 14px;
+  }
+
+  .ruler span:nth-child(2n) {
+    display: none;
+  }
+
+  /* Too narrow for the label: the dashed hole and the playhead say it. */
+  .gap em {
+    display: none;
+  }
+
+  .pages ul {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .actions {
+    display: grid;
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .light,
+  .clip,
+  .sweep {
+    animation: none;
+  }
+}

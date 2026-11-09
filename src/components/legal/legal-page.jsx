@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { legal } from "@/content/legal";
+import { InlineText } from "@/components/inline-text";
 import { LegalToc } from "./legal-toc";
 import styles from "./legal-page.module.css";
 
@@ -17,40 +18,10 @@ import styles from "./legal-page.module.css";
  * out of search and out of the sitemap.
  */
 
-const INLINE = /\[([^\]]+)\]\(([^)]+)\)|\*\*([^*]+)\*\*|\{\{([^}]+)\}\}/g;
+const classes = { link: styles.link, confirm: styles.confirm };
 
 function Inline({ text }) {
-  const out = [];
-  let last = 0;
-  for (const m of text.matchAll(INLINE)) {
-    if (m.index > last) out.push(text.slice(last, m.index));
-    const key = m.index;
-    if (m[1]) {
-      const href = m[2];
-      out.push(
-        href.startsWith("/") || href.startsWith("#") ? (
-          <Link key={key} href={href} className={styles.link}>
-            {m[1]}
-          </Link>
-        ) : (
-          <a key={key} href={href} className={styles.link}>
-            {m[1]}
-          </a>
-        ),
-      );
-    } else if (m[3]) {
-      out.push(<strong key={key}>{m[3]}</strong>);
-    } else {
-      out.push(
-        <mark key={key} className={styles.confirm} title="To confirm before publishing">
-          {m[4]}
-        </mark>,
-      );
-    }
-    last = m.index + m[0].length;
-  }
-  if (last < text.length) out.push(text.slice(last));
-  return out;
+  return <InlineText text={text} classes={classes} />;
 }
 
 function Block({ block }) {
