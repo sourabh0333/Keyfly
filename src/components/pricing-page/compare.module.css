@@ -266,18 +266,20 @@
   left: 50%;
 }
 
-/* Beside their keyframe, not under it, so a path never runs through them. */
+/* Beside their keyframe, not under it, so a path never runs through them;
+   clear of the lit keyframe (scaled 1.45 and glowing), which used to cover
+   their first letters. */
 .end,
 .stop {
-  top: calc(50% + 6px);
-  margin-left: 9px;
+  top: calc(50% + 8px);
+  margin-left: 13px;
   translate: 0 0;
 }
 
 /* In the right half, before their keyframe instead. */
 .end[data-before],
 .stop[data-before] {
-  margin-left: -9px;
+  margin-left: -13px;
   translate: -100% 0;
 }
 
