@@ -7,14 +7,18 @@ import { primaryCta } from "./navigation";
 // platforms are named in text only: no logos. The ChatGPT and Claude apps
 // have no install links yet, so they are marked "Coming soon".
 
+// In search results and shares (2026-11-09, from the SEO audit). The title
+// names what people search for (58 characters with " · KeyFly"); the
+// description fits before Google cuts it off (146 characters).
 export const integrationsMeta = {
-  title: "Integrations",
+  title: "Claude Code, Codex and Final Cut Pro integrations",
   description:
-    "Bring your own AI agent (Claude Code, Codex, Cursor, Antigravity or any ACP agent) without using AI minutes, and hand the timeline to Final Cut Pro, DaVinci Resolve, Premiere Pro or Avid with every file it uses.",
+    "Edit videos with your own Claude Code, Codex or Cursor, no AI minutes, then hand the timeline to Final Cut Pro, DaVinci Resolve, Premiere or Avid.",
 };
 
 export const integrationsHero = {
-  eyebrow: "Integrations",
+  // Part of the h1 (2026-11-09), so it names the topic as well as the page.
+  eyebrow: "Integrations · Agents and editors",
   title: [{ text: "Plugs into your AI." }, { text: "Hands off to your editor.", accent: true }],
   lead: "Edit with Claude Code, Codex, Cursor, Antigravity or any ACP agent on your own plan, then take the timeline to Final Cut Pro, Resolve, Premiere or Avid with every file it uses.",
   primary: primaryCta,
@@ -74,6 +78,8 @@ export const integrationsAgents = {
   eyebrow: "Your own AI agent",
   title: [{ text: "Bring your own agent." }, { text: "Keep your AI minutes.", accent: true }],
   lead: "Claude Code, Codex, Cursor, Antigravity and other ACP agents edit your video on your own plan. You ask in KeyFly; your agent does the work on your computer.",
+  // A link from the lead to the page that goes further.
+  more: { label: "What the AI director does", href: "/product#direct" },
   pause: "Pause",
   play: "Play",
   summary:
@@ -132,6 +138,8 @@ export const integrationsEditors = {
   eyebrow: "Your editor",
   title: [{ text: "Finish it anywhere." }, { text: "Every file comes along.", accent: true }],
   lead: "Hand the timeline to Final Cut Pro, DaVinci Resolve, Premiere Pro or Avid, packed with every file it uses, so it opens ready to edit.",
+  // A link from the lead to the page that goes further.
+  more: { label: "Every export option", href: "/product#deliver" },
   pause: "Pause",
   play: "Play",
   summary:
@@ -194,6 +202,8 @@ export const integrationsDestinations = {
   eyebrow: "Where it goes",
   title: [{ text: "Ready for every feed." }, { text: "Encoded on your computer.", accent: true }],
   lead: "Pick where the video is going and KeyFly exports it on your device, for TikTok, Reels, YouTube, Shorts, LinkedIn or X. Nothing is uploaded.",
+  // A link from the lead to the page that goes further.
+  more: { label: "Templates in every shape", href: "/use-cases#categories" },
   pause: "Pause",
   play: "Play",
   board: {
@@ -285,6 +295,8 @@ export const integrationsCost = {
   eyebrow: "Cost and your data",
   title: [{ text: "What it costs." }, { text: "Where your files go.", accent: true }],
   lead: "Only KeyFly's cloud AI uses AI minutes, and every action shows its cost first. In the desktop app, everything else stays on your computer.",
+  // A link from the lead to the page that goes further.
+  more: { label: "The plan for your own AI", href: "/pricing#byo" },
   pause: "Pause",
   play: "Play",
   columns: { what: "When you…", minutes: "AI minutes", files: "Where your files go" },

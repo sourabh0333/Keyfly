@@ -89,14 +89,7 @@ export function homeJsonLd({ description, faq, pricing }) {
         featureList: features,
         offers: offers(pricing),
       },
-      {
-        "@type": "FAQPage",
-        mainEntity: faq.map((item) => ({
-          "@type": "Question",
-          name: item.q,
-          acceptedAnswer: { "@type": "Answer", text: item.a },
-        })),
-      },
+      faqPage(faq),
     ],
   };
 }
@@ -187,14 +180,48 @@ export function useCasesJsonLd({ title, description, categories, faq }) {
           url: `${url}#${c.id}`,
         })),
       },
+      faqPage(faq),
+    ],
+  };
+}
+
+// The Integrations page: the page, its breadcrumb, the tools it works with
+// (named, so search engines tie KeyFly to them) and its questions.
+const integrations = [
+  "Claude Code", "Codex", "Cursor", "Antigravity",
+  "Final Cut Pro", "DaVinci Resolve", "Premiere Pro", "Avid",
+  "ChatGPT", "Claude",
+];
+
+function faqPage(items) {
+  return {
+    "@type": "FAQPage",
+    mainEntity: items.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: { "@type": "Answer", text: item.a },
+    })),
+  };
+}
+
+export function integrationsJsonLd({ title, description, faq }) {
+  const url = `${siteConfig.url}/integrations`;
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
       {
-        "@type": "FAQPage",
-        mainEntity: faq.map((item) => ({
-          "@type": "Question",
-          name: item.q,
-          acceptedAnswer: { "@type": "Answer", text: item.a },
-        })),
+        "@type": "WebPage",
+        "@id": `${url}#webpage`,
+        url,
+        name: title,
+        description,
+        isPartOf: site,
+        about: app,
+        breadcrumb: { "@id": `${url}#breadcrumb` },
+        mentions: integrations.map((name) => ({ "@type": "SoftwareApplication", name })),
       },
+      breadcrumb(url, "Integrations"),
+      faqPage(faq),
     ],
   };
 }

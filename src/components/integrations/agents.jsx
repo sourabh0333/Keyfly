@@ -3,6 +3,7 @@ import wipe from "@/components/scene/wipe.module.css";
 import { integrationsAgents } from "@/content/integrations";
 import { AgentStudio } from "./agent-studio";
 import styles from "./agents.module.css";
+import { MoreLink } from "@/components/more-link";
 
 /**
  * Integrations page, "Your own AI agent": one studio panel around a
@@ -10,7 +11,7 @@ import styles from "./agents.module.css";
  * between hairlines.
  */
 export function Agents() {
-  const { eyebrow, title, lead, setup, note, ...studio } = integrationsAgents;
+  const { eyebrow, title, lead, more, setup, note, ...studio } = integrationsAgents;
 
   return (
     <section id="agents" className={styles.section} aria-labelledby="agents-title" data-section="Your AI">
@@ -31,7 +32,10 @@ export function Agents() {
               ))}
             </h2>
           </div>
-          <p className={styles.lead}>{lead}</p>
+          <p className={styles.lead}>
+            {lead}
+            <MoreLink {...more} />
+          </p>
         </div>
 
         <AgentStudio {...studio} />

@@ -3,6 +3,7 @@ import wipe from "@/components/scene/wipe.module.css";
 import { integrationsEditors } from "@/content/integrations";
 import { RoundTrip } from "./round-trip";
 import styles from "./editors.module.css";
+import { MoreLink } from "@/components/more-link";
 
 /**
  * Integrations page, "Your editor": the round trip from KeyFly to another
@@ -10,7 +11,7 @@ import styles from "./editors.module.css";
  * between hairlines, and what the plans say about timeline export.
  */
 export function Editors() {
-  const { eyebrow, title, lead, formats, plans, note, ...trip } = integrationsEditors;
+  const { eyebrow, title, lead, more, formats, plans, note, ...trip } = integrationsEditors;
 
   return (
     <section id="editors" className={styles.section} aria-labelledby="editors-title" data-section="Your editor">
@@ -31,7 +32,10 @@ export function Editors() {
               ))}
             </h2>
           </div>
-          <p className={styles.lead}>{lead}</p>
+          <p className={styles.lead}>
+            {lead}
+            <MoreLink {...more} />
+          </p>
         </div>
 
         <RoundTrip {...trip} />

@@ -3,6 +3,7 @@ import wipe from "@/components/scene/wipe.module.css";
 import { integrationsCost } from "@/content/integrations";
 import { CostLedger } from "./cost-ledger";
 import styles from "./cost.module.css";
+import { MoreLink } from "@/components/more-link";
 
 /**
  * Integrations page, "Cost and your data": a ledger of each way of working,
@@ -10,7 +11,7 @@ import styles from "./cost.module.css";
  * promises between hairlines.
  */
 export function Cost() {
-  const { eyebrow, title, lead, promises, note, ...ledger } = integrationsCost;
+  const { eyebrow, title, lead, more, promises, note, ...ledger } = integrationsCost;
 
   return (
     <section id="cost" className={styles.section} aria-labelledby="cost-title" data-section="Cost and data">
@@ -31,7 +32,10 @@ export function Cost() {
               ))}
             </h2>
           </div>
-          <p className={styles.lead}>{lead}</p>
+          <p className={styles.lead}>
+            {lead}
+            <MoreLink {...more} />
+          </p>
         </div>
 
         <CostLedger {...ledger} />

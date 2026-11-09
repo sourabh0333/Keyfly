@@ -3,13 +3,14 @@ import wipe from "@/components/scene/wipe.module.css";
 import { integrationsDestinations } from "@/content/integrations";
 import { Departures } from "./departures";
 import styles from "./destinations.module.css";
+import { MoreLink } from "@/components/more-link";
 
 /**
  * Integrations page, "Where it goes": a departures board of the export
  * presets beside an export pass for the one in focus (see Departures).
  */
 export function Destinations() {
-  const { eyebrow, title, lead, plans, note, ...board } = integrationsDestinations;
+  const { eyebrow, title, lead, more, plans, note, ...board } = integrationsDestinations;
 
   return (
     <section id="destinations" className={styles.section} aria-labelledby="destinations-title" data-section="Where it goes">
@@ -30,7 +31,10 @@ export function Destinations() {
               ))}
             </h2>
           </div>
-          <p className={styles.lead}>{lead}</p>
+          <p className={styles.lead}>
+            {lead}
+            <MoreLink {...more} />
+          </p>
         </div>
 
         <Departures {...board} />
