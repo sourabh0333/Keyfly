@@ -3,13 +3,14 @@ import wipe from "@/components/scene/wipe.module.css";
 import { PauseOffscreen } from "@/components/pause-offscreen";
 import { Cleanup } from "./cleanup";
 import styles from "./footage.module.css";
+import { MoreLink } from "@/components/more-link";
 
 /**
  * Product page, "Footage": one recording cleaned up in four passes (see
  * Cleanup), then where your footage goes.
  */
 export function Footage() {
-  const { eyebrow, title, lead, note, data, ...cleanup } = productFootage;
+  const { eyebrow, title, lead, more, note, data, ...cleanup } = productFootage;
 
   return (
     <section id="footage" className={styles.section} aria-labelledby="footage-title" data-section="Footage">
@@ -30,7 +31,10 @@ export function Footage() {
               ))}
             </h2>
           </div>
-          <p className={styles.lead}>{lead}</p>
+          <p className={styles.lead}>
+            {lead}
+            <MoreLink {...more} />
+          </p>
         </div>
 
         <Cleanup {...cleanup} />

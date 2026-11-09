@@ -6,10 +6,14 @@ import { primaryCta } from "./navigation";
 // KeyFly app or its pricing API (read 2026-11-03 and 2026-11-04); never
 // claim what they don't show, and never name a competitor.
 
+// In search results and shares (2026-11-09, from the SEO audit). The title
+// targets "AI video editor features", so it doesn't compete with the
+// homepage's "AI video editor" (56 characters with " · KeyFly"); the
+// description names the features searchers compare (135 characters).
 export const productMeta = {
-  title: "Product",
+  title: "AI video editor features, from prompt to export",
   description:
-    "Everything KeyFly does, stage by stage: what the AI director makes, how you steer it, your footage, your brand kit, every export and where KeyFly runs.",
+    "See every part of KeyFly: an AI director that explains each cut, captions, filler words removed, a brand kit from your site, 4K export.",
 };
 
 // The hero: the promise, then an illustrative KeyFly editor with the
@@ -76,6 +80,8 @@ export const productMake = {
   eyebrow: "Make",
   title: [{ text: "One sentence in." }, { text: "Every layer out.", accent: true }],
   lead: "Start from a sentence, your own footage or a template. The AI director writes the storyboard and builds every layer on its own track, so you can change any one of them.",
+  // A link from the lead to the page that goes further.
+  more: { label: "Browse all 91 templates", href: "/use-cases#categories" },
   note: "Illustrative interface",
   startLabel: "Start from",
   makesLabel: "KeyFly makes",
@@ -129,6 +135,8 @@ export const productDirect = {
   eyebrow: "Direct",
   title: [{ text: "Every cut comes with" }, { text: "the director's notes.", accent: true }],
   lead: "KeyFly's AI director doesn't just hand you a video. It pins a note to every call it made, says what it guessed and what it would try next, and every call stays yours to change.",
+  // A link from the lead to the page that goes further.
+  more: { label: "Steer it with your own Claude Code or Codex", href: "/integrations#agents" },
   note: "Illustrative project",
   reply: {
     from: "AI director",
@@ -185,6 +193,8 @@ export const productFootage = {
   eyebrow: "Footage",
   title: [{ text: "Your recording," }, { text: "minus the chores.", accent: true }],
   lead: "Drop in a talking head or a screen recording. KeyFly cuts the silences and filler words, adds captions, zooms on what matters and adds callouts. No storyboard needed.",
+  // A link from the lead to the page that goes further.
+  more: { label: "Templates for talking heads and podcasts", href: "/use-cases#talking-heads-and-podcasts" },
   note: "Illustrative recording",
   file: "founder-update.mov",
   // The recording: an 8 s silent loop edited from a real Mixkit stock
@@ -240,6 +250,8 @@ export const productBrand = {
   eyebrow: "Brand",
   title: [{ text: "Paste your website." }, { text: "Get your brand kit.", accent: true }],
   lead: "Point KeyFly at your site and it reads your logo, colours, font and tone into a brand kit. From then on, every new video uses it automatically.",
+  // A link from the lead to the page that goes further.
+  more: { label: "See a brand kit fill a template", href: "/use-cases#template-to-video" },
   note: "Illustrative brand",
   pause: "Pause",
   play: "Play",
@@ -295,6 +307,8 @@ export const productDeliver = {
   eyebrow: "Deliver",
   title: [{ text: "Export it, share it," }, { text: "or hand it on.", accent: true }],
   lead: "One finished cut, three ways out: a file for any screen, a link for feedback, or the whole timeline for the editor you already use.",
+  // A link from the lead to the page that goes further.
+  more: { label: "Take the timeline to your editor", href: "/integrations#editors" },
   note: "Illustrative cut",
   pause: "Pause",
   play: "Play",
@@ -364,6 +378,8 @@ export const productYourWay = {
   eyebrow: "Your way",
   title: [{ text: "Your platform. Your AI." }, { text: "Your projects.", accent: true }],
   lead: "Nothing in KeyFly locks you in. Here is every choice that stays yours, in one place.",
+  // A link from the lead to the page that goes further.
+  more: { label: "Every integration", href: "/integrations" },
   counter: { of: "of", unlocked: "unlocked" },
   // The labels in each row's hover preview (an illustrative looping clip,
   // drawn in CSS; see RowPreview).
@@ -423,6 +439,8 @@ export const productMinutes = {
   eyebrow: "AI minutes",
   title: [{ text: "One simple unit." }, { text: "Counted only while the AI works.", accent: true }],
   lead: "Plans come with AI minutes: the time KeyFly's AI spends building and editing your videos. Editing by hand, or with your own agent, uses none.",
+  // A link from the lead to the page that goes further.
+  more: { label: "AI minutes in every plan", href: "/pricing#minutes" },
   note: "Illustrative session",
   pause: "Pause",
   play: "Play",

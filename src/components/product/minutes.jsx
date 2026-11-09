@@ -5,6 +5,7 @@ import wipe from "@/components/scene/wipe.module.css";
 import { PauseOffscreen } from "@/components/pause-offscreen";
 import { MinuteMeter } from "./minute-meter";
 import styles from "./minutes.module.css";
+import { MoreLink } from "@/components/more-link";
 
 /**
  * Product page, "AI minutes": the pricing unit, explained once with one
@@ -14,7 +15,7 @@ import styles from "./minutes.module.css";
  * drops out and the link remains.
  */
 export async function Minutes() {
-  const { eyebrow, title, lead, note, plans, ...meter } = productMinutes;
+  const { eyebrow, title, lead, more, note, plans, ...meter } = productMinutes;
   const pricing = await getPricing();
   const allowances = (pricing?.plans ?? [])
     .filter((p) => p.aiMinutes !== null && p.aiMinutes > 0)
@@ -40,7 +41,10 @@ export async function Minutes() {
               ))}
             </h2>
           </div>
-          <p className={styles.lead}>{lead}</p>
+          <p className={styles.lead}>
+            {lead}
+            <MoreLink {...more} />
+          </p>
         </div>
 
         <MinuteMeter {...meter} />

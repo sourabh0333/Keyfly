@@ -3,13 +3,14 @@ import wipe from "@/components/scene/wipe.module.css";
 import { PauseOffscreen } from "@/components/pause-offscreen";
 import { KitScan } from "./kit-scan";
 import styles from "./brand.module.css";
+import { MoreLink } from "@/components/more-link";
 
 /**
  * Product page, "Brand": a website read into a brand kit, and the kit on
  * every new video (see KitScan).
  */
 export function Brand() {
-  const { eyebrow, title, lead, note, ...scan } = productBrand;
+  const { eyebrow, title, lead, more, note, ...scan } = productBrand;
 
   return (
     <section id="brand" className={styles.section} aria-labelledby="brand-title" data-section="Brand">
@@ -30,7 +31,10 @@ export function Brand() {
               ))}
             </h2>
           </div>
-          <p className={styles.lead}>{lead}</p>
+          <p className={styles.lead}>
+            {lead}
+            <MoreLink {...more} />
+          </p>
         </div>
 
         <KitScan {...scan} />

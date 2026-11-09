@@ -9,6 +9,24 @@ const org = { "@id": `${siteConfig.url}/#organization` };
 const site = { "@id": `${siteConfig.url}/#website` };
 const app = { "@id": `${siteConfig.url}/#app` };
 
+// What KeyFly does, for search engines: only what the app, its help, its
+// export sheet and its download page confirm (the same facts the Product
+// page shows).
+const features = [
+  "Make a video from a sentence, your own footage or one of 91 templates",
+  "AI director writes the storyboard, voice-over and motion graphics",
+  "Notes on every call the AI director makes, with revert and retry",
+  "Silences and filler words cut from recordings",
+  "Captions, zooms and callouts added automatically",
+  "Brand kit filled from your website",
+  "AI images, music beds and sound effects",
+  "Export in 16:9, 9:16, 1:1 and 4:5, up to 4K",
+  "Review links for comments and approval",
+  "Timeline export as FCPXML, EDL and OpenTimelineIO for Final Cut Pro, DaVinci Resolve, Premiere Pro and Avid",
+  "Edit with your own Claude Code, Codex, Cursor or other ACP agent",
+  "Desktop apps for macOS and Windows, and a web app",
+];
+
 // Each plan the API prices, month to month. Free has no price in the API
 // and costs nothing; a plan by arrangement (Enterprise) has no offer.
 function offers(pricing) {
@@ -68,6 +86,7 @@ export function homeJsonLd({ description, faq, pricing }) {
         installUrl: siteConfig.appUrl,
         image: `${siteConfig.url}/opengraph-image`,
         publisher: org,
+        featureList: features,
         offers: offers(pricing),
       },
       {
@@ -77,6 +96,46 @@ export function homeJsonLd({ description, faq, pricing }) {
           name: item.q,
           acceptedAnswer: { "@type": "Answer", text: item.a },
         })),
+      },
+    ],
+  };
+}
+
+// The Product page: the page itself, where it sits (Home › Product) and the
+// app it describes, with its features.
+export function productJsonLd({ title, description }) {
+  const url = `${siteConfig.url}/product`;
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": `${url}#webpage`,
+        url,
+        name: title,
+        description,
+        isPartOf: site,
+        about: app,
+        breadcrumb: { "@id": `${url}#breadcrumb` },
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${url}#breadcrumb`,
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: siteConfig.url },
+          { "@type": "ListItem", position: 2, name: "Product", item: url },
+        ],
+      },
+      {
+        "@type": "SoftwareApplication",
+        ...app,
+        name: siteConfig.name,
+        url: siteConfig.url,
+        applicationCategory: "MultimediaApplication",
+        applicationSubCategory: "AI video editor",
+        operatingSystem: "macOS 13 or later, Windows 10, Windows 11, Web browser",
+        publisher: org,
+        featureList: features,
       },
     ],
   };

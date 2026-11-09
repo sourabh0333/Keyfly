@@ -4,13 +4,14 @@ import wipe from "@/components/scene/wipe.module.css";
 import { PauseOffscreen } from "@/components/pause-offscreen";
 import { Routes } from "./routes";
 import styles from "./deliver.module.css";
+import { MoreLink } from "@/components/more-link";
 
 /**
  * Product page, "Deliver": one finished cut and its three ways out (see
  * Routes), then a line on what the plans decide.
  */
 export function Deliver() {
-  const { eyebrow, title, lead, note, plans, ...routes } = productDeliver;
+  const { eyebrow, title, lead, more, note, plans, ...routes } = productDeliver;
 
   return (
     <section id="deliver" className={styles.section} aria-labelledby="deliver-title" data-section="Deliver">
@@ -31,7 +32,10 @@ export function Deliver() {
               ))}
             </h2>
           </div>
-          <p className={styles.lead}>{lead}</p>
+          <p className={styles.lead}>
+            {lead}
+            <MoreLink {...more} />
+          </p>
         </div>
 
         <Routes {...routes} />

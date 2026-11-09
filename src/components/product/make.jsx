@@ -4,6 +4,7 @@ import wipe from "@/components/scene/wipe.module.css";
 import { PauseOffscreen } from "@/components/pause-offscreen";
 import { Builder } from "./builder";
 import styles from "./make.module.css";
+import { MoreLink } from "@/components/more-link";
 
 /**
  * Product page, "Make": where a video starts and the layers KeyFly builds
@@ -11,7 +12,7 @@ import styles from "./make.module.css";
  * box's own list) and the templates.
  */
 export function Make() {
-  const { eyebrow, title, lead, note, styles: stylesStrip, ...builder } = productMake;
+  const { eyebrow, title, lead, more, note, styles: stylesStrip, ...builder } = productMake;
   const { templates } = useCases;
 
   return (
@@ -33,7 +34,10 @@ export function Make() {
               ))}
             </h2>
           </div>
-          <p className={styles.lead}>{lead}</p>
+          <p className={styles.lead}>
+            {lead}
+            <MoreLink {...more} />
+          </p>
         </div>
 
         <Builder {...builder} />

@@ -11,6 +11,7 @@ import { YourWay } from "@/components/product/your-way";
 import { Scene } from "@/components/scene/scene";
 import { productMeta } from "@/content/product";
 import { publicRobots } from "@/config/site";
+import { jsonLdHtml, productJsonLd } from "@/lib/structured-data";
 
 // The Product page, built section by section (see PLAN.md), in the same
 // Scene as the homepage: the links between sections, the focus pull, the
@@ -24,29 +25,35 @@ export const metadata = {
   title: productMeta.title,
   description: productMeta.description,
   alternates: { canonical: "/product" },
+  // No openGraph here: setting it would replace the site's share image
+  // (src/app/opengraph-image.jsx); Next fills og:title and og:description
+  // from the title and description above.
   robots: publicRobots,
 };
 
 export default function ProductPage() {
   return (
-    <Scene>
-      <ProductHero />
-      <Divider ruler={false} up="96px" down="84px" />
-      <Make />
-      <Divider />
-      <Direct />
-      <Divider />
-      <Footage />
-      <Divider />
-      <Brand />
-      <Divider />
-      <Deliver />
-      <Divider />
-      <YourWay />
-      <Divider />
-      <Minutes />
-      <Divider />
-      <Close />
-    </Scene>
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLdHtml(productJsonLd(productMeta))} />
+      <Scene>
+        <ProductHero />
+        <Divider ruler={false} up="96px" down="84px" />
+        <Make />
+        <Divider />
+        <Direct />
+        <Divider />
+        <Footage />
+        <Divider />
+        <Brand />
+        <Divider />
+        <Deliver />
+        <Divider />
+        <YourWay />
+        <Divider />
+        <Minutes />
+        <Divider />
+        <Close />
+      </Scene>
+    </>
   );
 }

@@ -3,6 +3,7 @@ import wipe from "@/components/scene/wipe.module.css";
 import { PauseOffscreen } from "@/components/pause-offscreen";
 import { DirectorTimeline } from "./director-timeline";
 import styles from "./direct.module.css";
+import { MoreLink } from "@/components/more-link";
 
 /**
  * Product page, "Direct": the AI director's reply after a build, its notes
@@ -10,7 +11,7 @@ import styles from "./direct.module.css";
  * ways to steer it.
  */
 export function Direct() {
-  const { eyebrow, title, lead, note, steer, ...timeline } = productDirect;
+  const { eyebrow, title, lead, more, note, steer, ...timeline } = productDirect;
 
   return (
     <section id="direct" className={styles.section} aria-labelledby="direct-title" data-section="Direct">
@@ -31,7 +32,10 @@ export function Direct() {
               ))}
             </h2>
           </div>
-          <p className={styles.lead}>{lead}</p>
+          <p className={styles.lead}>
+            {lead}
+            <MoreLink {...more} />
+          </p>
         </div>
 
         <DirectorTimeline {...timeline} />
