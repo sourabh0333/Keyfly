@@ -1,15 +1,19 @@
 import { LegalPage } from "@/components/legal/legal-page";
 import { legal } from "@/content/legal";
+import { publicRobots } from "@/config/site";
 
-// Linked from the app's sign-in. Kept out of search until the full policy
-// is published.
+// Linked from the app's sign-in. While the text is a draft for review it
+// stays out of search (and out of the sitemap); set `draft: false` in
+// src/content/legal.js once it's approved.
+const page = legal.privacy;
+
 export const metadata = {
-  title: legal.privacy.meta,
-  description: legal.privacy.description,
-  alternates: { canonical: legal.privacy.path },
-  robots: { index: false, follow: true },
+  title: page.meta,
+  description: page.description,
+  alternates: { canonical: page.path },
+  robots: page.draft ? { index: false, follow: true } : publicRobots,
 };
 
 export default function PrivacyPage() {
-  return <LegalPage page={legal.privacy} />;
+  return <LegalPage page={page} />;
 }

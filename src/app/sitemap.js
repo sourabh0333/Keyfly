@@ -1,5 +1,6 @@
 import { publicPages, siteConfig } from "@/config/site";
 import { categories } from "@/content/use-cases";
+import { legal } from "@/content/legal";
 
 // sitemap.xml, served at /sitemap.xml and named in robots.txt.
 //
@@ -7,7 +8,7 @@ import { categories } from "@/content/use-cases";
 // indexing/sitemaps/build-sitemap):
 // - Only the canonical URLs of indexable pages, absolute, exactly as each
 //   page's canonical tag gives them. Terms and Privacy stay out while they
-//   are noindex; the styleguide is development only.
+//   are drafts (noindex); the styleguide is development only.
 // - lastmod from each page's `updated` date in src/config/site.js, which
 //   changes only when the page really changes (Google ignores a lastmod it
 //   can't trust).
@@ -31,7 +32,12 @@ const images = { "/use-cases": templateStills };
 export default function sitemap() {
   if (!siteConfig.indexable) return [];
 
-  return publicPages.map(({ path, updated }) => ({
+  // Terms and Privacy join once they're approved (`draft: false`).
+  const legalPages = [legal.terms, legal.privacy]
+    .filter((p) => !p.draft)
+    .map((p) => ({ path: p.path, updated: p.updated.iso }));
+
+  return [...publicPages, ...legalPages].map(({ path, updated }) => ({
     url: absolute(path),
     lastModified: updated,
     ...(images[path] ? { images: images[path] } : {}),
