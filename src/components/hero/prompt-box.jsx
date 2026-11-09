@@ -349,18 +349,20 @@ export function PromptBox({ label, placeholder, accept, addMedia, formats, style
             ) : null}
           </div>
 
-          {/* Motion style. */}
-          <div className={styles.mode} data-picker="">
+          {/* Motion style: the one picker whose label can run long ("Editorial
+              Minimal"), so it gives way first (see .styleMode). */}
+          <div className={`${styles.mode} ${styles.styleMode}`} data-picker="">
             <button
               type="button"
               className={styles.modeButton}
               aria-haspopup="listbox"
               aria-expanded={open === "style"}
               aria-label={`${motion.label}: ${style.label}`}
+              data-named={style.id !== "ai" || undefined}
               onClick={() => toggle("style")}
             >
               <StyleIcon />
-              <span className={styles.long}>{motion.prefix}</span>
+              <span className={`${styles.long} ${styles.stylePrefix}`}>{motion.prefix}</span>
               <span className={styles.styleLabel}>{style.label}</span>
               <Chevron />
             </button>

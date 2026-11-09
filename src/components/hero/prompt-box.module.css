@@ -106,6 +106,7 @@
   align-items: center;
   gap: 6px;
   min-width: 0;
+  container-type: inline-size;
 }
 
 .square,
@@ -198,6 +199,45 @@
 .mode {
   position: relative;
   flex: none;
+}
+
+/* The motion style's name can be long ("Editorial Minimal", "Product
+   Explainer"). Its picker is the one that gives way, so Enhance and Create
+   always stay inside the box. Once a named style is chosen its "Style:"
+   prefix goes (the icon says it), so even "Product Explainer" fits whole in
+   the full-width box; on narrower boxes the prefix always goes, and if it
+   still doesn't fit, the name ends in an ellipsis. */
+.styleMode {
+  flex: 0 1 auto;
+  min-width: 0;
+}
+
+.styleMode .modeButton {
+  max-width: 100%;
+}
+
+.modeButton > svg {
+  flex: none;
+}
+
+.styleLabel {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.modeButton[data-named] .stylePrefix {
+  display: none;
+}
+
+/* Below the full box width (the toolbar is 732px in a 760px box), the
+   longer words fold away by the toolbar's own width, not just the screen's,
+   so "16:9 landscape … Product Explainer … Create" never runs out of room. */
+@container (max-width: 729px) {
+  .long {
+    display: none;
+  }
 }
 
 .modeButton {

@@ -3,7 +3,9 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import styles from "./your-call.module.css";
 
-const WRITE = 380; // ms per line as the note writes itself
+// ms per line as the note writes itself. Kept quick (2026-11-09): at 380ms
+// a line, the six lines took about 2.5s to appear, which read as a delay.
+const WRITE = 120;
 const STEP = 1900; // ms per step of the self-running demo
 
 // What the preview shows for each option, by decision.
@@ -74,7 +76,12 @@ export function DirectorNote({ report, decisions, pickLabel, changedLabel, assum
   const changes = changed.filter(Boolean).length;
 
   useEffect(() => {
-    const observer = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting), { threshold: 0.3 });
+    // On screen once its top is a fifth of the way up from the foot of the
+    // screen, so the note starts writing as it arrives, not after a long
+    // stretch of it has scrolled into view.
+    const observer = new IntersectionObserver(([entry]) => setVisible(entry.isIntersecting), {
+      rootMargin: "0px 0px -20% 0px",
+    });
     observer.observe(rootRef.current);
     return () => observer.disconnect();
   }, []);
@@ -82,7 +89,7 @@ export function DirectorNote({ report, decisions, pickLabel, changedLabel, assum
   // The note writes itself once it's on screen.
   useEffect(() => {
     if (reduced || !visible || written >= lines) return;
-    const timer = setTimeout(() => setWritten((w) => w + 1), written === 0 ? 250 : WRITE);
+    const timer = setTimeout(() => setWritten((w) => w + 1), written === 0 ? 60 : WRITE);
     return () => clearTimeout(timer);
   }, [reduced, visible, written, lines]);
 
