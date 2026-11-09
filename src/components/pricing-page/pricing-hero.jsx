@@ -26,17 +26,22 @@ export function PricingHero({ data }) {
       <div className={styles.inner}>
         <div className={styles.top}>
           <div className={styles.head}>
-            <p className={styles.eyebrow}>
-              <span className={styles.rec} aria-hidden="true" />
-              {eyebrow}
-            </p>
-            <h1 id="pricing-title" className={styles.title}>
-              {(data ? title : [{ text: pending.title }]).map((line, i, all) => (
-                <span key={i} className={line.accent ? styles.accent : styles.plain}>
-                  {line.text}
-                  {i < all.length - 1 ? " " : null}
-                </span>
-              ))}
+            {/* The eyebrow is part of the h1, so the page's main heading names
+                its topic ("AI video editor pricing"); it looks as it did. */}
+            <h1 id="pricing-title" className={styles.heading}>
+              <span className={styles.eyebrow}>
+                <span className={styles.rec} aria-hidden="true" />
+                {eyebrow}
+                <span className="visually-hidden">: </span>
+              </span>
+              <span className={styles.title}>
+                {(data ? title : [{ text: pending.title }]).map((line, i, all) => (
+                  <span key={i} className={line.accent ? styles.accent : styles.plain}>
+                    {line.text}
+                    {i < all.length - 1 ? " " : null}
+                  </span>
+                ))}
+              </span>
             </h1>
             <p className={styles.lead}>{data ? lead : pending.lead}</p>
           </div>

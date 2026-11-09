@@ -7,14 +7,21 @@ import { primaryCta } from "./navigation";
 // api.keyfly.si/v1/public/pricing (src/lib/pricing.js); this file holds only
 // the words around them. Say "AI minutes", never "credits".
 
+// In search results and shares (2026-11-09, from the SEO audit). The title
+// is built by the page with the lowest paid price from the pricing API
+// ("KeyFly pricing: free AI video editor, plans from $5 a month", 59
+// characters); `title` is used when the API can't be reached. The
+// description is 143 characters.
 export const pricingMeta = {
-  title: "Pricing",
+  title: "KeyFly pricing: free AI video editor and paid plans",
+  titleFrom: "KeyFly pricing: free AI video editor, plans from {price} a month",
   description:
-    "Start free, bring the AI you already pay for, or let KeyFly's AI do the work. Every plan, its price and its AI minutes, in one place.",
+    "Start free, no card needed. Bring your own Claude Code or Codex, or pay only for the minutes KeyFly’s AI works. Every plan and price, compared.",
 };
 
 export const pricingHero = {
-  eyebrow: "Pricing",
+  // Part of the h1 (2026-11-09), so it names the topic as well as the page.
+  eyebrow: "AI video editor pricing",
   title: [{ text: "Pay for the AI's work." }, { text: "Nothing else.", accent: true }],
   lead: "Start free, bring the AI you already pay for, or let KeyFly's AI do the work. AI minutes count only the AI's actual work, never idle time.",
   // The films beside the heading: three bars a side, the first six in
@@ -189,6 +196,8 @@ export const pricingMinutes = {
   eyebrow: "AI minutes",
   title: [{ text: "What an AI minute is." }, { text: "And what it never is.", accent: true }],
   lead: "One unit for everything KeyFly's cloud AI does, counted by the AI's actual work. Top up with a pack whenever you need more.",
+  // A link from the lead to the page that goes further.
+  more: { label: "Watch AI minutes count in a session", href: "/product#minutes" },
   term: "AI minute",
   kind: "the unit",
   counts: {

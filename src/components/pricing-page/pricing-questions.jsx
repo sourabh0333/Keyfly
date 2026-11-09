@@ -46,6 +46,13 @@ function fill(text, f) {
   return missing ? null : cap(out);
 }
 
+// The questions with their answers filled from the pricing API, leaving out
+// any whose facts it doesn't give. Also used for the page's structured data.
+export function pricingFaqItems(data) {
+  const f = facts(data);
+  return pricingFaq.questions.map((q) => ({ ...q, a: fill(q.a, f) })).filter((q) => q.a);
+}
+
 /**
  * Pricing page, "Questions": the pricing questions as a captions track
  * (see CaptionTrack); no boxes. Every number in an answer is the pricing
@@ -54,9 +61,8 @@ function fill(text, f) {
  */
 export function PricingQuestions({ data }) {
   if (!data) return null;
-  const { eyebrow, title, lead, track, of, questions, help } = pricingFaq;
-  const f = facts(data);
-  const items = questions.map((q) => ({ ...q, a: fill(q.a, f) })).filter((q) => q.a);
+  const { eyebrow, title, lead, track, of, help } = pricingFaq;
+  const items = pricingFaqItems(data);
   if (!items.length) return null;
 
   return (

@@ -1,4 +1,5 @@
 import { PauseOffscreen } from "@/components/pause-offscreen";
+import { MoreLink } from "@/components/more-link";
 import wipe from "@/components/scene/wipe.module.css";
 import { pricingMinutes } from "@/content/pricing";
 import styles from "./minutes-explained.module.css";
@@ -16,7 +17,7 @@ const dollars = (cents) => `$${(cents / 100).toFixed(2)}`;
  */
 export function MinutesExplained({ data }) {
   if (!data) return null;
-  const { eyebrow, title, lead, term, kind, counts, never, promise, packs: copy, note } = pricingMinutes;
+  const { eyebrow, title, lead, more, term, kind, counts, never, promise, packs: copy, note } = pricingMinutes;
   const packs = [...data.packs].sort((a, b) => a.minutes - b.minutes);
   const max = Math.max(...packs.map((p) => p.minutes), 1);
   const best = Math.min(...packs.map((p) => p.perMinuteCents ?? Infinity));
@@ -54,7 +55,10 @@ export function MinutesExplained({ data }) {
               ))}
             </h2>
           </div>
-          <p className={styles.lead}>{lead}</p>
+          <p className={styles.lead}>
+            {lead}
+            <MoreLink {...more} />
+          </p>
         </div>
 
         <div className={styles.entry} data-main="">

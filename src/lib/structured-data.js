@@ -226,6 +226,52 @@ export function integrationsJsonLd({ title, description, faq }) {
   };
 }
 
+// The Pricing page: the page, its breadcrumb, the app with every plan the
+// API prices as an offer, and the questions with their filled answers.
+export function pricingJsonLd({ title, description, pricing, faq }) {
+  const url = `${siteConfig.url}/pricing`;
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "@id": `${url}#webpage`,
+        url,
+        name: title,
+        description,
+        isPartOf: site,
+        about: app,
+        breadcrumb: { "@id": `${url}#breadcrumb` },
+      },
+      breadcrumb(url, "Pricing"),
+      {
+        "@type": "SoftwareApplication",
+        ...app,
+        name: siteConfig.name,
+        url: siteConfig.url,
+        applicationCategory: "MultimediaApplication",
+        applicationSubCategory: "AI video editor",
+        operatingSystem: "macOS 13 or later, Windows 10, Windows 11, Web browser",
+        publisher: org,
+        offers: offers(pricing),
+      },
+      ...(faq.length ? [faqPage(faq)] : []),
+    ],
+  };
+}
+
+// The lowest price a month of any paid plan with a price (billed yearly
+// where the plan offers it), as "$5", or null.
+export function lowestPaidPrice(pricing) {
+  const cents = (pricing?.plans ?? [])
+    .filter((p) => p.id !== "free" && !p.contact)
+    .map((p) => p.annual?.cents ?? p.monthly?.cents)
+    .filter((c) => typeof c === "number" && c > 0);
+  if (!cents.length) return null;
+  const low = Math.min(...cents) / 100;
+  return "$" + (Number.isInteger(low) ? low : low.toFixed(2));
+}
+
 // The script tag's contents, with "<" escaped so no string can close it.
 export function jsonLdHtml(data) {
   return { __html: JSON.stringify(data).replace(/</g, "\\u003c") };

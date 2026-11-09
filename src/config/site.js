@@ -23,5 +23,15 @@ export const publicRobots = siteConfig.indexable
   ? { index: true, follow: true }
   : { index: false, follow: false };
 
-// The public pages, for the sitemap.
-export const publicPages = ["/", "/product", "/use-cases", "/integrations", "/pricing"];
+// The public pages, for the sitemap (src/app/sitemap.js). `updated` is the
+// date of the page's last significant change: its copy, its sections, its
+// structured data or its links (not a style tweak). Google uses a sitemap's
+// lastmod only while it stays accurate, so change the date only when the
+// page really changes, and add a page here when it goes public.
+export const publicPages = [
+  { path: "/", updated: "2026-11-09" },
+  { path: "/product", updated: "2026-11-09" },
+  { path: "/use-cases", updated: "2026-11-09" },
+  { path: "/integrations", updated: "2026-11-09" },
+  { path: "/pricing", updated: "2026-11-09" },
+];
